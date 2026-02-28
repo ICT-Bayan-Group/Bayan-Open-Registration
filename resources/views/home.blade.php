@@ -27,14 +27,7 @@
     <div class="max-w-4xl mx-auto px-6 text-center relative z-10">
 
         {{-- Logo --}}
-        <div class="mb-6 animate-fade-up">
-            <img
-                src="https://res.cloudinary.com/djs5pi7ev/image/upload/v1767777416/LOGO_BO2025_resdzo.png"
-                alt="Bayan Open 2026"
-                class="h-28 md:h-40 mx-auto object-contain"
-                style="filter: drop-shadow(0 0 40px rgba(249,115,22,0.5)) drop-shadow(0 4px 20px rgba(0,0,0,0.8));"
-            >
-        </div>
+ 
 
         {{-- Badge --}}
         <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-brand-500/40 bg-brand-500/10 text-brand-300 text-xs font-semibold uppercase tracking-widest mb-6 animate-fade-up delay-100">
@@ -43,14 +36,15 @@
         </div>
 
         {{-- Title --}}
-        <h1 class="font-display text-5xl md:text-7xl font-black text-white mb-4 animate-fade-up delay-100" style="line-height:1.1; text-shadow: 0 4px 30px rgba(0,0,0,0.6);">
-            BAYAN<br>
-            <span class="text-transparent bg-clip-text" style="background-image:linear-gradient(135deg,#f97316,#fbbf24)">OPEN</span>
-            <span class="text-white/70 text-4xl md:text-5xl"> 2026</span>
-        </h1>
+            <img
+                src="https://res.cloudinary.com/djs5pi7ev/image/upload/v1767777416/LOGO_BO2025_resdzo.png"
+                alt="Bayan Open 2026"
+                class="h-28 md:h-40 mx-auto object-contain"
+                style="filter: drop-shadow(0 0 40px rgba(249,115,22,0.5)) drop-shadow(0 4px 20px rgba(0,0,0,0.8));"
+            >
 
         <p class="text-white/70 text-lg md:text-xl max-w-xl mx-auto mb-10 animate-fade-up delay-200 leading-relaxed" style="text-shadow: 0 2px 10px rgba(0,0,0,0.5);">
-            Turnamen bulutangkis bergengsi — Daftar sekarang dan buktikan kemampuan terbaikmu di lapangan!
+            Turnamen bulutangkis bergengsi  Daftar sekarang dan buktikan kemampuan terbaikmu di lapangan!
         </p>
 
         <div class="flex flex-wrap gap-4 justify-center animate-fade-up delay-300">

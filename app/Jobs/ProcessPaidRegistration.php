@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Mail\RegistrationPaidMail;
+use App\Mail\RegistrationPaid;
 use App\Models\Registration;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Bus\Queueable;
@@ -32,7 +32,7 @@ class ProcessPaidRegistration implements ShouldQueue
         // Send Email (if email exists)
         if ($this->registration->email) {
             Mail::to($this->registration->email)
-                ->send(new RegistrationPaidMail($this->registration));
+                ->send(new RegistrationPaid($this->registration));
         }
     }
 }

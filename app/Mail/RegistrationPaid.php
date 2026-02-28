@@ -27,7 +27,7 @@ class RegistrationPaid extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'emails.registration-paid',
+            view: 'emails.paid',
         );
     }
 

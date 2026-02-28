@@ -203,7 +203,7 @@ class RegistrationResource extends Resource
                     ->visible(fn(Registration $r) => $r->status === 'paid' && !empty($r->email))
                     ->action(function (Registration $r) {
                         \Illuminate\Support\Facades\Mail::to($r->email)
-                            ->send(new \App\Mail\RegistrationPaidMail($r));
+                            ->send(new \App\Mail\RegistrationPaid($r));
                         Notification::make()
                             ->title('Email berhasil dikirim ulang')
                             ->success()
