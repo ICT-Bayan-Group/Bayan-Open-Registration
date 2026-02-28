@@ -115,7 +115,6 @@
                         id="provinsiSelect"
                         class="input-field w-full px-4 py-3 rounded-xl text-sm @error('provinsi') border-red-500 @enderror"
                         required
-                        onchange="updateKota(this.value)"
                     >
                         <option value="">-- Pilih Provinsi --</option>
                         <option value="Aceh" {{ old('provinsi') == 'Aceh' ? 'selected' : '' }}>Aceh</option>

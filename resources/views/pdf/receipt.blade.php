@@ -14,184 +14,156 @@
 
         .page {
             width: 100%;
-            min-height: 297mm;
-            padding: 40px;
+            padding: 0;
         }
 
         /* Header */
         .header {
-            background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
-            color: white;
-            padding: 32px 40px;
-            margin: -40px -40px 32px -40px;
-            border-bottom: 4px solid #f97316;
+            background: #ffffff;
+            padding: 28px 40px;
+            border-bottom: 5px solid #6b7280;
+            border-top: 5px solid #9ca3af;
         }
 
-        .header-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-        }
-
-        .logo-area h1 {
-            font-size: 22px;
-            font-weight: 900;
-            letter-spacing: 2px;
-            color: #ffffff;
-        }
-
-        .logo-area h1 span { color: #f97316; }
-
-        .logo-area p {
-            font-size: 10px;
-            color: rgba(255,255,255,0.6);
-            margin-top: 4px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        .receipt-label {
-            text-align: right;
-        }
-
-        .receipt-label .title {
-            font-size: 16px;
-            font-weight: 700;
-            color: #f97316;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-
-        .receipt-label .subtitle {
-            font-size: 10px;
-            color: rgba(255,255,255,0.5);
-            margin-top: 4px;
-        }
-
-        /* Status Badge */
-        .status-badge {
-            display: inline-block;
-            background: #10b981;
-            color: white;
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            margin-top: 16px;
-        }
-
-        /* Section */
-        .section {
-            margin-bottom: 24px;
-        }
-
-        .section-title {
-            font-size: 9px;
-            font-weight: 700;
-            color: #94a3b8;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            border-bottom: 1px solid #e2e8f0;
-            padding-bottom: 6px;
-            margin-bottom: 14px;
-        }
-
-        /* Info Grid */
-        .info-grid {
+        .header-inner {
             display: table;
             width: 100%;
         }
 
-        .info-row {
-            display: table-row;
-        }
-
-        .info-label {
+        .header-left {
             display: table-cell;
-            width: 40%;
-            color: #64748b;
-            padding: 5px 0;
-            font-size: 11px;
+            vertical-align: middle;
         }
 
-        .info-value {
+        .header-right {
             display: table-cell;
-            color: #1e293b;
-            padding: 5px 0;
-            font-size: 11px;
-            font-weight: 600;
+            vertical-align: middle;
+            text-align: right;
         }
 
-        /* Total Box */
-        .total-box {
-            background: #f8fafc;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 20px 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 24px 0;
+        .logo-img {
+            height: 55px;
+            width: auto;
         }
 
-        .total-label {
-            font-size: 12px;
-            color: #64748b;
-            font-weight: 600;
-        }
-
-        .total-amount {
-            font-size: 24px;
+        .receipt-title {
+            font-size: 18px;
             font-weight: 900;
-            color: #10b981;
-            letter-spacing: -1px;
+            color: #374151;
+            letter-spacing: 3px;
+            text-transform: uppercase;
         }
 
-        /* Divider */
-        .divider {
-            border: none;
-            border-top: 1px dashed #e2e8f0;
-            margin: 20px 0;
-        }
-
-        /* Footer */
-        .footer {
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid #e2e8f0;
-            text-align: center;
-            color: #94a3b8;
+        .receipt-subtitle {
             font-size: 10px;
+            color: #9ca3af;
+            margin-top: 4px;
+            letter-spacing: 1px;
         }
 
-        .footer p { margin-bottom: 4px; }
-
-        .watermark {
-            position: fixed;
-            bottom: 60px;
-            right: 40px;
-            font-size: 80px;
-            font-weight: 900;
-            color: rgba(16,185,129,0.06);
-            transform: rotate(-30deg);
-            pointer-events: none;
-            letter-spacing: -2px;
+        /* Status */
+        .status-wrap {
+            background: #ffffff;
+            padding: 12px 40px 20px;
+            border-bottom: 3px solid #d1d5db;
         }
 
-        .kategori-badge {
+        .status-badge {
             display: inline-block;
-            padding: 3px 12px;
+            background: #4b5563;
+            color: white;
+            padding: 6px 18px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        /* Body */
+        .body {
+            padding: 28px 40px;
+        }
+
+        /* Section */
+        .section { margin-bottom: 20px; }
+
+        .section-title {
+            font-size: 9px;
+            font-weight: 700;
+            color: #374151;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 2px solid #9ca3af;
+            padding-bottom: 5px;
+            margin-bottom: 12px;
+        }
+
+        /* Table layout for info rows */
+        .info-table { width: 100%; border-collapse: collapse; }
+        .info-table td { padding: 5px 0; font-size: 11px; vertical-align: top; border-bottom: 1px dashed #e5e7eb; }
+        .info-table td:first-child { width: 42%; color: #6b7280; }
+        .info-table td:last-child { color: #1e293b; font-weight: 600; }
+
+        /* Kategori badge */
+        .badge {
+            display: inline-block;
+            padding: 2px 10px;
             border-radius: 4px;
             font-size: 10px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
+        .badge-regu { background: #e5e7eb; color: #374151; }
+        .badge-open { background: #f3f4f6; color: #4b5563; }
 
-        .kategori-regu { background: #e0e7ff; color: #4338ca; }
-        .kategori-open { background: #d1fae5; color: #065f46; }
+        /* Pemain */
+        .pemain-item { font-size: 11px; color: #1e293b; padding: 1px 0; }
+
+        /* Divider */
+        .divider { border: none; border-top: 3px solid #d1d5db; margin: 16px 0; }
+
+        /* Total box */
+        .total-box {
+            background: #f9fafb;
+            border: 2px solid #d1d5db;
+            border-left: 6px solid #6b7280;
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin: 20px 0;
+        }
+
+        .total-inner { display: table; width: 100%; }
+        .total-left { display: table-cell; vertical-align: middle; }
+        .total-right { display: table-cell; vertical-align: middle; text-align: right; }
+
+        .total-label { font-size: 12px; color: #374151; font-weight: 700; }
+        .total-sub { font-size: 10px; color: #9ca3af; margin-top: 3px; }
+        .total-amount { font-size: 22px; font-weight: 900; color: #374151; }
+
+        /* Footer */
+        .footer {
+            margin-top: 30px;
+            padding: 16px 40px;
+            border-top: 4px solid #6b7280;
+            border-bottom: 3px solid #d1d5db;
+            text-align: center;
+            color: #6b7280;
+            font-size: 10px;
+            line-height: 1.8;
+        }
+
+        /* Watermark */
+        .watermark {
+            position: fixed;
+            bottom: 80px;
+            right: 30px;
+            font-size: 90px;
+            font-weight: 900;
+            color: rgba(107,114,128,0.06);
+            transform: rotate(-30deg);
+            letter-spacing: -3px;
+        }
     </style>
 </head>
 <body>
@@ -199,93 +171,142 @@
 
     {{-- Header --}}
     <div class="header">
-        <div class="header-top">
-            <div class="logo-area">
-                <h1>BAYAN <span>OPEN</span> 2026</h1>
-                <p>Official Registration Receipt</p>
+        <div class="header-inner">
+            <div class="header-left">
+                @php
+                    $logoPath = public_path('images/logo-bayan.png');
+                    $logoBase64 = '';
+                    if (file_exists($logoPath)) {
+                        $logoBase64 = 'data:image/png;base64,' . base64_encode(file_get_contents($logoPath));
+                    }
+                @endphp
+                @if($logoBase64)
+                    <img src="{{ $logoBase64 }}" alt="Bayan Open 2026" class="logo-img">
+                @else
+                    <div style="font-size:20px;font-weight:900;color:#374151;letter-spacing:2px;">BAYAN <span style="color:#6b7280;">OPEN</span> 2026</div>
+                @endif
             </div>
-            <div class="receipt-label">
-                <div class="title">RECEIPT</div>
-                <div class="subtitle">{{ $registration->midtrans_order_id }}</div>
+            <div class="header-right">
+                <div class="receipt-title">RECEIPT</div>
+                <div class="receipt-subtitle">{{ $registration->midtrans_order_id }}</div>
             </div>
-        </div>
-        <div>
-            <span class="status-badge">✓ PAID — LUNAS</span>
         </div>
     </div>
 
-    {{-- Peserta Info --}}
-    <div class="section">
-        <div class="section-title">Data Peserta</div>
-        <div class="info-grid">
-            <div class="info-row">
-                <div class="info-label">Nama Lengkap</div>
-                <div class="info-value">{{ $registration->nama }}</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Tim / PB</div>
-                <div class="info-value">{{ $registration->tim_pb }}</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Kategori</div>
-                <div class="info-value">
-                    <span class="kategori-badge kategori-{{ $registration->kategori }}">
-                        {{ $registration->kategori_label }}
-                    </span>
+    {{-- Status --}}
+    <div class="status-wrap">
+        <span class="status-badge">✓ PAID — LUNAS</span>
+    </div>
+
+    {{-- Body --}}
+    <div class="body">
+
+        {{-- Data Peserta --}}
+        <div class="section">
+            <div class="section-title">Data Peserta</div>
+            <table class="info-table">
+                <tr>
+                    <td>Nama Ketua Tim</td>
+                    <td>{{ $registration->nama }}</td>
+                </tr>
+                <tr>
+                    <td>Tim / PB</td>
+                    <td>{{ $registration->tim_pb }}</td>
+                </tr>
+                <tr>
+                    <td>Email</td>
+                    <td>{{ $registration->email }}</td>
+                </tr>
+                <tr>
+                    <td>No. HP</td>
+                    <td>{{ $registration->no_hp }}</td>
+                </tr>
+                <tr>
+                    <td>Provinsi / Kota</td>
+                    <td>{{ $registration->provinsi }}, {{ $registration->kota }}</td>
+                </tr>
+                <tr>
+                    <td>Kategori</td>
+                    <td>
+                        <span class="badge badge-{{ $registration->kategori }}">
+                            {{ $registration->kategori_label }}
+                        </span>
+                    </td>
+                </tr>
+                @if($registration->nama_pelatih)
+                <tr>
+                    <td>Pelatih</td>
+                    <td>{{ $registration->nama_pelatih }}
+                        @if($registration->no_hp_pelatih) ({{ $registration->no_hp_pelatih }})@endif
+                    </td>
+                </tr>
+                @endif
+            </table>
+        </div>
+
+        {{-- Daftar Pemain --}}
+        @if($registration->pemain && count($registration->pemain) > 0)
+        <div class="section">
+            <div class="section-title">Daftar Pemain ({{ $registration->jumlah_pemain }} orang)</div>
+            @foreach($registration->pemain as $i => $pemain)
+            <div class="pemain-item">{{ $i + 1 }}. {{ $pemain }}</div>
+            @endforeach
+        </div>
+        @endif
+
+        <hr class="divider">
+
+        {{-- Informasi Transaksi --}}
+        <div class="section">
+            <div class="section-title">Informasi Transaksi</div>
+            <table class="info-table">
+                <tr>
+                    <td>Order ID</td>
+                    <td>{{ $registration->midtrans_order_id }}</td>
+                </tr>
+                @if($registration->midtrans_transaction_id)
+                <tr>
+                    <td>Transaction ID</td>
+                    <td>{{ $registration->midtrans_transaction_id }}</td>
+                </tr>
+                @endif
+                @if($registration->payment_type)
+                <tr>
+                    <td>Metode Pembayaran</td>
+                    <td>{{ strtoupper(str_replace('_', ' ', $registration->payment_type)) }}</td>
+                </tr>
+                @endif
+                <tr>
+                    <td>Waktu Pembayaran</td>
+                    <td>{{ ($registration->payment_time ?? $registration->updated_at)->format('d F Y, H:i:s') }} WIB</td>
+                </tr>
+                <tr>
+                    <td>Tanggal Daftar</td>
+                    <td>{{ $registration->created_at->format('d F Y, H:i:s') }} WIB</td>
+                </tr>
+            </table>
+        </div>
+
+        {{-- Total --}}
+        <div class="total-box">
+            <div class="total-inner">
+                <div class="total-left">
+                    <div class="total-label">Total Pembayaran</div>
+                    <div class="total-sub">Kategori {{ $registration->kategori_label }}</div>
+                </div>
+                <div class="total-right">
+                    <div class="total-amount">Rp {{ number_format($registration->harga, 0, ',', '.') }}</div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <hr class="divider">
-
-    {{-- Transaksi Info --}}
-    <div class="section">
-        <div class="section-title">Informasi Transaksi</div>
-        <div class="info-grid">
-            <div class="info-row">
-                <div class="info-label">Order ID</div>
-                <div class="info-value">{{ $registration->midtrans_order_id }}</div>
-            </div>
-            @if($registration->midtrans_transaction_id)
-            <div class="info-row">
-                <div class="info-label">Transaction ID</div>
-                <div class="info-value">{{ $registration->midtrans_transaction_id }}</div>
-            </div>
-            @endif
-            @if($registration->payment_type)
-            <div class="info-row">
-                <div class="info-label">Metode Pembayaran</div>
-                <div class="info-value">{{ strtoupper(str_replace('_', ' ', $registration->payment_type)) }}</div>
-            </div>
-            @endif
-            <div class="info-row">
-                <div class="info-label">Waktu Pembayaran</div>
-                <div class="info-value">
-                    {{ $registration->payment_time ? $registration->payment_time->format('d F Y, H:i:s') : $registration->updated_at->format('d F Y, H:i:s') }} WIB
-                </div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Tanggal Daftar</div>
-                <div class="info-value">{{ $registration->created_at->format('d F Y, H:i:s') }} WIB</div>
-            </div>
+        {{-- Footer --}}
+        <div class="footer">
+            <div><strong style="color:#374151;">BAYAN OPEN 2026</strong> — Official Registration Receipt</div>
+            <div>Dokumen ini merupakan bukti pembayaran resmi. Simpan sebagai tanda pendaftaran Anda.</div>
+            <div style="margin-top:6px;">Dicetak pada {{ now()->format('d F Y, H:i') }} WIB</div>
         </div>
-    </div>
 
-    {{-- Total Box --}}
-    <div class="total-box">
-        <div>
-            <div class="total-label">Total Pembayaran</div>
-            <div style="font-size:10px;color:#94a3b8;margin-top:4px;">Termasuk biaya pendaftaran kategori {{ $registration->kategori_label }}</div>
-        </div>
-        <div class="total-amount">Rp {{ number_format($registration->harga, 0, ',', '.') }}</div>
-    </div>
-
-    {{-- Footer --}}
-    <div class="footer">
-        <p><strong>BAYAN OPEN 2026</strong> — Official Registration Receipt</p>
-        <p>Dokumen ini merupakan bukti pembayaran resmi. Simpan sebagai tanda pendaftaran Anda.</p>
-        <p style="margin-top:8px;">Dicetak pada {{ now()->format('d F Y, H:i') }} WIB</p>
     </div>
 
     <div class="watermark">PAID</div>

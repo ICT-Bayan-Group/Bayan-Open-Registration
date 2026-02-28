@@ -6,12 +6,10 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Pendaftaran') | Bayan Open 2026</title>
 
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;900&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
 
-    <!-- Tailwind CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
 
     <script>
@@ -45,10 +43,6 @@
         body { font-family: 'DM Sans', sans-serif; }
         h1, h2, h3, .font-display { font-family: 'Unbounded', sans-serif; }
 
-        .bg-noise {
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-        }
-
         .gradient-hero {
             background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 40%, #0f172a 100%);
         }
@@ -57,6 +51,20 @@
             background: rgba(255,255,255,0.05);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(255,255,255,0.12);
+        }
+
+        /* ===== NAVBAR ===== */
+        .navbar {
+            background: transparent;
+            transition: background 0.4s ease, backdrop-filter 0.4s ease, border-color 0.4s ease;
+            border-bottom: 1px solid transparent;
+        }
+
+        /* Saat di-scroll → navbar jadi gelap */
+        .navbar.scrolled {
+            background: rgba(0,0,0,0.55);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
         }
 
         @keyframes float {
@@ -105,34 +113,68 @@
 
     @stack('head')
 </head>
-<body class="gradient-hero min-h-screen bg-noise text-white">
+<body class="gradient-hero min-h-screen text-white">
 
-    {{-- Navbar --}}
-    <nav class="fixed top-0 left-0 right-0 z-50 bg-black/30 backdrop-blur-md border-b border-white/10">
-        <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-            <a href="{{ url('/') }}" class="flex items-center gap-3">
+    {{-- NAVBAR --}}
+    <nav class="navbar fixed top-0 left-0 right-0 z-50" id="navbar">
+        <div class="max-w-7xl mx-auto px-8 h-24 flex items-center justify-between">
+
+            {{-- Logo --}}
+            <a href="{{ url('/') }}" class="flex items-center gap-4 group">
                 <img
                     src="https://res.cloudinary.com/djs5pi7ev/image/upload/v1767777416/LOGO_BO2025_resdzo.png"
                     alt="Bayan Open 2026"
-                    class="h-10 w-auto object-contain"
+                    class="h-16 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+                    style="filter: drop-shadow(0 2px 12px rgba(249,115,22,0.3));"
                 >
             </a>
-            <div class="flex items-center gap-4 text-sm text-white/70">
-                <a href="{{ url('/') }}" class="hover:text-white transition">Home</a>
-                <a href="{{ route('registration.create') }}" class="bg-brand-500 hover:bg-brand-600 text-white px-4 py-1.5 rounded-lg font-medium transition">Daftar</a>
+
+            {{-- Nav Links --}}
+            <div class="flex items-center gap-6">
+                <a href="{{ url('/') }}"
+                   class="text-white/70 hover:text-white transition font-medium text-sm tracking-wide">
+                    Home
+                </a>
+                <a href="#kategori"
+                   class="text-white/70 hover:text-white transition font-medium text-sm tracking-wide">
+                    Kategori
+                </a>
+                <a href="{{ route('registration.create') }}"
+                   class="btn-primary font-display text-xs font-bold px-6 py-3 rounded-xl text-white tracking-wider">
+                    DAFTAR →
+                </a>
             </div>
+
         </div>
     </nav>
 
-    <main class="pt-16">
+    {{-- Konten --}}
+    <main class="pt-24">
         @yield('content')
     </main>
 
     {{-- Footer --}}
-    <footer class="mt-20 border-t border-white/10 py-8 text-center text-white/40 text-sm">
-        <p class="font-display text-xs tracking-widest mb-2">BAYAN OPEN 2026</p>
-        <p>© 2026 Bayan Open. Sistem Pendaftaran Online.</p>
+    <footer class="mt-20 border-t border-white/10 py-10 text-center text-white/40 text-sm">
+        <img
+            src="https://res.cloudinary.com/djs5pi7ev/image/upload/v1767777416/LOGO_BO2025_resdzo.png"
+            alt="Bayan Open 2026"
+            class="h-12 mx-auto object-contain mb-4 opacity-40"
+        >
+        <p class="font-display text-xs tracking-widest mb-2">© 2026 BAYAN GROUP</p>
+        <p>ALL RIGHTS RESERVED.</p>
     </footer>
+
+    {{-- Navbar scroll effect --}}
+    <script>
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+    </script>
 
     @stack('scripts')
 </body>
