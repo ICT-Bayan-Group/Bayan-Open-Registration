@@ -53,14 +53,11 @@
             border: 1px solid rgba(255,255,255,0.12);
         }
 
-        /* ===== NAVBAR ===== */
         .navbar {
             background: transparent;
             transition: background 0.4s ease, backdrop-filter 0.4s ease, border-color 0.4s ease;
             border-bottom: 1px solid transparent;
         }
-
-        /* Saat di-scroll → navbar jadi gelap */
         .navbar.scrolled {
             background: rgba(0,0,0,0.55);
             backdrop-filter: blur(16px);
@@ -71,7 +68,6 @@
             0%, 100% { transform: translateY(0px); }
             50% { transform: translateY(-10px); }
         }
-
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
@@ -88,7 +84,6 @@
             transition: all 0.3s ease;
             box-shadow: 0 4px 20px rgba(249,115,22,0.4);
         }
-
         .btn-primary:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 30px rgba(249,115,22,0.6);
@@ -100,17 +95,16 @@
             color: white;
             transition: all 0.3s;
         }
-
         .input-field:focus {
             outline: none;
             border-color: #f97316;
             background: rgba(249,115,22,0.08);
             box-shadow: 0 0 0 3px rgba(249,115,22,0.15);
         }
-
         .input-field::placeholder { color: rgba(255,255,255,0.4); }
     </style>
 
+    @stack('styles')
     @stack('head')
 </head>
 <body class="gradient-hero min-h-screen text-white">
@@ -118,8 +112,6 @@
     {{-- NAVBAR --}}
     <nav class="navbar fixed top-0 left-0 right-0 z-50" id="navbar">
         <div class="max-w-7xl mx-auto px-8 h-24 flex items-center justify-between">
-
-            {{-- Logo --}}
             <a href="{{ url('/') }}" class="flex items-center gap-4 group">
                 <img
                     src="https://res.cloudinary.com/djs5pi7ev/image/upload/v1767777416/LOGO_BO2025_resdzo.png"
@@ -128,23 +120,13 @@
                     style="filter: drop-shadow(0 2px 12px rgba(249,115,22,0.3));"
                 >
             </a>
-
-            {{-- Nav Links --}}
             <div class="flex items-center gap-6">
-                <a href="{{ url('/') }}"
-                   class="text-white/70 hover:text-white transition font-medium text-sm tracking-wide">
-                    Home
-                </a>
-                <a href="#kategori"
-                   class="text-white/70 hover:text-white transition font-medium text-sm tracking-wide">
-                    Kategori
-                </a>
-                <a href="{{ route('registration.create') }}"
-                   class="btn-primary font-display text-xs font-bold px-6 py-3 rounded-xl text-white tracking-wider">
+                <a href="{{ url('/') }}" class="text-white/70 hover:text-white transition font-medium text-sm tracking-wide">Home</a>
+                <a href="#kategori" class="text-white/70 hover:text-white transition font-medium text-sm tracking-wide">Kategori</a>
+                <a href="{{ route('registration.index') }}" class="btn-primary font-display text-xs font-bold px-6 py-3 rounded-xl text-white tracking-wider">
                     DAFTAR →
                 </a>
             </div>
-
         </div>
     </nav>
 
@@ -161,21 +143,20 @@
             class="h-12 mx-auto object-contain mb-4 opacity-40"
         >
         <p class="font-display text-xs tracking-widest mb-2">© 2026 BAYAN GROUP</p>
-        <p>ALL RIGHTS RESERVED.</p>
     </footer>
 
     {{-- Navbar scroll effect --}}
     <script>
         const navbar = document.getElementById('navbar');
         window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
-                navbar.classList.add('scrolled');
-            } else {
-                navbar.classList.remove('scrolled');
-            }
+            navbar.classList.toggle('scrolled', window.scrollY > 50);
         });
     </script>
 
     @stack('scripts')
+
+    {{-- ✅ MODALS — di luar <main> agar position:fixed bekerja penuh --}}
+    @stack('modals')
+
 </body>
 </html>

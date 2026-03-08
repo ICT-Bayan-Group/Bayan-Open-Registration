@@ -48,7 +48,7 @@
         </p>
 
         <div class="flex flex-wrap gap-4 justify-center animate-fade-up delay-300">
-            <a href="{{ route('registration.create') }}" class="btn-primary font-display text-sm font-bold px-8 py-4 rounded-xl text-white inline-block tracking-wide">
+            <a href="{{ route('registration.index') }}" class="btn-primary font-display text-sm font-bold px-8 py-4 rounded-xl text-white inline-block tracking-wide">
                 DAFTAR SEKARANG →
             </a>
             <a href="#kategori" class="px-8 py-4 rounded-xl border border-white/30 text-white hover:border-white/60 hover:bg-white/10 transition font-medium text-sm backdrop-blur-sm">
@@ -108,7 +108,7 @@
                         <p class="font-display text-3xl font-bold text-indigo-400">200<span class="text-lg">.000</span></p>
                         <p class="text-white/40 text-xs">rupiah</p>
                     </div>
-                    <a href="{{ route('registration.create') }}?kategori=regu" class="btn-primary px-5 py-2.5 rounded-xl text-sm font-semibold text-white">
+                    <a href="{{ route('registration.index') }}?kategori=regu" class="btn-primary px-5 py-2.5 rounded-xl text-sm font-semibold text-white">
                         Daftar →
                     </a>
                 </div>
@@ -129,7 +129,7 @@
                         <p class="font-display text-3xl font-bold text-emerald-400">150<span class="text-lg">.000</span></p>
                         <p class="text-white/40 text-xs">rupiah</p>
                     </div>
-                    <a href="{{ route('registration.create') }}?kategori=open" class="btn-primary px-5 py-2.5 rounded-xl text-sm font-semibold text-white">
+                    <a href="{{ route('registration.index') }}?kategori=open" class="btn-primary px-5 py-2.5 rounded-xl text-sm font-semibold text-white">
                         Daftar →
                     </a>
                 </div>
