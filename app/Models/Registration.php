@@ -20,7 +20,6 @@ class Registration extends Model
         'no_hp',
         'provinsi',
         'kota',
-        'alamat',
 
         // ── Data Pelatih ──
         'nama_pelatih',

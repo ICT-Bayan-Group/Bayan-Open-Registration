@@ -223,7 +223,7 @@
         <div class="max-w-7xl mx-auto px-8 h-24 flex items-center justify-between">
             <a href="{{ url('/') }}" class="flex items-center gap-4 group">
                 <img
-                    src="https://res.cloudinary.com/djs5pi7ev/image/upload/v1773109896/LOGO_BO2026_pzbvxh.png""
+                    src="https://res.cloudinary.com/djs5pi7ev/image/upload/v1773109896/LOGO_BO2026_pzbvxh.png"
                     alt="Bayan Open 2026"
                     class="h-16 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
                 >
