@@ -33,7 +33,8 @@ class AdminPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Orange,
             ])
-            ->brandName('Bayan Open 2026')
+            ->brandLogo('https://res.cloudinary.com/djs5pi7ev/image/upload/v1773109896/LOGO_BO2026_pzbvxh.png')
+            ->brandLogoHeight('3rem')
             ->darkMode(true)
             ->sidebarCollapsibleOnDesktop()
 

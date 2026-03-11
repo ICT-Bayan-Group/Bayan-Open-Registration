@@ -4,6 +4,13 @@ use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\KtpOcrController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\WilayahController; 
+
+
+// Redirect default 'login' route ke Filament login
+Route::get('/login', function () {
+    return redirect()->route('filament.admin.auth.login');
+})->name('login');
+
 // Home
 Route::get('/', fn() => view('home'))->name('home');
 
@@ -35,4 +42,13 @@ Route::prefix('daftar')->name('registration.')->group(function () {
     Route::get('/error',         [RegistrationController::class, 'error'])->name('error');
     Route::get('/status/{uuid}', [RegistrationController::class, 'status'])->name('status');
     Route::get('/receipt/{uuid}',[RegistrationController::class, 'downloadReceipt'])->name('receipt');
+});
+
+
+Route::middleware(['auth:web'])->group(function () {
+    Route::get(
+        '/admin/ktp/{uuid}/{filename}',
+        [RegistrationController::class, 'serveKtp']
+    )->name('admin.ktp.serve')
+     ->where('filename', '[^/]+');
 });
