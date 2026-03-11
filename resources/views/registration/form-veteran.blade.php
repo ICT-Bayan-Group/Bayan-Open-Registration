@@ -1,27 +1,4 @@
-{{--
-    TEMPLATE: form-veteran.blade.php
-    DIPAKAI UNTUK:
-      - Ganda Veteran Putra → kategori: 'ganda-veteran-putra'
 
-    Regulasi usia (dicocokkan dengan backend):
-      - Setiap pemain WAJIB usia ≥ 45 tahun per 24 Agustus 2026
-        → Lahir pada / sebelum 24 Agustus 1981
-      - Total usia kedua pemain WAJIB ≥ 95 tahun
-      - Kedua syarat di-enforce di frontend (JS) DAN backend (PHP)
-
-    Field yang dikirim ke backend (sesuai migration & controller):
-      - nama           → pemain[]     (array nama)
-      - nik[]          → nik[]        (array NIK)
-      - tgl_lahir[]    → tgl_lahir[]  (array tgl lahir)
-      - usia_valid[]   → usia_valid[] (1 = valid, 0 = tidak)
-      - usia_hitung[]  → usia_hitung[] (integer usia dihitung frontend)
-      - ktp_files[]    → file upload KTP
-
-    Backend akan:
-      - Menghitung ulang usia dari tgl_lahir (Carbon::parse)
-      - Memvalidasi min 45 thn per pemain + total ≥ 95 thn
-      - Menyimpan usia_pemain[] yang dihitung backend (bukan dari frontend)
---}}
 
 @extends('layouts.app')
 
