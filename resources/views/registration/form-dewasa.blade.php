@@ -142,7 +142,7 @@
         margin-top:  4px;
     }
 
-    /* ── Usia display (read-only row, auto-calculated) ───────── */
+    /* ── Usia display (read-only, auto-calculated) ───────────── */
     .usia-display {
         flex:        1;
         font-size:   12px;
@@ -150,6 +150,7 @@
         line-height: 1.4;
         padding:     3px 8px;
         border-radius: 6px;
+        cursor:      default;          /* read-only — tidak klikable */
         transition:  color .25s, background .25s;
     }
     .usia-display.has-value {
@@ -163,41 +164,6 @@
         font-weight: 400;
         background:  transparent;
         border:      1px solid transparent;
-    }
-    /* Usia row editable — sama style dgn ktp-inline-input */
-    .usia-inline-input {
-        flex:        1;
-        background:  rgba(249,115,22,.07);
-        border:      1.5px solid rgba(249,115,22,.5);
-        border-radius: 6px;
-        color:       #fff;
-        font-size:   12px;
-        font-weight: 600;
-        padding:     3px 9px;
-        outline:     none;
-        min-width:   0;
-        transition:  border-color .15s, box-shadow .15s;
-    }
-    .usia-inline-input:focus {
-        border-color: rgba(249,115,22,.9);
-        box-shadow:   0 0 0 2px rgba(249,115,22,.16);
-    }
-    .usia-inline-input.was-edited {
-        border-color: rgba(234,179,8,.65);
-        background:   rgba(234,179,8,.07);
-        color:        #fbbf24;
-    }
-    /* Klik-to-edit cursor hint pada usia */
-    .usia-display.has-value {
-        cursor: pointer;
-    }
-    .usia-display.has-value:hover {
-        background:   rgba(249,115,22,.09);
-        border-color: rgba(249,115,22,.3) !important;
-        color:        #fff;
-    }
-    .usia-display.has-value:hover::after {
-        content: ' ✏'; font-size: 9px; opacity: .4; margin-left: 3px;
     }
 
     /* ── Scan loading bar ────────────────────────────────────── */
@@ -458,7 +424,8 @@
             Upload foto KTP lalu klik <strong class="text-brand-400/80">SCAN KTP</strong> — data terisi otomatis.
         </p>
         <p class="text-white/22 text-xs mb-7 ml-9">
-            Semua field dapat diedit manual jika hasil scan kurang akurat.
+            Field NIK, Nama, dan Tgl Lahir dapat diedit manual jika hasil scan kurang akurat.
+            Usia dihitung otomatis dari tanggal lahir.
         </p>
 
         {{-- Slot container — diisi oleh JS --}}
@@ -554,20 +521,17 @@ async function loadProvinsi() {
 
         var data = await res.json();
 
-        /* Guard: harus array berisi objek {id, name} */
         if (!Array.isArray(data) || data.length === 0) {
             throw new Error('Response kosong atau bukan array');
         }
 
         data.forEach(function (p) {
-            /* Support field name: {id, name} atau {id, nama} */
             var label = p.name || p.nama || String(p.id);
             var opt   = new Option(label, label);
             opt.dataset.code = p.id;
             sel.appendChild(opt);
         });
 
-        /* Restore old() setelah validation error */
         if (OLD_PROVINSI) {
             var found = Array.from(sel.options).find(function (o) {
                 return o.value.toUpperCase() === OLD_PROVINSI.toUpperCase();
@@ -691,10 +655,6 @@ var CARD_FIELDS = [
 // ================================================================
 // TANGGAL TURNAMEN — untuk kalkulasi usia
 // Usia dihitung per 24 Agustus 2026 (hari turnamen)
-// Konsisten dengan Carbon di backend:
-//   $birth->age  →  per hari ini, bukan per turnamen
-//   tetapi untuk display frontend kita pakai tgl turnamen
-//   (backend tetap recalculate — ini hanya display informatif)
 // ================================================================
 var TOURNAMENT_DATE = new Date(2026, 7, 24); // 24 Agustus 2026
 
@@ -724,41 +684,31 @@ function hitungUsia(str) {
     var bm   = TOURNAMENT_DATE.getMonth() - tgl.getMonth();
     if (bm < 0 || (bm === 0 && TOURNAMENT_DATE.getDate() < tgl.getDate())) usia--;
 
-    /* Sanity check — usia tidak masuk akal */
+    /* Sanity check */
     if (usia < 0 || usia > 120) return null;
     return usia;
 }
 
 // ================================================================
 // UPDATE ROW USIA — dipanggil setiap kali tgl_lahir berubah
-// (dari renderCard atau dari inlineSave tgl_lahir)
+// Row usia adalah READ-ONLY — hanya diupdate dari sini
 // ================================================================
 function updateUsiaRow(idx, tglValue) {
-    var usia    = hitungUsia(tglValue);
-    var dispEl  = document.getElementById('usia_disp_'  + idx);
-    var inpEl   = document.getElementById('usia_inp_'   + idx);
-    var hidEl   = document.getElementById('usia_hid_'   + idx);
-
-    if (!dispEl) return; /* row belum dirender */
-
-    /* Jika user sedang edit manual → jangan override */
-    if (inpEl && inpEl.style.display !== 'none') return;
+    var usia   = hitungUsia(tglValue);
+    var dispEl = document.getElementById('usia_disp_' + idx);
+    if (!dispEl) return;
 
     if (usia !== null) {
         dispEl.className   = 'usia-display has-value';
         dispEl.textContent = usia + ' tahun (per 24 Ags 2026)';
-        if (hidEl) hidEl.value = usia;
     } else {
         dispEl.className   = 'usia-display no-value';
         dispEl.textContent = '— isi tgl lahir dulu';
-        if (hidEl) hidEl.value = '';
     }
 }
 
 // ================================================================
 // GENERATE HTML SLOT
-// Menggunakan string concat (bukan template literal) agar aman
-// dari konflik dengan sintaks Blade/PHP
 // ================================================================
 function makeSlot(idx, deletable) {
     var btnHapus = deletable
@@ -881,7 +831,7 @@ function makeSlot(idx, deletable) {
         +       ' Data KTP'
         +     '</p>'
         +   '</div>'
-        +   '<p class="ktp-edit-hint mb-3">&#9998; Klik nilai untuk edit langsung</p>'
+        +   '<p class="ktp-edit-hint mb-3">&#9998; Klik NIK / Nama / Tgl Lahir untuk edit</p>'
         +   '<div id="ktpDataRows_' + idx + '"></div>'
         + '</div>'
 
@@ -985,7 +935,6 @@ function processFile(file, idx) {
         toggleEl('ktpPreview_'  + idx, true);
         toggleEl('ktpDefault_'  + idx, false);
         toggleEl('scanBtn_'     + idx, true);
-        /* Reset card & badge */
         resetCardUI(idx);
     };
     reader.readAsDataURL(file);
@@ -1005,10 +954,10 @@ function resetSlot(e, idx) {
 }
 
 function resetCardUI(idx) {
-    var card = document.getElementById('ktpDataCard_' + idx);
-    var rows = document.getElementById('ktpDataRows_' + idx);
-    var badge = document.getElementById('scan_badge_' + idx);
-    var ocrCard = document.getElementById('ocr_card_' + idx);
+    var card    = document.getElementById('ktpDataCard_' + idx);
+    var rows    = document.getElementById('ktpDataRows_' + idx);
+    var badge   = document.getElementById('scan_badge_'  + idx);
+    var ocrCard = document.getElementById('ocr_card_'    + idx);
     if (card)    card.className = 'ktp-data-card';
     if (rows)    rows.innerHTML = '';
     if (badge)   badge.style.display = 'none';
@@ -1054,7 +1003,7 @@ function scan(idx) {
             slotState[idx].scanned = true;
 
             var badge   = document.getElementById('scan_badge_' + idx);
-            var ocrCard = document.getElementById('ocr_card_' + idx);
+            var ocrCard = document.getElementById('ocr_card_'   + idx);
             if (badge)   badge.style.display = 'inline-flex';
             if (ocrCard) ocrCard.classList.add('scanned');
 
@@ -1070,9 +1019,8 @@ function scan(idx) {
 }
 
 // ================================================================
-// RENDER CARD DATA KTP — inline editable
-// Field dikirim ke backend: nik[], pemain[], tgl_lahir[]
-// Row Usia: dihitung otomatis dari tgl_lahir, bisa di-override manual
+// RENDER CARD DATA KTP — inline editable (NIK, Nama, Tgl Lahir)
+// Usia: read-only, dihitung otomatis dari tgl_lahir
 // ================================================================
 function renderCard(idx, data) {
     cardData[idx] = {};
@@ -1082,8 +1030,8 @@ function renderCard(idx, data) {
     if (!card || !rows) return;
     rows.innerHTML = '';
 
+    // ── Render 3 field editable: NIK, Nama, Tgl Lahir ─────────
     CARD_FIELDS.forEach(function (f) {
-        /* Normalise key OCR — tanggal_lahir bisa datang dengan key berbeda */
         var raw = '';
         if (f.k === 'tanggal_lahir') {
             raw = (data.tanggal_lahir || data.tgl_lahir || '');
@@ -1132,41 +1080,28 @@ function renderCard(idx, data) {
             + '</div>';
     });
 
-    /* ── Baris Usia — dihitung otomatis, bisa diedit manual ── */
-    var usia        = hitungUsia(cardData[idx]['tanggal_lahir'] || '');
-    var usiaDisplay = usia !== null
+    // ── Baris Usia — READ-ONLY, dihitung otomatis dari tgl_lahir ──
+    var tglVal      = cardData[idx]['tanggal_lahir'] || '';
+    var usia        = hitungUsia(tglVal);
+    var usiaText    = usia !== null
         ? usia + ' tahun (per 24 Ags 2026)'
         : '— isi tgl lahir dulu';
     var usiaClass   = usia !== null ? 'usia-display has-value' : 'usia-display no-value';
-    var usiaVal     = usia !== null ? String(usia) : '';
 
     rows.innerHTML +=
-        '<div class="ktp-row" id="usia_row_' + idx + '" style="margin-top:6px;padding-top:8px;border-top:1px solid rgba(249,115,22,.1);">'
+        '<div class="ktp-row" style="margin-top:6px;padding-top:8px;border-top:1px solid rgba(249,115,22,.1);">'
         + '<span class="ktp-label" style="color:rgba(249,115,22,.5);">Usia</span>'
 
-        /* Display span — klikable untuk edit manual */
+        /* Display span — read-only, auto-update via updateUsiaRow() */
         + '<span id="usia_disp_' + idx + '"'
         +   ' class="' + usiaClass + '"'
-        +   ' title="Dihitung otomatis dari Tgl Lahir. Klik untuk override manual."'
-        +   ' onclick="window._dewasa.usiaEdit(' + idx + ')">'
-        +   usiaDisplay
+        +   ' title="Dihitung otomatis dari Tanggal Lahir">'
+        +   usiaText
         + '</span>'
 
-        /* Input override manual */
-        + '<input id="usia_inp_' + idx + '" type="number" min="1" max="120"'
-        +   ' class="usia-inline-input" style="display:none"'
-        +   ' placeholder="Usia dalam tahun"'
-        +   ' onkeydown="window._dewasa.usiaKey(event,' + idx + ')"'
-        +   ' onblur="window._dewasa.usiaSave(' + idx + ')">'
-
-        /* Hidden — TIDAK dikirim ke backend (backend hitung sendiri dari tgl_lahir) */
-        /* Ini murni display saja — tapi disimpan untuk info */
-        + '<input type="hidden" id="usia_hid_' + idx + '" value="' + esc(usiaVal) + '">'
-
-        /* Label "otomatis" kecil */
-        + '<span style="font-size:9px;color:rgba(249,115,22,.35);margin-left:4px;flex-shrink:0;white-space:nowrap;"'
-        +       ' id="usia_auto_label_' + idx + '">'
-        +   (usia !== null ? 'otomatis' : '')
+        /* Label kecil "otomatis" */
+        + '<span style="font-size:9px;color:rgba(249,115,22,.35);margin-left:4px;flex-shrink:0;white-space:nowrap;">'
+        +   'otomatis'
         + '</span>'
         + '</div>';
 
@@ -1174,7 +1109,7 @@ function renderCard(idx, data) {
 }
 
 // ================================================================
-// INLINE EDIT
+// INLINE EDIT (NIK, Nama, Tgl Lahir)
 // ================================================================
 function inlineEdit(idx, fieldKey) {
     var valEl = document.getElementById('kval_' + idx + '_' + fieldKey);
@@ -1196,8 +1131,8 @@ function inlineSave(idx, fieldKey) {
     var origVal = (cardData[idx] && cardData[idx][fieldKey]) || '';
     var edited  = (newVal !== origVal);
 
-    if (hidEl)              hidEl.value             = newVal;
-    if (cardData[idx])      cardData[idx][fieldKey]  = newVal;
+    if (hidEl)         hidEl.value            = newVal;
+    if (cardData[idx]) cardData[idx][fieldKey] = newVal;
 
     if (newVal) {
         valEl.innerHTML   = esc(newVal);
@@ -1211,7 +1146,7 @@ function inlineSave(idx, fieldKey) {
     inpEl.style.display = 'none';
     valEl.style.display = '';
 
-    /* ── Jika yang diedit adalah tgl_lahir → recalculate usia ── */
+    /* ── Jika tgl_lahir diubah → recalculate & update row Usia ── */
     if (fieldKey === 'tanggal_lahir') {
         updateUsiaRow(idx, newVal);
     }
@@ -1290,7 +1225,6 @@ function validateSubmit(e) {
             var hidEl = document.getElementById('khid_' + idx + '_' + f.k);
             if (hidEl && !hidEl.value.trim()) {
                 missing.push('Pemain ' + (parseInt(idx, 10) + 1) + ': ' + f.l + ' wajib diisi');
-                /* Highlight baris kosong */
                 var rowEl = hidEl.closest && hidEl.closest('.ktp-row');
                 if (rowEl) rowEl.style.background = 'rgba(239,68,68,.09)';
             }
@@ -1299,106 +1233,30 @@ function validateSubmit(e) {
 
     if (missing.length > 0) {
         e.preventDefault();
-        showToast('Lengkapi: ' + missing[0] + (missing.length > 1 ? ' (dan ' + (missing.length - 1) + ' lainnya)' : ''), 'error');
+        showToast(
+            'Lengkapi: ' + missing[0]
+            + (missing.length > 1 ? ' (dan ' + (missing.length - 1) + ' lainnya)' : ''),
+            'error'
+        );
         var firstEmpty = document.querySelector('.ktp-row[style*="rgba(239"]');
         if (firstEmpty) firstEmpty.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 }
 
 // ================================================================
-// USIA — edit manual (override kalkulasi otomatis)
-// ================================================================
-function usiaEdit(idx) {
-    var dispEl  = document.getElementById('usia_disp_' + idx);
-    var inpEl   = document.getElementById('usia_inp_'  + idx);
-    var hidEl   = document.getElementById('usia_hid_'  + idx);
-    var lblEl   = document.getElementById('usia_auto_label_' + idx);
-    if (!dispEl || !inpEl) return;
-
-    /* Isi input dengan nilai saat ini */
-    var curVal = (hidEl && hidEl.value) ? hidEl.value : '';
-    inpEl.value = curVal;
-
-    dispEl.style.display = 'none';
-    inpEl.style.display  = '';
-    if (lblEl) lblEl.style.display = 'none';
-    inpEl.focus();
-    if (inpEl.select) inpEl.select();
-}
-
-function usiaSave(idx) {
-    var dispEl  = document.getElementById('usia_disp_' + idx);
-    var inpEl   = document.getElementById('usia_inp_'  + idx);
-    var hidEl   = document.getElementById('usia_hid_'  + idx);
-    var lblEl   = document.getElementById('usia_auto_label_' + idx);
-    if (!dispEl || !inpEl) return;
-
-    var rawVal = inpEl.value.trim();
-    var parsed = parseInt(rawVal, 10);
-    var valid  = rawVal !== '' && !isNaN(parsed) && parsed >= 1 && parsed <= 120;
-
-    /* Bandingkan dengan nilai kalkulasi otomatis */
-    var tglVal   = (cardData[idx] && cardData[idx]['tanggal_lahir']) || '';
-    var autoUsia = hitungUsia(tglVal);
-    var isManual = valid && (autoUsia === null || parsed !== autoUsia);
-
-    if (valid) {
-        if (hidEl) hidEl.value = parsed;
-        dispEl.textContent = parsed + ' tahun (per 24 Ags 2026)';
-        dispEl.className   = 'usia-display has-value';
-        if (lblEl) {
-            lblEl.textContent    = isManual ? 'diedit manual' : 'otomatis';
-            lblEl.style.color    = isManual ? 'rgba(234,179,8,.55)' : 'rgba(249,115,22,.35)';
-            lblEl.style.display  = '';
-        }
-        /* Tandai input sebagai edited jika beda dari auto */
-        if (isManual) inpEl.classList.add('was-edited');
-        else          inpEl.classList.remove('was-edited');
-    } else {
-        /* Input kosong / tidak valid → kembalikan ke auto-kalkulasi */
-        updateUsiaRow(idx, tglVal);
-        if (lblEl) {
-            lblEl.textContent   = autoUsia !== null ? 'otomatis' : '';
-            lblEl.style.color   = 'rgba(249,115,22,.35)';
-            lblEl.style.display = '';
-        }
-    }
-
-    inpEl.style.display  = 'none';
-    dispEl.style.display = '';
-    if (lblEl) lblEl.style.display = '';
-}
-
-function usiaKey(e, idx) {
-    if (e.key === 'Enter')  { e.preventDefault(); usiaSave(idx); }
-    if (e.key === 'Escape') {
-        var dispEl = document.getElementById('usia_disp_' + idx);
-        var inpEl  = document.getElementById('usia_inp_'  + idx);
-        var lblEl  = document.getElementById('usia_auto_label_' + idx);
-        if (inpEl)  inpEl.style.display  = 'none';
-        if (dispEl) dispEl.style.display  = '';
-        if (lblEl)  lblEl.style.display   = '';
-    }
-}
-
-// ================================================================
-// EXPOSE ke window (dipanggil dari inline onclick HTML)
+// EXPOSE ke window
 // ================================================================
 window._dewasa = {
-    fileSelect:  fileSelect,
-    drop:        drop,
-    reset:       resetSlot,
-    scan:        scan,
-    hapus:       hapus,
-    tambah:      tambah,
-    inlineEdit:  inlineEdit,
-    inlineSave:  inlineSave,
-    inlineKey:   inlineKey,
-    usiaEdit:    usiaEdit,
-    usiaSave:    usiaSave,
-    usiaKey:     usiaKey,
+    fileSelect: fileSelect,
+    drop:       drop,
+    reset:      resetSlot,
+    scan:       scan,
+    hapus:      hapus,
+    tambah:     tambah,
+    inlineEdit: inlineEdit,
+    inlineSave: inlineSave,
+    inlineKey:  inlineKey,
 };
-/* Alias untuk tombol Blade */
 window.tambahPemainOcr = tambah;
 
 // ================================================================
@@ -1411,7 +1269,7 @@ document.addEventListener('DOMContentLoaded', function () {
     updateAddBtn();
 });
 
-})(); /* end IIFE */
+})();
 </script>
 @endpush
 
