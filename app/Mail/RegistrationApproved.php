@@ -18,14 +18,19 @@ class RegistrationApproved extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: '✅ Pendaftaran Disetujui — Bayan Open 2026 | ' . $this->registration->tim_pb,
+            subject: '✅ Pendaftaran Disetujui — Selesaikan Pembayaran | Bayan Open 2026',
         );
     }
 
     public function content(): Content
     {
         return new Content(
-            view: 'emails.registration-approved',
+            view: 'emails.approved',
         );
+    }
+
+    public function attachments(): array
+    {
+        return [];
     }
 }

@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class RegistrationController extends Controller
 {
@@ -23,7 +24,7 @@ class RegistrationController extends Controller
 
     public function index()
     {
-        return view('registration.register');
+        return view('registration.index');
     }
 
     // ============================================================
@@ -239,34 +240,44 @@ class RegistrationController extends Controller
 
         // ── 9. Tentukan approval status ────────────────────────────
         // Beregu      → pending_review (tunggu verifikasi admin)
-        // Selain beregu → submitted (langsung ke Midtrans)
-        $approvalStatus = $isBeregu ? 'pending_review' : 'submitted';
+        // Selain beregu → approved     (langsung kirim email link bayar)
+        $approvalStatus = $isBeregu ? 'pending_review' : 'approved';
 
-        // ── 10. Buat record Registration ───────────────────────────
+        // ── 10. Generate payment token untuk semua kategori ────────
+        // Beregu: token disimpan tapi link dikirim nanti setelah admin approve
+        // Non-beregu: token langsung dipakai, link dikirim sekarang
+        $paymentToken          = Str::uuid()->toString();
+        $paymentTokenExpiresAt = $isBeregu
+            ? null                                // beregu: expire diset saat admin approve
+            : now()->addHours(24);                // non-beregu: 24 jam dari sekarang
+
+        // ── 11. Buat record Registration ───────────────────────────
         $registration = Registration::create([
-            'nama'            => $validated['nama'],
-            'tim_pb'          => $validated['tim_pb'],
-            'email'           => $validated['email'],
-            'no_hp'           => $validated['no_hp'],
-            'provinsi'        => $validated['provinsi'],
-            'kota'            => $validated['kota'],
-            'nama_pelatih'    => $validated['nama_pelatih']  ?? null,
-            'no_hp_pelatih'   => $validated['no_hp_pelatih'] ?? null,
-            'pemain'          => $pemainDiisi,
-            'nik'             => $nikArr,
-            'tgl_lahir'       => $tglLahirArr,
-            'usia_pemain'     => $usiaArr,
-            'ktp_city_valid'  => $isBeregu ? $cityValidArr : null,
-            'kategori'        => $kategori,
-            'harga'           => $harga,
-            'status'          => 'pending',
-            'approval_status' => $approvalStatus,
+            'nama'                    => $validated['nama'],
+            'tim_pb'                  => $validated['tim_pb'],
+            'email'                   => $validated['email'],
+            'no_hp'                   => $validated['no_hp'],
+            'provinsi'                => $validated['provinsi'],
+            'kota'                    => $validated['kota'],
+            'nama_pelatih'            => $validated['nama_pelatih']  ?? null,
+            'no_hp_pelatih'           => $validated['no_hp_pelatih'] ?? null,
+            'pemain'                  => $pemainDiisi,
+            'nik'                     => $nikArr,
+            'tgl_lahir'               => $tglLahirArr,
+            'usia_pemain'             => $usiaArr,
+            'ktp_city_valid'          => $isBeregu ? $cityValidArr : null,
+            'kategori'                => $kategori,
+            'harga'                   => $harga,
+            'status'                  => 'pending',
+            'approval_status'         => $approvalStatus,
+            'payment_token'           => $paymentToken,
+            'payment_token_expires_at'=> $paymentTokenExpiresAt,
 
             // Khusus veteran
-            'tgl_lahir_pemain' => $kategori === 'ganda-veteran-putra' ? $tglLahirArr : null,
+            'tgl_lahir_pemain'        => $kategori === 'ganda-veteran-putra' ? $tglLahirArr : null,
         ]);
 
-        // ── 11. Upload file KTP ────────────────────────────────────
+        // ── 12. Upload file KTP ────────────────────────────────────
         $ktpPaths   = [];
         $ktpRawData = [];
 
@@ -303,33 +314,32 @@ class RegistrationController extends Controller
             'ktp_data'  => $ktpRawData,
         ]);
 
-        // ── 12. Routing berdasarkan kategori ───────────────────────
+        // ── 13. Routing berdasarkan kategori ───────────────────────
         if ($isBeregu) {
+            // Beregu → pending review admin, tidak kirim email dulu
             return view('registration.pending-review', compact('registration'));
         }
 
-        // Non-beregu → langsung ke Midtrans
+        // Non-beregu → kirim email link pembayaran, tampilkan halaman sukses
         try {
-            $snapToken = $this->midtrans->createSnapToken($registration);
-            return view('registration.payment', compact('registration', 'snapToken'));
+            Mail::to($registration->email)
+                ->send(new RegistrationApproved($registration));
         } catch (\Exception $e) {
-            // Rollback: hapus file KTP & record
-            foreach ($ktpPaths as $path) {
-                Storage::disk('private')->delete($path);
-            }
-            Storage::disk('private')->deleteDirectory("ktp/{$registration->uuid}");
-            $registration->delete();
-
-            return back()->withInput()->withErrors([
-                'error' => 'Gagal terhubung ke payment gateway. Silakan coba lagi.',
+            // Jangan gagalkan pendaftaran jika email error — log saja
+            // Email bisa di-resend manual dari admin panel
+            logger()->error('[Registration] Gagal kirim email approved: ' . $e->getMessage(), [
+                'registration_id' => $registration->id,
+                'email'           => $registration->email,
             ]);
         }
+
+        return view('registration.pending-payment', compact('registration'));
     }
 
     // ============================================================
     // PAYMENT VIA TOKEN
     // GET /payment/{token}
-    // Untuk beregu setelah diapprove admin — link dikirim via email
+    // Untuk semua kategori — link dikirim via email
     // ============================================================
 
     public function paymentByToken(string $token)

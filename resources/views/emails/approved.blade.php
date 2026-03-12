@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pendaftaran Disetujui — Bayan Open 2026</title>
+<title>Pendaftaran Diterima — Bayan Open 2026</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: 'Segoe UI', Arial, sans-serif; background: #f1f5f9; color: #1e293b; }
@@ -64,7 +64,35 @@
   .detail-label { color: #64748b; }
   .detail-value { font-weight: 600; color: #1e293b; text-align: right; max-width: 60%; }
   .detail-value.order-id { font-family: monospace; color: #f97316; font-size: 12px; }
-  .detail-value.approved { color: #f97316; }
+  .detail-value.status-ok { color: #16a34a; }
+
+  /* Players */
+  .players-list {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 24px;
+  }
+  .player-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 13px;
+  }
+  .player-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .player-num {
+    width: 24px; height: 24px;
+    background: #f97316;
+    color: #fff;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .player-name { color: #1e293b; font-weight: 600; }
 
   /* Total */
   .total-box {
@@ -101,6 +129,42 @@
     color: #166534;
     margin-bottom: 24px;
     line-height: 1.6;
+  }
+
+  /* Steps */
+  .steps-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 18px 24px;
+    margin-bottom: 24px;
+  }
+  .steps-title {
+    font-size: 10px;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+  }
+  .step-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 5px 0;
+    font-size: 13px;
+    color: #475569;
+    line-height: 1.5;
+  }
+  .step-num {
+    width: 20px; height: 20px;
+    background: rgba(249,115,22,0.12);
+    color: #f97316;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 800;
+    flex-shrink: 0;
+    margin-top: 1px;
   }
 
   /* CTA Button */
@@ -151,7 +215,7 @@
 
   <!-- Badge -->
   <div class="badge-wrap">
-    <div class="badge-approved">✅ Pendaftaran Disetujui</div>
+    <div class="badge-approved">✅ Pendaftaran Diterima</div>
   </div>
 
   <!-- Body -->
@@ -159,13 +223,14 @@
 
     <p class="greeting">Halo, {{ $registration->nama }}! 👋</p>
     <p class="body-text">
-      Selamat! Tim <strong>{{ $registration->tim_pb }}</strong> telah <strong>disetujui</strong> oleh panitia <strong>Bayan Open 2026</strong>.
-      Silakan segera lanjutkan ke pembayaran untuk mengonfirmasi pendaftaran Anda sebelum link kedaluwarsa.
+      Pendaftaran tim <strong>{{ $registration->tim_pb }}</strong> untuk kategori
+      <strong>{{ $registration->kategori_label }}</strong> telah <strong>berhasil diterima</strong>.
+      Silakan selesaikan pembayaran menggunakan link di bawah ini untuk mengonfirmasi keikutsertaan Anda.
     </p>
 
     <!-- Data Tim -->
     <div class="detail-card">
-      <div class="detail-title">Data Tim</div>
+      <div class="detail-title">Data Pendaftaran</div>
       <div class="detail-row">
         <span class="detail-label">Nama Ketua Tim</span>
         <span class="detail-value">{{ $registration->nama }}</span>
@@ -179,8 +244,8 @@
         <span class="detail-value">{{ $registration->kategori_label }}</span>
       </div>
       <div class="detail-row">
-        <span class="detail-label">Jumlah Anggota</span>
-        <span class="detail-value">{{ $registration->jumlah_pemain }} orang</span>
+        <span class="detail-label">Jumlah Pemain</span>
+        <span class="detail-value">{{ count($registration->pemain ?? []) }} orang</span>
       </div>
       <div class="detail-row">
         <span class="detail-label">Order ID</span>
@@ -188,25 +253,61 @@
       </div>
       <div class="detail-row">
         <span class="detail-label">Status</span>
-        <span class="detail-value approved">✅ DISETUJUI</span>
+        <span class="detail-value status-ok">✅ Diterima — Menunggu Pembayaran</span>
       </div>
     </div>
 
-    <!-- Total Tagihan -->
+    <!-- Daftar Pemain -->
+    @if(!empty($registration->pemain))
+    <div class="players-list">
+      <div class="detail-title">Daftar Pemain</div>
+      @foreach($registration->pemain as $i => $nama)
+      <div class="player-item">
+        <div class="player-num">{{ $i + 1 }}</div>
+        <span class="player-name">{{ $nama }}</span>
+      </div>
+      @endforeach
+    </div>
+    @endif
+
+    <!-- Total -->
     <div class="total-box">
       <div>
         <div class="total-label">Total Tagihan</div>
-        <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:2px;">Kategori {{ $registration->kategori_label }}</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:2px;">
+          Kategori {{ $registration->kategori_label }}
+        </div>
       </div>
       <div class="total-amount">{{ $registration->harga_formatted }}</div>
     </div>
 
     <!-- Expire Warning -->
     <div class="warning-box">
-      ⚠️ <strong>Link pembayaran berlaku selama 3 hari</strong> hingga
+      ⚠️ <strong>Link pembayaran berlaku selama 24 jam</strong> hingga
       <strong>{{ $registration->payment_token_expires_at?->format('d M Y, H:i') ?? '-' }} WIB</strong>.
       Segera selesaikan pembayaran sebelum link kedaluwarsa.
-      Jika sudah kedaluwarsa, hubungi panitia untuk meminta link baru.
+      Hubungi panitia di <strong>bayan.open@gmail.com</strong> jika link sudah kedaluwarsa.
+    </div>
+
+    <!-- Steps -->
+    <div class="steps-box">
+      <div class="steps-title">Langkah Selanjutnya</div>
+      <div class="step-row">
+        <div class="step-num">1</div>
+        <span>Klik tombol <strong>"Bayar Sekarang"</strong> di bawah</span>
+      </div>
+      <div class="step-row">
+        <div class="step-num">2</div>
+        <span>Pilih metode pembayaran (Transfer Bank, QRIS, dll.)</span>
+      </div>
+      <div class="step-row">
+        <div class="step-num">3</div>
+        <span>Selesaikan pembayaran sebesar <strong>{{ $registration->harga_formatted }}</strong></span>
+      </div>
+      <div class="step-row">
+        <div class="step-num">4</div>
+        <span>Receipt PDF akan dikirim otomatis ke email ini setelah pembayaran berhasil</span>
+      </div>
     </div>
 
     <!-- CTA Button -->
@@ -216,13 +317,16 @@
       </a>
     </div>
     <p class="link-note">
-      Atau copy link berikut:<br>
-      <a href="{{ url('/payment/' . $registration->payment_token) }}">{{ url('/payment/' . $registration->payment_token) }}</a>
+      Atau copy link berikut ke browser Anda:<br>
+      <a href="{{ url('/payment/' . $registration->payment_token) }}">
+        {{ url('/payment/' . $registration->payment_token) }}
+      </a>
     </p>
 
     <!-- Info -->
     <div class="info-box">
-      ℹ️ Setelah pembayaran berhasil, Anda akan menerima email konfirmasi beserta <strong>receipt PDF</strong> sebagai bukti pendaftaran resmi Anda.
+      ℹ️ Setelah pembayaran berhasil, Anda akan menerima email konfirmasi beserta
+      <strong>receipt PDF</strong> sebagai bukti pendaftaran resmi Anda di Bayan Open 2026.
     </div>
 
   </div>

@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Log;
 
 class KtpOcrController extends Controller
 {
-    private string $ocrUrl = 'https://awesome-linearly-leandra.ngrok-free.dev/ocr/ktp';
+    private string $ocrUrl = 'http://10.126.164.209:5000/ocr/ktp';
 
     /**
      * Kata kunci kota valid — case-insensitive, harus mengandung salah satu.

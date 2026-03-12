@@ -128,7 +128,7 @@
 
     {{-- Header --}}
     <div class="header">
-        <img src="https://res.cloudinary.com/djs5pi7ev/image/upload/v1767777416/LOGO_BO2025_resdzo.png" alt="Bayan Open 2026">
+        <img src="https://res.cloudinary.com/djs5pi7ev/image/upload/v1773109896/LOGO_BO2026_pzbvxh.png" alt="Bayan Open 2026">
         <h1>BAYAN <span>OPEN</span> 2026</h1>
         <p>Official Registration Confirmation</p>
     </div>
