@@ -45,6 +45,10 @@ class AdminPanelProvider extends PanelProvider
             ->resources([
                 RegistrationResource::class,
             ])
+            ->resources([
+                RegistrationResource::class,
+                \App\Filament\Resources\VerifikasiBeregResource::class,  // ← tambah ini
+            ])
 
             ->widgets([
                 StatsOverview::class,

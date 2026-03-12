@@ -2,26 +2,39 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class KtpOcrController extends Controller
 {
-    private string $ocrUrl = 'https://awesome-linearly-leandra.ngrok-free.dev/ocr/ktp';
+    private string $ocrUrl = 'http://10.126.164.209:5000/ocr/ktp';
 
-    public function scan(Request $request)
+    /**
+     * Kata kunci kota valid — case-insensitive, harus mengandung salah satu.
+     */
+    private const VALID_CITY_KEYWORDS = [
+        'BALIKPAPAN',
+    ];
+
+    // ================================================================
+    // POST /ocr/ktp
+    // ================================================================
+
+    public function scan(Request $request): JsonResponse
     {
         $request->validate([
             'image' => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
         ]);
 
-        try {
-            $file = $request->file('image');
+        $file = $request->file('image');
 
+        try {
             $response = Http::timeout(60)
                 ->withHeaders([
                     'ngrok-skip-browser-warning' => 'true',
-                    'Accept' => 'application/json',
+                    'Accept'                     => 'application/json',
                 ])
                 ->attach(
                     'image',
@@ -30,25 +43,104 @@ class KtpOcrController extends Controller
                 )
                 ->post($this->ocrUrl);
 
-            if (!$response->successful()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'OCR service error (HTTP ' . $response->status() . '). Coba lagi.',
-                ], 500);
-            }
-
-            return response()->json($response->json());
-
         } catch (\Illuminate\Http\Client\ConnectionException $e) {
+            Log::warning('[KTP-OCR] Connection failed: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Tidak bisa konek ke OCR service. Pastikan Python API dan ngrok sedang berjalan.',
             ], 503);
         } catch (\Exception $e) {
+            Log::error('[KTP-OCR] Unexpected error: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Error: ' . $e->getMessage(),
             ], 500);
         }
+
+        // ── HTTP error dari OCR service ────────────────────────────
+        if (! $response->successful()) {
+            Log::warning('[KTP-OCR] OCR service HTTP ' . $response->status());
+            return response()->json([
+                'success' => false,
+                'message' => 'OCR service error (HTTP ' . $response->status() . '). Coba lagi.',
+            ], 500);
+        }
+
+        // ── Parse response dari Python OCR ─────────────────────────
+        $ocrResult = $response->json();
+
+        if (! is_array($ocrResult) || empty($ocrResult['success'])) {
+            return response()->json([
+                'success' => false,
+                'message' => $ocrResult['message'] ?? 'OCR gagal membaca KTP. Coba foto ulang lebih jelas.',
+            ], 422);
+        }
+
+        // ── Normalize & validasi kota ──────────────────────────────
+        $data           = $ocrResult['data'] ?? $ocrResult;
+        $kotaRaw        = strtoupper(trim($data['kota'] ?? $data['kabupaten_kota'] ?? ''));
+        $cityValid      = $this->isCityValid($kotaRaw);
+
+        // ── Build response terstandarisasi ─────────────────────────
+        return response()->json([
+            'success' => true,
+            'data'    => [
+                'nik'           => trim($data['nik']           ?? ''),
+                'nama'          => trim($data['nama']          ?? ''),
+                'tanggal_lahir' => $this->normalizeTanggal($data['tanggal_lahir'] ?? $data['tgl_lahir'] ?? ''),
+                'kota'          => $kotaRaw,
+                'city_valid'    => $cityValid,
+                'city_raw'      => $kotaRaw,
+
+                // field tambahan dari OCR jika ada (untuk info admin)
+                'tempat_lahir'  => trim($data['tempat_lahir']  ?? ''),
+                'jenis_kelamin' => trim($data['jenis_kelamin'] ?? ''),
+                'agama'         => trim($data['agama']         ?? ''),
+                'pekerjaan'     => trim($data['pekerjaan']     ?? ''),
+            ],
+        ]);
+    }
+
+    // ================================================================
+    // Validasi kota — harus mengandung "BALIKPAPAN"
+    // ================================================================
+
+    private function isCityValid(string $city): bool
+    {
+        if (empty($city)) return false;
+
+        $city = strtoupper(trim($city));
+        foreach (self::VALID_CITY_KEYWORDS as $keyword) {
+            if (str_contains($city, $keyword)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // ================================================================
+    // Normalize tanggal → DD-MM-YYYY
+    // Support: DD-MM-YYYY, DD/MM/YYYY, YYYY-MM-DD
+    // ================================================================
+
+    private function normalizeTanggal(string $raw): string
+    {
+        $raw = trim($raw);
+        if (empty($raw)) return '';
+
+        // Sudah format DD-MM-YYYY
+        if (preg_match('/^\d{2}-\d{2}-\d{4}$/', $raw)) return $raw;
+
+        // DD/MM/YYYY
+        if (preg_match('/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/', $raw, $m)) {
+            return sprintf('%02d-%02d-%04d', $m[1], $m[2], $m[3]);
+        }
+
+        // YYYY-MM-DD
+        if (preg_match('/^(\d{4})-(\d{2})-(\d{2})$/', $raw, $m)) {
+            return sprintf('%02d-%02d-%04d', $m[3], $m[2], $m[1]);
+        }
+
+        return $raw;
     }
 }

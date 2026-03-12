@@ -341,17 +341,6 @@
                 @error('kota')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
             </div>
 
-            <div class="md:col-span-2">
-                <label class="block text-white/60 text-xs font-semibold uppercase tracking-wide mb-2">
-                    Alamat Lengkap <span class="text-brand-400">*</span>
-                </label>
-                <textarea name="alamat" rows="2"
-                    placeholder="Jl. Contoh No. 123, Kelurahan, Kecamatan"
-                    class="input-field w-full px-4 py-3 rounded-xl text-sm resize-none @error('alamat') border-red-500 @enderror"
-                    required>{{ old('alamat') }}</textarea>
-                @error('alamat')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
-            </div>
-
         </div>
     </div>
 
@@ -928,7 +917,6 @@ function renderCard(idx, data, usia, valid) {
         { label: 'Tgl Lahir', key: '__tgl_lahir__', hl: true  },
         { label: 'Usia',      key: '__usia__',      hl: false },
         { label: 'Jenis Kel.',key: 'jenis_kelamin', hl: false },
-        { label: 'Alamat',    key: 'alamat',        hl: false },
         { label: 'Kel/Desa',  key: 'kelurahan',     hl: false },
         { label: 'Kecamatan', key: 'kecamatan',     hl: false },
     ];

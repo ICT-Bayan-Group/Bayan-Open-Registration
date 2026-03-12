@@ -2,11 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\ProcessPaidRegistration;
+use App\Mail\RegistrationApproved;
+use App\Mail\RegistrationPaid;
+use App\Mail\RegistrationRejected;
 use App\Models\Registration;
 use App\Services\MidtransService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class RegistrationController extends Controller
 {
@@ -18,7 +24,7 @@ class RegistrationController extends Controller
 
     public function index()
     {
-        return view('registration.register');
+        return view('registration.index');
     }
 
     // ============================================================
@@ -54,13 +60,7 @@ class RegistrationController extends Controller
 
     public function showBeregu()
     {
-        return view('registration.form-dewasa', [
-            'kategori'  => 'beregu',
-            'label'     => 'Beregu',
-            'harga'     => 200000,
-            'minPemain' => 3,
-            'maxPemain' => 10,
-        ]);
+        return view('registration.form-beregu');
     }
 
     // ============================================================
@@ -70,6 +70,7 @@ class RegistrationController extends Controller
     public function store(Request $request)
     {
         $kategori = $request->input('kategori');
+        $isBeregu = ($kategori === 'beregu');
 
         // ── 1. Validasi dasar ──────────────────────────────────────
         $validated = $request->validate([
@@ -91,19 +92,17 @@ class RegistrationController extends Controller
             'email.email'       => 'Format email tidak valid.',
             'no_hp.required'    => 'Nomor HP wajib diisi.',
             'provinsi.required' => 'Provinsi wajib dipilih.',
-            'kota.required'     => 'Kota wajib diisi.',
-            'pemain.required'   => 'Minimal 1 nama pemain harus diisi.',
-            'pemain.min'        => 'Minimal 1 pemain harus didaftarkan.',
-            'pemain.max'        => 'Maksimal 10 pemain per tim.',
+            'kota.required'     => 'Kota wajib dipilih.',
+            'pemain.required'   => 'Data pemain wajib diisi.',
             'pemain.*.required' => 'Nama pemain tidak boleh kosong.',
             'kategori.required' => 'Pilih kategori terlebih dahulu.',
             'kategori.in'       => 'Kategori tidak valid.',
         ]);
 
         // ── 2. Validasi jumlah pemain per kategori ─────────────────
-        $minPemain = match ($kategori) {
-            'beregu' => 3,
-            default  => 2,
+        [$minPemain, $maxPemain] = match ($kategori) {
+            'beregu' => [6, 8],
+            default  => [2, 2],
         };
 
         $pemainDiisi = array_values(
@@ -113,6 +112,12 @@ class RegistrationController extends Controller
         if (count($pemainDiisi) < $minPemain) {
             return back()->withInput()->withErrors([
                 'pemain' => "Kategori {$kategori} membutuhkan minimal {$minPemain} pemain.",
+            ]);
+        }
+
+        if (count($pemainDiisi) > $maxPemain) {
+            return back()->withInput()->withErrors([
+                'pemain' => "Kategori {$kategori} maksimal {$maxPemain} pemain.",
             ]);
         }
 
@@ -132,40 +137,63 @@ class RegistrationController extends Controller
             null
         );
 
-        // ── Hitung usia otomatis dari tgl_lahir ───────────────────
+        // ── 4. Hitung usia backend ─────────────────────────────────
         $usiaArr = array_map(function ($tgl) {
             if (! $tgl) return null;
             try {
                 $tgl   = str_replace('/', '-', trim($tgl));
                 $parts = explode('-', $tgl);
-                if (count($parts) === 3 && strlen($parts[0]) <= 2 && strlen($parts[2]) === 4) {
-                    $birth = Carbon::createFromFormat('d-m-Y', $tgl);
-                } else {
-                    $birth = Carbon::parse($tgl);
-                }
+                $birth = (count($parts) === 3 && strlen($parts[0]) <= 2 && strlen($parts[2]) === 4)
+                    ? Carbon::createFromFormat('d-m-Y', $tgl)
+                    : Carbon::parse($tgl);
                 return $birth->age;
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 return null;
             }
         }, $tglLahirArr);
 
-        // ── 4. Validasi upload KTP files ───────────────────────────
+        // ── 5. Validasi upload KTP ─────────────────────────────────
         $request->validate([
             'ktp_files'   => 'required|array|min:' . $jumlahPemain,
             'ktp_files.*' => 'required|file|mimes:jpg,jpeg,png,webp|max:5120',
         ], [
-            'ktp_files.required'   => 'File KTP pemain wajib diupload.',
+            'ktp_files.required'   => 'File KTP wajib diupload untuk semua pemain.',
             'ktp_files.min'        => 'Upload KTP untuk semua pemain yang didaftarkan.',
             'ktp_files.*.required' => 'Semua file KTP wajib diisi.',
             'ktp_files.*.mimes'    => 'File KTP harus berformat JPG, PNG, atau WebP.',
             'ktp_files.*.max'      => 'Ukuran file KTP maksimal 5MB.',
         ]);
 
-        // ── 5. Validasi khusus Ganda Veteran Putra ─────────────────
-        // Syarat: masing-masing ≥ 45 tahun DAN total ≥ 95 tahun
-        $veteranData = [];
-        if ($kategori === 'ganda-veteran-putra') {
+        // ── 6. Validasi kota KTP untuk beregu ─────────────────────
+        $kotaArr      = $request->input('kota_ktp', []);
+        $cityValidArr = [];
+        $validCount   = 0;
 
+        if ($isBeregu) {
+            foreach ($pemainDiisi as $i => $nama) {
+                $kotaRaw = strtoupper(trim($kotaArr[$i] ?? ''));
+                $isValid = $this->isCityValid($kotaRaw);
+
+                if ($isValid) $validCount++;
+
+                $cityValidArr[] = [
+                    'index'    => $i + 1,
+                    'nama'     => $nama,
+                    'city_raw' => $kotaRaw,
+                    'valid'    => $isValid,
+                ];
+            }
+
+            if ($validCount < 6) {
+                return back()->withInput()->withErrors([
+                    'pemain' => "Minimal 6 anggota harus ber-KTP Kota Balikpapan. "
+                              . "Saat ini hanya {$validCount} anggota yang valid.",
+                ]);
+            }
+        }
+
+        // ── 7. Validasi khusus Ganda Veteran Putra ─────────────────
+        if ($kategori === 'ganda-veteran-putra') {
             $request->validate([
                 'usia_valid'    => 'required|array|size:2',
                 'usia_valid.*'  => 'required|in:1',
@@ -179,71 +207,77 @@ class RegistrationController extends Controller
                 'usia_hitung.*.min'    => 'Setiap pemain minimal berusia 45 tahun per 24 Agustus 2026.',
             ]);
 
-            // Double-check total usia di backend
             $usiaHitung = $request->input('usia_hitung', []);
             $u0         = (int) ($usiaHitung[0] ?? 0);
             $u1         = (int) ($usiaHitung[1] ?? 0);
-            $totalUsia  = $u0 + $u1;
 
-            // Cek per pemain (backend, tidak percaya frontend saja)
             if ($u0 < 45) {
                 return back()->withInput()->withErrors([
                     'usia_hitung' => "Pemain 1 berusia {$u0} tahun, tidak memenuhi syarat veteran (min. 45 tahun).",
                 ]);
             }
+
             if ($u1 < 45) {
                 return back()->withInput()->withErrors([
                     'usia_hitung' => "Pemain 2 berusia {$u1} tahun, tidak memenuhi syarat veteran (min. 45 tahun).",
                 ]);
             }
 
-            // Cek total usia
+            $totalUsia = $u0 + $u1;
             if ($totalUsia < 95) {
                 return back()->withInput()->withErrors([
                     'usia_hitung' => "Total usia kedua pemain hanya {$totalUsia} tahun "
                                   . "({$u0} + {$u1}). Minimal total usia adalah 95 tahun.",
                 ]);
             }
-
-            $veteranData = [
-                'tgl_lahir_pemain' => $tglLahirArr,
-                'total_usia'       => $totalUsia,
-            ];
         }
 
-        // ── 6. Hitung harga ────────────────────────────────────────
+        // ── 8. Harga ───────────────────────────────────────────────
         $harga = match ($kategori) {
             'beregu' => 200000,
             default  => 150000,
         };
 
-        // ── 7. Buat record Registration ────────────────────────────
+        // ── 9. Tentukan approval status ────────────────────────────
+        // Beregu      → pending_review (tunggu verifikasi admin)
+        // Selain beregu → approved     (langsung kirim email link bayar)
+        $approvalStatus = $isBeregu ? 'pending_review' : 'approved';
+
+        // ── 10. Generate payment token untuk semua kategori ────────
+        // Beregu: token disimpan tapi link dikirim nanti setelah admin approve
+        // Non-beregu: token langsung dipakai, link dikirim sekarang
+        $paymentToken          = Str::uuid()->toString();
+        $paymentTokenExpiresAt = $isBeregu
+            ? null                                // beregu: expire diset saat admin approve
+            : now()->addHours(24);                // non-beregu: 24 jam dari sekarang
+
+        // ── 11. Buat record Registration ───────────────────────────
         $registration = Registration::create([
-            'nama'          => $validated['nama'],
-            'tim_pb'        => $validated['tim_pb'],
-            'email'         => $validated['email'],
-            'no_hp'         => $validated['no_hp'],
-            'provinsi'      => $validated['provinsi'],
-            'kota'          => $validated['kota'],
-            'nama_pelatih'  => $validated['nama_pelatih']  ?? null,
-            'no_hp_pelatih' => $validated['no_hp_pelatih'] ?? null,
-            'pemain'        => $pemainDiisi,
-
-            // Data KTP
-            'nik'         => $nikArr,
-            'tgl_lahir'   => $tglLahirArr,
-            'usia_pemain' => $usiaArr,   // dihitung otomatis backend
-
-            // Kategori & payment
-            'kategori' => $kategori,
-            'harga'    => $harga,
-            'status'   => 'pending',
+            'nama'                    => $validated['nama'],
+            'tim_pb'                  => $validated['tim_pb'],
+            'email'                   => $validated['email'],
+            'no_hp'                   => $validated['no_hp'],
+            'provinsi'                => $validated['provinsi'],
+            'kota'                    => $validated['kota'],
+            'nama_pelatih'            => $validated['nama_pelatih']  ?? null,
+            'no_hp_pelatih'           => $validated['no_hp_pelatih'] ?? null,
+            'pemain'                  => $pemainDiisi,
+            'nik'                     => $nikArr,
+            'tgl_lahir'               => $tglLahirArr,
+            'usia_pemain'             => $usiaArr,
+            'ktp_city_valid'          => $isBeregu ? $cityValidArr : null,
+            'kategori'                => $kategori,
+            'harga'                   => $harga,
+            'status'                  => 'pending',
+            'approval_status'         => $approvalStatus,
+            'payment_token'           => $paymentToken,
+            'payment_token_expires_at'=> $paymentTokenExpiresAt,
 
             // Khusus veteran
-            'tgl_lahir_pemain' => $veteranData['tgl_lahir_pemain'] ?? null,
+            'tgl_lahir_pemain'        => $kategori === 'ganda-veteran-putra' ? $tglLahirArr : null,
         ]);
 
-        // ── 8. Upload file KTP ─────────────────────────────────────
+        // ── 12. Upload file KTP ────────────────────────────────────
         $ktpPaths   = [];
         $ktpRawData = [];
 
@@ -265,10 +299,11 @@ class RegistrationController extends Controller
 
             $ktpRawData[] = [
                 'index'     => $i + 1,
-                'nama'      => $pemainDiisi[$i] ?? null,
-                'nik'       => $nikArr[$i]       ?? null,
-                'tgl_lahir' => $tglLahirArr[$i]  ?? null,
-                'usia'      => $usiaArr[$i]       ?? null,
+                'nama'      => $pemainDiisi[$i]              ?? null,
+                'nik'       => $nikArr[$i]                   ?? null,
+                'tgl_lahir' => $tglLahirArr[$i]              ?? null,
+                'usia'      => $usiaArr[$i]                  ?? null,
+                'kota'      => $cityValidArr[$i]['city_raw'] ?? null,
                 'file_path' => $path,
                 'file_name' => $namaFile,
             ];
@@ -279,25 +314,56 @@ class RegistrationController extends Controller
             'ktp_data'  => $ktpRawData,
         ]);
 
-        // ── 9. Midtrans ────────────────────────────────────────────
+        // ── 13. Routing berdasarkan kategori ───────────────────────
+        if ($isBeregu) {
+            // Beregu → pending review admin, tidak kirim email dulu
+            return view('registration.pending-review', compact('registration'));
+        }
+
+        // Non-beregu → kirim email link pembayaran, tampilkan halaman sukses
+        try {
+            Mail::to($registration->email)
+                ->send(new RegistrationApproved($registration));
+        } catch (\Exception $e) {
+            // Jangan gagalkan pendaftaran jika email error — log saja
+            // Email bisa di-resend manual dari admin panel
+            logger()->error('[Registration] Gagal kirim email approved: ' . $e->getMessage(), [
+                'registration_id' => $registration->id,
+                'email'           => $registration->email,
+            ]);
+        }
+
+        return view('registration.pending-payment', compact('registration'));
+    }
+
+    // ============================================================
+    // PAYMENT VIA TOKEN
+    // GET /payment/{token}
+    // Untuk semua kategori — link dikirim via email
+    // ============================================================
+
+    public function paymentByToken(string $token)
+    {
+        $registration = Registration::where('payment_token', $token)
+            ->where('approval_status', 'approved')
+            ->firstOrFail();
+
+        if (! $registration->paymentTokenValid()) {
+            return view('registration.payment-expired', compact('registration'));
+        }
+
         try {
             $snapToken = $this->midtrans->createSnapToken($registration);
             return view('registration.payment', compact('registration', 'snapToken'));
         } catch (\Exception $e) {
-            foreach ($ktpPaths as $path) {
-                Storage::disk('private')->delete($path);
-            }
-            Storage::disk('private')->deleteDirectory("ktp/{$registration->uuid}");
-            $registration->delete();
-
-            return back()
-                ->withInput()
-                ->withErrors(['error' => 'Gagal terhubung ke payment gateway. Silakan coba lagi.']);
+            return back()->withErrors([
+                'error' => 'Gagal terhubung ke payment gateway. Silakan coba lagi.',
+            ]);
         }
     }
 
     // ============================================================
-    // CALLBACK & STATUS
+    // MIDTRANS CALLBACKS
     // ============================================================
 
     public function success(Request $request)
@@ -319,6 +385,10 @@ class RegistrationController extends Controller
         return view('registration.error');
     }
 
+    // ============================================================
+    // STATUS & RECEIPT
+    // ============================================================
+
     public function status(string $uuid)
     {
         $registration = Registration::where('uuid', $uuid)->firstOrFail();
@@ -331,10 +401,15 @@ class RegistrationController extends Controller
             ->where('status', 'paid')
             ->firstOrFail();
 
-        if (! $registration->pdf_receipt_path) abort(404, 'Receipt belum tersedia.');
+        if (! $registration->pdf_receipt_path) {
+            abort(404, 'Receipt belum tersedia.');
+        }
 
         $path = storage_path('app/' . $registration->pdf_receipt_path);
-        if (! file_exists($path)) abort(404, 'File receipt tidak ditemukan.');
+
+        if (! file_exists($path)) {
+            abort(404, 'File receipt tidak ditemukan.');
+        }
 
         return response()->download(
             $path,
@@ -342,17 +417,50 @@ class RegistrationController extends Controller
         );
     }
 
+    // ============================================================
+    // SERVE FOTO KTP (admin only, protected)
+    // ============================================================
+
     public function serveKtp(string $uuid, string $filename)
     {
         abort_unless(auth('web')->check(), 403);
 
         $path = storage_path("app/private/ktp/{$uuid}/{$filename}");
-        if (! file_exists($path)) abort(404, 'File KTP tidak ditemukan.');
+
+        if (! file_exists($path)) {
+            abort(404, 'File KTP tidak ditemukan.');
+        }
 
         return response()->file($path, [
             'Content-Type'        => mime_content_type($path),
             'Content-Disposition' => 'inline; filename="' . $filename . '"',
             'Cache-Control'       => 'private, max-age=3600',
         ]);
+    }
+
+    // ============================================================
+    // PRIVATE HELPERS
+    // ============================================================
+
+    private const VALID_CITY_KEYWORDS = [
+        'BALIKPAPAN',
+        'KOTA BALIKPAPAN',
+        'KAB. BALIKPAPAN',
+        'KABUPATEN BALIKPAPAN',
+    ];
+
+    private function isCityValid(string $city): bool
+    {
+        if (empty($city)) return false;
+
+        $city = strtoupper(trim($city));
+
+        foreach (self::VALID_CITY_KEYWORDS as $keyword) {
+            if (str_contains($city, $keyword)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
