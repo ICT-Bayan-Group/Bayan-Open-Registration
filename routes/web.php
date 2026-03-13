@@ -48,6 +48,9 @@ Route::prefix('daftar')->name('registration.')->group(function () {
     Route::get('/receipt/{uuid}',[RegistrationController::class, 'downloadReceipt'])->name('receipt');
 });
 
+Route::get('/registration/{uuid}/receipt-status', [RegistrationController::class, 'receiptStatus'])
+    ->name('registration.receipt.status');
+
 // ── Serve foto KTP (admin only) ─────────────────────────────────
 Route::middleware('auth:web')
     ->get('/admin/ktp/{uuid}/{filename}', [RegistrationController::class, 'serveKtp'])

@@ -33,6 +33,21 @@
         70%  { box-shadow: 0 0 0 8px rgba(249,115,22,0);   }
         100% { box-shadow: 0 0 0 0   rgba(249,115,22,0);   }
     }
+    @keyframes modalBackdropIn {
+        from { opacity: 0; }
+        to   { opacity: 1; }
+    }
+    @keyframes modalCardIn {
+        from { opacity: 0; transform: scale(.92) translateY(16px); }
+        to   { opacity: 1; transform: scale(1)   translateY(0);    }
+    }
+    @keyframes shake {
+        0%,100% { transform: translateX(0); }
+        20%     { transform: translateX(-6px); }
+        40%     { transform: translateX(6px); }
+        60%     { transform: translateX(-4px); }
+        80%     { transform: translateX(4px); }
+    }
 
     /* ── Form section stagger ────────────────────────────────── */
     .form-section                 { animation: fadeSlideUp .45s ease both; }
@@ -55,6 +70,12 @@
         border-color: rgba(16,185,129,.45);
         background:   rgba(4,20,12,.75);
         box-shadow:   0 0 0 1px rgba(16,185,129,.1) inset;
+    }
+    .pemain-ocr-card.gender-error {
+        border-color: rgba(239,68,68,.55);
+        background:   rgba(20,4,4,.80);
+        box-shadow:   0 0 0 1px rgba(239,68,68,.12) inset;
+        animation:    shake .4s ease;
     }
 
     /* ── KTP Data Card ───────────────────────────────────────── */
@@ -89,7 +110,7 @@
         flex-shrink:    0;
     }
 
-    /* ── Inline value display (klikable) ─────────────────────── */
+    /* ── Inline value display ────────────────────────────────── */
     .ktp-value {
         flex:        1;
         font-size:   12px;
@@ -109,6 +130,33 @@
         color:        #fff;
     }
     .ktp-value:hover::after { content: ' ✏'; font-size: 9px; opacity: .45; margin-left: 3px; }
+
+    /* ── Jenis Kelamin row — special (read-only, colored) ────── */
+    .ktp-gender-value {
+        flex:         1;
+        font-size:    12px;
+        font-weight:  700;
+        padding:      3px 10px;
+        border-radius: 6px;
+        border:       1px solid;
+    }
+    .ktp-gender-value.gender-l {
+        color:           #60a5fa;
+        background:      rgba(59,130,246,.08);
+        border-color:    rgba(59,130,246,.25);
+    }
+    .ktp-gender-value.gender-p {
+        color:           #f9a8d4;
+        background:      rgba(236,72,153,.08);
+        border-color:    rgba(236,72,153,.25);
+    }
+    .ktp-gender-value.gender-unknown {
+        color:           rgba(255,255,255,.3);
+        background:      transparent;
+        border-color:    rgba(255,255,255,.08);
+        font-style:      italic;
+        font-weight:     400;
+    }
 
     /* ── Inline input ────────────────────────────────────────── */
     .ktp-inline-input {
@@ -142,7 +190,7 @@
         margin-top:  4px;
     }
 
-    /* ── Usia display (read-only, auto-calculated) ───────────── */
+    /* ── Usia display (read-only) ────────────────────────────── */
     .usia-display {
         flex:        1;
         font-size:   12px;
@@ -150,7 +198,7 @@
         line-height: 1.4;
         padding:     3px 8px;
         border-radius: 6px;
-        cursor:      default;          /* read-only — tidak klikable */
+        cursor:      default;
         transition:  color .25s, background .25s;
     }
     .usia-display.has-value {
@@ -215,6 +263,141 @@
     }
     .add-player-btn:hover { color: rgba(249,115,22,1); }
     .add-player-btn:disabled { opacity: .35; cursor: not-allowed; }
+
+    /* ════════════════════════════════════════════════════════════
+       GENDER ERROR MODAL
+    ════════════════════════════════════════════════════════════ */
+    #genderErrorModal {
+        display:         none;
+        position:        fixed;
+        inset:           0;
+        z-index:         99999;
+        align-items:     center;
+        justify-content: center;
+        padding:         1.5rem;
+    }
+    #genderErrorModal.show {
+        display: flex;
+        animation: modalBackdropIn .2s ease both;
+    }
+    .gem-backdrop {
+        position: absolute;
+        inset:    0;
+        background: rgba(0,0,0,.72);
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+    }
+    .gem-card {
+        position:      relative;
+        z-index:       1;
+        width:         100%;
+        max-width:     440px;
+        border-radius: 22px;
+        background:    rgba(14,6,2,.97);
+        border:        1.5px solid rgba(239,68,68,.35);
+        padding:       2rem 2rem 1.75rem;
+        box-shadow:    0 24px 80px rgba(0,0,0,.65), 0 0 0 1px rgba(239,68,68,.08) inset;
+        animation:     modalCardIn .25s cubic-bezier(.34,1.56,.64,1) both;
+    }
+
+    /* Icon circle */
+    .gem-icon {
+        width:          60px;
+        height:         60px;
+        border-radius:  50%;
+        margin:         0 auto 1.25rem;
+        display:        flex;
+        align-items:    center;
+        justify-content:center;
+        background:     rgba(239,68,68,.1);
+        border:         1.5px solid rgba(239,68,68,.3);
+        font-size:      1.75rem;
+    }
+
+    .gem-title {
+        text-align:  center;
+        font-size:   1.05rem;
+        font-weight: 800;
+        color:       #fca5a5;
+        margin:      0 0 .5rem;
+        line-height: 1.3;
+    }
+    .gem-subtitle {
+        text-align:  center;
+        font-size:   .78rem;
+        color:       rgba(255,255,255,.35);
+        margin:      0 0 1.5rem;
+    }
+
+    /* Info baris */
+    .gem-info-grid {
+        display:       grid;
+        grid-template-columns: 1fr 1fr;
+        gap:           .6rem;
+        margin-bottom: 1.4rem;
+    }
+    .gem-info-box {
+        border-radius: 12px;
+        padding:       .75rem 1rem;
+        text-align:    center;
+    }
+    .gem-info-box.detected {
+        background:   rgba(239,68,68,.08);
+        border:       1px solid rgba(239,68,68,.25);
+    }
+    .gem-info-box.required {
+        background:   rgba(16,185,129,.06);
+        border:       1px solid rgba(16,185,129,.22);
+    }
+    .gem-info-label {
+        font-size:    9px;
+        font-weight:  700;
+        text-transform: uppercase;
+        letter-spacing: .07em;
+        margin-bottom: .3rem;
+    }
+    .gem-info-box.detected .gem-info-label { color: rgba(252,165,165,.5); }
+    .gem-info-box.required .gem-info-label { color: rgba(52,211,153,.5);  }
+    .gem-info-value {
+        font-size:   .9rem;
+        font-weight: 800;
+    }
+    .gem-info-box.detected .gem-info-value { color: #fca5a5; }
+    .gem-info-box.required .gem-info-value { color: #34d399; }
+
+    /* Pesan utama */
+    .gem-message {
+        background:   rgba(255,255,255,.03);
+        border:       1px solid rgba(255,255,255,.07);
+        border-radius: 12px;
+        padding:      .85rem 1rem;
+        font-size:    .8rem;
+        color:        rgba(255,255,255,.55);
+        line-height:  1.6;
+        margin-bottom: 1.4rem;
+        text-align:   center;
+    }
+    .gem-message strong { color: rgba(255,255,255,.85); }
+
+    /* Tombol */
+    .gem-btn {
+        width:        100%;
+        padding:      .75rem 1rem;
+        border-radius: 12px;
+        border:       none;
+        font-size:    .85rem;
+        font-weight:  800;
+        cursor:       pointer;
+        transition:   opacity .15s, transform .1s;
+        letter-spacing: .04em;
+    }
+    .gem-btn:hover  { opacity: .88; transform: translateY(-1px); }
+    .gem-btn:active { opacity: 1;   transform: translateY(0); }
+    .gem-btn-close {
+        background: linear-gradient(135deg, #dc2626, #991b1b);
+        color:      #fff;
+        box-shadow: 0 4px 16px rgba(220,38,38,.35);
+    }
 </style>
 @endpush
 
@@ -332,7 +515,6 @@
                 @error('no_hp')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
             </div>
 
-            {{-- Provinsi — WilayahController cascade (/wilayah/provinces) --}}
             <div>
                 <label class="block text-white/60 text-xs font-semibold uppercase tracking-wide mb-2">
                     Provinsi <span class="text-brand-400">*</span>
@@ -354,7 +536,6 @@
                 @error('provinsi')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
             </div>
 
-            {{-- Kota — cascade dari provinsi (/wilayah/regencies/{id}) --}}
             <div>
                 <label class="block text-white/60 text-xs font-semibold uppercase tracking-wide mb-2">
                     Kota / Kabupaten <span class="text-brand-400">*</span>
@@ -405,12 +586,6 @@
 
     {{-- ═══════════════════════════════════════════════════════════
          SECTION 3 — UPLOAD KTP & DATA PEMAIN
-         Field yang dikirim ke backend:
-           - ktp_files[]  → file upload
-           - pemain[]     → nama (dari card KTP, editable)
-           - nik[]        → NIK (dari card KTP, editable)
-           - tgl_lahir[]  → tanggal lahir (dari card KTP, editable)
-         Backend menghitung usia otomatis dari tgl_lahir
     ═══════════════════════════════════════════════════════════ --}}
     <div class="rounded-2xl p-8 mb-6 form-section"
          style="background:rgba(249,115,22,.035);border:1.5px solid rgba(249,115,22,.16);">
@@ -440,9 +615,10 @@
         </button>
         @endif
 
-        @error('pemain')    <p class="text-red-400 text-xs mt-3">{{ $message }}</p>@enderror
-        @error('pemain.*')  <p class="text-red-400 text-xs mt-2">{{ $message }}</p>@enderror
-        @error('ktp_files') <p class="text-red-400 text-xs mt-2">{{ $message }}</p>@enderror
+        @error('pemain')         <p class="text-red-400 text-xs mt-3">{{ $message }}</p>@enderror
+        @error('pemain.*')       <p class="text-red-400 text-xs mt-2">{{ $message }}</p>@enderror
+        @error('ktp_files')      <p class="text-red-400 text-xs mt-2">{{ $message }}</p>@enderror
+        @error('jenis_kelamin')  <p class="text-red-400 text-xs mt-2">{{ $message }}</p>@enderror
     </div>
 
     {{-- ═══════════════════════════════════════════════════════════
@@ -495,12 +671,50 @@
 </div>
 </section>
 
+{{-- ════════════════════════════════════════════════════════════════
+     GENDER ERROR MODAL
+     Muncul saat OCR mendeteksi jenis kelamin tidak sesuai kategori
+════════════════════════════════════════════════════════════════ --}}
+<div id="genderErrorModal" role="dialog" aria-modal="true" aria-labelledby="gem-title">
+    <div class="gem-backdrop" onclick="_GEM.close()"></div>
+    <div class="gem-card">
+
+        <div class="gem-icon">🚫</div>
+
+        <h2 class="gem-title" id="gem-title">KTP Tidak Sesuai Kategori</h2>
+        <p class="gem-subtitle" id="gem-subtitle">
+            Pemain <span id="gem-player-no">1</span> &mdash; <span id="gem-player-name"></span>
+        </p>
+
+        <div class="gem-info-grid">
+            <div class="gem-info-box detected">
+                <div class="gem-info-label">Terdeteksi di KTP</div>
+                <div class="gem-info-value" id="gem-detected">—</div>
+            </div>
+            <div class="gem-info-box required">
+                <div class="gem-info-label">Yang Dibutuhkan</div>
+                <div class="gem-info-value" id="gem-required">—</div>
+            </div>
+        </div>
+
+        <div class="gem-message" id="gem-message">
+            KTP yang diupload <strong id="gem-wrong-gender">Perempuan</strong>,
+            sedangkan kategori <strong id="gem-kategori-label">Ganda Dewasa Putra</strong>
+            hanya untuk pemain <strong id="gem-right-gender">Laki-laki</strong>.<br><br>
+            Silakan upload KTP pemain <strong id="gem-right-gender-2">Laki-laki</strong> yang sesuai.
+        </div>
+
+        <button class="gem-btn gem-btn-close" onclick="_GEM.close()">
+            ✕ &nbsp; Tutup &amp; Upload Ulang
+        </button>
+
+    </div>
+</div>
+
 @push('scripts')
 <script>
 /* ================================================================
-   WILAYAH CASCADE — menggunakan WilayahController
-   Route: GET /wilayah/provinces       → provinces()
-          GET /wilayah/regencies/{id}  → regencies($id)
+   WILAYAH CASCADE
 ================================================================ */
 (function () {
 'use strict';
@@ -518,12 +732,8 @@ async function loadProvinsi() {
     try {
         var res = await fetch('/wilayah/provinces');
         if (!res.ok) throw new Error('HTTP ' + res.status);
-
         var data = await res.json();
-
-        if (!Array.isArray(data) || data.length === 0) {
-            throw new Error('Response kosong atau bukan array');
-        }
+        if (!Array.isArray(data) || data.length === 0) throw new Error('Response kosong');
 
         data.forEach(function (p) {
             var label = p.name || p.nama || String(p.id);
@@ -553,8 +763,7 @@ async function loadProvinsi() {
 async function onProvinsiChange(sel) {
     var opt       = sel.options[sel.selectedIndex];
     _provinsiCode = opt ? (opt.dataset.code || '') : '';
-
-    var kotaSel = document.getElementById('selectKota');
+    var kotaSel   = document.getElementById('selectKota');
     if (kotaSel) {
         kotaSel.innerHTML = '<option value="">-- Pilih Kabupaten/Kota --</option>';
         kotaSel.disabled  = true;
@@ -567,7 +776,6 @@ async function loadKota(provId, selectedName) {
     var sel  = document.getElementById('selectKota');
     var spin = document.getElementById('loadingKota');
     if (!sel) return;
-
     sel.disabled  = true;
     sel.classList.add('opacity-40');
     sel.innerHTML = '<option value="">-- Memuat data... --</option>';
@@ -576,26 +784,19 @@ async function loadKota(provId, selectedName) {
     try {
         var res = await fetch('/wilayah/regencies/' + encodeURIComponent(provId));
         if (!res.ok) throw new Error('HTTP ' + res.status);
-
         var data = await res.json();
-
-        if (!Array.isArray(data) || data.length === 0) {
-            throw new Error('Data kota kosong');
-        }
+        if (!Array.isArray(data) || data.length === 0) throw new Error('Data kota kosong');
 
         sel.innerHTML = '<option value="">-- Pilih Kabupaten/Kota --</option>';
         data.forEach(function (k) {
             var label = k.name || k.nama || String(k.id);
             var opt   = new Option(label, label);
             opt.dataset.code = k.id;
-            if (selectedName && label.toUpperCase() === selectedName.toUpperCase()) {
-                opt.selected = true;
-            }
+            if (selectedName && label.toUpperCase() === selectedName.toUpperCase()) opt.selected = true;
             sel.appendChild(opt);
         });
         sel.disabled = false;
         sel.classList.remove('opacity-40');
-
     } catch (e) {
         console.error('[WILAYAH] Gagal load kota:', e);
         sel.innerHTML = '<option value="">Gagal memuat data kota</option>';
@@ -607,97 +808,158 @@ async function loadKota(provId, selectedName) {
 }
 
 window.WILAYAH = { onProvinsiChange: onProvinsiChange };
-
 document.addEventListener('DOMContentLoaded', loadProvinsi);
 })();
 </script>
 
 <script>
+/* ================================================================
+   GENDER ERROR MODAL — _GEM namespace
+================================================================ */
+window._GEM = (function () {
+    // ── Konfigurasi gender per kategori ─────────────────────
+    var RULES = {
+        'ganda-dewasa-putra': { required: 'L', label: 'Laki-laki',  labelWrong: 'Perempuan'  },
+        'ganda-dewasa-putri': { required: 'P', label: 'Perempuan',  labelWrong: 'Laki-laki'  },
+    };
+
+    var KATEGORI    = @json($kategori ?? '');
+    var LABEL_KAT   = @json($label ?? '');
+    var currentRule = RULES[KATEGORI] || null;
+
+    function show(playerIdx, namaOcr, genderDetected) {
+        if (!currentRule) return;
+
+        var labelDetected = (genderDetected === 'L') ? 'Laki-laki' : 'Perempuan';
+
+        _setTxt('gem-player-no',      playerIdx + 1);
+        _setTxt('gem-player-name',    namaOcr || ('Pemain ' + (playerIdx + 1)));
+        _setTxt('gem-detected',       labelDetected);
+        _setTxt('gem-required',       currentRule.label);
+        _setTxt('gem-wrong-gender',   labelDetected);
+        _setTxt('gem-right-gender',   currentRule.label);
+        _setTxt('gem-right-gender-2', currentRule.label);
+        _setTxt('gem-kategori-label', LABEL_KAT);
+
+        var modal = document.getElementById('genderErrorModal');
+        modal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function showUnknown(playerIdx, namaOcr) {
+        if (!currentRule) return;
+
+        _setTxt('gem-player-no',      playerIdx + 1);
+        _setTxt('gem-player-name',    namaOcr || ('Pemain ' + (playerIdx + 1)));
+        _setTxt('gem-detected',       'Tidak terbaca');
+        _setTxt('gem-required',       currentRule.label);
+        _setTxt('gem-wrong-gender',   'tidak terbaca');
+        _setTxt('gem-right-gender',   currentRule.label);
+        _setTxt('gem-right-gender-2', currentRule.label);
+        _setTxt('gem-kategori-label', LABEL_KAT);
+
+        var msgEl = document.getElementById('gem-message');
+        if (msgEl) msgEl.innerHTML =
+            'Jenis kelamin pada KTP Pemain <strong>' + (playerIdx + 1) + '</strong> '
+            + '(<strong>' + _esc(namaOcr || '') + '</strong>) tidak berhasil terbaca.<br><br>'
+            + 'Pastikan foto KTP jelas dan bagian <strong>Jenis Kelamin</strong> terlihat, '
+            + 'lalu scan ulang.<br><br>'
+            + 'Kategori <strong>' + _esc(LABEL_KAT) + '</strong> hanya untuk pemain '
+            + '<strong>' + _esc(currentRule.label) + '</strong>.';
+
+        var modal = document.getElementById('genderErrorModal');
+        modal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function close() {
+        var modal = document.getElementById('genderErrorModal');
+        if (modal) modal.classList.remove('show');
+        document.body.style.overflow = '';
+
+        // Reset pesan ke default
+        var msgEl = document.getElementById('gem-message');
+        if (msgEl) msgEl.innerHTML =
+            'KTP yang diupload <strong id="gem-wrong-gender"></strong>, '
+            + 'sedangkan kategori <strong id="gem-kategori-label"></strong> '
+            + 'hanya untuk pemain <strong id="gem-right-gender"></strong>.<br><br>'
+            + 'Silakan upload KTP pemain <strong id="gem-right-gender-2"></strong> yang sesuai.';
+    }
+
+    function getRule()        { return currentRule; }
+    function getKategori()    { return KATEGORI;    }
+
+    function _setTxt(id, val) {
+        var el = document.getElementById(id);
+        if (el) el.textContent = val;
+    }
+    function _esc(s) {
+        return String(s)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+    }
+
+    // Tutup dengan Escape
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') close();
+    });
+
+    return { show: show, showUnknown: showUnknown, close: close, getRule: getRule, getKategori: getKategori };
+})();
+</script>
+
+<script>
+/* ================================================================
+   OCR FORM LOGIC — _dewasa namespace
+================================================================ */
 (function () {
 'use strict';
 
-// ================================================================
-// CONFIG — nilai dari Blade
-// ================================================================
+// ── Config dari Blade ────────────────────────────────────────
 var KATEGORI     = @json($kategori ?? '');
 var IS_BEREGU    = (KATEGORI === 'beregu');
 var MIN_PEMAIN   = IS_BEREGU ? {{ (int)($minPemain ?? 3) }} : 2;
 var MAX_PEMAIN   = IS_BEREGU ? {{ (int)($maxPemain ?? 10) }} : 2;
 var jumlahPemain = MIN_PEMAIN;
-var slotState    = {};   // { idx: { file, scanned } }
-var cardData     = {};   // { idx: { nik, nama, tanggal_lahir } }
+var slotState    = {};   // { idx: { file, scanned, genderValid } }
+var cardData     = {};   // { idx: { nik, nama, tanggal_lahir, jenis_kelamin } }
 
-// ================================================================
-// FIELD DEFINITIONS
-// Hanya 3 field yang dikirim ke backend sesuai migration & controller
-// ================================================================
+// ── Apakah perlu validasi gender? ───────────────────────────
+var GENDER_RULE = _GEM.getRule();    // null jika beregu / veteran
+
+// ── Field definitions ────────────────────────────────────────
 var CARD_FIELDS = [
-    {
-        l:           'NIK',
-        k:           'nik',
-        n:           'nik[]',
-        placeholder: '16 digit NIK sesuai KTP',
-    },
-    {
-        l:           'Nama',
-        k:           'nama',
-        n:           'pemain[]',
-        placeholder: 'Nama lengkap sesuai KTP',
-    },
-    {
-        l:           'Tgl Lahir',
-        k:           'tanggal_lahir',
-        n:           'tgl_lahir[]',
-        placeholder: 'DD-MM-YYYY',
-    },
+    { l: 'NIK',       k: 'nik',           n: 'nik[]',        placeholder: '16 digit NIK sesuai KTP' },
+    { l: 'Nama',      k: 'nama',          n: 'pemain[]',     placeholder: 'Nama lengkap sesuai KTP' },
+    { l: 'Tgl Lahir', k: 'tanggal_lahir', n: 'tgl_lahir[]',  placeholder: 'DD-MM-YYYY'              },
 ];
 
-// ================================================================
-// TANGGAL TURNAMEN — untuk kalkulasi usia
-// Usia dihitung per 24 Agustus 2026 (hari turnamen)
-// ================================================================
-var TOURNAMENT_DATE = new Date(2026, 7, 24); // 24 Agustus 2026
+// ── Tanggal turnamen untuk hitung usia ───────────────────────
+var TOURNAMENT_DATE = new Date(2026, 7, 24);
 
-// ================================================================
-// HITUNG USIA — dari string tgl_lahir ke integer usia
-// Support format: DD-MM-YYYY, DD/MM/YYYY, YYYY-MM-DD
-// Return: integer usia, atau null jika tgl tidak valid
-// ================================================================
+// ── Hitung usia ──────────────────────────────────────────────
 function hitungUsia(str) {
     if (!str || !str.trim()) return null;
     str = str.trim();
     var tgl = null;
-
-    /* DD-MM-YYYY atau DD/MM/YYYY atau DD.MM.YYYY */
-    var m1 = str.match(/^(\d{1,2})[-\/\.](\d{1,2})[-\/\.](\d{4})$/);
-    /* YYYY-MM-DD */
-    var m2 = str.match(/^(\d{4})[-\/\.](\d{1,2})[-\/\.](\d{1,2})$/);
-
+    var m1  = str.match(/^(\d{1,2})[-\/\.](\d{1,2})[-\/\.](\d{4})$/);
+    var m2  = str.match(/^(\d{4})[-\/\.](\d{1,2})[-\/\.](\d{1,2})$/);
     if (m1)      tgl = new Date(+m1[3], +m1[2] - 1, +m1[1]);
     else if (m2) tgl = new Date(+m2[1], +m2[2] - 1, +m2[3]);
     else         tgl = new Date(str);
-
     if (!tgl || isNaN(tgl.getTime())) return null;
-
-    /* Hitung usia per tanggal turnamen */
     var usia = TOURNAMENT_DATE.getFullYear() - tgl.getFullYear();
     var bm   = TOURNAMENT_DATE.getMonth() - tgl.getMonth();
     if (bm < 0 || (bm === 0 && TOURNAMENT_DATE.getDate() < tgl.getDate())) usia--;
-
-    /* Sanity check */
     if (usia < 0 || usia > 120) return null;
     return usia;
 }
 
-// ================================================================
-// UPDATE ROW USIA — dipanggil setiap kali tgl_lahir berubah
-// Row usia adalah READ-ONLY — hanya diupdate dari sini
-// ================================================================
 function updateUsiaRow(idx, tglValue) {
     var usia   = hitungUsia(tglValue);
     var dispEl = document.getElementById('usia_disp_' + idx);
     if (!dispEl) return;
-
     if (usia !== null) {
         dispEl.className   = 'usia-display has-value';
         dispEl.textContent = usia + ' tahun (per 24 Ags 2026)';
@@ -707,9 +969,18 @@ function updateUsiaRow(idx, tglValue) {
     }
 }
 
-// ================================================================
-// GENERATE HTML SLOT
-// ================================================================
+// ── Normalize jenis kelamin ──────────────────────────────────
+function normalizeGender(raw) {
+    if (!raw) return '';
+    raw = raw.toUpperCase().trim();
+    if (['P','PR','WANITA','PEREMPUAN'].indexOf(raw) !== -1) return 'P';
+    if (raw.indexOf('PEREMPUAN') !== -1 || raw.indexOf('WANITA') !== -1) return 'P';
+    if (['L','LK','PRIA','LAKI','LAKI-LAKI'].indexOf(raw) !== -1) return 'L';
+    if (raw.indexOf('LAKI') !== -1 || raw.indexOf('PRIA') !== -1) return 'L';
+    return '';
+}
+
+// ── Generate slot HTML ───────────────────────────────────────
 function makeSlot(idx, deletable) {
     var btnHapus = deletable
         ? ('<button type="button"'
@@ -723,10 +994,9 @@ function makeSlot(idx, deletable) {
         : '<div class="w-8 h-8"></div>';
 
     return (
-        /* Card wrapper */
         '<div id="ocr_card_' + idx + '" class="pemain-ocr-card" data-idx="' + idx + '">'
 
-        /* ── Header ── */
+        /* Header */
         + '<div class="flex items-center justify-between mb-5">'
         +   '<div class="flex items-center gap-3">'
         +     '<div class="w-8 h-8 rounded-full flex items-center justify-center"'
@@ -744,7 +1014,7 @@ function makeSlot(idx, deletable) {
         +   btnHapus
         + '</div>'
 
-        /* ── Upload area ── */
+        /* Upload area */
         + '<div class="mb-4">'
         +   '<label class="block text-white/45 text-xs font-semibold uppercase tracking-wide mb-2">'
         +     'Foto KTP <span class="text-brand-400">*</span>'
@@ -759,8 +1029,6 @@ function makeSlot(idx, deletable) {
         +       ' ondragover="event.preventDefault();this.style.borderColor=\'rgba(249,115,22,.6)\'"'
         +       ' ondragleave="this.style.borderColor=\'rgba(249,115,22,.22)\'"'
         +       ' ondrop="window._dewasa.drop(event,' + idx + ')">'
-
-        /* Preview */
         +     '<div id="ktpPreview_' + idx + '" class="hidden">'
         +       '<div class="relative inline-block mb-2">'
         +         '<img id="ktpPreviewImg_' + idx + '" src="" alt=""'
@@ -776,8 +1044,6 @@ function makeSlot(idx, deletable) {
         +       '</div>'
         +       '<p class="text-white/28 text-xs">Klik untuk ganti foto</p>'
         +     '</div>'
-
-        /* Placeholder */
         +     '<div id="ktpDefault_' + idx + '" class="flex flex-col items-center py-3">'
         +       '<div class="w-11 h-11 rounded-xl bg-brand-500/10 flex items-center justify-center mb-3">'
         +         '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"'
@@ -789,9 +1055,9 @@ function makeSlot(idx, deletable) {
         +       '<p class="text-white/50 text-sm font-medium">Klik atau seret foto KTP</p>'
         +       '<p class="text-white/22 text-xs mt-0.5">JPG, PNG &middot; Maks 5MB</p>'
         +     '</div>'
-        +   '</div>' /* /dropzone */
+        +   '</div>'
 
-        /* Hidden file input */
+        /* File input */
         +   '<input type="file" id="ktpInput_' + idx + '" name="ktp_files[]"'
         +          ' accept="image/jpeg,image/png,image/webp" class="hidden"'
         +          ' onchange="window._dewasa.fileSelect(this,' + idx + ')">'
@@ -811,18 +1077,17 @@ function makeSlot(idx, deletable) {
         +     ' SCAN KTP &mdash; Isi Otomatis'
         +   '</button>'
 
-        /* Loading indicator */
+        /* Loading */
         +   '<div id="scanLoading_' + idx + '" class="hidden mt-3 text-center py-2">'
         +     '<p class="text-brand-400 text-xs font-semibold mb-1">Membaca KTP dengan AI...</p>'
         +     '<div class="scan-loading-bar"><div class="scan-loading-bar-inner"></div></div>'
         +   '</div>'
-        + '</div>' /* /upload area */
+        + '</div>'
 
-        /* ── KTP Data Card — inline editable ── */
+        /* KTP Data Card */
         + '<div id="ktpDataCard_' + idx + '" class="ktp-data-card">'
         +   '<div class="flex items-center justify-between mb-1">'
-        +     '<p class="text-xs font-bold text-white/35 uppercase tracking-widest'
-        +        ' flex items-center gap-2">'
+        +     '<p class="text-xs font-bold text-white/35 uppercase tracking-widest flex items-center gap-2">'
         +       '<svg width="11" height="11" viewBox="0 0 24 24" fill="none"'
         +            ' stroke="currentColor" stroke-width="2">'
         +         '<rect x="3" y="5" width="18" height="14" rx="2"/>'
@@ -835,36 +1100,29 @@ function makeSlot(idx, deletable) {
         +   '<div id="ktpDataRows_' + idx + '"></div>'
         + '</div>'
 
-        + '</div>' /* /ocr_card */
+        + '</div>'
     );
 }
 
-// ================================================================
-// INIT SLOTS
-// ================================================================
+// ── Init ─────────────────────────────────────────────────────
 function initSlots() {
     var container = document.getElementById('ocrSlotsContainer');
     if (!container) return;
     container.innerHTML = '';
     for (var i = 0; i < MIN_PEMAIN; i++) {
         container.insertAdjacentHTML('beforeend', makeSlot(i, false));
-        slotState[i] = { file: null, scanned: false };
+        slotState[i] = { file: null, scanned: false, genderValid: !GENDER_RULE };
         cardData[i]  = {};
     }
 }
 
-// ================================================================
-// TAMBAH / HAPUS PEMAIN (Beregu)
-// ================================================================
+// ── Tambah / hapus (beregu) ──────────────────────────────────
 function tambah() {
-    if (jumlahPemain >= MAX_PEMAIN) {
-        showToast('Maksimal ' + MAX_PEMAIN + ' pemain per tim.', 'warn');
-        return;
-    }
+    if (jumlahPemain >= MAX_PEMAIN) { showToast('Maksimal ' + MAX_PEMAIN + ' pemain per tim.', 'warn'); return; }
     var idx = jumlahPemain++;
-    var container = document.getElementById('ocrSlotsContainer');
-    container.insertAdjacentHTML('beforeend', makeSlot(idx, true));
-    slotState[idx] = { file: null, scanned: false };
+    document.getElementById('ocrSlotsContainer')
+        .insertAdjacentHTML('beforeend', makeSlot(idx, true));
+    slotState[idx] = { file: null, scanned: false, genderValid: !GENDER_RULE };
     cardData[idx]  = {};
     updateAddBtn();
 }
@@ -892,15 +1150,13 @@ function renumberSlots() {
 function updateAddBtn() {
     var btn = document.getElementById('tambahPemainBtn');
     if (!btn) return;
-    var maxed = jumlahPemain >= MAX_PEMAIN;
-    btn.disabled       = maxed;
-    btn.style.opacity  = maxed ? '0.3' : '1';
-    btn.style.cursor   = maxed ? 'not-allowed' : 'pointer';
+    var maxed       = jumlahPemain >= MAX_PEMAIN;
+    btn.disabled    = maxed;
+    btn.style.opacity = maxed ? '0.3' : '1';
+    btn.style.cursor  = maxed ? 'not-allowed' : 'pointer';
 }
 
-// ================================================================
-// FILE HANDLING
-// ================================================================
+// ── File handling ────────────────────────────────────────────
 function fileSelect(input, idx) {
     if (input.files && input.files[0]) processFile(input.files[0], idx);
 }
@@ -920,21 +1176,19 @@ function drop(e, idx) {
 }
 
 function processFile(file, idx) {
-    if (file.size > 5 * 1024 * 1024) {
-        showToast('File terlalu besar. Maks 5MB.', 'error');
-        return;
-    }
+    if (file.size > 5 * 1024 * 1024) { showToast('File terlalu besar. Maks 5MB.', 'error'); return; }
     if (!slotState[idx]) slotState[idx] = {};
-    slotState[idx].file    = file;
-    slotState[idx].scanned = false;
+    slotState[idx].file        = file;
+    slotState[idx].scanned     = false;
+    slotState[idx].genderValid = !GENDER_RULE;  // reset gender state
 
     var reader = new FileReader();
     reader.onload = function (e) {
         var img = document.getElementById('ktpPreviewImg_' + idx);
         if (img) img.src = e.target.result;
-        toggleEl('ktpPreview_'  + idx, true);
-        toggleEl('ktpDefault_'  + idx, false);
-        toggleEl('scanBtn_'     + idx, true);
+        toggleEl('ktpPreview_' + idx, true);
+        toggleEl('ktpDefault_' + idx, false);
+        toggleEl('scanBtn_'    + idx, true);
         resetCardUI(idx);
     };
     reader.readAsDataURL(file);
@@ -942,14 +1196,14 @@ function processFile(file, idx) {
 
 function resetSlot(e, idx) {
     e.stopPropagation();
-    slotState[idx] = { file: null, scanned: false };
+    slotState[idx] = { file: null, scanned: false, genderValid: !GENDER_RULE };
     cardData[idx]  = {};
     var inp = document.getElementById('ktpInput_' + idx);
     if (inp) inp.value = '';
-    toggleEl('ktpPreview_'  + idx, false);
-    toggleEl('ktpDefault_'  + idx, true);
-    toggleEl('scanBtn_'     + idx, false);
-    toggleEl('scanLoading_' + idx, false);
+    toggleEl('ktpPreview_' + idx, false);
+    toggleEl('ktpDefault_' + idx, true);
+    toggleEl('scanBtn_'    + idx, false);
+    toggleEl('scanLoading_'+ idx, false);
     resetCardUI(idx);
 }
 
@@ -961,12 +1215,10 @@ function resetCardUI(idx) {
     if (card)    card.className = 'ktp-data-card';
     if (rows)    rows.innerHTML = '';
     if (badge)   badge.style.display = 'none';
-    if (ocrCard) ocrCard.classList.remove('scanned');
+    if (ocrCard) ocrCard.classList.remove('scanned', 'gender-error');
 }
 
-// ================================================================
-// SCAN OCR
-// ================================================================
+// ── SCAN OCR ─────────────────────────────────────────────────
 function scan(idx) {
     if (!slotState[idx] || !slotState[idx].file) return;
 
@@ -974,11 +1226,10 @@ function scan(idx) {
     toggleEl('scanLoading_' + idx, true);
     resetCardUI(idx);
 
-    var fd   = new FormData();
+    var fd = new FormData();
     fd.append('image', slotState[idx].file);
 
-    var csrfMeta = document.querySelector('meta[name="csrf-token"]');
-    var csrf     = csrfMeta ? csrfMeta.content : '';
+    var csrf = (document.querySelector('meta[name="csrf-token"]') || {}).content || '';
 
     fetch('/ocr/ktp', {
         method:  'POST',
@@ -999,13 +1250,35 @@ function scan(idx) {
                 showToast(result.message || 'Gagal membaca KTP. Coba foto ulang lebih jelas.', 'error');
                 return;
             }
-            renderCard(idx, result.data);
+
+            var data           = result.data;
+            var genderNorm     = normalizeGender(data.jenis_kelamin || '');
+
+            // ── Validasi gender (hanya putra/putri) ──────────
+            if (GENDER_RULE) {
+                if (genderNorm === '') {
+                    // Tidak terdeteksi
+                    _onGenderFail(idx, data);
+                    _GEM.showUnknown(idx, data.nama || '');
+                    return;
+                }
+                if (genderNorm !== GENDER_RULE.required) {
+                    // Salah gender
+                    _onGenderFail(idx, data);
+                    _GEM.show(idx, data.nama || '', genderNorm);
+                    return;
+                }
+                // Gender valid ✓
+                slotState[idx].genderValid = true;
+            }
+
+            renderCard(idx, data, genderNorm);
             slotState[idx].scanned = true;
 
             var badge   = document.getElementById('scan_badge_' + idx);
             var ocrCard = document.getElementById('ocr_card_'   + idx);
             if (badge)   badge.style.display = 'inline-flex';
-            if (ocrCard) ocrCard.classList.add('scanned');
+            if (ocrCard) { ocrCard.classList.remove('gender-error'); ocrCard.classList.add('scanned'); }
 
             showToast('KTP Pemain ' + (idx + 1) + ' berhasil dibaca. Periksa data lalu edit jika perlu.', 'success');
         });
@@ -1018,11 +1291,41 @@ function scan(idx) {
     });
 }
 
-// ================================================================
-// RENDER CARD DATA KTP — inline editable (NIK, Nama, Tgl Lahir)
-// Usia: read-only, dihitung otomatis dari tgl_lahir
-// ================================================================
-function renderCard(idx, data) {
+// ── Saat gender gagal — reset file & tampilkan error state ───
+function _onGenderFail(idx, data) {
+    slotState[idx].scanned     = false;
+    slotState[idx].genderValid = false;
+
+    // Reset file input supaya harus upload ulang
+    var inp = document.getElementById('ktpInput_' + idx);
+    if (inp) inp.value = '';
+    slotState[idx].file = null;
+
+    // Sembunyikan preview
+    toggleEl('ktpPreview_' + idx, false);
+    toggleEl('ktpDefault_' + idx, true);
+    toggleEl('scanBtn_'    + idx, false);
+
+    // Tandai card dengan border merah + shake
+    var ocrCard = document.getElementById('ocr_card_' + idx);
+    if (ocrCard) {
+        ocrCard.classList.remove('scanned');
+        ocrCard.classList.add('gender-error');
+        // Hilangkan class gender-error setelah animasi selesai
+        setTimeout(function () {
+            if (ocrCard) ocrCard.classList.remove('gender-error');
+        }, 600);
+    }
+
+    // Hapus hidden inputs jenis_kelamin untuk pemain ini
+    var hidGender = document.getElementById('khid_' + idx + '_jenis_kelamin');
+    if (hidGender) hidGender.value = '';
+
+    resetCardUI(idx);
+}
+
+// ── Render KTP data card ─────────────────────────────────────
+function renderCard(idx, data, genderNorm) {
     cardData[idx] = {};
 
     var card = document.getElementById('ktpDataCard_' + idx);
@@ -1030,14 +1333,11 @@ function renderCard(idx, data) {
     if (!card || !rows) return;
     rows.innerHTML = '';
 
-    // ── Render 3 field editable: NIK, Nama, Tgl Lahir ─────────
+    // ── 3 field editable ────────────────────────────────────
     CARD_FIELDS.forEach(function (f) {
         var raw = '';
-        if (f.k === 'tanggal_lahir') {
-            raw = (data.tanggal_lahir || data.tgl_lahir || '');
-        } else {
-            raw = (data[f.k] || '');
-        }
+        if (f.k === 'tanggal_lahir') raw = (data.tanggal_lahir || data.tgl_lahir || '');
+        else raw = (data[f.k] || '');
         var v = ('' + raw).trim();
         cardData[idx][f.k] = v;
 
@@ -1045,72 +1345,75 @@ function renderCard(idx, data) {
         var inpId = 'kinp_' + idx + '_' + f.k;
         var hidId = 'khid_' + idx + '_' + f.k;
 
-        /* Hidden input — dikirim ke server */
-        var hidHtml = '<input type="hidden"'
-            + ' id="' + hidId + '"'
-            + ' name="' + f.n + '"'
-            + ' value="' + esc(v) + '">';
+        var hidHtml = '<input type="hidden" id="' + hidId + '" name="' + f.n + '" value="' + esc(v) + '">';
 
-        /* Value span — klikable untuk edit */
         var valContent = v
             ? esc(v)
             : '<span style="color:rgba(255,255,255,.22);font-style:italic">— ketuk untuk isi</span>';
 
-        var valSpan = '<span id="' + valId + '"'
-            + ' class="ktp-value hl"'
-            + ' title="Klik untuk edit"'
+        var valSpan = '<span id="' + valId + '" class="ktp-value hl" title="Klik untuk edit"'
             + ' onclick="window._dewasa.inlineEdit(\'' + idx + '\',\'' + f.k + '\')">'
-            + valContent
-            + '</span>';
+            + valContent + '</span>';
 
-        /* Inline input */
-        var inpHtml = '<input id="' + inpId + '" type="text"'
-            + ' class="ktp-inline-input" style="display:none"'
-            + ' value="' + esc(v) + '"'
-            + ' placeholder="' + esc(f.placeholder || '') + '"'
+        var inpHtml = '<input id="' + inpId + '" type="text" class="ktp-inline-input" style="display:none"'
+            + ' value="' + esc(v) + '" placeholder="' + esc(f.placeholder || '') + '"'
             + ' onkeydown="window._dewasa.inlineKey(event,\'' + idx + '\',\'' + f.k + '\')"'
             + ' onblur="window._dewasa.inlineSave(\'' + idx + '\',\'' + f.k + '\')">';
 
         rows.innerHTML +=
             '<div class="ktp-row">'
             + '<span class="ktp-label">' + f.l + ' <span style="color:#f97316">*</span></span>'
-            + valSpan
-            + inpHtml
-            + hidHtml
+            + valSpan + inpHtml + hidHtml
             + '</div>';
     });
 
-    // ── Baris Usia — READ-ONLY, dihitung otomatis dari tgl_lahir ──
-    var tglVal      = cardData[idx]['tanggal_lahir'] || '';
-    var usia        = hitungUsia(tglVal);
-    var usiaText    = usia !== null
-        ? usia + ' tahun (per 24 Ags 2026)'
-        : '— isi tgl lahir dulu';
-    var usiaClass   = usia !== null ? 'usia-display has-value' : 'usia-display no-value';
+    // ── Baris Jenis Kelamin — READ-ONLY, dari OCR ────────────
+    var genderLabel, genderClass;
+    if (genderNorm === 'L') {
+        genderLabel = '♂ Laki-laki';
+        genderClass = 'ktp-gender-value gender-l';
+    } else if (genderNorm === 'P') {
+        genderLabel = '♀ Perempuan';
+        genderClass = 'ktp-gender-value gender-p';
+    } else {
+        genderLabel = '— tidak terbaca';
+        genderClass = 'ktp-gender-value gender-unknown';
+    }
+
+    // Simpan di hidden input untuk backend
+    var hidGenderHtml = '<input type="hidden" id="khid_' + idx + '_jenis_kelamin"'
+        + ' name="jenis_kelamin[' + idx + ']" value="' + esc(genderNorm) + '">';
+
+    rows.innerHTML +=
+        '<div class="ktp-row" style="margin-top:4px;">'
+        + '<span class="ktp-label">Kelamin</span>'
+        + '<span class="' + genderClass + '">' + genderLabel + '</span>'
+        + '<span style="font-size:9px;color:rgba(255,255,255,.2);margin-left:4px;flex-shrink:0;">dari KTP</span>'
+        + hidGenderHtml
+        + '</div>';
+
+    // Simpan ke cardData
+    cardData[idx]['jenis_kelamin'] = genderNorm;
+
+    // ── Baris Usia — READ-ONLY ────────────────────────────────
+    var tglVal    = cardData[idx]['tanggal_lahir'] || '';
+    var usia      = hitungUsia(tglVal);
+    var usiaText  = usia !== null ? usia + ' tahun (per 24 Ags 2026)' : '— isi tgl lahir dulu';
+    var usiaClass = usia !== null ? 'usia-display has-value' : 'usia-display no-value';
 
     rows.innerHTML +=
         '<div class="ktp-row" style="margin-top:6px;padding-top:8px;border-top:1px solid rgba(249,115,22,.1);">'
         + '<span class="ktp-label" style="color:rgba(249,115,22,.5);">Usia</span>'
-
-        /* Display span — read-only, auto-update via updateUsiaRow() */
-        + '<span id="usia_disp_' + idx + '"'
-        +   ' class="' + usiaClass + '"'
-        +   ' title="Dihitung otomatis dari Tanggal Lahir">'
+        + '<span id="usia_disp_' + idx + '" class="' + usiaClass + '" title="Dihitung otomatis dari Tanggal Lahir">'
         +   usiaText
         + '</span>'
-
-        /* Label kecil "otomatis" */
-        + '<span style="font-size:9px;color:rgba(249,115,22,.35);margin-left:4px;flex-shrink:0;white-space:nowrap;">'
-        +   'otomatis'
-        + '</span>'
+        + '<span style="font-size:9px;color:rgba(249,115,22,.35);margin-left:4px;flex-shrink:0;white-space:nowrap;">otomatis</span>'
         + '</div>';
 
     card.className = 'ktp-data-card show valid-card';
 }
 
-// ================================================================
-// INLINE EDIT (NIK, Nama, Tgl Lahir)
-// ================================================================
+// ── Inline edit ──────────────────────────────────────────────
 function inlineEdit(idx, fieldKey) {
     var valEl = document.getElementById('kval_' + idx + '_' + fieldKey);
     var inpEl = document.getElementById('kinp_' + idx + '_' + fieldKey);
@@ -1146,10 +1449,7 @@ function inlineSave(idx, fieldKey) {
     inpEl.style.display = 'none';
     valEl.style.display = '';
 
-    /* ── Jika tgl_lahir diubah → recalculate & update row Usia ── */
-    if (fieldKey === 'tanggal_lahir') {
-        updateUsiaRow(idx, newVal);
-    }
+    if (fieldKey === 'tanggal_lahir') updateUsiaRow(idx, newVal);
 }
 
 function inlineKey(e, idx, fieldKey) {
@@ -1162,9 +1462,7 @@ function inlineKey(e, idx, fieldKey) {
     }
 }
 
-// ================================================================
-// HELPERS
-// ================================================================
+// ── Helpers ──────────────────────────────────────────────────
 function toggleEl(id, show) {
     var el = document.getElementById(id);
     if (!el) return;
@@ -1174,15 +1472,11 @@ function toggleEl(id, show) {
 
 function esc(s) {
     return String(s)
-        .replace(/&/g,  '&amp;')
-        .replace(/</g,  '&lt;')
-        .replace(/>/g,  '&gt;')
-        .replace(/"/g,  '&quot;');
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
-// ================================================================
-// TOAST NOTIFICATION
-// ================================================================
+// ── Toast ─────────────────────────────────────────────────────
 var _toastTimer = null;
 function showToast(msg, type) {
     type = type || 'success';
@@ -1211,16 +1505,23 @@ function showToast(msg, type) {
     }, 5000);
 }
 
-// ================================================================
-// VALIDASI SUBMIT
-// Wajib: semua field NIK, Nama, Tgl Lahir per pemain terisi
-// ================================================================
+// ── Validasi submit ───────────────────────────────────────────
 function validateSubmit(e) {
     var cards   = document.querySelectorAll('.pemain-ocr-card');
     var missing = [];
 
     cards.forEach(function (card) {
         var idx = card.dataset.idx;
+
+        // Cek gender valid (hanya putra/putri)
+        if (GENDER_RULE && slotState[idx] && !slotState[idx].genderValid) {
+            missing.push('Pemain ' + (parseInt(idx, 10) + 1) + ': KTP belum di-scan atau jenis kelamin tidak sesuai kategori');
+            card.classList.add('gender-error');
+            setTimeout(function () { card.classList.remove('gender-error'); }, 600);
+            return;
+        }
+
+        // Cek field wajib
         CARD_FIELDS.forEach(function (f) {
             var hidEl = document.getElementById('khid_' + idx + '_' + f.k);
             if (hidEl && !hidEl.value.trim()) {
@@ -1238,30 +1539,21 @@ function validateSubmit(e) {
             + (missing.length > 1 ? ' (dan ' + (missing.length - 1) + ' lainnya)' : ''),
             'error'
         );
-        var firstEmpty = document.querySelector('.ktp-row[style*="rgba(239"]');
-        if (firstEmpty) firstEmpty.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        var firstCard = document.querySelector('.pemain-ocr-card.gender-error')
+                     || document.querySelector('.ktp-row[style*="rgba(239"]');
+        if (firstCard) firstCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 }
 
-// ================================================================
-// EXPOSE ke window
-// ================================================================
+// ── Expose ────────────────────────────────────────────────────
 window._dewasa = {
-    fileSelect: fileSelect,
-    drop:       drop,
-    reset:      resetSlot,
-    scan:       scan,
-    hapus:      hapus,
-    tambah:     tambah,
-    inlineEdit: inlineEdit,
-    inlineSave: inlineSave,
-    inlineKey:  inlineKey,
+    fileSelect: fileSelect, drop: drop, reset: resetSlot,
+    scan: scan, hapus: hapus, tambah: tambah,
+    inlineEdit: inlineEdit, inlineSave: inlineSave, inlineKey: inlineKey,
 };
 window.tambahPemainOcr = tambah;
 
-// ================================================================
-// BOOTSTRAP
-// ================================================================
+// ── Bootstrap ─────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', function () {
     initSlots();
     var form = document.getElementById('regForm');
