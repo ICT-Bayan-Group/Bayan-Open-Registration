@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 
 class RegistrationController extends Controller
 {
@@ -24,7 +25,7 @@ class RegistrationController extends Controller
 
     public function index()
     {
-        return view('registration.index');
+        return view('home');
     }
 
     // ============================================================
@@ -137,7 +138,14 @@ class RegistrationController extends Controller
             null
         );
 
-        // ── 4. Hitung usia backend ─────────────────────────────────
+        // ── 3b. Ambil jenis_kelamin dari form (diisi via hidden input oleh JS OCR) ──
+        $jenisKelaminArr = array_pad(
+            array_slice($request->input('jenis_kelamin', []), 0, $jumlahPemain),
+            $jumlahPemain,
+            null
+        );
+
+        // ── 4. Hitung usia backend — selisih tahun saja ────────────
         $usiaArr = array_map(function ($tgl) {
             if (! $tgl) return null;
             try {
@@ -146,7 +154,7 @@ class RegistrationController extends Controller
                 $birth = (count($parts) === 3 && strlen($parts[0]) <= 2 && strlen($parts[2]) === 4)
                     ? Carbon::createFromFormat('d-m-Y', $tgl)
                     : Carbon::parse($tgl);
-                return $birth->age;
+                return (int) now()->format('Y') - (int) $birth->format('Y');
             } catch (\Exception) {
                 return null;
             }
@@ -163,6 +171,46 @@ class RegistrationController extends Controller
             'ktp_files.*.mimes'    => 'File KTP harus berformat JPG, PNG, atau WebP.',
             'ktp_files.*.max'      => 'Ukuran file KTP maksimal 5MB.',
         ]);
+
+        // ── 5b. Validasi jenis kelamin per kategori (Putra / Putri) ──
+        // Hanya berlaku untuk ganda-dewasa-putra dan ganda-dewasa-putri.
+        // Untuk veteran dan beregu tidak ada pembatasan gender di sini.
+        if (in_array($kategori, ['ganda-dewasa-putra', 'ganda-dewasa-putri'], true)) {
+            $genderYangDiharuskan  = ($kategori === 'ganda-dewasa-putra') ? 'L' : 'P';
+            $labelGender           = ($kategori === 'ganda-dewasa-putra') ? 'Laki-laki' : 'Perempuan';
+            $labelGenderSalah      = ($kategori === 'ganda-dewasa-putra') ? 'Perempuan' : 'Laki-laki';
+
+            foreach ($pemainDiisi as $i => $namaPemain) {
+                $genderPemain = strtoupper(trim($jenisKelaminArr[$i] ?? ''));
+
+                // Jika gender tidak terdeteksi (scan belum dilakukan / OCR gagal baca)
+                if (empty($genderPemain)) {
+                    return back()->withInput()->withErrors([
+                        'jenis_kelamin' => sprintf(
+                            'Pemain %d (%s): Jenis kelamin tidak terdeteksi dari KTP. '
+                            . 'Pastikan scan KTP berhasil sebelum submit.',
+                            $i + 1,
+                            $namaPemain
+                        ),
+                    ]);
+                }
+
+                // Jika gender tidak sesuai kategori
+                if ($genderPemain !== $genderYangDiharuskan) {
+                    return back()->withInput()->withErrors([
+                        'jenis_kelamin' => sprintf(
+                            'Pemain %d (%s) terdeteksi sebagai %s. '
+                            . 'Kategori %s hanya untuk pemain %s.',
+                            $i + 1,
+                            $namaPemain,
+                            $labelGenderSalah,
+                            $kategori,
+                            $labelGender
+                        ),
+                    ]);
+                }
+            }
+        }
 
         // ── 6. Validasi kota KTP untuk beregu ─────────────────────
         $kotaArr      = $request->input('kota_ktp', []);
@@ -204,7 +252,7 @@ class RegistrationController extends Controller
                 'usia_valid.size'      => 'Kedua pemain harus di-scan KTP-nya.',
                 'usia_valid.*.in'      => 'Kedua pemain harus memenuhi syarat veteran (min. 45 tahun).',
                 'usia_hitung.required' => 'Data usia pemain tidak ditemukan.',
-                'usia_hitung.*.min'    => 'Setiap pemain minimal berusia 45 tahun per 24 Agustus 2026.',
+                'usia_hitung.*.min'    => 'Setiap pemain minimal berusia 45 tahun.',
             ]);
 
             $usiaHitung = $request->input('usia_hitung', []);
@@ -239,17 +287,13 @@ class RegistrationController extends Controller
         };
 
         // ── 9. Tentukan approval status ────────────────────────────
-        // Beregu      → pending_review (tunggu verifikasi admin)
-        // Selain beregu → approved     (langsung kirim email link bayar)
         $approvalStatus = $isBeregu ? 'pending_review' : 'approved';
 
-        // ── 10. Generate payment token untuk semua kategori ────────
-        // Beregu: token disimpan tapi link dikirim nanti setelah admin approve
-        // Non-beregu: token langsung dipakai, link dikirim sekarang
+        // ── 10. Generate payment token ─────────────────────────────
         $paymentToken          = Str::uuid()->toString();
         $paymentTokenExpiresAt = $isBeregu
-            ? null                                // beregu: expire diset saat admin approve
-            : now()->addHours(24);                // non-beregu: 24 jam dari sekarang
+            ? null
+            : now()->addHours(24);
 
         // ── 11. Buat record Registration ───────────────────────────
         $registration = Registration::create([
@@ -265,6 +309,7 @@ class RegistrationController extends Controller
             'nik'                     => $nikArr,
             'tgl_lahir'               => $tglLahirArr,
             'usia_pemain'             => $usiaArr,
+            'jenis_kelamin_pemain'    => $jenisKelaminArr,            // ← simpan gender tiap pemain
             'ktp_city_valid'          => $isBeregu ? $cityValidArr : null,
             'kategori'                => $kategori,
             'harga'                   => $harga,
@@ -298,14 +343,15 @@ class RegistrationController extends Controller
             $ktpPaths[] = $path;
 
             $ktpRawData[] = [
-                'index'     => $i + 1,
-                'nama'      => $pemainDiisi[$i]              ?? null,
-                'nik'       => $nikArr[$i]                   ?? null,
-                'tgl_lahir' => $tglLahirArr[$i]              ?? null,
-                'usia'      => $usiaArr[$i]                  ?? null,
-                'kota'      => $cityValidArr[$i]['city_raw'] ?? null,
-                'file_path' => $path,
-                'file_name' => $namaFile,
+                'index'          => $i + 1,
+                'nama'           => $pemainDiisi[$i]              ?? null,
+                'nik'            => $nikArr[$i]                   ?? null,
+                'tgl_lahir'      => $tglLahirArr[$i]              ?? null,
+                'usia'           => $usiaArr[$i]                  ?? null,
+                'jenis_kelamin'  => $jenisKelaminArr[$i]          ?? null,   // ← tambahkan ke ktp_data
+                'kota'           => $cityValidArr[$i]['city_raw'] ?? null,
+                'file_path'      => $path,
+                'file_name'      => $namaFile,
             ];
         }
 
@@ -316,17 +362,13 @@ class RegistrationController extends Controller
 
         // ── 13. Routing berdasarkan kategori ───────────────────────
         if ($isBeregu) {
-            // Beregu → pending review admin, tidak kirim email dulu
             return view('registration.pending-review', compact('registration'));
         }
 
-        // Non-beregu → kirim email link pembayaran, tampilkan halaman sukses
         try {
             Mail::to($registration->email)
                 ->send(new RegistrationApproved($registration));
         } catch (\Exception $e) {
-            // Jangan gagalkan pendaftaran jika email error — log saja
-            // Email bisa di-resend manual dari admin panel
             logger()->error('[Registration] Gagal kirim email approved: ' . $e->getMessage(), [
                 'registration_id' => $registration->id,
                 'email'           => $registration->email,
@@ -338,8 +380,6 @@ class RegistrationController extends Controller
 
     // ============================================================
     // PAYMENT VIA TOKEN
-    // GET /payment/{token}
-    // Untuk semua kategori — link dikirim via email
     // ============================================================
 
     public function paymentByToken(string $token)
@@ -370,7 +410,30 @@ class RegistrationController extends Controller
     {
         $orderId      = $request->query('order_id');
         $registration = Registration::where('midtrans_order_id', $orderId)->first();
+
+        if ($registration?->status === 'paid' && ! $registration->pdf_receipt_path) {
+            try {
+                app(\App\Services\ReceiptPdfService::class)->generate($registration);
+                $registration = $registration->fresh();
+                \Log::info('[Success] PDF generated via fallback for ' . $orderId);
+            } catch (\Exception $e) {
+                \Log::warning('[Success] PDF fallback failed: ' . $e->getMessage(), [
+                    'order_id' => $orderId,
+                ]);
+            }
+        }
+
         return view('registration.success', compact('registration'));
+    }
+
+    public function receiptStatus(string $uuid)
+    {
+        $registration = Registration::where('uuid', $uuid)->firstOrFail();
+
+        return response()->json([
+            'ready'  => ! is_null($registration->pdf_receipt_path),
+            'status' => $registration->status,
+        ]);
     }
 
     public function pending(Request $request)

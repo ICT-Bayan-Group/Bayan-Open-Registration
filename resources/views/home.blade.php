@@ -648,12 +648,6 @@ body {
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 9l-7 7-7-7"/></svg>
             </a>
         </div>
-
-        <div class="stats-strip" id="h-stats">
-            <div class="stat-cell"><span class="stat-val">4</span><span class="stat-lbl">Kategori</span></div>
-            <div class="stat-cell"><span class="stat-val">150K</span><span class="stat-lbl">Mulai Dari</span></div>
-            <div class="stat-cell"><span class="stat-val">2026</span><span class="stat-lbl">Season</span></div>
-        </div>
     </div>
 
     <div class="scroll-cue" id="h-scroll">
@@ -717,7 +711,7 @@ body {
                     </svg>
                 </div>
                 <p class="kat-name">Ganda Veteran Putra</p>
-                <p class="kat-desc">Scan KTP wajib. Lahir pada atau sebelum 24 Agustus 1995.</p>
+                <p class="kat-desc">Scan KTP wajib. Minimal usia 45 tahun.</p>
                 <div class="kat-footer">
                     <div class="kat-price-wrap">
                         <p class="kat-price">Rp 150.000</p>
@@ -735,7 +729,7 @@ body {
                     </svg>
                 </div>
                 <p class="kat-name">Beregu</p>
-                <p class="kat-desc">Upload KTP, minimum 3 pemain per regu. Cocok untuk tim komunitas.</p>
+                <p class="kat-desc">Upload KTP, minimum 6 pemain per regu. Cocok untuk tim komunitas.</p>
                 <div class="kat-footer">
                     <div class="kat-price-wrap">
                         <p class="kat-price">Rp 200.000</p>
@@ -977,7 +971,7 @@ body {
                     </div>
                     <div style="flex:1;min-width:0;">
                         <p class="sub-name">Ganda Veteran Putra</p>
-                        <p class="sub-desc">Scan KTP · lahir ≤ 24 Agustus 1995</p>
+                        <p class="sub-desc">Scan KTP · Minimal umur 45 Tahun</p>
                     </div>
                     <span class="sub-price">Rp 150.000</span>
                     <svg class="sc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(26,18,9,0.6)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
@@ -989,7 +983,7 @@ body {
                     </div>
                     <div style="flex:1;min-width:0;">
                         <p class="sub-name">Beregu</p>
-                        <p class="sub-desc">Upload KTP · min. 3 pemain per regu</p>
+                        <p class="sub-desc">Upload KTP · min. 6 pemain per regu</p>
                     </div>
                     <span class="sub-price">Rp 200.000</span>
                     <svg class="sc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(26,18,9,0.6)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>

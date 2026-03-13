@@ -4,7 +4,6 @@
 
 @push('styles')
 <style>
-    /* ── Animasi ─────────────────────────────────────────────── */
     @keyframes fadeSlideUp {
         from { opacity: 0; transform: translateY(18px); }
         to   { opacity: 1; transform: translateY(0); }
@@ -14,19 +13,29 @@
         100% { background-position:  200% center; }
     }
 
-    .form-section                 { animation: fadeSlideUp .45s ease both; }
-    .form-section:nth-child(1)    { animation-delay: .06s; }
-    .form-section:nth-child(2)    { animation-delay: .12s; }
-    .form-section:nth-child(3)    { animation-delay: .18s; }
-    .form-section:nth-child(4)    { animation-delay: .24s; }
-    .form-section:nth-child(5)    { animation-delay: .30s; }
+    .form-section              { animation: fadeSlideUp .45s ease both; }
+    .form-section:nth-child(1) { animation-delay: .06s; }
+    .form-section:nth-child(2) { animation-delay: .12s; }
+    .form-section:nth-child(3) { animation-delay: .18s; }
+    .form-section:nth-child(4) { animation-delay: .24s; }
+    .form-section:nth-child(5) { animation-delay: .30s; }
 
-    /* ── Member card ─────────────────────────────────────────── */
+    /* ── Grid anggota 2 kolom ────────────────────────────────── */
+    #memberSlots {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+    @media (max-width: 600px) {
+        #memberSlots { grid-template-columns: 1fr; }
+    }
+
+    /* ── Member card compact ─────────────────────────────────── */
     .member-card {
-        border-radius: 18px;
+        border-radius: 14px;
         border: 1.5px solid rgba(249,115,22,.18);
         background: rgba(20,10,4,.75);
-        padding: 22px;
+        padding: 14px;
         transition: border-color .3s, background .3s, box-shadow .3s;
     }
     .member-card.scanned {
@@ -36,16 +45,20 @@
     }
     .member-card.city-invalid {
         border-color: rgba(239,68,68,.4);
-        box-shadow: 0 0 0 1px rgba(239,68,68,.06) inset;
+        box-shadow:   0 0 0 1px rgba(239,68,68,.06) inset;
     }
 
-    /* ── KTP Dropzone ────────────────────────────────────────── */
+    /* ── KTP Dropzone compact ────────────────────────────────── */
     .ktp-dropzone {
-        border: 2px dashed rgba(249,115,22,.22);
-        border-radius: 12px;
+        border: 1.5px dashed rgba(249,115,22,.22);
+        border-radius: 10px;
         background: rgba(249,115,22,.018);
         cursor: pointer;
         transition: border-color .2s, background .2s;
+        min-height: 64px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     .ktp-dropzone:hover,
     .ktp-dropzone.drag-over {
@@ -53,50 +66,51 @@
         background: rgba(249,115,22,.04);
     }
 
-    /* ── KTP Data Card (sama dgn form-dewasa) ────────────────── */
+    /* ── KTP Data Card ───────────────────────────────────────── */
     .ktp-data-card {
-        border-radius: 13px;
+        border-radius: 10px;
         background:    rgba(255,255,255,.025);
         border:        1px solid rgba(255,255,255,.07);
-        padding:       14px 16px;
-        margin-top:    14px;
+        padding:       10px 12px;
+        margin-top:    10px;
         display:       none;
     }
     .ktp-data-card.show       { display: block; animation: fadeSlideUp .3s ease both; }
     .ktp-data-card.valid-card { background: rgba(249,115,22,.04); border-color: rgba(249,115,22,.22); }
 
-    /* ── KTP Row ─────────────────────────────────────────────── */
+    /* ── KTP Row compact ─────────────────────────────────────── */
     .ktp-row {
-        display:       flex;
-        align-items:   center;
-        gap:           10px;
-        padding:       5px 0;
+        display:     flex;
+        align-items: center;
+        gap:         6px;
+        padding:     3px 0;
         border-bottom: 1px solid rgba(255,255,255,.04);
-        min-height:    32px;
+        min-height:  26px;
     }
     .ktp-row:last-child { border-bottom: none; padding-bottom: 0; }
     .ktp-label {
-        font-size:      10px;
+        font-size:      9px;
         font-weight:    700;
         text-transform: uppercase;
         letter-spacing: .06em;
         color:          rgba(255,255,255,.28);
-        min-width:      82px;
+        min-width:      58px;
         flex-shrink:    0;
     }
 
-    /* ── Inline value display (klikable) ─────────────────────── */
+    /* ── Inline value display ────────────────────────────────── */
     .ktp-value {
         flex:        1;
-        font-size:   12px;
+        font-size:   11px;
         color:       rgba(255,255,255,.75);
-        line-height: 1.4;
+        line-height: 1.3;
         word-break:  break-word;
-        padding:     3px 8px;
-        border-radius: 6px;
+        padding:     2px 6px;
+        border-radius: 5px;
         border:      1px solid transparent;
         cursor:      pointer;
         transition:  background .15s, border-color .15s, color .15s;
+        min-width: 0;
     }
     .ktp-value.hl  { color: #fff; font-weight: 600; }
     .ktp-value:hover {
@@ -104,55 +118,46 @@
         border-color: rgba(249,115,22,.28);
         color:        #fff;
     }
-    .ktp-value:hover::after { content: ' ✏'; font-size: 9px; opacity: .45; margin-left: 3px; }
+    .ktp-value:hover::after { content: ' ✏'; font-size: 8px; opacity: .45; }
 
     /* ── Inline input ────────────────────────────────────────── */
     .ktp-inline-input {
         flex:        1;
         background:  rgba(249,115,22,.07);
         border:      1.5px solid rgba(249,115,22,.5);
-        border-radius: 6px;
+        border-radius: 5px;
         color:       #fff;
-        font-size:   12px;
+        font-size:   11px;
         font-weight: 600;
-        padding:     3px 9px;
+        padding:     2px 7px;
         outline:     none;
         min-width:   0;
         transition:  border-color .15s, box-shadow .15s;
     }
     .ktp-inline-input:focus {
         border-color: rgba(249,115,22,.9);
-        box-shadow:   0 0 0 2px rgba(249,115,22,.16);
+        box-shadow:   0 0 0 2px rgba(249,115,22,.14);
     }
     .ktp-inline-input.was-edited {
         border-color: rgba(234,179,8,.65);
         background:   rgba(234,179,8,.07);
     }
 
-    /* ── Edit hint ───────────────────────────────────────────── */
-    .ktp-edit-hint {
-        font-size:   9.5px;
-        color:       rgba(249,115,22,.38);
-        text-align:  right;
-        font-style:  italic;
-        margin-top:  4px;
-    }
-
-    /* ── Usia display (read-only) ────────────────────────────── */
+    /* ── Usia display ────────────────────────────────────────── */
     .usia-display {
         flex:        1;
-        font-size:   12px;
+        font-size:   11px;
         font-weight: 700;
-        line-height: 1.4;
-        padding:     3px 8px;
-        border-radius: 6px;
+        padding:     2px 6px;
+        border-radius: 5px;
         cursor:      default;
         transition:  color .25s, background .25s;
+        min-width: 0;
     }
     .usia-display.has-value {
         color:       #34d399;
         background:  rgba(16,185,129,.07);
-        border:      1px solid rgba(16,185,129,.2);
+        border:      1px solid rgba(16,185,129,.18);
     }
     .usia-display.no-value {
         color:       rgba(255,255,255,.25);
@@ -162,23 +167,25 @@
         border:      1px solid transparent;
     }
 
-    /* ── City badge ──────────────────────────────────────────── */
+    /* ── City badge compact ──────────────────────────────────── */
     .city-badge {
-        display:     flex;
+        display:     inline-flex;
         align-items: center;
-        gap:         6px;
-        padding:     7px 11px;
-        border-radius: 8px;
-        font-size:   11px;
+        gap:         4px;
+        padding:     4px 8px;
+        border-radius: 6px;
+        font-size:   10px;
         font-weight: 700;
-        margin-top:  10px;
+        margin-top:  8px;
+        width: 100%;
+        box-sizing: border-box;
     }
     .city-badge.valid   { background: rgba(16,185,129,.1);  border: 1px solid rgba(16,185,129,.3);  color: #34d399; }
     .city-badge.invalid { background: rgba(239,68,68,.1);   border: 1px solid rgba(239,68,68,.3);   color: #f87171; }
     .city-badge.empty   { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.1); color: rgba(255,255,255,.35); }
 
     /* ── Scan loading bar ────────────────────────────────────── */
-    .scan-loading-bar { height: 3px; border-radius: 99px; overflow: hidden; background: rgba(249,115,22,.1); margin-top: 10px; }
+    .scan-loading-bar { height: 2px; border-radius: 99px; overflow: hidden; background: rgba(249,115,22,.1); margin-top: 6px; }
     .scan-loading-bar-inner {
         height: 100%; width: 40%;
         background:      linear-gradient(90deg, transparent, #f97316, transparent);
@@ -190,10 +197,10 @@
     .scan-badge {
         display:     none;
         align-items: center;
-        gap:         4px;
-        padding:     2px 8px;
+        gap:         3px;
+        padding:     1px 6px;
         border-radius: 99px;
-        font-size:   11px;
+        font-size:   9px;
         font-weight: 700;
         background:  rgba(16,185,129,.1);
         border:      1px solid rgba(16,185,129,.3);
@@ -202,11 +209,11 @@
 
     /* ── Counter bar ─────────────────────────────────────────── */
     .counter-bar {
-        height: 6px;
+        height: 5px;
         border-radius: 99px;
         background: rgba(255,255,255,.07);
         overflow: hidden;
-        margin-top: 6px;
+        margin-top: 5px;
     }
     .counter-fill {
         height: 100%;
@@ -222,6 +229,25 @@
     }
     select.input-field option { background-color: #0d1117; color: rgba(255,255,255,.85); }
     select.input-field:disabled { opacity: .4 !important; cursor: not-allowed; }
+
+    /* ── Preview image compact ───────────────────────────────── */
+    .preview-img-compact {
+        max-h: 52px;
+        max-height: 52px;
+        max-width: 100%;
+        border-radius: 6px;
+        object-fit: contain;
+    }
+
+    /* ── Edit hint small ─────────────────────────────────────── */
+    .ktp-edit-hint {
+        font-size:  8.5px;
+        color:      rgba(249,115,22,.38);
+        text-align: right;
+        font-style: italic;
+        margin-top: 2px;
+        margin-bottom: 4px;
+    }
 </style>
 @endpush
 
@@ -238,14 +264,11 @@
             </svg>
             Ganti kategori
         </a>
-
         <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-brand-500/40
                     bg-brand-500/10 text-brand-300 text-xs font-semibold uppercase tracking-widest mb-4">
             Pendaftaran Online · Bayan Open 2026
         </div>
-
         <h1 class="font-display text-3xl font-bold mb-3">Formulir Beregu</h1>
-
         <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-3"
              style="background:rgba(249,115,22,.1);border:1px solid rgba(249,115,22,.3);">
             <svg width="13" height="13" viewBox="0 0 20 20" fill="rgba(251,146,60,1)">
@@ -253,7 +276,6 @@
             </svg>
             <span class="text-brand-400 text-xs font-bold uppercase tracking-widest">Beregu · 6–8 Anggota</span>
         </div>
-
         <p class="text-white/40 text-sm mt-2">
             Minimal <strong class="text-white/70">6</strong> dari
             <strong class="text-white/70">8</strong> anggota harus ber-KTP
@@ -291,9 +313,7 @@
             <span class="w-6 h-6 rounded-full bg-brand-500 flex items-center justify-center text-xs font-black">1</span>
             Data Tim &amp; Kontak
         </h2>
-
         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-
             <div class="md:col-span-2">
                 <label class="block text-white/60 text-xs font-semibold uppercase tracking-wide mb-2">
                     Nama Tim / PB <span class="text-brand-400">*</span>
@@ -303,7 +323,6 @@
                     class="input-field w-full px-4 py-3 rounded-xl text-sm @error('tim_pb') border-red-500 @enderror" required>
                 @error('tim_pb')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
             </div>
-
             <div class="md:col-span-2">
                 <label class="block text-white/60 text-xs font-semibold uppercase tracking-wide mb-2">
                     Nama Ketua Tim / PIC <span class="text-brand-400">*</span>
@@ -313,7 +332,6 @@
                     class="input-field w-full px-4 py-3 rounded-xl text-sm @error('nama') border-red-500 @enderror" required>
                 @error('nama')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
             </div>
-
             <div>
                 <label class="block text-white/60 text-xs font-semibold uppercase tracking-wide mb-2">
                     Email <span class="text-brand-400">*</span>
@@ -324,7 +342,6 @@
                 <p class="text-white/25 text-xs mt-1">Link pembayaran dikirim ke email ini setelah diverifikasi</p>
                 @error('email')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
             </div>
-
             <div>
                 <label class="block text-white/60 text-xs font-semibold uppercase tracking-wide mb-2">
                     Nomor WhatsApp <span class="text-brand-400">*</span>
@@ -334,7 +351,6 @@
                     class="input-field w-full px-4 py-3 rounded-xl text-sm @error('no_hp') border-red-500 @enderror" required>
                 @error('no_hp')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
             </div>
-
             <div>
                 <label class="block text-white/60 text-xs font-semibold uppercase tracking-wide mb-2">
                     Provinsi <span class="text-brand-400">*</span>
@@ -355,7 +371,6 @@
                 </div>
                 @error('provinsi')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
             </div>
-
             <div>
                 <label class="block text-white/60 text-xs font-semibold uppercase tracking-wide mb-2">
                     Kota / Kabupaten <span class="text-brand-400">*</span>
@@ -375,7 +390,6 @@
                 </div>
                 @error('kota')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
             </div>
-
         </div>
     </div>
 
@@ -405,9 +419,9 @@
     </div>
 
     {{-- ═══════════════════════════════════════════════════════════
-         SECTION 3 — ANGGOTA TIM
+         SECTION 3 — ANGGOTA TIM (2-kolom compact)
     ═══════════════════════════════════════════════════════════ --}}
-    <div class="rounded-2xl p-8 mb-6 form-section"
+    <div class="rounded-2xl p-6 mb-6 form-section"
          style="background:rgba(249,115,22,.03);border:1.5px solid rgba(249,115,22,.15);">
 
         <h2 class="font-display text-sm font-bold mb-1 flex items-center gap-2">
@@ -416,34 +430,34 @@
             Data Anggota Tim
         </h2>
         <p class="text-white/32 text-xs mb-1 ml-9">
-            Upload KTP tiap anggota lalu klik <strong class="text-brand-400/80">SCAN KTP</strong> — data terisi otomatis.
+            Upload KTP lalu klik <strong class="text-brand-400/80">SCAN</strong> — data terisi otomatis &amp; bisa diedit.
         </p>
-        <p class="text-white/22 text-xs mb-7 ml-9">
-            NIK, Nama, dan Tgl Lahir dapat diedit manual jika hasil scan kurang akurat. Minimal <strong class="text-white/50">6 anggota</strong> harus ber-KTP Kota Balikpapan.
+        <p class="text-white/22 text-xs mb-5 ml-9">
+            Minimal <strong class="text-white/50">6 anggota</strong> harus ber-KTP Kota Balikpapan.
         </p>
 
         {{-- ── Counter KTP Valid ─────────────────────────────── --}}
-        <div class="ml-9 mb-7 p-4 rounded-xl" style="background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.06);">
-            <div class="flex items-center justify-between mb-2">
+        <div class="ml-9 mb-5 p-3 rounded-xl" style="background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.06);">
+            <div class="flex items-center justify-between mb-1.5">
                 <span class="text-white/45 text-xs font-semibold uppercase tracking-wide">KTP Balikpapan Valid</span>
                 <span id="counterText" class="text-xs font-bold text-white/50">0 / 0 anggota</span>
             </div>
             <div class="counter-bar">
                 <div id="counterFill" class="counter-fill" style="width:0%;background:#f97316;"></div>
             </div>
-            <p id="counterNote" class="text-white/28 text-xs mt-2">Tambah anggota dan scan KTP untuk melihat progress</p>
+            <p id="counterNote" class="text-white/28 text-xs mt-1.5">Tambah anggota dan scan KTP untuk melihat progress</p>
         </div>
 
-        {{-- ── Slot container ────────────────────────────────── --}}
-        <div id="memberSlots" class="space-y-5"></div>
+        {{-- ── Slot container — 2 kolom ─────────────────────── --}}
+        <div id="memberSlots"></div>
 
-        {{-- ── Tombol tambah anggota ─────────────────────────── --}}
+        {{-- ── Tombol tambah ────────────────────────────────── --}}
         <button type="button" id="addMemberBtn"
             onclick="BEREGU.addMember()"
-            class="mt-6 flex items-center gap-2 text-brand-400/80 hover:text-brand-400
-                   text-sm font-bold transition disabled:opacity-30 disabled:cursor-not-allowed">
-            <span class="w-7 h-7 rounded-full border-2 border-brand-400/40
-                         flex items-center justify-center text-brand-400 text-xl leading-none font-light">+</span>
+            class="mt-5 flex items-center gap-2 text-brand-400/80 hover:text-brand-400
+                   text-xs font-bold transition disabled:opacity-30 disabled:cursor-not-allowed">
+            <span class="w-6 h-6 rounded-full border-2 border-brand-400/40
+                         flex items-center justify-center text-brand-400 text-lg leading-none font-light">+</span>
             Tambah Anggota
         </button>
 
@@ -494,7 +508,6 @@
     </p>
 
     </form>
-
 </div>
 </section>
 @endsection
@@ -587,7 +600,7 @@ document.addEventListener('DOMContentLoaded', loadProvinsi);
 
 <script>
 /* ================================================================
-   BEREGU FORM — Anggota Tim dengan KTP OCR + Data Card + Edit Inline
+   BEREGU — 2-KOLOM COMPACT dengan KTP OCR + Inline Edit
 ================================================================ */
 (function () {
 'use strict';
@@ -596,21 +609,17 @@ var MIN_MEMBERS   = 6;
 var MAX_MEMBERS   = 8;
 var MIN_KTP_VALID = 6;
 
-/* State */
-var members  = [];   /* { id, file, scanned, cityValid, data } */
+var members  = [];
 var nextId   = 0;
-var cardData = {};   /* { id: { nik, nama, tanggal_lahir } } */
+var cardData = {};
 
-/* Tanggal turnamen untuk kalkulasi usia */
 var TOURNAMENT_DATE = new Date(2026, 7, 24); /* 24 Agustus 2026 */
+var VALID_CITY      = ['BALIKPAPAN'];
 
-var VALID_CITY = ['BALIKPAPAN'];
-
-/* Field definitions — sama dengan form-dewasa */
 var CARD_FIELDS = [
-    { l: 'NIK',       k: 'nik',           n: 'nik[]',        placeholder: '16 digit NIK sesuai KTP' },
-    { l: 'Nama',      k: 'nama',          n: 'pemain[]',     placeholder: 'Nama lengkap sesuai KTP' },
-    { l: 'Tgl Lahir', k: 'tanggal_lahir', n: 'tgl_lahir[]',  placeholder: 'DD-MM-YYYY' },
+    { l: 'NIK',     k: 'nik',           n: 'nik[]',       placeholder: '16 digit NIK' },
+    { l: 'Nama',    k: 'nama',          n: 'pemain[]',    placeholder: 'Nama sesuai KTP' },
+    { l: 'Tgl Lhr', k: 'tanggal_lahir', n: 'tgl_lahir[]', placeholder: 'DD-MM-YYYY' },
 ];
 
 /* ── Hitung usia ────────────────────────────────────────────── */
@@ -631,17 +640,16 @@ function hitungUsia(str) {
     return usia;
 }
 
-/* ── Update row usia (read-only) ────────────────────────────── */
 function updateUsiaRow(id, tglValue) {
     var usia   = hitungUsia(tglValue);
     var dispEl = document.getElementById('usia_disp_' + id);
     if (!dispEl) return;
     if (usia !== null) {
         dispEl.className   = 'usia-display has-value';
-        dispEl.textContent = usia + ' tahun (per 24 Ags 2026)';
+        dispEl.textContent = usia + ' th (Ags 2026)';
     } else {
         dispEl.className   = 'usia-display no-value';
-        dispEl.textContent = '— isi tgl lahir dulu';
+        dispEl.textContent = '—';
     }
 }
 
@@ -651,7 +659,7 @@ function isCityValid(city) {
     return VALID_CITY.some(function (k) { return city.indexOf(k) !== -1; });
 }
 
-/* ── Init: buat 6 slot awal ─────────────────────────────────── */
+/* ── Init ───────────────────────────────────────────────────── */
 function init() {
     for (var i = 0; i < MIN_MEMBERS; i++) addMember();
     updateCounter();
@@ -692,7 +700,7 @@ function renumber() {
     });
 }
 
-/* ── Render satu slot ───────────────────────────────────────── */
+/* ── Render slot compact ────────────────────────────────────── */
 function renderSlot(id) {
     var idx       = members.length - 1;
     var deletable = members.length > MIN_MEMBERS;
@@ -700,119 +708,95 @@ function renderSlot(id) {
 
     var delBtn = deletable
         ? '<button type="button" onclick="BEREGU.remove(' + id + ')"'
-          + ' class="w-8 h-8 rounded-lg bg-red-500/20 hover:bg-red-500/30 flex items-center justify-center transition"'
-          + ' title="Hapus anggota ini">'
-          + '<svg class="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">'
-          + '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>'
+          + ' class="w-6 h-6 rounded-md flex items-center justify-center transition flex-shrink-0"'
+          + ' style="background:rgba(239,68,68,.18);" title="Hapus">'
+          + '<svg width="10" height="10" fill="none" stroke="#f87171" viewBox="0 0 24 24" stroke-width="2.5">'
+          + '<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>'
           + '</svg></button>'
-        : '<div class="w-8 h-8"></div>';
+        : '';
 
     var html =
         '<div id="mc_' + id + '" class="member-card" data-id="' + id + '">'
 
-        /* ── Header ── */
-        + '<div class="flex items-center justify-between mb-5">'
-        +   '<div class="flex items-center gap-3">'
-        +     '<div class="w-8 h-8 rounded-full flex items-center justify-center"'
+        /* ── Header compact ── */
+        + '<div class="flex items-center justify-between mb-3">'
+        +   '<div class="flex items-center gap-2">'
+        +     '<div class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0"'
         +          ' style="background:rgba(249,115,22,.14);border:1px solid rgba(249,115,22,.3);">'
-        +       '<span class="text-brand-400 text-xs font-black member-num">' + (idx + 1) + '</span>'
+        +       '<span class="text-brand-400 font-black member-num" style="font-size:9px;">' + (idx + 1) + '</span>'
         +     '</div>'
-        +     '<span class="member-lbl text-white/80 text-sm font-bold">Anggota ' + (idx + 1) + '</span>'
+        +     '<span class="member-lbl text-white/75 font-bold" style="font-size:11px;">Anggota ' + (idx + 1) + '</span>'
         +     '<span id="scan_badge_' + id + '" class="scan-badge">'
-        +       '<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">'
-        +         '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>'
+        +       '<svg width="8" height="8" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3">'
+        +         '<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>'
         +       '</svg>'
-        +       ' Ter-scan'
+        +       'Ter-scan'
         +     '</span>'
         +   '</div>'
         +   delBtn
         + '</div>'
 
-        /* ── Upload area ── */
-        + '<div class="mb-4">'
-        +   '<label class="block text-white/45 text-xs font-semibold uppercase tracking-wide mb-2">'
-        +     'Foto KTP <span class="text-brand-400">*</span>'
-        +     ' <span class="text-white/22 font-normal normal-case">&mdash; JPG, PNG &middot; Maks 5MB</span>'
-        +   '</label>'
-
-        /* Dropzone */
-        +   '<div id="dz_' + id + '" class="ktp-dropzone p-4 text-center"'
-        +       ' onclick="document.getElementById(\'fi_' + id + '\').click()"'
-        +       ' ondragover="event.preventDefault();this.classList.add(\'drag-over\')"'
-        +       ' ondragleave="this.classList.remove(\'drag-over\')"'
-        +       ' ondrop="BEREGU.onDrop(event,' + id + ')">'
+        /* ── Upload area compact ── */
+        + '<div id="dz_' + id + '" class="ktp-dropzone"'
+        +     ' onclick="document.getElementById(\'fi_' + id + '\').click()"'
+        +     ' ondragover="event.preventDefault();this.classList.add(\'drag-over\')"'
+        +     ' ondragleave="this.classList.remove(\'drag-over\')"'
+        +     ' ondrop="BEREGU.onDrop(event,' + id + ')">'
 
         /* Preview */
-        +     '<div id="prev_' + id + '" class="hidden">'
-        +       '<div class="relative inline-block mb-2">'
-        +         '<img id="prevImg_' + id + '" src="" alt=""'
-        +              ' class="max-h-32 mx-auto rounded-lg object-contain"'
-        +              ' style="box-shadow:0 4px 20px rgba(0,0,0,.55);">'
-        +         '<button type="button" onclick="BEREGU.resetFile(event,' + id + ')"'
-        +                 ' class="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-red-500 hover:bg-red-600'
-        +                 ' flex items-center justify-center transition">'
-        +           '<svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">'
-        +             '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"/>'
-        +           '</svg>'
-        +         '</button>'
-        +       '</div>'
-        +       '<p class="text-white/35 text-xs">Klik untuk ganti foto</p>'
-        +     '</div>'
-
-        /* Placeholder — teks putih/terang */
-        +     '<div id="dzDefault_' + id + '" class="flex flex-col items-center py-3">'
-        +       '<div class="w-11 h-11 rounded-xl flex items-center justify-center mb-3"'
-        +            ' style="background:rgba(249,115,22,.1);">'
-        +         '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"'
-        +              ' stroke="rgba(249,115,22,.6)" stroke-width="1.5">'
-        +           '<rect x="3" y="5" width="18" height="14" rx="2"/>'
-        +           '<path d="M7 9h10M7 13h6"/>'
+        +   '<div id="prev_' + id + '" class="hidden w-full flex items-center gap-2 px-3 py-2">'
+        +     '<div class="relative flex-shrink-0">'
+        +       '<img id="prevImg_' + id + '" src="" alt="" class="preview-img-compact">'
+        +       '<button type="button" onclick="BEREGU.resetFile(event,' + id + ')"'
+        +               ' class="absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center"'
+        +               ' style="background:#ef4444;">'
+        +         '<svg width="7" height="7" fill="none" stroke="white" viewBox="0 0 24 24" stroke-width="3">'
+        +           '<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>'
         +         '</svg>'
-        +       '</div>'
-        +       '<p class="text-white/60 text-sm font-medium">Klik atau seret foto KTP</p>'
-        +       '<p class="text-white/30 text-xs mt-0.5">JPG, PNG &middot; Maks 5MB</p>'
+        +       '</button>'
         +     '</div>'
+        +     '<p class="text-white/35" style="font-size:10px;">Klik ganti</p>'
+        +   '</div>'
 
-        +   '</div>' /* /dropzone */
+        /* Placeholder compact */
+        +   '<div id="dzDefault_' + id + '" class="flex flex-col items-center py-2 gap-1">'
+        +     '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"'
+        +          ' stroke="rgba(249,115,22,.5)" stroke-width="1.5">'
+        +       '<rect x="3" y="5" width="18" height="14" rx="2"/>'
+        +       '<path d="M7 9h10M7 13h6"/>'
+        +     '</svg>'
+        +     '<p class="text-white/40" style="font-size:10px;">Upload KTP</p>'
+        +   '</div>'
+        + '</div>' /* /dropzone */
 
         /* Hidden file input */
-        +   '<input type="file" id="fi_' + id + '" name="ktp_files[]"'
-        +          ' accept="image/jpeg,image/png,image/webp" class="hidden"'
-        +          ' onchange="BEREGU.onFileSelect(this,' + id + ')">'
+        + '<input type="file" id="fi_' + id + '" name="ktp_files[]"'
+        +        ' accept="image/jpeg,image/png,image/webp" class="hidden"'
+        +        ' onchange="BEREGU.onFileSelect(this,' + id + ')">'
 
-        /* Scan button */
-        +   '<button type="button" id="scanBtn_' + id + '"'
-        +           ' onclick="BEREGU.scan(' + id + ')"'
-        +           ' class="hidden mt-3 w-full py-2.5 rounded-xl font-display text-xs font-bold text-white'
-        +           ' tracking-wider flex items-center justify-center gap-2"'
-        +           ' style="background:linear-gradient(135deg,#f97316,#c2410c);'
-        +           'box-shadow:0 4px 16px rgba(249,115,22,.22);">'
-        +     '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">'
-        +       '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"'
-        +            ' d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/>'
-        +     '</svg>'
-        +     ' SCAN KTP &mdash; Isi Otomatis'
-        +   '</button>'
+        /* Scan button compact */
+        + '<button type="button" id="scanBtn_' + id + '"'
+        +         ' onclick="BEREGU.scan(' + id + ')"'
+        +         ' class="hidden mt-2 w-full rounded-lg font-display font-bold text-white'
+        +         ' tracking-wider flex items-center justify-center gap-1.5"'
+        +         ' style="background:linear-gradient(135deg,#f97316,#c2410c);'
+        +         'padding:6px 10px;font-size:10px;">'
+        +   '<svg width="11" height="11" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">'
+        +     '<path stroke-linecap="round" stroke-linejoin="round"'
+        +          ' d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/>'
+        +   '</svg>'
+        +   'SCAN KTP'
+        + '</button>'
 
-        /* Loading */
-        +   '<div id="scanLoading_' + id + '" class="hidden mt-3 text-center py-2">'
-        +     '<p class="text-brand-400 text-xs font-semibold mb-1">Membaca KTP dengan AI...</p>'
-        +     '<div class="scan-loading-bar"><div class="scan-loading-bar-inner"></div></div>'
-        +   '</div>'
-        + '</div>' /* /upload area */
+        /* Loading compact */
+        + '<div id="scanLoading_' + id + '" class="hidden mt-2 text-center" style="padding:4px 0;">'
+        +   '<p class="text-brand-400 font-semibold" style="font-size:10px;">Membaca KTP...</p>'
+        +   '<div class="scan-loading-bar"><div class="scan-loading-bar-inner"></div></div>'
+        + '</div>'
 
         /* ── KTP Data Card — inline editable ── */
         + '<div id="ktpDataCard_' + id + '" class="ktp-data-card">'
-        +   '<div class="flex items-center justify-between mb-1">'
-        +     '<p class="text-xs font-bold text-white/35 uppercase tracking-widest flex items-center gap-2">'
-        +       '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">'
-        +         '<rect x="3" y="5" width="18" height="14" rx="2"/>'
-        +         '<path d="M7 9h10M7 13h6"/>'
-        +       '</svg>'
-        +       ' Data KTP'
-        +     '</p>'
-        +   '</div>'
-        +   '<p class="ktp-edit-hint mb-3">&#9998; Klik NIK / Nama / Tgl Lahir untuk edit</p>'
+        +   '<p class="ktp-edit-hint">✏ Klik untuk edit</p>'
         +   '<div id="ktpDataRows_' + id + '"></div>'
         + '</div>'
 
@@ -845,9 +829,9 @@ function processFile(file, id) {
     var reader = new FileReader();
     reader.onload = function (e) {
         document.getElementById('prevImg_' + id).src = e.target.result;
-        show('prev_'        + id);
-        hide('dzDefault_'   + id);
-        show('scanBtn_'     + id);
+        show('prev_'      + id);
+        hide('dzDefault_' + id);
+        show('scanBtn_'   + id);
         resetCardUI(id);
     };
     reader.readAsDataURL(file);
@@ -868,10 +852,10 @@ function resetFile(e, id) {
 }
 
 function resetCardUI(id) {
-    var card    = document.getElementById('ktpDataCard_' + id);
-    var rows    = document.getElementById('ktpDataRows_' + id);
-    var badge   = document.getElementById('scan_badge_'  + id);
-    var mc      = document.getElementById('mc_'          + id);
+    var card  = document.getElementById('ktpDataCard_' + id);
+    var rows  = document.getElementById('ktpDataRows_' + id);
+    var badge = document.getElementById('scan_badge_'  + id);
+    var mc    = document.getElementById('mc_'          + id);
     if (card)  card.className = 'ktp-data-card';
     if (rows)  rows.innerHTML = '';
     if (badge) badge.style.display = 'none';
@@ -942,7 +926,6 @@ function renderKtpCard(id, data) {
     if (!card || !rows) return;
     rows.innerHTML = '';
 
-    /* ── 3 field editable: NIK, Nama, Tgl Lahir ── */
     CARD_FIELDS.forEach(function (f) {
         var raw = f.k === 'tanggal_lahir'
             ? (data.tanggal_lahir || data.tgl_lahir || '')
@@ -956,7 +939,7 @@ function renderKtpCard(id, data) {
 
         var valContent = v
             ? esc(v)
-            : '<span style="color:rgba(255,255,255,.22);font-style:italic">— ketuk untuk isi</span>';
+            : '<span style="color:rgba(255,255,255,.22);font-style:italic">—</span>';
 
         rows.innerHTML +=
             '<div class="ktp-row">'
@@ -976,36 +959,32 @@ function renderKtpCard(id, data) {
             + '</div>';
     });
 
-    /* ── Row Kota KTP (hidden, untuk backend) ── */
+    /* Row kota hidden */
     var kotaVal = (data.kota || '').trim();
     rows.innerHTML +=
         '<input type="hidden" id="khid_' + id + '_kota" name="kota_ktp[]" value="' + esc(kotaVal) + '">';
 
-    /* ── Row Usia — read-only, auto-calc ── */
+    /* Row usia read-only compact */
     var tglVal   = cardData[id]['tanggal_lahir'] || '';
     var usia     = hitungUsia(tglVal);
-    var usiaText = usia !== null ? usia + ' tahun (per 24 Ags 2026)' : '— isi tgl lahir dulu';
+    var usiaText = usia !== null ? usia + ' th (Ags 2026)' : '—';
     var uClass   = usia !== null ? 'usia-display has-value' : 'usia-display no-value';
 
     rows.innerHTML +=
-        '<div class="ktp-row" style="margin-top:6px;padding-top:8px;border-top:1px solid rgba(249,115,22,.1);">'
-        + '<span class="ktp-label" style="color:rgba(249,115,22,.5);">Usia</span>'
-        + '<span id="usia_disp_' + id + '" class="' + uClass + '" title="Dihitung otomatis dari Tgl Lahir">'
-        +   usiaText
-        + '</span>'
-        + '<span style="font-size:9px;color:rgba(249,115,22,.35);margin-left:4px;flex-shrink:0;white-space:nowrap;">'
-        +   'otomatis'
-        + '</span>'
+        '<div class="ktp-row" style="margin-top:4px;padding-top:6px;border-top:1px solid rgba(249,115,22,.1);">'
+        + '<span class="ktp-label" style="color:rgba(249,115,22,.45);">Usia</span>'
+        + '<span id="usia_disp_' + id + '" class="' + uClass + '">' + usiaText + '</span>'
+        + '<span style="font-size:8px;color:rgba(249,115,22,.3);flex-shrink:0;">auto</span>'
         + '</div>';
 
-    /* ── City badge ── */
+    /* City badge compact */
     var cityValid = data.city_valid;
     var kotaRaw   = data.kota || '';
     var badgeHtml;
     if (cityValid) {
         badgeHtml = '<div class="city-badge valid">✓ KTP Balikpapan — Memenuhi Syarat</div>';
     } else if (kotaRaw) {
-        badgeHtml = '<div class="city-badge invalid">✗ Kota "' + esc(kotaRaw) + '" — Bukan Balikpapan</div>';
+        badgeHtml = '<div class="city-badge invalid">✗ "' + esc(kotaRaw) + '" — Bukan Balikpapan</div>';
     } else {
         badgeHtml = '<div class="city-badge empty">— Kota belum terbaca</div>';
     }
@@ -1041,16 +1020,15 @@ function inlineSave(id, fieldKey) {
     if (newVal) {
         valEl.innerHTML   = esc(newVal);
         valEl.style.color = edited ? '#fbbf24' : '';
-        valEl.title       = edited ? 'Diedit manual — klik untuk ubah lagi' : 'Klik untuk edit';
+        valEl.title       = edited ? 'Diedit manual' : 'Klik untuk edit';
     } else {
-        valEl.innerHTML   = '<span style="color:rgba(255,255,255,.22);font-style:italic">— ketuk untuk isi</span>';
+        valEl.innerHTML   = '<span style="color:rgba(255,255,255,.22);font-style:italic">—</span>';
         valEl.style.color = '';
     }
     if (edited && inpEl.classList) inpEl.classList.add('was-edited');
     inpEl.style.display = 'none';
     valEl.style.display = '';
 
-    /* Recalculate usia jika tgl_lahir diubah */
     if (fieldKey === 'tanggal_lahir') updateUsiaRow(id, newVal);
 }
 
@@ -1064,7 +1042,7 @@ function inlineKey(e, id, fieldKey) {
     }
 }
 
-/* ── Update counter bar ─────────────────────────────────────── */
+/* ── Update counter ─────────────────────────────────────────── */
 function updateCounter() {
     var total      = members.length;
     var validCount = members.filter(function (m) { return m.cityValid === true; }).length;
@@ -1084,10 +1062,10 @@ function updateCounter() {
             noteEl.textContent = 'Scan KTP anggota untuk melihat progress validasi';
             noteEl.style.color = 'rgba(255,255,255,.28)';
         } else if (validCount < MIN_KTP_VALID) {
-            noteEl.textContent = 'Butuh ' + (MIN_KTP_VALID - validCount) + ' KTP Balikpapan lagi untuk memenuhi syarat';
+            noteEl.textContent = 'Butuh ' + (MIN_KTP_VALID - validCount) + ' KTP Balikpapan lagi';
             noteEl.style.color = '#f97316';
         } else {
-            noteEl.textContent = '✓ Syarat minimal terpenuhi — siap dikirim ke admin';
+            noteEl.textContent = '✓ Syarat minimal terpenuhi — siap dikirim';
             noteEl.style.color = '#34d399';
         }
     }
@@ -1102,7 +1080,7 @@ function updateAddBtn() {
     btn.style.opacity = maxed ? '.3' : '1';
 }
 
-/* ── Validasi saat submit ───────────────────────────────────── */
+/* ── Validasi submit ────────────────────────────────────────── */
 function validateSubmit(e) {
     var missing = [];
 
@@ -1132,7 +1110,7 @@ function validateSubmit(e) {
     var validCount = members.filter(function (m) { return m.cityValid === true; }).length;
     if (validCount < MIN_KTP_VALID) {
         e.preventDefault();
-        toast('Minimal ' + MIN_KTP_VALID + ' anggota harus ber-KTP Kota Balikpapan. Saat ini hanya ' + validCount + '.', 'error');
+        toast('Minimal ' + MIN_KTP_VALID + ' KTP Balikpapan diperlukan. Saat ini: ' + validCount + '.', 'error');
     }
 }
 
@@ -1154,8 +1132,8 @@ function toast(msg, type) {
     if (!el) {
         el = document.createElement('div');
         el.id = '_beregToast';
-        el.style.cssText = 'position:fixed;top:88px;right:20px;z-index:99999;max-width:380px;'
-            + 'padding:12px 16px;border-radius:13px;font-size:12px;line-height:1.5;font-weight:600;'
+        el.style.cssText = 'position:fixed;top:88px;right:20px;z-index:99999;max-width:360px;'
+            + 'padding:10px 14px;border-radius:11px;font-size:11px;line-height:1.5;font-weight:600;'
             + 'box-shadow:0 8px 36px rgba(0,0,0,.45);transition:opacity .3s,transform .3s;pointer-events:none;';
         document.body.appendChild(el);
     }
@@ -1173,7 +1151,7 @@ function toast(msg, type) {
     }, 5000);
 }
 
-/* ── Expose ke window ───────────────────────────────────────── */
+/* ── Expose ─────────────────────────────────────────────────── */
 window.BEREGU = {
     addMember:   addMember,
     remove:      removeMember,

@@ -60,10 +60,34 @@
     padding-bottom: 8px;
     margin-bottom: 14px;
   }
-  .detail-row { display: flex; justify-content: space-between; padding: 5px 0; font-size: 13px; }
-  .detail-label { color: #64748b; }
-  .detail-value { font-weight: 600; color: #1e293b; text-align: right; max-width: 60%; }
-  .detail-value.order-id { font-family: monospace; color: #f97316; font-size: 12px; }
+
+  /* FIX UTAMA: detail-row pakai table layout agar label & value tidak menempel */
+  .detail-row {
+    display: table;
+    width: 100%;
+    padding: 6px 0;
+    font-size: 13px;
+    border-bottom: 1px solid #f1f5f9;
+  }
+  .detail-row:last-child { border-bottom: none; }
+  .detail-label {
+    display: table-cell;
+    color: #64748b;
+    white-space: nowrap;
+    padding-right: 16px;
+    width: 45%;
+    vertical-align: top;
+    padding-top: 2px;
+  }
+  .detail-value {
+    display: table-cell;
+    font-weight: 600;
+    color: #1e293b;
+    text-align: right;
+    vertical-align: top;
+    padding-top: 2px;
+  }
+  .detail-value.order-id { font-family: monospace; color: #f97316; font-size: 12px; word-break: break-all; }
   .detail-value.status-ok { color: #16a34a; }
 
   /* Players */
@@ -84,7 +108,7 @@
   }
   .player-item:last-child { border-bottom: none; padding-bottom: 0; }
   .player-num {
-    width: 24px; height: 24px;
+    width: 26px; height: 26px;
     background: #f97316;
     color: #fff;
     border-radius: 50%;
@@ -151,13 +175,13 @@
     display: flex;
     align-items: flex-start;
     gap: 10px;
-    padding: 5px 0;
+    padding: 6px 0;
     font-size: 13px;
     color: #475569;
     line-height: 1.5;
   }
   .step-num {
-    width: 20px; height: 20px;
+    min-width: 22px; height: 22px;
     background: rgba(249,115,22,0.12);
     color: #f97316;
     border-radius: 50%;
@@ -231,26 +255,32 @@
     <!-- Data Tim -->
     <div class="detail-card">
       <div class="detail-title">Data Pendaftaran</div>
+
       <div class="detail-row">
         <span class="detail-label">Nama Ketua Tim</span>
         <span class="detail-value">{{ $registration->nama }}</span>
       </div>
+
       <div class="detail-row">
         <span class="detail-label">Tim / PB</span>
         <span class="detail-value">{{ $registration->tim_pb }}</span>
       </div>
+
       <div class="detail-row">
         <span class="detail-label">Kategori</span>
         <span class="detail-value">{{ $registration->kategori_label }}</span>
       </div>
+
       <div class="detail-row">
         <span class="detail-label">Jumlah Pemain</span>
         <span class="detail-value">{{ count($registration->pemain ?? []) }} orang</span>
       </div>
+
       <div class="detail-row">
         <span class="detail-label">Order ID</span>
         <span class="detail-value order-id">{{ $registration->midtrans_order_id }}</span>
       </div>
+
       <div class="detail-row">
         <span class="detail-label">Status</span>
         <span class="detail-value status-ok">✅ Diterima — Menunggu Pembayaran</span>

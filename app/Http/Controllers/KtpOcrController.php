@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Log;
 
 class KtpOcrController extends Controller
 {
-    private string $ocrUrl = 'http://10.126.164.209:5000/ocr/ktp';
+    private string $ocrUrl = 'http://192.168.0.16:5000/ocr/ktp';
 
     /**
      * Kata kunci kota valid — case-insensitive, harus mengandung salah satu.
@@ -81,22 +81,27 @@ class KtpOcrController extends Controller
         $kotaRaw        = strtoupper(trim($data['kota'] ?? $data['kabupaten_kota'] ?? ''));
         $cityValid      = $this->isCityValid($kotaRaw);
 
+        // ── Normalize jenis_kelamin → "L" atau "P" ────────────────
+        $jenisKelaminRaw  = strtoupper(trim($data['jenis_kelamin'] ?? ''));
+        $jenisKelaminNorm = $this->normalizeJenisKelamin($jenisKelaminRaw);
+
         // ── Build response terstandarisasi ─────────────────────────
         return response()->json([
             'success' => true,
             'data'    => [
-                'nik'           => trim($data['nik']           ?? ''),
-                'nama'          => trim($data['nama']          ?? ''),
-                'tanggal_lahir' => $this->normalizeTanggal($data['tanggal_lahir'] ?? $data['tgl_lahir'] ?? ''),
-                'kota'          => $kotaRaw,
-                'city_valid'    => $cityValid,
-                'city_raw'      => $kotaRaw,
+                'nik'               => trim($data['nik']           ?? ''),
+                'nama'              => trim($data['nama']          ?? ''),
+                'tanggal_lahir'     => $this->normalizeTanggal($data['tanggal_lahir'] ?? $data['tgl_lahir'] ?? ''),
+                'kota'              => $kotaRaw,
+                'city_valid'        => $cityValid,
+                'city_raw'          => $kotaRaw,
 
-                // field tambahan dari OCR jika ada (untuk info admin)
-                'tempat_lahir'  => trim($data['tempat_lahir']  ?? ''),
-                'jenis_kelamin' => trim($data['jenis_kelamin'] ?? ''),
-                'agama'         => trim($data['agama']         ?? ''),
-                'pekerjaan'     => trim($data['pekerjaan']     ?? ''),
+                // field tambahan dari OCR (untuk info admin & validasi kategori)
+                'tempat_lahir'      => trim($data['tempat_lahir']  ?? ''),
+                'jenis_kelamin'     => $jenisKelaminNorm,       // "L" | "P" | ""
+                'jenis_kelamin_raw' => $jenisKelaminRaw,        // nilai mentah dari OCR
+                'agama'             => trim($data['agama']         ?? ''),
+                'pekerjaan'         => trim($data['pekerjaan']     ?? ''),
             ],
         ]);
     }
@@ -116,6 +121,36 @@ class KtpOcrController extends Controller
             }
         }
         return false;
+    }
+
+    // ================================================================
+    // Normalize jenis_kelamin → "L" atau "P"
+    // Menangani berbagai format OCR: LAKI-LAKI, PEREMPUAN, L, P, dsb.
+    // ================================================================
+
+    private function normalizeJenisKelamin(string $raw): string
+    {
+        $raw = strtoupper(trim($raw));
+
+        if (empty($raw)) return '';
+
+        // Cek PEREMPUAN / WANITA / P / PR terlebih dahulu
+        if (in_array($raw, ['P', 'PR', 'WANITA', 'PEREMPUAN'], true)) {
+            return 'P';
+        }
+        if (str_contains($raw, 'PEREMPUAN') || str_contains($raw, 'WANITA')) {
+            return 'P';
+        }
+
+        // Cek LAKI-LAKI / PRIA / L / LK
+        if (in_array($raw, ['L', 'LK', 'PRIA', 'LAKI', 'LAKI-LAKI'], true)) {
+            return 'L';
+        }
+        if (str_contains($raw, 'LAKI') || str_contains($raw, 'PRIA')) {
+            return 'L';
+        }
+
+        return ''; // tidak dikenali
     }
 
     // ================================================================
