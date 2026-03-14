@@ -12,6 +12,23 @@
         0%   { background-position: -200% center; }
         100% { background-position:  200% center; }
     }
+    @keyframes modalBackdropIn { from { opacity:0; } to { opacity:1; } }
+    @keyframes modalCardIn {
+        from { opacity:0; transform:scale(.92) translateY(16px); }
+        to   { opacity:1; transform:scale(1)   translateY(0);    }
+    }
+    @keyframes spinLoader { to { transform: rotate(360deg); } }
+    @keyframes progressBar { from { width:0%; } to { width:100%; } }
+    @keyframes sheetIn {
+        from { transform: translateY(100%); opacity: 0; }
+        to   { transform: translateY(0);    opacity: 1; }
+    }
+    @keyframes sheetOut {
+        from { transform: translateY(0);    opacity: 1; }
+        to   { transform: translateY(100%); opacity: 0; }
+    }
+    @keyframes backdropIn  { from { opacity:0; } to { opacity:1; } }
+    @keyframes backdropOut { from { opacity:1; } to { opacity:0; } }
 
     .form-section                 { animation: fadeSlideUp .45s ease both; }
     .form-section:nth-child(1)    { animation-delay: .06s; }
@@ -20,6 +37,7 @@
     .form-section:nth-child(4)    { animation-delay: .24s; }
     .form-section:nth-child(5)    { animation-delay: .30s; }
 
+    /* ── Age badge ───────────────────────────────────────────── */
     .age-badge {
         display: inline-flex; align-items: center; gap: 5px;
         padding: 3px 10px; border-radius: 99px;
@@ -30,14 +48,16 @@
     .age-badge.valid   { background: rgba(16,185,129,.1);  border-color: rgba(16,185,129,.38);  color: #34d399; }
     .age-badge.invalid { background: rgba(239,68,68,.1);   border-color: rgba(239,68,68,.38);   color: #f87171; }
 
+    /* ── OCR Card ────────────────────────────────────────────── */
     .pemain-ocr-card {
         border-radius: 18px; border: 1.5px solid rgba(234,179,8,.18);
         background: rgba(20,16,4,.78); padding: 22px;
         transition: border-color .3s, background .3s, box-shadow .3s;
     }
-    .pemain-ocr-card.scanned    { border-color: rgba(16,185,129,.42); background: rgba(4,20,12,.78); box-shadow: 0 0 0 1px rgba(16,185,129,.09) inset; }
-    .pemain-ocr-card.invalid-age{ border-color: rgba(239,68,68,.42);  background: rgba(20,4,4,.78); }
+    .pemain-ocr-card.scanned     { border-color: rgba(16,185,129,.42); background: rgba(4,20,12,.78); box-shadow: 0 0 0 1px rgba(16,185,129,.09) inset; }
+    .pemain-ocr-card.invalid-age { border-color: rgba(239,68,68,.42);  background: rgba(20,4,4,.78); }
 
+    /* ── KTP Data Card ───────────────────────────────────────── */
     .ktp-data-card {
         border-radius: 13px; background: rgba(255,255,255,.025);
         border: 1px solid rgba(255,255,255,.07);
@@ -47,6 +67,7 @@
     .ktp-data-card.valid-card   { background: rgba(16,185,129,.04); border-color: rgba(16,185,129,.2); }
     .ktp-data-card.invalid-card { background: rgba(239,68,68,.04);  border-color: rgba(239,68,68,.2); }
 
+    /* ── KTP Row ─────────────────────────────────────────────── */
     .ktp-row {
         display: flex; align-items: flex-start; gap: 10px;
         padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,.04); min-height: 30px;
@@ -67,6 +88,7 @@
         font-size: 10px; color: rgba(255,255,255,.18); font-style: italic;
     }
 
+    /* ── Scan loading bar ────────────────────────────────────── */
     .scan-loading-bar { height: 3px; border-radius: 99px; overflow: hidden; background: rgba(234,179,8,.1); margin-top: 10px; }
     .scan-loading-bar-inner {
         height: 100%; width: 40%;
@@ -74,6 +96,7 @@
         background-size: 200% 100%; animation: shimmerScan 1.2s ease infinite;
     }
 
+    /* ── Veteran summary ─────────────────────────────────────── */
     .veteran-summary { border-radius: 14px; padding: 14px 16px; margin-top: 20px; display: none; }
     .veteran-summary.show { display: flex; align-items: flex-start; gap: 12px; animation: fadeSlideUp .3s ease both; }
     .veteran-summary.ok  { background: rgba(16,185,129,.07); border: 1px solid rgba(16,185,129,.28); }
@@ -90,11 +113,128 @@
         background: rgba(234,179,8,.07); border: 1px solid rgba(234,179,8,.2);
     }
 
+    /* ── Upload Bottom Sheet ─────────────────────────────────── */
+    .upload-sheet-backdrop {
+        display: none; position: fixed; inset: 0; z-index: 88888;
+        background: rgba(0,0,0,.55);
+        backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+    }
+    .upload-sheet-backdrop.show    { display: block; animation: backdropIn .2s ease both; }
+    .upload-sheet-backdrop.hiding  { animation: backdropOut .2s ease both; }
+
+    .upload-sheet {
+        display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 88889;
+        background: rgba(18,9,2,.98);
+        border-top: 1.5px solid rgba(234,179,8,.25);
+        border-radius: 22px 22px 0 0;
+        padding: 0 0 calc(env(safe-area-inset-bottom, 0px) + 16px);
+        box-shadow: 0 -20px 60px rgba(0,0,0,.6);
+        max-width: 540px; margin: 0 auto;
+    }
+    .upload-sheet.show   { display: block; animation: sheetIn .28s cubic-bezier(.34,1.3,.64,1) both; }
+    .upload-sheet.hiding { animation: sheetOut .2s ease both; }
+
+    .upload-sheet-handle {
+        width: 40px; height: 4px; border-radius: 99px;
+        background: rgba(255,255,255,.18); margin: 12px auto 18px;
+    }
+    .upload-sheet-title {
+        font-size: 11px; font-weight: 700; text-transform: uppercase;
+        letter-spacing: .1em; color: rgba(255,255,255,.3);
+        text-align: center; margin-bottom: 16px;
+    }
+    .upload-sheet-options {
+        display: grid; grid-template-columns: repeat(3,1fr);
+        gap: 10px; padding: 0 16px;
+    }
+    .upload-opt-btn {
+        display: flex; flex-direction: column; align-items: center;
+        justify-content: center; gap: 8px; padding: 16px 8px;
+        border-radius: 16px; border: 1.5px solid; cursor: pointer;
+        font-size: 11px; font-weight: 700; line-height: 1.3; text-align: center;
+        transition: background .15s, border-color .15s, transform .1s;
+        -webkit-tap-highlight-color: transparent;
+    }
+    .upload-opt-btn:active { transform: scale(.95); }
+    .upload-opt-icon {
+        width: 44px; height: 44px; border-radius: 14px;
+        display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    /* Warna kuning / amber untuk tema veteran */
+    .upload-opt-btn.opt-camera {
+        color: #eab308; background: rgba(234,179,8,.10); border-color: rgba(234,179,8,.35);
+    }
+    .upload-opt-btn.opt-camera:hover  { background: rgba(234,179,8,.18); border-color: rgba(234,179,8,.6); }
+    .upload-opt-btn.opt-camera .upload-opt-icon { background: rgba(234,179,8,.15); }
+
+    .upload-opt-btn.opt-foto {
+        color: #facc15; background: rgba(234,179,8,.07); border-color: rgba(234,179,8,.28);
+    }
+    .upload-opt-btn.opt-foto:hover  { background: rgba(234,179,8,.14); border-color: rgba(234,179,8,.5); }
+    .upload-opt-btn.opt-foto .upload-opt-icon { background: rgba(234,179,8,.12); }
+
+    .upload-opt-btn.opt-file {
+        color: #fde68a; background: rgba(234,179,8,.05); border-color: rgba(234,179,8,.20);
+    }
+    .upload-opt-btn.opt-file:hover  { background: rgba(234,179,8,.12); border-color: rgba(234,179,8,.4); }
+    .upload-opt-btn.opt-file .upload-opt-icon { background: rgba(234,179,8,.10); }
+
+    .upload-sheet-cancel {
+        display: block; width: calc(100% - 32px); margin: 14px 16px 0;
+        padding: 13px; border-radius: 14px;
+        border: 1px solid rgba(255,255,255,.1); background: rgba(255,255,255,.04);
+        color: rgba(255,255,255,.45); font-size: 13px; font-weight: 700;
+        text-align: center; cursor: pointer; transition: background .15s, color .15s;
+    }
+    .upload-sheet-cancel:hover { background: rgba(255,255,255,.08); color: rgba(255,255,255,.7); }
+
+    /* ── Submit overlay ──────────────────────────────────────── */
+    #submitOverlay {
+        display: none; position: fixed; inset: 0; z-index: 99998;
+        background: rgba(0,0,0,.65); backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        align-items: center; justify-content: center;
+        flex-direction: column; gap: 20px;
+    }
+    #submitOverlay.show { display: flex; animation: modalBackdropIn .2s ease both; }
+    .submit-spinner {
+        width: 52px; height: 52px;
+        border: 3px solid rgba(234,179,8,.2);
+        border-top-color: #eab308;
+        border-radius: 50%;
+        animation: spinLoader .8s linear infinite;
+    }
+    .submit-progress-bar {
+        width: 240px; height: 4px; background: rgba(255,255,255,.1);
+        border-radius: 99px; overflow: hidden;
+    }
+    .submit-progress-inner {
+        height: 100%;
+        background: linear-gradient(90deg, #eab308, #facc15);
+        border-radius: 99px;
+        animation: progressBar 3s ease forwards;
+    }
+
+    /* ── Ajax Error Banner ───────────────────────────────────── */
+    #ajaxErrorBanner {
+        display: none; border-radius: 16px; padding: 16px 20px; margin-bottom: 20px;
+        background: rgba(239,68,68,.08); border: 1.5px solid rgba(239,68,68,.3);
+        animation: fadeSlideUp .3s ease both;
+    }
+    #ajaxErrorBanner.show { display: block; }
+
+    /* ── Select dark ─────────────────────────────────────────── */
     select.input-field { color: rgba(255,255,255,.85) !important; background-color: #0d1117 !important; cursor: pointer; }
     select.input-field option          { background-color: #0d1117; color: rgba(255,255,255,.85); }
     select.input-field option:disabled { color: rgba(255,255,255,.3); }
     select.input-field:disabled        { opacity: .4 !important; cursor: not-allowed; }
 
+    /* ── Field error ─────────────────────────────────────────── */
+    .input-field.field-error { border-color: rgba(239,68,68,.6) !important; box-shadow: 0 0 0 2px rgba(239,68,68,.1); }
+    .field-error-msg { color: #f87171; font-size: 11px; margin-top: 4px; display: none; }
+    .field-error-msg.show { display: block; animation: fadeSlideUp .2s ease both; }
+
+    /* ── Regulasi box ────────────────────────────────────────── */
     .regulasi-box {
         border-radius: 12px; padding: 12px 16px;
         background: rgba(234,179,8,.05); border: 1px solid rgba(234,179,8,.14); margin-top: 12px;
@@ -106,7 +246,7 @@
 <section class="min-h-screen py-20 px-6">
 <div class="max-w-2xl mx-auto">
 
-    {{-- HEADER --}}
+    {{-- ── HEADER ──────────────────────────────────────────────────── --}}
     <div class="text-center mb-10 form-section">
         <a href="{{ route('registration.index') }}"
            class="inline-flex items-center gap-2 text-white/30 text-xs hover:text-white/60 transition mb-6">
@@ -131,7 +271,6 @@
             <span class="text-yellow-400 text-xs font-bold uppercase tracking-widest">Ganda Veteran Putra</span>
         </div>
 
-        {{-- Regulasi usia — tanpa embel-embel tanggal turnamen --}}
         <div class="regulasi-box max-w-md mx-auto text-left mt-3">
             <p class="text-yellow-400/85 text-xs font-bold mb-2 flex items-center gap-2">
                 <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
@@ -142,36 +281,31 @@
             <ul class="text-white/40 text-xs space-y-1 leading-relaxed list-none">
                 <li>&#9654; Setiap pemain <strong class="text-white/60">wajib berusia &ge; 45 tahun</strong></li>
                 <li>&#9654; <strong class="text-white/60">Total usia</strong> kedua pemain <strong class="text-white/60">wajib &ge; 95 tahun</strong></li>
-                <li>&#9654; Verifikasi otomatis via scan KTP &mdash; data dikunci setelah scan</li>
+                <li>&#9654; Verifikasi otomatis via scan KTP</li>
             </ul>
         </div>
 
         <p class="text-white/38 text-sm mt-4">Isi semua data dengan benar dan lengkap</p>
     </div>
 
-    {{-- ERROR BOX --}}
-    @if($errors->any())
-    <div class="bg-red-500/10 border border-red-500/30 rounded-2xl p-5 mb-6 form-section">
-        <div class="flex items-center gap-2 mb-3">
-            <svg class="w-4 h-4 text-red-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+    {{-- ── AJAX ERROR BANNER ───────────────────────────────────────── --}}
+    <div id="ajaxErrorBanner">
+        <div class="flex items-start gap-3">
+            <svg class="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
             </svg>
-            <p class="text-red-400 text-sm font-semibold">Terdapat kesalahan pada form:</p>
+            <div>
+                <p class="text-red-400 text-sm font-bold mb-2">Terdapat kesalahan — perbaiki dan coba lagi:</p>
+                <ul id="ajaxErrorList" class="text-red-300/80 text-sm space-y-1 list-disc list-inside"></ul>
+            </div>
         </div>
-        <ul class="text-red-300/80 text-sm space-y-1 list-disc list-inside">
-            @foreach($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
     </div>
-    @endif
 
-    <form action="{{ route('registration.store') }}" method="POST"
-          enctype="multipart/form-data" id="regForm" novalidate>
+    <form id="regForm" novalidate>
     @csrf
     <input type="hidden" name="kategori" value="ganda-veteran-putra">
 
-    {{-- SECTION 1 — DATA TIM & KONTAK --}}
+    {{-- ═══════════════ SECTION 1 — DATA TIM & KONTAK ═══════════════ --}}
     <div class="card-glass rounded-2xl p-8 mb-6 form-section">
         <h2 class="font-display text-sm font-bold mb-6 flex items-center gap-2">
             <span class="w-6 h-6 rounded-full bg-brand-500 flex items-center justify-center text-xs font-black">1</span>
@@ -182,38 +316,38 @@
                 <label class="block text-white/60 text-xs font-semibold uppercase tracking-wide mb-2">
                     Nama Ketua Tim / PIC <span class="text-brand-400">*</span>
                 </label>
-                <input type="text" name="nama" value="{{ old('nama') }}"
+                <input type="text" name="nama" id="field_nama"
                     placeholder="Nama lengkap ketua tim / penanggung jawab"
-                    class="input-field w-full px-4 py-3 rounded-xl text-sm @error('nama') border-red-500 @enderror" required>
-                @error('nama')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
+                    class="input-field w-full px-4 py-3 rounded-xl text-sm" required>
+                <p class="field-error-msg" id="err_nama"></p>
             </div>
             <div class="md:col-span-2">
                 <label class="block text-white/60 text-xs font-semibold uppercase tracking-wide mb-2">
                     Nama Tim / PB <span class="text-brand-400">*</span>
                 </label>
-                <input type="text" name="tim_pb" value="{{ old('tim_pb') }}"
+                <input type="text" name="tim_pb" id="field_tim_pb"
                     placeholder="Contoh: PB Garuda Sakti"
-                    class="input-field w-full px-4 py-3 rounded-xl text-sm @error('tim_pb') border-red-500 @enderror" required>
-                @error('tim_pb')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
+                    class="input-field w-full px-4 py-3 rounded-xl text-sm" required>
+                <p class="field-error-msg" id="err_tim_pb"></p>
             </div>
             <div>
                 <label class="block text-white/60 text-xs font-semibold uppercase tracking-wide mb-2">
                     Email <span class="text-brand-400">*</span>
                 </label>
-                <input type="email" name="email" value="{{ old('email') }}"
+                <input type="email" name="email" id="field_email"
                     placeholder="email@contoh.com"
-                    class="input-field w-full px-4 py-3 rounded-xl text-sm @error('email') border-red-500 @enderror" required>
+                    class="input-field w-full px-4 py-3 rounded-xl text-sm" required>
                 <p class="text-white/25 text-xs mt-1">Receipt dikirim ke email ini</p>
-                @error('email')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
+                <p class="field-error-msg" id="err_email"></p>
             </div>
             <div>
                 <label class="block text-white/60 text-xs font-semibold uppercase tracking-wide mb-2">
                     Nomor WhatsApp / HP <span class="text-brand-400">*</span>
                 </label>
-                <input type="text" name="no_hp" value="{{ old('no_hp') }}"
+                <input type="text" name="no_hp" id="field_no_hp"
                     placeholder="Contoh: 08123456789"
-                    class="input-field w-full px-4 py-3 rounded-xl text-sm @error('no_hp') border-red-500 @enderror" required>
-                @error('no_hp')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
+                    class="input-field w-full px-4 py-3 rounded-xl text-sm" required>
+                <p class="field-error-msg" id="err_no_hp"></p>
             </div>
             <div>
                 <label class="block text-white/60 text-xs font-semibold uppercase tracking-wide mb-2">
@@ -222,7 +356,7 @@
                 <div class="relative">
                     <select id="selectProvinsi" name="provinsi"
                         onchange="WILAYAH.onProvinsiChange(this)"
-                        class="input-field w-full px-4 py-3 rounded-xl text-sm appearance-none @error('provinsi') border-red-500 @enderror" required>
+                        class="input-field w-full px-4 py-3 rounded-xl text-sm appearance-none" required>
                         <option value="">-- Pilih Provinsi --</option>
                     </select>
                     <div id="loadingProvinsi" class="hidden absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
@@ -232,7 +366,7 @@
                         </svg>
                     </div>
                 </div>
-                @error('provinsi')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
+                <p class="field-error-msg" id="err_provinsi"></p>
             </div>
             <div>
                 <label class="block text-white/60 text-xs font-semibold uppercase tracking-wide mb-2">
@@ -240,7 +374,7 @@
                 </label>
                 <div class="relative">
                     <select id="selectKota" name="kota" disabled
-                        class="input-field w-full px-4 py-3 rounded-xl text-sm appearance-none opacity-40 @error('kota') border-red-500 @enderror" required>
+                        class="input-field w-full px-4 py-3 rounded-xl text-sm appearance-none opacity-40" required>
                         <option value="">-- Pilih Provinsi dulu --</option>
                     </select>
                     <div id="loadingKota" class="hidden absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
@@ -250,12 +384,12 @@
                         </svg>
                     </div>
                 </div>
-                @error('kota')<p class="text-red-400 text-xs mt-1">{{ $message }}</p>@enderror
+                <p class="field-error-msg" id="err_kota"></p>
             </div>
         </div>
     </div>
 
-    {{-- SECTION 2 — DATA PELATIH --}}
+    {{-- ═══════════════ SECTION 2 — DATA PELATIH ═══════════════ --}}
     <div class="card-glass rounded-2xl p-8 mb-6 form-section">
         <h2 class="font-display text-sm font-bold mb-6 flex items-center gap-2">
             <span class="w-6 h-6 rounded-full bg-brand-500 flex items-center justify-center text-xs font-black">2</span>
@@ -265,18 +399,18 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
                 <label class="block text-white/60 text-xs font-semibold uppercase tracking-wide mb-2">Nama Pelatih</label>
-                <input type="text" name="nama_pelatih" value="{{ old('nama_pelatih') }}"
+                <input type="text" name="nama_pelatih"
                     placeholder="Nama lengkap pelatih" class="input-field w-full px-4 py-3 rounded-xl text-sm">
             </div>
             <div>
                 <label class="block text-white/60 text-xs font-semibold uppercase tracking-wide mb-2">No. HP Pelatih</label>
-                <input type="text" name="no_hp_pelatih" value="{{ old('no_hp_pelatih') }}"
+                <input type="text" name="no_hp_pelatih"
                     placeholder="Contoh: 08123456789" class="input-field w-full px-4 py-3 rounded-xl text-sm">
             </div>
         </div>
     </div>
 
-    {{-- SECTION 3 — SCAN KTP & VERIFIKASI USIA --}}
+    {{-- ═══════════════ SECTION 3 — SCAN KTP & VERIFIKASI USIA ═══════════════ --}}
     <div class="rounded-2xl p-8 mb-6 form-section"
          style="background:rgba(234,179,8,.035);border:1.5px solid rgba(234,179,8,.16);">
 
@@ -288,143 +422,112 @@
         <p class="text-white/30 text-xs mb-1 ml-9">
             Upload foto KTP lalu klik <strong class="text-yellow-400/75">SCAN KTP</strong> untuk verifikasi usia otomatis.
         </p>
-        <p class="text-white/20 text-xs mb-7 ml-9">
-            Data KTP dikunci setelah scan. Jika ada kesalahan baca, reset dan scan ulang dengan foto lebih jelas.
+        <p class="text-white/18 text-xs mb-7 ml-9">
+            Data KTP dikunci setelah scan. Jika ada kesalahan, reset dan scan ulang.
         </p>
 
-        {{-- PEMAIN 1 --}}
-        <div id="ocr_card_0" class="pemain-ocr-card mb-5">
+        @foreach([0,1] as $idx)
+        <div id="ocr_card_{{ $idx }}" class="pemain-ocr-card {{ $idx === 1 ? 'mt-5' : '' }}">
             <div class="flex items-center justify-between mb-5">
                 <div class="flex items-center gap-3">
                     <div class="w-8 h-8 rounded-full flex items-center justify-center"
                          style="background:rgba(234,179,8,.14);border:1px solid rgba(234,179,8,.3);">
-                        <span class="text-yellow-400 text-xs font-black">1</span>
+                        <span class="text-yellow-400 text-xs font-black">{{ $idx + 1 }}</span>
                     </div>
-                    <span class="text-white/80 text-sm font-bold">Pemain 1</span>
+                    <span class="text-white/80 text-sm font-bold">Pemain {{ $idx + 1 }}</span>
                 </div>
-                <div id="age_badge_0" class="age-badge pending">Belum scan</div>
+                <div id="age_badge_{{ $idx }}" class="age-badge pending">Belum scan</div>
             </div>
-            <div class="mb-4">
-                <label class="block text-white/45 text-xs font-semibold uppercase tracking-wide mb-2">
-                    Foto KTP <span class="text-brand-400">*</span>
-                    <span class="text-white/22 font-normal normal-case">&mdash; JPG, PNG &middot; Maks 5MB</span>
-                </label>
-                <div id="ktpDropzone_0" onclick="document.getElementById('ktpInput_0').click()"
-                    class="border-2 border-dashed rounded-xl p-4 text-center cursor-pointer transition-all"
-                    style="border-color:rgba(234,179,8,.22);background:rgba(234,179,8,.018);"
-                    ondragover="event.preventDefault();this.style.borderColor='rgba(234,179,8,.6)'"
-                    ondragleave="this.style.borderColor='rgba(234,179,8,.22)'"
-                    ondrop="VET.drop(event,0)">
-                    <div id="ktpPreview_0" class="hidden">
-                        <div class="relative inline-block mb-2">
-                            <img id="ktpPreviewImg_0" src="" alt="" class="max-h-32 mx-auto rounded-lg object-contain" style="box-shadow:0 4px 20px rgba(0,0,0,.55);">
-                            <button type="button" onclick="VET.reset(event,0)" class="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center transition">
-                                <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"/></svg>
-                            </button>
-                        </div>
-                        <p class="text-white/28 text-xs">Reset &amp; scan ulang jika data salah</p>
-                    </div>
-                    <div id="ktpDefault_0" class="flex flex-col items-center py-3">
-                        <div class="w-11 h-11 rounded-xl bg-yellow-500/10 flex items-center justify-center mb-3">
-                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(250,204,21,.55)" stroke-width="1.5"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 9h10M7 13h6"/></svg>
-                        </div>
-                        <p class="text-white/50 text-sm font-medium">Klik atau seret foto KTP</p>
-                        <p class="text-white/22 text-xs mt-0.5">JPG, PNG &middot; Maks 5MB</p>
-                    </div>
-                </div>
-                <input type="file" id="ktpInput_0" name="ktp_files[]" accept="image/jpeg,image/png,image/webp" class="hidden" onchange="VET.fileSelect(this,0)">
-                <button type="button" id="scanBtn_0" onclick="VET.scan(0)"
-                    class="hidden mt-3 w-full py-2.5 rounded-xl font-display text-xs font-bold text-white tracking-wider flex items-center justify-center gap-2"
-                    style="background:linear-gradient(135deg,#eab308,#b45309);box-shadow:0 4px 16px rgba(234,179,8,.22);">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>
-                    SCAN KTP &amp; VERIFIKASI USIA
-                </button>
-                <div id="scanLoading_0" class="hidden mt-3 text-center py-2">
-                    <p class="text-yellow-400 text-xs font-semibold mb-1">Membaca KTP dengan AI...</p>
-                    <div class="scan-loading-bar"><div class="scan-loading-bar-inner"></div></div>
-                </div>
-            </div>
-            <div id="ktpDataCard_0" class="ktp-data-card">
-                <p class="text-xs font-bold text-white/35 uppercase tracking-widest mb-3 flex items-center gap-2">
-                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 9h10M7 13h6"/></svg>
-                    Data KTP Terbaca
-                </p>
-                <div id="ktpDataRows_0"></div>
-            </div>
-            <p id="tgl_info_0" class="hidden text-xs mt-2 font-medium"></p>
-            <input type="hidden" name="pemain[]"      id="pemain_0"      value="{{ old('pemain.0') }}">
-            <input type="hidden" name="nik[]"         id="nik_0"         value="{{ old('nik.0') }}">
-            <input type="hidden" name="tgl_lahir[]"   id="tgl_lahir_0"   value="{{ old('tgl_lahir.0') }}">
-            <input type="hidden" name="usia_valid[]"  id="usia_valid_0"  value="0">
-            <input type="hidden" name="usia_hitung[]" id="usia_hitung_0" value="">
-        </div>
 
-        {{-- PEMAIN 2 --}}
-        <div id="ocr_card_1" class="pemain-ocr-card">
-            <div class="flex items-center justify-between mb-5">
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full flex items-center justify-center"
-                         style="background:rgba(234,179,8,.14);border:1px solid rgba(234,179,8,.3);">
-                        <span class="text-yellow-400 text-xs font-black">2</span>
-                    </div>
-                    <span class="text-white/80 text-sm font-bold">Pemain 2</span>
-                </div>
-                <div id="age_badge_1" class="age-badge pending">Belum scan</div>
-            </div>
             <div class="mb-4">
                 <label class="block text-white/45 text-xs font-semibold uppercase tracking-wide mb-2">
                     Foto KTP <span class="text-brand-400">*</span>
-                    <span class="text-white/22 font-normal normal-case">&mdash; JPG, PNG &middot; Maks 5MB</span>
+                    <span class="text-white/22 font-normal normal-case">&mdash; JPG · PNG · HEIC · WebP &middot; Maks 10MB</span>
                 </label>
-                <div id="ktpDropzone_1" onclick="document.getElementById('ktpInput_1').click()"
+
+                {{-- Dropzone --}}
+                <div id="ktpDropzone_{{ $idx }}"
+                    onclick="VET.showSheet({{ $idx }})"
                     class="border-2 border-dashed rounded-xl p-4 text-center cursor-pointer transition-all"
                     style="border-color:rgba(234,179,8,.22);background:rgba(234,179,8,.018);"
                     ondragover="event.preventDefault();this.style.borderColor='rgba(234,179,8,.6)'"
                     ondragleave="this.style.borderColor='rgba(234,179,8,.22)'"
-                    ondrop="VET.drop(event,1)">
-                    <div id="ktpPreview_1" class="hidden">
+                    ondrop="VET.drop(event,{{ $idx }})">
+
+                    {{-- Preview --}}
+                    <div id="ktpPreview_{{ $idx }}" class="hidden">
                         <div class="relative inline-block mb-2">
-                            <img id="ktpPreviewImg_1" src="" alt="" class="max-h-32 mx-auto rounded-lg object-contain" style="box-shadow:0 4px 20px rgba(0,0,0,.55);">
-                            <button type="button" onclick="VET.reset(event,1)" class="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center transition">
-                                <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"/></svg>
+                            <img id="ktpPreviewImg_{{ $idx }}" src="" alt=""
+                                 class="max-h-32 mx-auto rounded-lg object-contain"
+                                 style="box-shadow:0 4px 20px rgba(0,0,0,.55);">
+                            <button type="button" onclick="VET.resetSlot(event,{{ $idx }})"
+                                    class="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center transition">
+                                <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
                             </button>
                         </div>
-                        <p class="text-white/28 text-xs">Reset &amp; scan ulang jika data salah</p>
+                        <p class="text-white/28 text-xs">Ketuk untuk ganti foto</p>
                     </div>
-                    <div id="ktpDefault_1" class="flex flex-col items-center py-3">
+
+                    {{-- Default placeholder --}}
+                    <div id="ktpDefault_{{ $idx }}" class="flex flex-col items-center py-3">
                         <div class="w-11 h-11 rounded-xl bg-yellow-500/10 flex items-center justify-center mb-3">
-                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(250,204,21,.55)" stroke-width="1.5"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 9h10M7 13h6"/></svg>
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(250,204,21,.55)" stroke-width="1.5">
+                                <rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 9h10M7 13h6"/>
+                            </svg>
                         </div>
-                        <p class="text-white/50 text-sm font-medium">Klik atau seret foto KTP</p>
-                        <p class="text-white/22 text-xs mt-0.5">JPG, PNG &middot; Maks 5MB</p>
+                        <p class="text-white/50 text-sm font-medium">Ketuk untuk upload KTP</p>
+                        <p class="text-white/22 text-xs mt-0.5">Kamera · Galeri · File Manager &middot; Maks 10MB</p>
                     </div>
                 </div>
-                <input type="file" id="ktpInput_1" name="ktp_files[]" accept="image/jpeg,image/png,image/webp" class="hidden" onchange="VET.fileSelect(this,1)">
-                <button type="button" id="scanBtn_1" onclick="VET.scan(1)"
+
+                {{-- 3 hidden file inputs --}}
+                <input type="file" id="ktpCamera_{{ $idx }}" accept="image/*" capture="environment" class="hidden"
+                       onchange="VET.fileSelect(this,{{ $idx }})">
+                <input type="file" id="ktpFoto_{{ $idx }}"   accept="image/*" class="hidden" name="ktp_files[]"
+                       onchange="VET.fileSelect(this,{{ $idx }})">
+                <input type="file" id="ktpFile_{{ $idx }}"   accept="image/*,.heic,.heif" class="hidden"
+                       onchange="VET.fileSelect(this,{{ $idx }})">
+
+                {{-- Scan button --}}
+                <button type="button" id="scanBtn_{{ $idx }}" onclick="VET.scan({{ $idx }})"
                     class="hidden mt-3 w-full py-2.5 rounded-xl font-display text-xs font-bold text-white tracking-wider flex items-center justify-center gap-2"
                     style="background:linear-gradient(135deg,#eab308,#b45309);box-shadow:0 4px 16px rgba(234,179,8,.22);">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/>
+                    </svg>
                     SCAN KTP &amp; VERIFIKASI USIA
                 </button>
-                <div id="scanLoading_1" class="hidden mt-3 text-center py-2">
+
+                {{-- Scan loading --}}
+                <div id="scanLoading_{{ $idx }}" class="hidden mt-3 text-center py-2">
                     <p class="text-yellow-400 text-xs font-semibold mb-1">Membaca KTP dengan AI...</p>
                     <div class="scan-loading-bar"><div class="scan-loading-bar-inner"></div></div>
                 </div>
             </div>
-            <div id="ktpDataCard_1" class="ktp-data-card">
+
+            {{-- KTP data card (read-only setelah scan) --}}
+            <div id="ktpDataCard_{{ $idx }}" class="ktp-data-card">
                 <p class="text-xs font-bold text-white/35 uppercase tracking-widest mb-3 flex items-center gap-2">
-                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 9h10M7 13h6"/></svg>
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 9h10M7 13h6"/>
+                    </svg>
                     Data KTP Terbaca
                 </p>
-                <div id="ktpDataRows_1"></div>
+                <div id="ktpDataRows_{{ $idx }}"></div>
             </div>
-            <p id="tgl_info_1" class="hidden text-xs mt-2 font-medium"></p>
-            <input type="hidden" name="pemain[]"      id="pemain_1"      value="{{ old('pemain.1') }}">
-            <input type="hidden" name="nik[]"         id="nik_1"         value="{{ old('nik.1') }}">
-            <input type="hidden" name="tgl_lahir[]"   id="tgl_lahir_1"   value="{{ old('tgl_lahir.1') }}">
-            <input type="hidden" name="usia_valid[]"  id="usia_valid_1"  value="0">
-            <input type="hidden" name="usia_hitung[]" id="usia_hitung_1" value="">
+
+            <p id="tgl_info_{{ $idx }}" class="hidden text-xs mt-2 font-medium"></p>
+
+            <input type="hidden" name="pemain[]"      id="pemain_{{ $idx }}"      value="">
+            <input type="hidden" name="nik[]"         id="nik_{{ $idx }}"         value="">
+            <input type="hidden" name="tgl_lahir[]"   id="tgl_lahir_{{ $idx }}"   value="">
+            <input type="hidden" name="usia_valid[]"  id="usia_valid_{{ $idx }}"  value="0">
+            <input type="hidden" name="usia_hitung[]" id="usia_hitung_{{ $idx }}" value="">
         </div>
+        @endforeach
 
         <div id="totalUsiaBox" class="total-usia-box">
             <div class="flex items-center justify-between">
@@ -440,9 +543,12 @@
                 <p id="summaryDetail" class="text-xs mt-0.5 opacity-60"></p>
             </div>
         </div>
+
+        <p class="field-error-msg" id="err_usia_hitung"></p>
+        <p class="field-error-msg" id="err_usia_valid"></p>
     </div>
 
-    {{-- SECTION 4 — RINGKASAN BIAYA --}}
+    {{-- ═══════════════ SECTION 4 — RINGKASAN BIAYA ═══════════════ --}}
     <div class="card-glass rounded-2xl p-6 mb-6 form-section">
         <div class="flex justify-between items-center">
             <div>
@@ -457,8 +563,13 @@
     </div>
 
     <button type="submit" id="submitBtn"
-        class="btn-primary w-full py-4 rounded-xl font-display text-sm font-bold text-white tracking-wide form-section">
-        DAFTAR SEKARANG &rarr;
+        class="btn-primary w-full py-4 rounded-xl font-display text-sm font-bold text-white tracking-wide form-section
+               flex items-center justify-center gap-3">
+        <span id="submitBtnText">DAFTAR &amp; BAYAR SEKARANG →</span>
+        <svg id="submitBtnSpinner" class="hidden w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+        </svg>
     </button>
 
     <div id="submitWarning" class="submit-warning">
@@ -468,235 +579,453 @@
     <p class="text-white/25 text-xs text-center mt-4">
         Dengan mendaftar, Anda menyetujui syarat &amp; ketentuan Bayan Open 2026
     </p>
-
     </form>
+
 </div>
 </section>
 
+{{-- ── SUBMIT OVERLAY ──────────────────────────────────────────── --}}
+<div id="submitOverlay">
+    <div class="submit-spinner"></div>
+    <p id="submitOverlayText" class="text-white/60 text-sm font-semibold">Mengirim data pendaftaran...</p>
+    <div class="submit-progress-bar"><div class="submit-progress-inner"></div></div>
+</div>
+
+{{-- ── UPLOAD BOTTOM SHEET ─────────────────────────────────────── --}}
+<div id="uploadSheetBackdrop" class="upload-sheet-backdrop" onclick="_SHEET.close()"></div>
+<div id="uploadSheet" class="upload-sheet" role="dialog" aria-modal="true">
+    <div class="upload-sheet-handle"></div>
+    <p class="upload-sheet-title">Pilih Sumber KTP</p>
+    <div class="upload-sheet-options">
+        <button type="button" class="upload-opt-btn opt-camera" onclick="_SHEET.pick('camera')">
+            <div class="upload-opt-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+                     stroke="#eab308" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
+                    <circle cx="12" cy="13" r="4"/>
+                </svg>
+            </div>
+            <span>Foto<br>Kamera</span>
+        </button>
+        <button type="button" class="upload-opt-btn opt-foto" onclick="_SHEET.pick('foto')">
+            <div class="upload-opt-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+                     stroke="#facc15" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2"/>
+                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                    <polyline points="21 15 16 10 5 21"/>
+                </svg>
+            </div>
+            <span>Upload<br>Foto</span>
+        </button>
+        <button type="button" class="upload-opt-btn opt-file" onclick="_SHEET.pick('file')">
+            <div class="upload-opt-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+                     stroke="#fde68a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                    <line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/>
+                </svg>
+            </div>
+            <span>Upload<br>File</span>
+        </button>
+    </div>
+    <button type="button" class="upload-sheet-cancel" onclick="_SHEET.close()">Batal</button>
+</div>
+
 @push('scripts')
 <script>
+/* ================================================================
+   WILAYAH CASCADE
+================================================================ */
 (function () {
 'use strict';
-
-var OLD_PROVINSI  = @json(old('provinsi', ''));
-var OLD_KOTA      = @json(old('kota', ''));
-var _provinsiCode = '';
-
 async function loadProvinsi() {
     var sel  = document.getElementById('selectProvinsi');
     var spin = document.getElementById('loadingProvinsi');
     if (!sel) return;
     spin && spin.classList.remove('hidden');
     try {
-        var res  = await fetch('/wilayah/provinces');
-        var data = await res.json();
+        var data = await (await fetch('/wilayah/provinces')).json();
         data.forEach(function (p) {
-            var opt = new Option(p.name, p.name);
+            var opt = new Option(p.name || p.nama, p.name || p.nama);
             opt.dataset.code = p.id;
-            if (OLD_PROVINSI && p.name === OLD_PROVINSI) opt.selected = true;
             sel.appendChild(opt);
         });
-        if (OLD_PROVINSI) {
-            var found = Array.from(sel.options).find(function (o) { return o.value === OLD_PROVINSI; });
-            if (found) { _provinsiCode = found.dataset.code; await loadKota(_provinsiCode, OLD_KOTA); }
-        }
-    } catch (e) { console.error('Gagal load provinsi:', e); }
+    } catch (e) { sel.innerHTML = '<option value="">Gagal memuat — refresh</option>'; }
     finally { spin && spin.classList.add('hidden'); }
 }
-
 async function onProvinsiChange(sel) {
     var opt = sel.options[sel.selectedIndex];
-    _provinsiCode = opt ? (opt.dataset.code || '') : '';
+    var code = opt ? (opt.dataset.code || '') : '';
     var kotaSel = document.getElementById('selectKota');
     if (kotaSel) { kotaSel.innerHTML = '<option value="">-- Pilih Kabupaten/Kota --</option>'; kotaSel.disabled = true; kotaSel.classList.add('opacity-40'); }
-    if (!_provinsiCode) return;
-    await loadKota(_provinsiCode, '');
+    if (code) await loadKota(code);
 }
-
 async function loadKota(provId, selectedName) {
     var sel  = document.getElementById('selectKota');
     var spin = document.getElementById('loadingKota');
     if (!sel) return;
     sel.disabled = true; sel.classList.add('opacity-40');
-    sel.innerHTML = '<option value="">-- Memuat data... --</option>';
+    sel.innerHTML = '<option value="">Memuat...</option>';
     spin && spin.classList.remove('hidden');
     try {
-        var res  = await fetch('/wilayah/regencies/' + provId);
-        var data = await res.json();
+        var data = await (await fetch('/wilayah/regencies/' + encodeURIComponent(provId))).json();
         sel.innerHTML = '<option value="">-- Pilih Kabupaten/Kota --</option>';
         data.forEach(function (k) {
-            var opt = new Option(k.name, k.name);
-            opt.dataset.code = k.id;
-            if (selectedName && k.name === selectedName) opt.selected = true;
+            var label = k.name || k.nama;
+            var opt = new Option(label, label);
+            if (selectedName && label.toUpperCase() === selectedName.toUpperCase()) opt.selected = true;
             sel.appendChild(opt);
         });
         sel.disabled = false; sel.classList.remove('opacity-40');
-    } catch (e) { sel.innerHTML = '<option value="">Gagal memuat data</option>'; console.error(e); }
+    } catch (e) { sel.innerHTML = '<option value="">Gagal memuat</option>'; sel.disabled = false; sel.classList.remove('opacity-40'); }
     finally { spin && spin.classList.add('hidden'); }
 }
-
 window.WILAYAH = { onProvinsiChange: onProvinsiChange };
 document.addEventListener('DOMContentLoaded', loadProvinsi);
 })();
 </script>
 
 <script>
+/* ================================================================
+   _SHEET — Upload Bottom Sheet controller
+================================================================ */
+window._SHEET = (function () {
+'use strict';
+var _activeIdx = null, _isAnimating = false;
+function open(idx) {
+    if (_isAnimating) return;
+    _activeIdx = idx;
+    var bd = document.getElementById('uploadSheetBackdrop');
+    var sh = document.getElementById('uploadSheet');
+    if (!bd || !sh) return;
+    bd.classList.remove('hiding'); sh.classList.remove('hiding');
+    bd.classList.add('show'); sh.classList.add('show');
+    document.body.style.overflow = 'hidden';
+}
+function close() {
+    if (_isAnimating) return;
+    var bd = document.getElementById('uploadSheetBackdrop');
+    var sh = document.getElementById('uploadSheet');
+    if (!bd || !sh) return;
+    _isAnimating = true;
+    bd.classList.add('hiding'); sh.classList.add('hiding');
+    setTimeout(function () {
+        bd.classList.remove('show','hiding'); sh.classList.remove('show','hiding');
+        document.body.style.overflow = ''; _isAnimating = false;
+    }, 210);
+}
+function pick(type) {
+    var idx = _activeIdx; close();
+    setTimeout(function () {
+        var map = { camera:'ktpCamera_', foto:'ktpFoto_', file:'ktpFile_' };
+        var el = document.getElementById((map[type] || 'ktpFoto_') + idx);
+        if (el) el.click();
+    }, 230);
+}
+var _ty0 = 0;
+document.addEventListener('touchstart', function (e) {
+    if (document.getElementById('uploadSheet').classList.contains('show')) _ty0 = e.touches[0].clientY;
+}, { passive:true });
+document.addEventListener('touchend', function (e) {
+    if (!document.getElementById('uploadSheet').classList.contains('show')) return;
+    if (e.changedTouches[0].clientY - _ty0 > 70) close();
+}, { passive:true });
+document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+return { open: open, close: close, pick: pick };
+})();
+</script>
+
+<script>
+/* ================================================================
+   VET — Veteran OCR + AJAX Submit
+================================================================ */
 (function () {
 'use strict';
 
-// ================================================================
-// KONSTANTA — usia dihitung dari selisih tahun saja (tanpa tanggal turnamen)
-// ================================================================
 var MIN_AGE_EACH  = 45;
 var MIN_AGE_TOTAL = 95;
 
-var ktpFiles   = [null, null];
+/* file hasil konversi disimpan di sini, bukan di input DOM */
+var ktpFiles   = {};
 var scanStatus = [false, false];
 var usiaArr    = [null, null];
 
-// ================================================================
-// HITUNG USIA — selisih tahun lahir ke tahun sekarang
-// Tidak mempertimbangkan bulan/tanggal sama sekali
-// ================================================================
+/* ── Konversi HEIC/besar → JPEG via Canvas ──────────────────── */
+function convertToJpeg(file, callback) {
+    var skipTypes = ['image/jpeg','image/jpg','image/png','image/webp'];
+    var needConvert = skipTypes.indexOf(file.type) === -1 || file.size > 3 * 1024 * 1024;
+    var reader = new FileReader();
+    reader.onload = function (e) {
+        var dataUrl = e.target.result;
+        if (!needConvert) { callback(file, dataUrl); return; }
+        var img = new Image();
+        img.onload = function () {
+            var MAX = 2048, w = img.naturalWidth, h = img.naturalHeight;
+            if (w > MAX || h > MAX) {
+                if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+                else        { w = Math.round(w * MAX / h); h = MAX; }
+            }
+            var canvas = document.createElement('canvas');
+            canvas.width = w; canvas.height = h;
+            canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+            canvas.toBlob(function (blob) {
+                if (!blob) { callback(file, dataUrl); return; }
+                var converted = new File([blob], file.name.replace(/\.[^.]+$/, '') + '.jpg',
+                    { type:'image/jpeg', lastModified: Date.now() });
+                callback(converted, URL.createObjectURL(blob));
+            }, 'image/jpeg', 0.88);
+        };
+        img.onerror = function () {
+            showToast('Format foto tidak didukung. Coba konversi ke JPG dulu.', 'warn');
+            callback(null, null);
+        };
+        img.src = dataUrl;
+    };
+    reader.onerror = function () { showToast('Gagal membaca file.', 'error'); callback(null, null); };
+    reader.readAsDataURL(file);
+}
+
+/* ── Hitung usia ─────────────────────────────────────────────── */
 function hitungUsia(str) {
     if (!str) return null;
     var tgl = null;
-
-    /* DD-MM-YYYY atau DD/MM/YYYY */
     var m1 = str.match(/^(\d{1,2})[-\/\.](\d{1,2})[-\/\.](\d{4})$/);
-    /* YYYY-MM-DD */
     var m2 = str.match(/^(\d{4})[-\/\.](\d{1,2})[-\/\.](\d{1,2})$/);
-
-    if (m1)      tgl = new Date(+m1[3], +m1[2] - 1, +m1[1]);
-    else if (m2) tgl = new Date(+m2[1], +m2[2] - 1, +m2[3]);
+    if (m1)      tgl = new Date(+m1[3], +m1[2]-1, +m1[1]);
+    else if (m2) tgl = new Date(+m2[1], +m2[2]-1, +m2[3]);
     else         tgl = new Date(str);
-
     if (!tgl || isNaN(tgl.getTime())) return null;
-
-    /* Usia = selisih tahun saja */
     var usia = new Date().getFullYear() - tgl.getFullYear();
     if (usia < 0 || usia > 120) return null;
-
     return { usia: usia, tgl: tgl };
 }
 
-function isValidVeteran(usia) {
-    return usia >= MIN_AGE_EACH;
+/* ── File select / drop ──────────────────────────────────────── */
+function fileSelect(input, idx) {
+    if (input.files && input.files[0]) processFile(input.files[0], idx);
 }
 
-// ================================================================
-// UPDATE BADGE
-// ================================================================
+function drop(e, idx) {
+    e.preventDefault();
+    var dz = document.getElementById('ktpDropzone_' + idx);
+    if (dz) dz.style.borderColor = 'rgba(234,179,8,.22)';
+    var file = e.dataTransfer && e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) processFile(file, idx);
+}
+
+function processFile(file, idx) {
+    if (file.size > 10 * 1024 * 1024) { showToast('File terlalu besar. Maks 10MB.', 'error'); return; }
+    convertToJpeg(file, function (converted, previewUrl) {
+        if (!converted) return;
+        ktpFiles[idx]   = converted;
+        scanStatus[idx] = false;
+        usiaArr[idx]    = null;
+        var imgEl = document.getElementById('ktpPreviewImg_' + idx);
+        if (imgEl) imgEl.src = previewUrl;
+        toggleEl('ktpPreview_'  + idx, true);
+        toggleEl('ktpDefault_'  + idx, false);
+        toggleEl('scanBtn_'     + idx, true);
+        resetCardUI(idx);
+    });
+}
+
+function resetSlot(e, idx) {
+    e.stopPropagation();
+    ktpFiles[idx]   = null;
+    scanStatus[idx] = false;
+    usiaArr[idx]    = null;
+    ['ktpCamera_','ktpFoto_','ktpFile_'].forEach(function (p) {
+        var el = document.getElementById(p + idx); if (el) el.value = '';
+    });
+    toggleEl('ktpPreview_'  + idx, false);
+    toggleEl('ktpDefault_'  + idx, true);
+    toggleEl('scanBtn_'     + idx, false);
+    toggleEl('scanLoading_' + idx, false);
+    setHid('pemain_'    + idx, '');
+    setHid('nik_'       + idx, '');
+    setHid('tgl_lahir_' + idx, '');
+    setHid('usia_valid_' + idx, '0');
+    setHid('usia_hitung_' + idx, '');
+    resetCardUI(idx);
+    updateAgeBadge(idx, null);
+    clearSummary();
+}
+
+function resetCardUI(idx) {
+    var card    = document.getElementById('ktpDataCard_' + idx);
+    var rows    = document.getElementById('ktpDataRows_' + idx);
+    var ocrCard = document.getElementById('ocr_card_'    + idx);
+    var infoEl  = document.getElementById('tgl_info_'   + idx);
+    if (card)    card.className = 'ktp-data-card';
+    if (rows)    rows.innerHTML = '';
+    if (ocrCard) ocrCard.classList.remove('scanned','invalid-age');
+    if (infoEl)  { infoEl.textContent = ''; infoEl.classList.add('hidden'); }
+}
+
+/* ── SCAN OCR ─────────────────────────────────────────────────── */
+function scan(idx) {
+    var fileToScan = ktpFiles[idx];
+    if (!fileToScan) { showToast('Upload foto KTP dulu sebelum scan.', 'warn'); return; }
+    toggleEl('scanBtn_'     + idx, false);
+    toggleEl('scanLoading_' + idx, true);
+    resetCardUI(idx);
+
+    var fd   = new FormData();
+    fd.append('image', fileToScan, fileToScan.name || 'ktp.jpg');
+    var csrf = (document.querySelector('meta[name="csrf-token"]') || {}).content || '';
+
+    fetch('/ocr/ktp', {
+        method: 'POST',
+        headers: { 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json' },
+        body: fd,
+    })
+    .then(function (resp) {
+        toggleEl('scanLoading_' + idx, false);
+        toggleEl('scanBtn_'     + idx, true);
+        return resp.json().then(function (j) { return { ok: resp.ok, j: j }; });
+    })
+    .then(function (res) {
+        if (!res.ok || !res.j.success) {
+            showToast(res.j.message || 'Gagal membaca KTP. Foto lebih jelas.', 'error');
+            return;
+        }
+        var data     = res.j.data;
+        var tglLahir = ((data.tanggal_lahir || data.tgl_lahir || '') + '').trim();
+        if (!tglLahir) {
+            showToast('KTP terbaca tapi tgl lahir tidak terdeteksi. Foto lebih jelas.', 'warn');
+            return;
+        }
+        setHid('pemain_'    + idx, data.nama    || '');
+        setHid('nik_'       + idx, data.nik     || '');
+        setHid('tgl_lahir_' + idx, tglLahir);
+        updateAgeBadge(idx, tglLahir);
+
+        var usia  = parseInt(document.getElementById('usia_hitung_' + idx).value, 10) || 0;
+        var valid = document.getElementById('usia_valid_' + idx).value === '1';
+
+        scanStatus[idx] = true;
+        toggleEl('scanBtn_' + idx, false);
+        renderCard(idx, data, usia, valid);
+
+        if (valid) {
+            showToast('✅ Pemain ' + (idx+1) + ' — ' + (data.nama||'') + ' · ' + usia + ' thn · Memenuhi syarat!', 'success');
+        } else {
+            showToast('⚠ Pemain ' + (idx+1) + ' — ' + usia + ' thn · TIDAK memenuhi syarat (min. 45 thn).', 'warn');
+        }
+    })
+    .catch(function () {
+        toggleEl('scanLoading_' + idx, false);
+        toggleEl('scanBtn_'     + idx, true);
+        showToast('Tidak bisa konek ke OCR service.', 'error');
+    });
+}
+
+/* ── Age badge + summary ──────────────────────────────────────── */
 function updateAgeBadge(idx, tglStr) {
-    var badge     = document.getElementById('age_badge_'   + idx);
-    var ocrCard   = document.getElementById('ocr_card_'    + idx);
-    var hiddenV   = document.getElementById('usia_valid_'  + idx);
-    var hiddenAge = document.getElementById('usia_hitung_' + idx);
-    var infoEl    = document.getElementById('tgl_info_'    + idx);
+    var badge   = document.getElementById('age_badge_'   + idx);
+    var ocrCard = document.getElementById('ocr_card_'    + idx);
+    var hidV    = document.getElementById('usia_valid_'  + idx);
+    var hidAge  = document.getElementById('usia_hitung_' + idx);
+    var infoEl  = document.getElementById('tgl_info_'    + idx);
 
     if (!tglStr) {
         setBadge(badge, 'pending', 'Belum scan');
-        if (hiddenV)   hiddenV.value   = '0';
-        if (hiddenAge) hiddenAge.value = '';
+        if (hidV)   hidV.value   = '0';
+        if (hidAge) hidAge.value = '';
         usiaArr[idx] = null;
         return;
     }
-
     var result = hitungUsia(tglStr);
     if (!result) {
         setBadge(badge, 'invalid', 'Tgl lahir tidak valid');
-        if (hiddenV) hiddenV.value = '0';
+        if (hidV) hidV.value = '0';
         usiaArr[idx] = null;
         return;
     }
-
     var usia  = result.usia;
-    var tgl   = result.tgl;
-    var valid = isValidVeteran(usia);
-    var fmt   = tgl.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+    var valid = usia >= MIN_AGE_EACH;
+    var fmt   = result.tgl.toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric'});
 
-    if (hiddenV)   hiddenV.value   = valid ? '1' : '0';
-    if (hiddenAge) hiddenAge.value = usia;
+    if (hidV)   hidV.value   = valid ? '1' : '0';
+    if (hidAge) hidAge.value = usia;
     usiaArr[idx] = usia;
 
     if (valid) {
-        setBadge(badge, 'valid', '&#10003; ' + usia + ' thn &mdash; Memenuhi syarat');
+        setBadge(badge, 'valid', '✓ ' + usia + ' thn — Memenuhi syarat');
         if (ocrCard) { ocrCard.classList.add('scanned'); ocrCard.classList.remove('invalid-age'); }
     } else {
-        setBadge(badge, 'invalid', '&#10007; ' + usia + ' thn &mdash; Min. 45 tahun');
+        setBadge(badge, 'invalid', '✗ ' + usia + ' thn — Min. 45 tahun');
         if (ocrCard) { ocrCard.classList.add('invalid-age'); ocrCard.classList.remove('scanned'); }
     }
-
     if (infoEl) {
-        /* Tampilkan tgl lahir + usia — tanpa embel-embel tanggal turnamen */
-        infoEl.textContent = 'Lahir: ' + fmt + ' \u00b7 ' + usia + ' tahun';
+        infoEl.textContent = 'Lahir: ' + fmt + ' · ' + usia + ' tahun';
         infoEl.className   = 'text-xs mt-2 font-medium ' + (valid ? 'text-emerald-400' : 'text-red-400');
         infoEl.classList.remove('hidden');
     }
-
     updateSummary();
 }
 
-function setBadge(el, state, html) {
+function setBadge(el, state, text) {
     if (!el) return;
     el.className = 'age-badge ' + state;
-    el.innerHTML = html;
+    el.textContent = text;
 }
 
-// ================================================================
-// SUMMARY
-// ================================================================
 function updateSummary() {
     if (!scanStatus[0] || !scanStatus[1]) return;
+    var v0 = document.getElementById('usia_valid_0').value === '1';
+    var v1 = document.getElementById('usia_valid_1').value === '1';
+    var u0 = usiaArr[0] || 0, u1 = usiaArr[1] || 0;
+    var total = u0 + u1, totalOk = total >= MIN_AGE_TOTAL;
 
-    var v0      = document.getElementById('usia_valid_0').value === '1';
-    var v1      = document.getElementById('usia_valid_1').value === '1';
-    var u0      = usiaArr[0] || 0;
-    var u1      = usiaArr[1] || 0;
-    var total   = u0 + u1;
-    var totalOk = total >= MIN_AGE_TOTAL;
-
-    var totalBox = document.getElementById('totalUsiaBox');
-    var totalVal = document.getElementById('totalUsiaValue');
-    if (totalBox && totalVal) {
-        totalBox.className = 'total-usia-box show ' + (totalOk ? 'ok' : 'bad');
-        totalVal.innerHTML = total + ' tahun '
+    var tBox = document.getElementById('totalUsiaBox');
+    var tVal  = document.getElementById('totalUsiaValue');
+    if (tBox && tVal) {
+        tBox.className = 'total-usia-box show ' + (totalOk ? 'ok' : 'bad');
+        tVal.innerHTML = total + ' tahun '
             + (totalOk
-                ? '<span style="color:#34d399">&#10003; memenuhi</span>'
-                : '<span style="color:#f87171">&#10007; kurang ' + (MIN_AGE_TOTAL - total) + ' tahun</span>');
+                ? '<span style="color:#34d399">✓ memenuhi</span>'
+                : '<span style="color:#f87171">✗ kurang ' + (MIN_AGE_TOTAL - total) + ' thn</span>');
     }
 
-    var summary   = document.getElementById('veteranSummary');
-    var sumIcon   = document.getElementById('summaryIcon');
-    var sumTitle  = document.getElementById('summaryTitle');
-    var sumDetail = document.getElementById('summaryDetail');
-    var warning   = document.getElementById('submitWarning');
-    var allOk     = v0 && v1 && totalOk;
+    var summary = document.getElementById('veteranSummary');
+    var icon    = document.getElementById('summaryIcon');
+    var title   = document.getElementById('summaryTitle');
+    var detail  = document.getElementById('summaryDetail');
+    var warning = document.getElementById('submitWarning');
+    var allOk   = v0 && v1 && totalOk;
 
     if (allOk) {
         summary.className = 'veteran-summary show ok';
-        if (sumIcon)   sumIcon.innerHTML   = '<svg width="16" height="16" viewBox="0 0 20 20" fill="#34d399"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>';
-        if (sumTitle)  { sumTitle.className  = 'text-xs font-bold text-emerald-400'; sumTitle.textContent  = 'Kedua pemain memenuhi syarat veteran!'; }
-        if (sumDetail) { sumDetail.className = 'text-xs mt-0.5 text-emerald-400/55'; sumDetail.textContent = 'Usia individual \u2265 45 thn \u00b7 Total usia ' + total + ' thn \u2265 95 thn'; }
-        warning.style.display = 'none';
+        if (icon)    icon.innerHTML   = '<svg width="16" height="16" viewBox="0 0 20 20" fill="#34d399"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>';
+        if (title)   { title.className   = 'text-xs font-bold text-emerald-400'; title.textContent   = 'Kedua pemain memenuhi syarat veteran!'; }
+        if (detail)  { detail.className  = 'text-xs mt-0.5 text-emerald-400/55'; detail.textContent  = 'Usia individual ≥ 45 thn · Total usia ' + total + ' thn ≥ 95 thn'; }
+        if (warning) warning.style.display = 'none';
     } else {
         summary.className = 'veteran-summary show bad';
-        if (sumIcon) sumIcon.innerHTML = '<svg width="16" height="16" viewBox="0 0 20 20" fill="#f87171"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>';
-        if (sumTitle) { sumTitle.className = 'text-xs font-bold text-red-400'; sumTitle.textContent = 'Syarat usia belum terpenuhi'; }
-        var detail = '';
-        if (!v0 && !v1)    detail = 'Kedua pemain tidak memenuhi syarat usia (min. 45 tahun).';
-        else if (!v0)      detail = 'Pemain 1 tidak memenuhi syarat usia (min. 45 tahun).';
-        else if (!v1)      detail = 'Pemain 2 tidak memenuhi syarat usia (min. 45 tahun).';
-        else if (!totalOk) detail = 'Total usia ' + total + ' tahun, kurang ' + (MIN_AGE_TOTAL - total) + ' tahun dari minimum 95 tahun.';
-        if (sumDetail) { sumDetail.className = 'text-xs mt-0.5 text-red-400/55'; sumDetail.textContent = detail; }
-        warning.style.display = 'block';
-        warning.textContent   = '\u26a0 ' + detail;
+        if (icon) icon.innerHTML = '<svg width="16" height="16" viewBox="0 0 20 20" fill="#f87171"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>';
+        if (title)  { title.className = 'text-xs font-bold text-red-400'; title.textContent = 'Syarat usia belum terpenuhi'; }
+        var msg = !v0 && !v1 ? 'Kedua pemain tidak memenuhi syarat usia (min. 45 tahun).'
+                : !v0   ? 'Pemain 1 tidak memenuhi syarat usia (min. 45 tahun).'
+                : !v1   ? 'Pemain 2 tidak memenuhi syarat usia (min. 45 tahun).'
+                : 'Total usia ' + total + ' tahun, kurang ' + (MIN_AGE_TOTAL - total) + ' tahun dari minimum.';
+        if (detail) { detail.className = 'text-xs mt-0.5 text-red-400/55'; detail.textContent = msg; }
+        if (warning) { warning.style.display = 'block'; warning.textContent = '⚠ ' + msg; }
     }
 }
 
-// ================================================================
-// RENDER CARD KTP — READ ONLY
-// ================================================================
+function clearSummary() {
+    var summary = document.getElementById('veteranSummary');
+    var warning = document.getElementById('submitWarning');
+    var tBox    = document.getElementById('totalUsiaBox');
+    if (summary) summary.className     = 'veteran-summary';
+    if (warning) warning.style.display = 'none';
+    if (tBox)    tBox.className        = 'total-usia-box';
+}
+
+/* ── Render card KTP (read-only) ─────────────────────────────── */
 function renderCard(idx, data, usia, valid) {
     var card = document.getElementById('ktpDataCard_' + idx);
     var rows = document.getElementById('ktpDataRows_' + idx);
@@ -704,35 +1033,28 @@ function renderCard(idx, data, usia, valid) {
     rows.innerHTML = '';
 
     var fields = [
-        { label: 'NIK',       key: 'nik',          hl: true  },
-        { label: 'Nama',      key: 'nama',          hl: true  },
-        { label: 'Tgl Lahir', key: '__tgl_lahir__', hl: true  },
-        { label: 'Usia',      key: '__usia__',      hl: false },
-        { label: 'Jenis Kel.',key: 'jenis_kelamin', hl: false },
-        { label: 'Kel/Desa',  key: 'kelurahan',     hl: false },
-        { label: 'Kecamatan', key: 'kecamatan',     hl: false },
+        { label:'NIK',       key:'nik',          hl:true  },
+        { label:'Nama',      key:'nama',          hl:true  },
+        { label:'Tgl Lahir', key:'__tgl_lahir__', hl:true  },
+        { label:'Usia',      key:'__usia__',      hl:false },
+        { label:'Jenis Kel.',key:'jenis_kelamin', hl:false },
     ];
-
     var tglNorm = (data.tanggal_lahir || data.tgl_lahir || '').trim();
 
     fields.forEach(function (f) {
         var valHtml = '';
         if (f.key === '__usia__') {
-            if (!usia && usia !== 0) return;
             var warna = valid ? '#34d399' : '#f87171';
-            var icon  = valid ? '&#10003;' : '&#10007;';
-            /* Label usia tanpa embel-embel tanggal turnamen */
             valHtml = '<span style="color:' + warna + ';font-weight:700;font-size:12px;">'
-                + icon + ' ' + usia + ' tahun &mdash; '
-                + (valid ? 'Memenuhi syarat' : 'Tidak memenuhi syarat')
-                + '</span>';
+                + (valid ? '✓' : '✗') + ' ' + usia + ' tahun — '
+                + (valid ? 'Memenuhi syarat' : 'Tidak memenuhi syarat') + '</span>';
         } else if (f.key === '__tgl_lahir__') {
             if (!tglNorm) return;
-            valHtml = '<span class="ktp-value' + (f.hl ? ' highlight' : '') + '">' + escHtml(tglNorm) + '</span>';
+            valHtml = '<span class="ktp-value highlight">' + esc(tglNorm) + '</span>';
         } else {
             var v = ((data[f.key] || '') + '').trim();
             if (!v) return;
-            valHtml = '<span class="ktp-value' + (f.hl ? ' highlight' : '') + '">' + escHtml(v) + '</span>';
+            valHtml = '<span class="ktp-value' + (f.hl ? ' highlight' : '') + '">' + esc(v) + '</span>';
         }
         rows.innerHTML += '<div class="ktp-row"><span class="ktp-label">' + f.label + '</span>' + valHtml + '</div>';
     });
@@ -746,169 +1068,20 @@ function renderCard(idx, data, usia, valid) {
     card.className = 'ktp-data-card show ' + (valid ? 'valid-card' : 'invalid-card');
 }
 
-// ================================================================
-// FILE HANDLING
-// ================================================================
-function fileSelect(input, idx) {
-    if (input.files && input.files[0]) processFile(input.files[0], idx);
-}
-
-function drop(e, idx) {
-    e.preventDefault();
-    var dz = document.getElementById('ktpDropzone_' + idx);
-    if (dz) dz.style.borderColor = 'rgba(234,179,8,.22)';
-    var file = e.dataTransfer && e.dataTransfer.files[0];
-    if (file && file.type.startsWith('image/')) {
-        var dt = new DataTransfer(); dt.items.add(file);
-        var inp = document.getElementById('ktpInput_' + idx);
-        if (inp) inp.files = dt.files;
-        processFile(file, idx);
-    }
-}
-
-function processFile(file, idx) {
-    if (file.size > 5 * 1024 * 1024) { showToast('File terlalu besar. Maks 5MB.', 'error'); return; }
-    ktpFiles[idx] = file;
-    var reader = new FileReader();
-    reader.onload = function (e) {
-        var img = document.getElementById('ktpPreviewImg_' + idx);
-        if (img) img.src = e.target.result;
-        toggleEl('ktpPreview_' + idx, true);
-        toggleEl('ktpDefault_' + idx, false);
-        toggleEl('scanBtn_'    + idx, true);
-        var card = document.getElementById('ktpDataCard_' + idx);
-        var rows = document.getElementById('ktpDataRows_' + idx);
-        if (card) card.className = 'ktp-data-card';
-        if (rows) rows.innerHTML = '';
-    };
-    reader.readAsDataURL(file);
-}
-
-function resetSlot(e, idx) {
-    e.stopPropagation();
-    ktpFiles[idx]   = null;
-    scanStatus[idx] = false;
-    usiaArr[idx]    = null;
-
-    var inp = document.getElementById('ktpInput_' + idx);
-    if (inp) inp.value = '';
-
-    toggleEl('ktpPreview_'  + idx, false);
-    toggleEl('ktpDefault_'  + idx, true);
-    toggleEl('scanBtn_'     + idx, false);
-    toggleEl('scanLoading_' + idx, false);
-
-    setHid('pemain_'      + idx, '');
-    setHid('nik_'         + idx, '');
-    setHid('tgl_lahir_'   + idx, '');
-    setHid('usia_valid_'  + idx, '0');
-    setHid('usia_hitung_' + idx, '');
-
-    var card    = document.getElementById('ktpDataCard_' + idx);
-    var rows    = document.getElementById('ktpDataRows_' + idx);
-    var ocrCard = document.getElementById('ocr_card_'    + idx);
-    var infoEl  = document.getElementById('tgl_info_'    + idx);
-    if (card)    card.className = 'ktp-data-card';
-    if (rows)    rows.innerHTML = '';
-    if (ocrCard) ocrCard.classList.remove('scanned', 'invalid-age');
-    if (infoEl)  { infoEl.textContent = ''; infoEl.classList.add('hidden'); }
-
-    updateAgeBadge(idx, null);
-
-    var summary  = document.getElementById('veteranSummary');
-    var warning  = document.getElementById('submitWarning');
-    var totalBox = document.getElementById('totalUsiaBox');
-    if (summary)  summary.className     = 'veteran-summary';
-    if (warning)  warning.style.display = 'none';
-    if (totalBox) totalBox.className    = 'total-usia-box';
-}
-
-// ================================================================
-// SCAN OCR
-// ================================================================
-function scan(idx) {
-    if (!ktpFiles[idx]) return;
-    toggleEl('scanBtn_'     + idx, false);
-    toggleEl('scanLoading_' + idx, true);
-    var card = document.getElementById('ktpDataCard_' + idx);
-    if (card) card.className = 'ktp-data-card';
-
-    var fd   = new FormData();
-    fd.append('image', ktpFiles[idx]);
-    var csrf = (document.querySelector('meta[name="csrf-token"]') || {}).content || '';
-
-    fetch('/ocr/ktp', {
-        method:  'POST',
-        headers: { 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json' },
-        body:    fd,
-    })
-    .then(function (resp) {
-        toggleEl('scanLoading_' + idx, false);
-        toggleEl('scanBtn_'     + idx, true);
-        if (!resp.ok) {
-            return resp.json().catch(function () { return {}; }).then(function (err) {
-                showToast(err.message || ('HTTP ' + resp.status + ' — coba lagi.'), 'error');
-            });
-        }
-        return resp.json().then(function (result) {
-            if (!result.success) { showToast(result.message || 'Gagal membaca KTP. Coba foto lebih jelas.', 'error'); return; }
-
-            var data     = result.data;
-            var tglLahir = ((data.tanggal_lahir || data.tgl_lahir || '') + '').trim();
-
-            if (!tglLahir) {
-                showToast('\u26a0 KTP terbaca tapi tanggal lahir tidak terdeteksi. Coba foto lebih jelas.', 'warn');
-                scanStatus[idx] = true;
-                return;
-            }
-
-            setHid('pemain_'    + idx, data.nama || '');
-            setHid('nik_'       + idx, data.nik  || '');
-            setHid('tgl_lahir_' + idx, tglLahir);
-
-            updateAgeBadge(idx, tglLahir);
-
-            var usia  = parseInt(document.getElementById('usia_hitung_' + idx).value, 10) || 0;
-            var valid = document.getElementById('usia_valid_' + idx).value === '1';
-
-            scanStatus[idx] = true;
-            renderCard(idx, data, usia, valid);
-            toggleEl('scanBtn_' + idx, false);
-
-            if (valid) {
-                showToast('\u2705 Pemain ' + (idx + 1) + ' — ' + (data.nama || '') + ' \u00b7 ' + usia + ' tahun \u00b7 Memenuhi syarat veteran!', 'success');
-            } else {
-                showToast('\u26a0 Pemain ' + (idx + 1) + ' — ' + usia + ' tahun \u00b7 TIDAK memenuhi syarat (min. 45 tahun).', 'warn');
-            }
-        });
-    })
-    .catch(function (err) {
-        toggleEl('scanLoading_' + idx, false);
-        toggleEl('scanBtn_'     + idx, true);
-        showToast('\u274c Tidak bisa konek ke OCR service.', 'error');
-        console.error('OCR error:', err);
-    });
-}
-
-// ================================================================
-// HELPERS
-// ================================================================
+/* ── Helpers ─────────────────────────────────────────────────── */
 function toggleEl(id, show) {
     var el = document.getElementById(id);
     if (!el) return;
     if (show) el.classList.remove('hidden'); else el.classList.add('hidden');
 }
 function setHid(id, val) { var el = document.getElementById(id); if (el) el.value = val; }
-function escHtml(s) {
+function esc(s) {
     return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-// ================================================================
-// TOAST
-// ================================================================
-var _toastTimer = null;
+/* ── Toast ───────────────────────────────────────────────────── */
+var _tt = null;
 function showToast(msg, type) {
-    type = type || 'success';
     var el = document.getElementById('_vetToast');
     if (!el) {
         el = document.createElement('div');
@@ -922,47 +1095,142 @@ function showToast(msg, type) {
         error:   'background:rgba(30,6,6,.97);border:1px solid rgba(239,68,68,.38);color:#f87171;',
     };
     el.style.cssText += (styles[type] || styles.error) + 'opacity:1;transform:translateY(0);';
-    el.innerHTML = msg;
-    if (_toastTimer) clearTimeout(_toastTimer);
-    _toastTimer = setTimeout(function () { el.style.opacity = '0'; el.style.transform = 'translateY(-8px)'; }, 5500);
+    el.textContent = msg;
+    if (_tt) clearTimeout(_tt);
+    _tt = setTimeout(function () { el.style.opacity='0'; el.style.transform='translateY(-8px)'; }, 5500);
 }
 
-// ================================================================
-// SUBMIT GUARD
-// ================================================================
-document.getElementById('regForm').addEventListener('submit', function (e) {
-    if (!scanStatus[0] || !scanStatus[1]) {
-        e.preventDefault();
-        var w = document.getElementById('submitWarning');
-        w.style.display = 'block';
-        w.textContent   = '\u26a0 Harap scan KTP kedua pemain terlebih dahulu untuk verifikasi usia.';
-        w.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        return;
-    }
+/* ── AJAX Submit helpers ──────────────────────────────────────── */
+function clearAllErrors() {
+    document.querySelectorAll('.field-error-msg').forEach(function (e) { e.textContent=''; e.classList.remove('show'); });
+    document.querySelectorAll('.input-field.field-error').forEach(function (e) { e.classList.remove('field-error'); });
+    var banner = document.getElementById('ajaxErrorBanner');
+    if (banner) banner.classList.remove('show');
+}
 
-    var v0      = document.getElementById('usia_valid_0').value === '1';
-    var v1      = document.getElementById('usia_valid_1').value === '1';
-    var u0      = parseInt(document.getElementById('usia_hitung_0').value, 10) || 0;
-    var u1      = parseInt(document.getElementById('usia_hitung_1').value, 10) || 0;
-    var total   = u0 + u1;
-    var totalOk = total >= MIN_AGE_TOTAL;
+function showErrorBanner(errors) {
+    var banner = document.getElementById('ajaxErrorBanner');
+    var list   = document.getElementById('ajaxErrorList');
+    if (!banner || !list) return;
+    list.innerHTML = '';
+    errors.forEach(function (m) { var li = document.createElement('li'); li.textContent = m; list.appendChild(li); });
+    banner.classList.add('show');
+    banner.scrollIntoView({ behavior:'smooth', block:'start' });
+}
 
-    if (!v0 || !v1 || !totalOk) {
-        e.preventDefault();
-        var w   = document.getElementById('submitWarning');
-        var msg = '\u26a0 ';
-        if (!v0 && !v1)    msg += 'Kedua pemain tidak memenuhi syarat usia (min. 45 tahun per pemain).';
-        else if (!v0)      msg += 'Pemain 1 tidak memenuhi syarat usia (min. 45 tahun).';
-        else if (!v1)      msg += 'Pemain 2 tidak memenuhi syarat usia (min. 45 tahun).';
-        else if (!totalOk) msg += 'Total usia ' + total + ' tahun (min. 95 tahun dari 2 pemain).';
-        w.style.display = 'block';
-        w.textContent   = msg;
-        w.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        showToast(msg, 'warn');
+function setFieldError(field, msg) {
+    var el = document.getElementById('err_' + field);
+    if (!el) return;
+    el.textContent = msg;
+    el.classList.add('show');
+    var inp = document.getElementById('field_' + field);
+    if (inp) inp.classList.add('field-error');
+}
+
+function setSubmitLoading(loading) {
+    var btn     = document.getElementById('submitBtn');
+    var btnText = document.getElementById('submitBtnText');
+    var spinner = document.getElementById('submitBtnSpinner');
+    var overlay = document.getElementById('submitOverlay');
+    if (loading) {
+        if (btn)     btn.disabled = true;
+        if (btnText) btnText.textContent = 'Memproses...';
+        if (spinner) spinner.classList.remove('hidden');
+        if (overlay) overlay.classList.add('show');
+    } else {
+        if (btn)     btn.disabled = false;
+        if (btnText) btnText.innerHTML = 'DAFTAR &amp; BAYAR SEKARANG →';
+        if (spinner) spinner.classList.add('hidden');
+        if (overlay) overlay.classList.remove('show');
     }
+}
+
+/* ── Bootstrap ───────────────────────────────────────────────── */
+window.VET = { fileSelect: fileSelect, drop: drop, resetSlot: resetSlot, scan: scan, showSheet: function(idx){ _SHEET.open(idx); } };
+
+document.addEventListener('DOMContentLoaded', function () {
+    var form = document.getElementById('regForm');
+    if (!form) return;
+
+    form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        clearAllErrors();
+
+        /* Client validation: kedua pemain harus sudah scan */
+        if (!scanStatus[0] || !scanStatus[1]) {
+            var w = document.getElementById('submitWarning');
+            if (w) { w.style.display = 'block'; w.textContent = '⚠ Harap scan KTP kedua pemain terlebih dahulu.'; w.scrollIntoView({behavior:'smooth',block:'center'}); }
+            return;
+        }
+
+        var v0 = document.getElementById('usia_valid_0').value === '1';
+        var v1 = document.getElementById('usia_valid_1').value === '1';
+        var u0 = parseInt(document.getElementById('usia_hitung_0').value, 10) || 0;
+        var u1 = parseInt(document.getElementById('usia_hitung_1').value, 10) || 0;
+        var total = u0 + u1;
+
+        if (!v0 || !v1 || total < MIN_AGE_TOTAL) {
+            var msg = !v0 && !v1 ? 'Kedua pemain tidak memenuhi syarat usia minimum 45 tahun.'
+                    : !v0 ? 'Pemain 1 tidak memenuhi syarat usia minimum 45 tahun.'
+                    : !v1 ? 'Pemain 2 tidak memenuhi syarat usia minimum 45 tahun.'
+                    : 'Total usia ' + total + ' tahun (minimum 95 tahun dari 2 pemain).';
+            showErrorBanner([msg]);
+            return;
+        }
+
+        /* Build FormData */
+        var fd = new FormData();
+        form.querySelectorAll('input:not([type="file"]), select, textarea').forEach(function (inp) {
+            if (!inp.name) return;
+            fd.append(inp.name, inp.value);
+        });
+        /* Tambahkan file KTP dari ktpFiles object */
+        [0, 1].forEach(function (idx) {
+            var f = ktpFiles[idx];
+            if (f) fd.append('ktp_files[]', f, f.name || ('ktp-pemain-' + (idx+1) + '.jpg'));
+        });
+
+        setSubmitLoading(true);
+        var csrf = (document.querySelector('meta[name="csrf-token"]') || {}).content || '';
+
+        try {
+            var response = await fetch("{{ route('registration.store') }}", {
+                method: 'POST',
+                headers: { 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+                body: fd,
+            });
+            var data = await response.json();
+
+            if (response.status === 422) {
+                setSubmitLoading(false);
+                var allMessages = [];
+                Object.keys(data.errors || {}).forEach(function (field) {
+                    var msgs = data.errors[field];
+                    if (!Array.isArray(msgs)) msgs = [msgs];
+                    allMessages = allMessages.concat(msgs);
+                    setFieldError(field.replace(/\.\d+$/, ''), msgs[0]);
+                });
+                showErrorBanner(allMessages);
+                return;
+            }
+
+            if (!response.ok) {
+                setSubmitLoading(false);
+                showErrorBanner([(data && data.message) || 'Terjadi kesalahan server. Coba lagi.']);
+                return;
+            }
+
+            var ovText = document.getElementById('submitOverlayText');
+            if (ovText) ovText.textContent = 'Pendaftaran berhasil! Mengarahkan...';
+            window.location.href = data.redirect || data.payment_url || '/';
+
+        } catch (err) {
+            setSubmitLoading(false);
+            showErrorBanner(['Koneksi gagal. Periksa internet dan coba lagi.']);
+        }
+    });
 });
 
-window.VET = { fileSelect: fileSelect, drop: drop, reset: resetSlot, scan: scan };
 })();
 </script>
 @endpush
