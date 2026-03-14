@@ -83,6 +83,55 @@
             color: #1a1a1a;
         }
 
+        /* ── Mobile menu overlay ── */
+        #mobile-menu {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 40;
+            background: rgba(248,246,242,0.97);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+        }
+        #mobile-menu.open { display: flex; }
+        #mobile-menu a.nav-link-mobile {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: rgba(0,0,0,0.55);
+            text-decoration: none;
+            letter-spacing: 0.08em;
+            transition: color 0.2s;
+        }
+        #mobile-menu a.nav-link-mobile:hover { color: #f97316; }
+
+        /* Hamburger */
+        .hamburger {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 4px;
+            background: none;
+            border: none;
+        }
+        .hamburger span {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: #1a1a1a;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+            transform-origin: center;
+        }
+        .hamburger.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .hamburger.active span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+        .hamburger.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
         /* ── Animasi ── */
         @keyframes float {
             0%, 100% { transform: translateY(0px); }
@@ -125,7 +174,6 @@
         }
         .input-field::placeholder { color: rgba(0,0,0,0.3); }
 
-        /* select dark override — dibalik ke light */
         select.input-field {
             color: #1a1a1a !important;
             background-color: #ffffff !important;
@@ -139,10 +187,6 @@
         select.input-field:disabled        { opacity: .45 !important; cursor: not-allowed; }
 
         /* ── Teks helper default (white/xx → slate) ── */
-        /* Digunakan pada form-dewasa dan form-veteran yang masih pakai class Tailwind text-white/xx.
-           Override di sini agar tidak perlu ubah setiap template satu per satu. */
-
-        /* Section labels & captions */
         .text-white\/70  { color: rgba(0,0,0,0.65) !important; }
         .text-white\/60  { color: rgba(0,0,0,0.58) !important; }
         .text-white\/50  { color: rgba(0,0,0,0.50) !important; }
@@ -156,13 +200,11 @@
         .text-white\/80  { color: rgba(0,0,0,0.75) !important; }
         .text-white\/55  { color: rgba(0,0,0,0.52) !important; }
 
-        /* Border white → light gray */
         .border-white\/10  { border-color: rgba(0,0,0,0.08) !important; }
         .border-white\/12  { border-color: rgba(0,0,0,0.10) !important; }
         .border-white\/08  { border-color: rgba(0,0,0,0.07) !important; }
 
-        /* ── Section backgrounds (form sections dengan rgba dark) ── */
-        /* OCR card (form-dewasa) */
+        /* ── Section backgrounds ── */
         .pemain-ocr-card {
             background: #ffffff !important;
             border-color: rgba(249,115,22,0.2) !important;
@@ -173,7 +215,6 @@
             border-color: rgba(16,185,129,0.35) !important;
         }
 
-        /* KTP data card */
         .ktp-data-card.valid-card {
             background: #fffbf5 !important;
             border-color: rgba(249,115,22,0.2) !important;
@@ -201,12 +242,8 @@
         .ktp-row { border-bottom-color: rgba(0,0,0,0.05) !important; }
         .ktp-edit-hint { color: rgba(249,115,22,0.55) !important; }
 
-        /* Scan loading bar */
         .scan-loading-bar { background: rgba(249,115,22,0.1) !important; }
 
-        /* ── Misc utility overrides ── */
-        /* background rgba dark yang dipakai inline di template */
-        /* Diganti via class di bawah — untuk card section di form */
         .bg-white\/05, [style*="background:rgba(255,255,255,0.05)"] {
             background: #ffffff !important;
         }
@@ -220,15 +257,17 @@
 
     {{-- NAVBAR --}}
     <nav class="navbar fixed top-0 left-0 right-0 z-50" id="navbar">
-        <div class="max-w-7xl mx-auto px-8 h-24 flex items-center justify-between">
+        <div class="max-w-7xl mx-auto px-4 sm:px-8 h-16 sm:h-20 lg:h-24 flex items-center justify-between">
             <a href="{{ url('/') }}" class="flex items-center gap-4 group">
                 <img
                     src="https://res.cloudinary.com/djs5pi7ev/image/upload/v1773109896/LOGO_BO2026_pzbvxh.png"
                     alt="Bayan Open 2026"
-                    class="h-16 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+                    class="h-10 sm:h-12 lg:h-16 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
                 >
             </a>
-            <div class="flex items-center gap-6">
+
+            {{-- Desktop links --}}
+            <div class="hidden md:flex items-center gap-6">
                 <a href="{{ url('/') }}"
                    class="nav-link transition font-medium text-sm tracking-wide">Home</a>
                 <a href="#kategori"
@@ -238,11 +277,39 @@
                     DAFTAR →
                 </a>
             </div>
+
+            {{-- Mobile: DAFTAR + hamburger --}}
+            <div class="flex md:hidden items-center gap-3">
+                <a href="{{ route('registration.index') }}"
+                   class="btn-primary font-display text-xs font-bold px-4 py-2.5 rounded-lg tracking-wider">
+                    DAFTAR →
+                </a>
+                <button class="hamburger" id="hamburger-btn" aria-label="Buka menu" aria-expanded="false" aria-controls="mobile-menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
         </div>
     </nav>
 
+    {{-- MOBILE MENU OVERLAY --}}
+    <div id="mobile-menu" role="dialog" aria-modal="true" aria-label="Menu navigasi">
+        <button id="menu-close" style="position:absolute;top:1.25rem;right:1.25rem;background:none;border:none;cursor:pointer;padding:0.5rem;" aria-label="Tutup menu">
+            <svg width="20" height="20" fill="none" stroke="#1a1a1a" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M18 6L6 18M6 6l12 12"/>
+            </svg>
+        </button>
+        <a href="{{ url('/') }}" class="nav-link-mobile" onclick="closeMobileMenu()">Home</a>
+        <a href="#kategori" class="nav-link-mobile" onclick="closeMobileMenu()">Kategori</a>
+        <a href="{{ route('registration.index') }}"
+           class="btn-primary font-display text-sm font-bold px-8 py-4 rounded-xl tracking-wider mt-2">
+            DAFTAR →
+        </a>
+    </div>
+
     {{-- Konten --}}
-    <main class="pt-24">
+    <main class="pt-16 sm:pt-20 lg:pt-24">
         @yield('content')
     </main>
 
@@ -262,6 +329,7 @@
                 background:rgba(0,0,0,.05);
                 border:1px solid rgba(0,0,0,.09);
                 color:rgba(0,0,0,.4);
+                flex-shrink:0;
                 transition:background .2s,color .2s,border-color .2s,transform .2s;
             }
             .footer-social-btn:hover {
@@ -276,18 +344,18 @@
             .footer-link:hover { color:#f97316; }
         </style>
 
-        <div class="max-w-6xl mx-auto px-8 pt-16 pb-10">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-16 pb-8 sm:pb-10">
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-14">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 sm:gap-12 mb-10 sm:mb-14">
 
                 {{-- Brand --}}
-                <div class="md:col-span-1">
+                <div class="sm:col-span-2 lg:col-span-1">
                     <img
                         src="https://res.cloudinary.com/djs5pi7ev/image/upload/v1773109896/LOGO_BO2026_pzbvxh.png"
                         alt="Bayan Open 2026"
-                        class="h-14 object-contain mb-5"
+                        class="h-12 sm:h-14 object-contain mb-4 sm:mb-5"
                     >
-                    <p style="color:rgba(0,0,0,.5);font-size:13px;line-height:1.8;" class="mb-5">
+                    <p style="color:rgba(0,0,0,.5);font-size:13px;line-height:1.8;" class="mb-4 sm:mb-5">
                         Turnamen bulu tangkis terbesar di Kalimantan.<br>
                         Bergabunglah dan tunjukkan kemampuan terbaik Anda.
                     </p>
@@ -359,11 +427,10 @@
             <div class="h-px mb-8" style="background:rgba(0,0,0,.08);"></div>
 
             {{-- Bottom bar --}}
-            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
                 <p class="font-display text-xs tracking-widest" style="color:rgba(0,0,0,.35);">
                     © 2026 BAYAN GROUP · All Rights Reserved
                 </p>
-
             </div>
 
         </div>
@@ -375,6 +442,31 @@
         window.addEventListener('scroll', () => {
             navbar.classList.toggle('scrolled', window.scrollY > 50);
         });
+
+        // Mobile menu
+        const hamburgerBtn = document.getElementById('hamburger-btn');
+        const mobileMenu   = document.getElementById('mobile-menu');
+        const menuClose    = document.getElementById('menu-close');
+
+        function openMobileMenu() {
+            mobileMenu.classList.add('open');
+            hamburgerBtn.classList.add('active');
+            hamburgerBtn.setAttribute('aria-expanded', 'true');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeMobileMenu() {
+            mobileMenu.classList.remove('open');
+            hamburgerBtn.classList.remove('active');
+            hamburgerBtn.setAttribute('aria-expanded', 'false');
+            document.body.style.overflow = '';
+        }
+
+        hamburgerBtn.addEventListener('click', () => {
+            mobileMenu.classList.contains('open') ? closeMobileMenu() : openMobileMenu();
+        });
+        menuClose.addEventListener('click', closeMobileMenu);
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMobileMenu(); });
+        mobileMenu.addEventListener('click', e => { if (e.target === mobileMenu) closeMobileMenu(); });
     </script>
 
     @stack('scripts')

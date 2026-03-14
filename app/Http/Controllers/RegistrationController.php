@@ -65,15 +65,22 @@ class RegistrationController extends Controller
     }
 
     // ============================================================
-    // STORE
+    // STORE — Support AJAX (X-Requested-With: XMLHttpRequest)
     // ============================================================
 
     public function store(Request $request)
     {
+        // ── Deteksi apakah request dari AJAX ──────────────────────
+        $isAjax = $request->ajax()
+            || $request->wantsJson()
+            || $request->header('Accept') === 'application/json';
+
         $kategori = $request->input('kategori');
         $isBeregu = ($kategori === 'beregu');
 
         // ── 1. Validasi dasar ──────────────────────────────────────
+        // Jika validasi gagal dan request AJAX → Laravel otomatis return 422 JSON
+        // Jika bukan AJAX → redirect back dengan errors (fallback)
         $validated = $request->validate([
             'nama'          => 'required|string|max:100',
             'tim_pb'        => 'required|string|max:100',
@@ -111,15 +118,23 @@ class RegistrationController extends Controller
         );
 
         if (count($pemainDiisi) < $minPemain) {
-            return back()->withInput()->withErrors([
-                'pemain' => "Kategori {$kategori} membutuhkan minimal {$minPemain} pemain.",
-            ]);
+            $errorMsg = "Kategori {$kategori} membutuhkan minimal {$minPemain} pemain.";
+            if ($isAjax) {
+                return response()->json([
+                    'errors' => ['pemain' => [$errorMsg]],
+                ], 422);
+            }
+            return back()->withInput()->withErrors(['pemain' => $errorMsg]);
         }
 
         if (count($pemainDiisi) > $maxPemain) {
-            return back()->withInput()->withErrors([
-                'pemain' => "Kategori {$kategori} maksimal {$maxPemain} pemain.",
-            ]);
+            $errorMsg = "Kategori {$kategori} maksimal {$maxPemain} pemain.";
+            if ($isAjax) {
+                return response()->json([
+                    'errors' => ['pemain' => [$errorMsg]],
+                ], 422);
+            }
+            return back()->withInput()->withErrors(['pemain' => $errorMsg]);
         }
 
         $validated['pemain'] = $pemainDiisi;
@@ -138,14 +153,13 @@ class RegistrationController extends Controller
             null
         );
 
-        // ── 3b. Ambil jenis_kelamin dari form (diisi via hidden input oleh JS OCR) ──
         $jenisKelaminArr = array_pad(
             array_slice($request->input('jenis_kelamin', []), 0, $jumlahPemain),
             $jumlahPemain,
             null
         );
 
-        // ── 4. Hitung usia backend — selisih tahun saja ────────────
+        // ── 4. Hitung usia backend ─────────────────────────────────
         $usiaArr = array_map(function ($tgl) {
             if (! $tgl) return null;
             try {
@@ -161,53 +175,52 @@ class RegistrationController extends Controller
         }, $tglLahirArr);
 
         // ── 5. Validasi upload KTP ─────────────────────────────────
-        $request->validate([
+        $ktpValidation = $request->validate([
             'ktp_files'   => 'required|array|min:' . $jumlahPemain,
-            'ktp_files.*' => 'required|file|mimes:jpg,jpeg,png,webp|max:5120',
+            'ktp_files.*' => 'required|file|mimes:jpg,jpeg,png,webp,heic,heif|max:10240',
         ], [
             'ktp_files.required'   => 'File KTP wajib diupload untuk semua pemain.',
             'ktp_files.min'        => 'Upload KTP untuk semua pemain yang didaftarkan.',
             'ktp_files.*.required' => 'Semua file KTP wajib diisi.',
-            'ktp_files.*.mimes'    => 'File KTP harus berformat JPG, PNG, atau WebP.',
-            'ktp_files.*.max'      => 'Ukuran file KTP maksimal 5MB.',
+            'ktp_files.*.mimes'    => 'File KTP harus berformat JPG, PNG, WebP, atau HEIC.',
+            'ktp_files.*.max'      => 'Ukuran file KTP maksimal 10MB.',
         ]);
 
-        // ── 5b. Validasi jenis kelamin per kategori (Putra / Putri) ──
-        // Hanya berlaku untuk ganda-dewasa-putra dan ganda-dewasa-putri.
-        // Untuk veteran dan beregu tidak ada pembatasan gender di sini.
+        // ── 5b. Validasi jenis kelamin per kategori ────────────────
         if (in_array($kategori, ['ganda-dewasa-putra', 'ganda-dewasa-putri'], true)) {
-            $genderYangDiharuskan  = ($kategori === 'ganda-dewasa-putra') ? 'L' : 'P';
-            $labelGender           = ($kategori === 'ganda-dewasa-putra') ? 'Laki-laki' : 'Perempuan';
-            $labelGenderSalah      = ($kategori === 'ganda-dewasa-putra') ? 'Perempuan' : 'Laki-laki';
+            $genderYangDiharuskan = ($kategori === 'ganda-dewasa-putra') ? 'L' : 'P';
+            $labelGender          = ($kategori === 'ganda-dewasa-putra') ? 'Laki-laki' : 'Perempuan';
+            $labelGenderSalah     = ($kategori === 'ganda-dewasa-putra') ? 'Perempuan' : 'Laki-laki';
 
             foreach ($pemainDiisi as $i => $namaPemain) {
                 $genderPemain = strtoupper(trim($jenisKelaminArr[$i] ?? ''));
 
-                // Jika gender tidak terdeteksi (scan belum dilakukan / OCR gagal baca)
                 if (empty($genderPemain)) {
-                    return back()->withInput()->withErrors([
-                        'jenis_kelamin' => sprintf(
-                            'Pemain %d (%s): Jenis kelamin tidak terdeteksi dari KTP. '
-                            . 'Pastikan scan KTP berhasil sebelum submit.',
-                            $i + 1,
-                            $namaPemain
-                        ),
-                    ]);
+                    $errorMsg = sprintf(
+                        'Pemain %d (%s): Jenis kelamin tidak terdeteksi dari KTP. '
+                        . 'Pastikan scan KTP berhasil sebelum submit.',
+                        $i + 1, $namaPemain
+                    );
+                    if ($isAjax) {
+                        return response()->json([
+                            'errors' => ['jenis_kelamin.' . $i => [$errorMsg]],
+                        ], 422);
+                    }
+                    return back()->withInput()->withErrors(['jenis_kelamin' => $errorMsg]);
                 }
 
-                // Jika gender tidak sesuai kategori
                 if ($genderPemain !== $genderYangDiharuskan) {
-                    return back()->withInput()->withErrors([
-                        'jenis_kelamin' => sprintf(
-                            'Pemain %d (%s) terdeteksi sebagai %s. '
-                            . 'Kategori %s hanya untuk pemain %s.',
-                            $i + 1,
-                            $namaPemain,
-                            $labelGenderSalah,
-                            $kategori,
-                            $labelGender
-                        ),
-                    ]);
+                    $errorMsg = sprintf(
+                        'Pemain %d (%s) terdeteksi sebagai %s. '
+                        . 'Kategori %s hanya untuk pemain %s.',
+                        $i + 1, $namaPemain, $labelGenderSalah, $kategori, $labelGender
+                    );
+                    if ($isAjax) {
+                        return response()->json([
+                            'errors' => ['jenis_kelamin.' . $i => [$errorMsg]],
+                        ], 422);
+                    }
+                    return back()->withInput()->withErrors(['jenis_kelamin' => $errorMsg]);
                 }
             }
         }
@@ -221,9 +234,7 @@ class RegistrationController extends Controller
             foreach ($pemainDiisi as $i => $nama) {
                 $kotaRaw = strtoupper(trim($kotaArr[$i] ?? ''));
                 $isValid = $this->isCityValid($kotaRaw);
-
                 if ($isValid) $validCount++;
-
                 $cityValidArr[] = [
                     'index'    => $i + 1,
                     'nama'     => $nama,
@@ -233,10 +244,14 @@ class RegistrationController extends Controller
             }
 
             if ($validCount < 6) {
-                return back()->withInput()->withErrors([
-                    'pemain' => "Minimal 6 anggota harus ber-KTP Kota Balikpapan. "
-                              . "Saat ini hanya {$validCount} anggota yang valid.",
-                ]);
+                $errorMsg = "Minimal 6 anggota harus ber-KTP Kota Balikpapan. "
+                          . "Saat ini hanya {$validCount} anggota yang valid.";
+                if ($isAjax) {
+                    return response()->json([
+                        'errors' => ['pemain' => [$errorMsg]],
+                    ], 422);
+                }
+                return back()->withInput()->withErrors(['pemain' => $errorMsg]);
             }
         }
 
@@ -256,27 +271,24 @@ class RegistrationController extends Controller
             ]);
 
             $usiaHitung = $request->input('usia_hitung', []);
-            $u0         = (int) ($usiaHitung[0] ?? 0);
-            $u1         = (int) ($usiaHitung[1] ?? 0);
+            $u0 = (int) ($usiaHitung[0] ?? 0);
+            $u1 = (int) ($usiaHitung[1] ?? 0);
 
             if ($u0 < 45) {
-                return back()->withInput()->withErrors([
-                    'usia_hitung' => "Pemain 1 berusia {$u0} tahun, tidak memenuhi syarat veteran (min. 45 tahun).",
-                ]);
+                $errorMsg = "Pemain 1 berusia {$u0} tahun, tidak memenuhi syarat veteran (min. 45 tahun).";
+                if ($isAjax) return response()->json(['errors' => ['usia_hitung.0' => [$errorMsg]]], 422);
+                return back()->withInput()->withErrors(['usia_hitung' => $errorMsg]);
             }
-
             if ($u1 < 45) {
-                return back()->withInput()->withErrors([
-                    'usia_hitung' => "Pemain 2 berusia {$u1} tahun, tidak memenuhi syarat veteran (min. 45 tahun).",
-                ]);
+                $errorMsg = "Pemain 2 berusia {$u1} tahun, tidak memenuhi syarat veteran (min. 45 tahun).";
+                if ($isAjax) return response()->json(['errors' => ['usia_hitung.1' => [$errorMsg]]], 422);
+                return back()->withInput()->withErrors(['usia_hitung' => $errorMsg]);
             }
-
             $totalUsia = $u0 + $u1;
             if ($totalUsia < 95) {
-                return back()->withInput()->withErrors([
-                    'usia_hitung' => "Total usia kedua pemain hanya {$totalUsia} tahun "
-                                  . "({$u0} + {$u1}). Minimal total usia adalah 95 tahun.",
-                ]);
+                $errorMsg = "Total usia kedua pemain hanya {$totalUsia} tahun ({$u0} + {$u1}). Minimal total usia adalah 95 tahun.";
+                if ($isAjax) return response()->json(['errors' => ['usia_hitung' => [$errorMsg]]], 422);
+                return back()->withInput()->withErrors(['usia_hitung' => $errorMsg]);
             }
         }
 
@@ -291,35 +303,31 @@ class RegistrationController extends Controller
 
         // ── 10. Generate payment token ─────────────────────────────
         $paymentToken          = Str::uuid()->toString();
-        $paymentTokenExpiresAt = $isBeregu
-            ? null
-            : now()->addHours(24);
+        $paymentTokenExpiresAt = $isBeregu ? null : now()->addHours(24);
 
         // ── 11. Buat record Registration ───────────────────────────
         $registration = Registration::create([
-            'nama'                    => $validated['nama'],
-            'tim_pb'                  => $validated['tim_pb'],
-            'email'                   => $validated['email'],
-            'no_hp'                   => $validated['no_hp'],
-            'provinsi'                => $validated['provinsi'],
-            'kota'                    => $validated['kota'],
-            'nama_pelatih'            => $validated['nama_pelatih']  ?? null,
-            'no_hp_pelatih'           => $validated['no_hp_pelatih'] ?? null,
-            'pemain'                  => $pemainDiisi,
-            'nik'                     => $nikArr,
-            'tgl_lahir'               => $tglLahirArr,
-            'usia_pemain'             => $usiaArr,
-            'jenis_kelamin_pemain'    => $jenisKelaminArr,            // ← simpan gender tiap pemain
-            'ktp_city_valid'          => $isBeregu ? $cityValidArr : null,
-            'kategori'                => $kategori,
-            'harga'                   => $harga,
-            'status'                  => 'pending',
-            'approval_status'         => $approvalStatus,
-            'payment_token'           => $paymentToken,
-            'payment_token_expires_at'=> $paymentTokenExpiresAt,
-
-            // Khusus veteran
-            'tgl_lahir_pemain'        => $kategori === 'ganda-veteran-putra' ? $tglLahirArr : null,
+            'nama'                     => $validated['nama'],
+            'tim_pb'                   => $validated['tim_pb'],
+            'email'                    => $validated['email'],
+            'no_hp'                    => $validated['no_hp'],
+            'provinsi'                 => $validated['provinsi'],
+            'kota'                     => $validated['kota'],
+            'nama_pelatih'             => $validated['nama_pelatih']  ?? null,
+            'no_hp_pelatih'            => $validated['no_hp_pelatih'] ?? null,
+            'pemain'                   => $pemainDiisi,
+            'nik'                      => $nikArr,
+            'tgl_lahir'                => $tglLahirArr,
+            'usia_pemain'              => $usiaArr,
+            'jenis_kelamin_pemain'     => $jenisKelaminArr,
+            'ktp_city_valid'           => $isBeregu ? $cityValidArr : null,
+            'kategori'                 => $kategori,
+            'harga'                    => $harga,
+            'status'                   => 'pending',
+            'approval_status'          => $approvalStatus,
+            'payment_token'            => $paymentToken,
+            'payment_token_expires_at' => $paymentTokenExpiresAt,
+            'tgl_lahir_pemain'         => $kategori === 'ganda-veteran-putra' ? $tglLahirArr : null,
         ]);
 
         // ── 12. Upload file KTP ────────────────────────────────────
@@ -343,15 +351,15 @@ class RegistrationController extends Controller
             $ktpPaths[] = $path;
 
             $ktpRawData[] = [
-                'index'          => $i + 1,
-                'nama'           => $pemainDiisi[$i]              ?? null,
-                'nik'            => $nikArr[$i]                   ?? null,
-                'tgl_lahir'      => $tglLahirArr[$i]              ?? null,
-                'usia'           => $usiaArr[$i]                  ?? null,
-                'jenis_kelamin'  => $jenisKelaminArr[$i]          ?? null,   // ← tambahkan ke ktp_data
-                'kota'           => $cityValidArr[$i]['city_raw'] ?? null,
-                'file_path'      => $path,
-                'file_name'      => $namaFile,
+                'index'         => $i + 1,
+                'nama'          => $pemainDiisi[$i]              ?? null,
+                'nik'           => $nikArr[$i]                   ?? null,
+                'tgl_lahir'     => $tglLahirArr[$i]              ?? null,
+                'usia'          => $usiaArr[$i]                  ?? null,
+                'jenis_kelamin' => $jenisKelaminArr[$i]          ?? null,
+                'kota'          => $cityValidArr[$i]['city_raw'] ?? null,
+                'file_path'     => $path,
+                'file_name'     => $namaFile,
             ];
         }
 
@@ -361,10 +369,23 @@ class RegistrationController extends Controller
         ]);
 
         // ── 13. Routing berdasarkan kategori ───────────────────────
+
+        // Beregu: pending review (tidak langsung bayar)
         if ($isBeregu) {
+            $pendingUrl = route('registration.pending-review', $registration->uuid);
+
+            if ($isAjax) {
+                return response()->json([
+                    'success'  => true,
+                    'redirect' => $pendingUrl,
+                    'uuid'     => $registration->uuid,
+                    'message'  => 'Pendaftaran berhasil dikirim untuk direview.',
+                ]);
+            }
             return view('registration.pending-review', compact('registration'));
         }
 
+        // Non-beregu: kirim email approved lalu arahkan ke payment
         try {
             Mail::to($registration->email)
                 ->send(new RegistrationApproved($registration));
@@ -372,6 +393,18 @@ class RegistrationController extends Controller
             logger()->error('[Registration] Gagal kirim email approved: ' . $e->getMessage(), [
                 'registration_id' => $registration->id,
                 'email'           => $registration->email,
+            ]);
+        }
+
+        $paymentUrl = route('registration.payment.token', $paymentToken);
+
+        if ($isAjax) {
+            return response()->json([
+                'success'       => true,
+                'redirect'      => $paymentUrl,
+                'uuid'          => $registration->uuid,
+                'payment_token' => $paymentToken,
+                'message'       => 'Pendaftaran berhasil. Silakan lanjutkan pembayaran.',
             ]);
         }
 
@@ -415,9 +448,9 @@ class RegistrationController extends Controller
             try {
                 app(\App\Services\ReceiptPdfService::class)->generate($registration);
                 $registration = $registration->fresh();
-                \Log::info('[Success] PDF generated via fallback for ' . $orderId);
+                Log::info('[Success] PDF generated via fallback for ' . $orderId);
             } catch (\Exception $e) {
-                \Log::warning('[Success] PDF fallback failed: ' . $e->getMessage(), [
+                Log::warning('[Success] PDF fallback failed: ' . $e->getMessage(), [
                     'order_id' => $orderId,
                 ]);
             }
@@ -429,7 +462,6 @@ class RegistrationController extends Controller
     public function receiptStatus(string $uuid)
     {
         $registration = Registration::where('uuid', $uuid)->firstOrFail();
-
         return response()->json([
             'ready'  => ! is_null($registration->pdf_receipt_path),
             'status' => $registration->status,

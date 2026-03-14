@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Log;
 
 class KtpOcrController extends Controller
 {
-    private string $ocrUrl = 'http://192.168.0.16:5000/ocr/ktp';
+    private string $ocrUrl = 'http://192.168.0.15:5000/ocr/ktp';
 
     /**
      * Kata kunci kota valid — case-insensitive, harus mengandung salah satu.
