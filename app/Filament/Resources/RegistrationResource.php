@@ -212,7 +212,6 @@ class RegistrationResource extends Resource
 
     // ============================================================
     // VETERAN SUMMARY HTML
-    // Tampil di section khusus — ringkasan usia + total
     // ============================================================
 
     private static function buildVeteranSummaryHtml(Registration $record): string
@@ -232,15 +231,15 @@ class RegistrationResource extends Resource
         $nama0 = htmlspecialchars($pemain[0] ?? 'Pemain 1');
         $nama1 = htmlspecialchars($pemain[1] ?? 'Pemain 2');
 
-        $borderColor = $allValid ? 'rgba(52,211,153,0.25)' : 'rgba(248,113,113,0.25)';
-        $bgColor     = $allValid ? 'rgba(6,30,18,0.6)'     : 'rgba(30,6,6,0.6)';
-        $titleColor  = $allValid ? '#34d399' : '#f87171';
+        $borderColor = $allValid ? '#86efac' : '#fca5a5';
+        $bgColor     = $allValid ? '#f0fdf4'  : '#fef2f2';
+        $titleColor  = $allValid ? '#15803d'  : '#dc2626';
         $titleText   = $allValid
             ? '✓ Kedua pemain memenuhi syarat veteran'
             : '✗ Terdapat pelanggaran syarat veteran';
 
         $rowHtml = function ($nama, $usia, $valid) {
-            $warna = $valid ? '#34d399' : '#f87171';
+            $warna = $valid ? '#15803d' : '#dc2626';
             $icon  = $valid ? '✓' : '✗';
             $keterangan = $usia !== null
                 ? ($valid
@@ -249,17 +248,16 @@ class RegistrationResource extends Resource
                 : 'Data usia tidak tersedia';
 
             return '
-            <div class="flex items-center justify-between py-2 border-b border-white/5 last:border-0">
-                <div class="flex items-center gap-2">
-                    <span class="text-xs font-bold" style="color:' . $warna . ';">' . $icon . '</span>
-                    <span class="text-xs text-white/70">' . $nama . '</span>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #e5e7eb;">
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <span style="font-size:12px;font-weight:700;color:' . $warna . ';">' . $icon . '</span>
+                    <span style="font-size:12px;color:#374151;">' . $nama . '</span>
                 </div>
-                <span class="text-xs font-bold" style="color:' . $warna . ';">' . $keterangan . '</span>
+                <span style="font-size:12px;font-weight:700;color:' . $warna . ';">' . $keterangan . '</span>
             </div>';
         };
 
-        // Baris total usia
-        $totalColor = $totalOk ? '#34d399' : '#f87171';
+        $totalColor = $totalOk ? '#15803d' : '#dc2626';
         $totalIcon  = $totalOk ? '✓' : '✗';
         $totalText  = $total !== null
             ? ($totalOk
@@ -270,16 +268,16 @@ class RegistrationResource extends Resource
         $html = '
         <div style="background:' . $bgColor . ';border:1px solid ' . $borderColor . ';border-radius:12px;padding:16px;">
 
-            <p class="text-xs font-bold mb-3" style="color:' . $titleColor . ';">'
+            <p style="font-size:12px;font-weight:700;margin-bottom:12px;color:' . $titleColor . ';">'
                 . $titleText . '
             </p>
 
             ' . $rowHtml($nama0, $u0, $v0) . '
             ' . $rowHtml($nama1, $u1, $v1) . '
 
-            <div class="flex items-center justify-between pt-3 mt-1">
-                <span class="text-xs font-semibold text-white/40 uppercase tracking-wide">Total Usia 2 Pemain</span>
-                <span class="text-sm font-extrabold" style="color:' . $totalColor . ';">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding-top:12px;margin-top:4px;">
+                <span style="font-size:12px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;">Total Usia 2 Pemain</span>
+                <span style="font-size:14px;font-weight:800;color:' . $totalColor . ';">
                     ' . $totalIcon . ' ' . $totalText . '
                 </span>
             </div>
@@ -290,7 +288,6 @@ class RegistrationResource extends Resource
 
     // ============================================================
     // KTP PER PEMAIN HTML
-    // Tampil NIK, Tgl Lahir, Usia (+ validasi warna untuk veteran)
     // ============================================================
 
     private static function buildKtpHtml(Registration $record): string
@@ -304,10 +301,10 @@ class RegistrationResource extends Resource
         $isVeteran = $record->kategori === 'ganda-veteran-putra';
 
         if (empty($pemain)) {
-            return '<p class="text-gray-400 text-sm">Belum ada data pemain.</p>';
+            return '<p style="color:#6b7280;font-size:14px;">Belum ada data pemain.</p>';
         }
 
-        $html = '<div class="grid grid-cols-1 gap-6">';
+        $html = '<div style="display:grid;grid-template-columns:1fr;gap:24px;">';
 
         foreach ($pemain as $i => $nama) {
             $nilNik   = htmlspecialchars($nik[$i]      ?? '—');
@@ -315,24 +312,24 @@ class RegistrationResource extends Resource
             $nilUsia  = isset($usia[$i]) ? (int) $usia[$i] : null;
             $namaHtml = htmlspecialchars($nama);
 
-            // ── Baris usia (semua kategori) ──
+            // ── Baris usia ──
             $usiaHtml = '';
             if ($nilUsia !== null) {
                 if ($isVeteran) {
                     $validPerPemain = $nilUsia >= 45;
-                    $warna  = $validPerPemain ? '#34d399' : '#f87171';
+                    $warna  = $validPerPemain ? '#15803d' : '#dc2626';
                     $icon   = $validPerPemain ? '✓ ' : '✗ ';
                     $label  = $icon . $nilUsia . ' tahun per 24 Ags 2026 — '
                             . ($validPerPemain ? 'Memenuhi syarat (≥ 45 thn)' : 'Tidak memenuhi syarat (min. 45 thn)');
                 } else {
-                    $warna = 'rgba(255,255,255,0.7)';
+                    $warna = '#374151';
                     $label = $nilUsia . ' tahun';
                 }
 
                 $usiaHtml = '
-                <div class="flex gap-3 py-1.5 border-b border-gray-700/40">
-                    <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide min-w-[90px]">Usia</span>
-                    <span class="text-xs font-bold" style="color:' . $warna . ';">'
+                <div style="display:flex;gap:12px;padding:6px 0;border-bottom:1px solid #e5e7eb;">
+                    <span style="font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;min-width:90px;">Usia</span>
+                    <span style="font-size:12px;font-weight:700;color:' . $warna . ';">'
                         . htmlspecialchars($label) .
                     '</span>
                 </div>';
@@ -349,26 +346,25 @@ class RegistrationResource extends Resource
                 ]);
                 $fotoHtml = '
                 <div>
-                    <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">📷 Foto KTP</p>
-                    <a href="' . $ktpUrl . '" target="_blank" class="block">
+                    <p style="font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">📷 Foto KTP</p>
+                    <a href="' . $ktpUrl . '" target="_blank" style="display:block;">
                         <img src="' . $ktpUrl . '"
                              alt="KTP Pemain ' . ($i + 1) . '"
-                             class="max-h-48 w-full rounded-lg border border-gray-600 object-contain
-                                    cursor-pointer hover:opacity-90 transition"
-                             style="background:#111;"
-                             onerror="this.outerHTML=\'<p class=\\\'text-xs text-red-400 mt-2\\\'>File tidak dapat dimuat.</p>\'">
+                             style="max-height:192px;width:100%;border-radius:8px;border:1px solid #d1d5db;
+                                    object-fit:contain;cursor:pointer;background:#f9fafb;transition:opacity 0.2s;"
+                             onerror="this.outerHTML=\'<p style=\\\'color:#dc2626;font-size:12px;margin-top:8px;\\\'>File tidak dapat dimuat.</p>\'">
                     </a>
-                    <p class="text-xs text-gray-500 mt-1">'
+                    <p style="font-size:11px;color:#6b7280;margin-top:4px;">'
                         . htmlspecialchars(basename($filePath))
                         . ' · <a href="' . $ktpUrl . '" target="_blank"
-                               class="text-blue-400 hover:underline">Buka fullsize</a>
+                               style="color:#2563eb;text-decoration:none;">Buka fullsize</a>
                     </p>
                 </div>';
             } else {
-                $fotoHtml = '<p class="text-xs text-gray-500 italic mt-2">File KTP tidak ditemukan.</p>';
+                $fotoHtml = '<p style="font-size:12px;color:#6b7280;font-style:italic;margin-top:8px;">File KTP tidak ditemukan.</p>';
             }
 
-            // ── Data tambahan dari ktp_raw ──
+            // ── Data tambahan dari ktp_data ──
             $rawData   = $ktpData[$i] ?? [];
             $extraHtml = '';
             $extraFields = [
@@ -383,54 +379,61 @@ class RegistrationResource extends Resource
                 $val = (string) ($rawData[$key] ?? '');
                 if ($val === '') continue;
                 $extraHtml .= '
-                <div class="flex gap-3 py-1 border-b border-gray-700/30 last:border-0">
-                    <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide min-w-[100px]">'
+                <div style="display:flex;gap:12px;padding:4px 0;border-bottom:1px solid #f3f4f6;">
+                    <span style="font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;min-width:100px;">'
                         . htmlspecialchars($label) . '</span>
-                    <span class="text-xs text-gray-300">'
+                    <span style="font-size:12px;color:#374151;">'
                         . htmlspecialchars($val) . '</span>
                 </div>';
             }
 
-            // ── Warna border kartu: veteran valid/invalid, lainnya netral ──
-            $cardBorder = 'border-gray-700';
+            // ── Warna border kartu ──
+            $cardBorderColor = '#d1d5db';
+            $headerBgColor   = '#f9fafb';
             if ($isVeteran && $nilUsia !== null) {
-                $cardBorder = $nilUsia >= 45 ? 'border-emerald-700/50' : 'border-red-700/50';
+                if ($nilUsia >= 45) {
+                    $cardBorderColor = '#86efac';
+                    $headerBgColor   = '#f0fdf4';
+                } else {
+                    $cardBorderColor = '#fca5a5';
+                    $headerBgColor   = '#fef2f2';
+                }
             }
 
             $html .= '
-            <div class="rounded-xl border ' . $cardBorder . ' overflow-hidden"
-                 style="background:rgba(255,255,255,0.02);">
+            <div style="border-radius:12px;border:1px solid ' . $cardBorderColor . ';overflow:hidden;background:#ffffff;">
 
-                <div class="flex items-center gap-3 px-4 py-3 border-b ' . $cardBorder . '"
-                     style="background:rgba(255,255,255,0.03);">
-                    <div class="w-7 h-7 rounded-full bg-indigo-500/20 flex items-center justify-center
-                                text-xs font-bold text-indigo-400 border border-indigo-500/30">'
+                <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid '
+                    . $cardBorderColor . ';background:' . $headerBgColor . ';">
+                    <div style="width:28px;height:28px;border-radius:50%;background:#e0e7ff;display:flex;
+                                align-items:center;justify-content:center;font-size:12px;font-weight:700;
+                                color:#4338ca;border:1px solid #c7d2fe;">'
                         . ($i + 1) .
                     '</div>
-                    <span class="font-semibold text-sm text-white">' . $namaHtml . '</span>
+                    <span style="font-weight:600;font-size:14px;color:#111827;">' . $namaHtml . '</span>
                 </div>
 
-                <div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div style="padding:16px;display:grid;grid-template-columns:1fr 1fr;gap:24px;">
 
                     <div>
-                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">📋 Data KTP</p>
+                        <p style="font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">📋 Data KTP</p>
 
-                        <div class="flex gap-3 py-1.5 border-b border-gray-700/40">
-                            <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide min-w-[90px]">NIK</span>
-                            <span class="text-xs text-white font-mono font-bold">' . $nilNik . '</span>
+                        <div style="display:flex;gap:12px;padding:6px 0;border-bottom:1px solid #e5e7eb;">
+                            <span style="font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;min-width:90px;">NIK</span>
+                            <span style="font-size:12px;color:#111827;font-family:monospace;font-weight:700;">' . $nilNik . '</span>
                         </div>
-                        <div class="flex gap-3 py-1.5 border-b border-gray-700/40">
-                            <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide min-w-[90px]">Nama</span>
-                            <span class="text-xs text-white font-semibold">' . $namaHtml . '</span>
+                        <div style="display:flex;gap:12px;padding:6px 0;border-bottom:1px solid #e5e7eb;">
+                            <span style="font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;min-width:90px;">Nama</span>
+                            <span style="font-size:12px;color:#111827;font-weight:600;">' . $namaHtml . '</span>
                         </div>
-                        <div class="flex gap-3 py-1.5 border-b border-gray-700/40">
-                            <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide min-w-[90px]">Tgl Lahir</span>
-                            <span class="text-xs text-gray-200">' . $nilTgl . '</span>
+                        <div style="display:flex;gap:12px;padding:6px 0;border-bottom:1px solid #e5e7eb;">
+                            <span style="font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;min-width:90px;">Tgl Lahir</span>
+                            <span style="font-size:12px;color:#374151;">' . $nilTgl . '</span>
                         </div>
                         ' . $usiaHtml . '
 
                         ' . ($extraHtml
-                            ? '<div class="mt-3 pt-2 border-t border-gray-700/40">' . $extraHtml . '</div>'
+                            ? '<div style="margin-top:12px;padding-top:8px;border-top:1px solid #e5e7eb;">' . $extraHtml . '</div>'
                             : '') . '
                     </div>
 
@@ -509,14 +512,13 @@ class RegistrationResource extends Resource
                     ->tooltip(fn (Registration $r) => ! empty(array_filter($r->nik ?? []))
                         ? 'Data KTP ter-scan OCR' : 'Belum di-scan'),
 
-                // Kolom khusus veteran: indikator syarat usia terpenuhi
                 Tables\Columns\IconColumn::make('veteran_valid')
                     ->label('Syarat Veteran')
                     ->boolean()
                     ->trueIcon('heroicon-o-check-badge')
                     ->falseIcon('heroicon-o-x-circle')
                     ->trueColor('success')->falseColor('danger')
-                    ->visible(fn () => true) // selalu tampil, tapi hanya ada value untuk veteran
+                    ->visible(fn () => true)
                     ->state(function (Registration $r) {
                         if ($r->kategori !== 'ganda-veteran-putra') return null;
                         $usia = $r->usia_pemain ?? [];
@@ -566,7 +568,6 @@ class RegistrationResource extends Resource
                         $q->whereNotNull('nik')->whereRaw('JSON_LENGTH(nik) > 0')
                     ),
 
-                // Filter: veteran yang tidak lolos syarat usia
                 Tables\Filters\Filter::make('veteran_tidak_lolos')
                     ->label('Veteran Tidak Lolos Syarat')
                     ->query(fn (Builder $q) =>
@@ -647,10 +648,10 @@ class RegistrationResource extends Resource
         $pemain   = $record->pemain   ?? [];
 
         if (empty($ktpFiles)) {
-            return '<p class="text-gray-400 text-sm p-4">Tidak ada file KTP.</p>';
+            return '<p style="color:#6b7280;font-size:14px;padding:16px;">Tidak ada file KTP.</p>';
         }
 
-        $html = '<div class="space-y-6 p-2">';
+        $html = '<div style="display:flex;flex-direction:column;gap:24px;padding:8px;">';
         foreach ($ktpFiles as $i => $path) {
             $nama   = htmlspecialchars($pemain[$i] ?? 'Pemain ' . ($i + 1));
             $ktpUrl = route('admin.ktp.serve', [
@@ -659,17 +660,16 @@ class RegistrationResource extends Resource
             ]);
             $html .= '
             <div>
-                <p class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-2">
+                <p style="font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">
                     Pemain ' . ($i + 1) . ' — ' . $nama . '
                 </p>
                 <a href="' . $ktpUrl . '" target="_blank">
                     <img src="' . $ktpUrl . '" alt="KTP ' . $nama . '"
-                         class="w-full max-h-64 object-contain rounded-lg border border-gray-600
-                                hover:opacity-90 transition cursor-pointer"
-                         style="background:#0d1117;"
-                         onerror="this.outerHTML=\'<p class=\\\'text-red-400 text-xs\\\'>Gambar tidak dapat dimuat.</p>\'">
+                         style="width:100%;max-height:256px;object-fit:contain;border-radius:8px;
+                                border:1px solid #d1d5db;background:#f9fafb;cursor:pointer;transition:opacity 0.2s;"
+                         onerror="this.outerHTML=\'<p style=\\\'color:#dc2626;font-size:12px;\\\'>Gambar tidak dapat dimuat.</p>\'">
                 </a>
-                <p class="text-xs text-gray-500 mt-1">'
+                <p style="font-size:11px;color:#6b7280;margin-top:4px;">'
                     . htmlspecialchars(basename($path))
                     . ' · Klik untuk buka fullsize</p>
             </div>';
