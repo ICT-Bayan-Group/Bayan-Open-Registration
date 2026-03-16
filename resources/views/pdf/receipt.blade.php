@@ -174,7 +174,7 @@
         <div class="header-inner">
             <div class="header-left">
                 @php
-                    $logoPath = public_path('images/logo-bayan.png');
+                    $logoPath = public_path('images/bayanopen.png');
                     $logoBase64 = '';
                     if (file_exists($logoPath)) {
                         $logoBase64 = 'data:image/png;base64,' . base64_encode(file_get_contents($logoPath));
