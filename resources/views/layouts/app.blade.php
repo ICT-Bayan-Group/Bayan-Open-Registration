@@ -272,6 +272,8 @@
                    class="nav-link transition font-medium text-sm tracking-wide">Home</a>
                 <a href="#kategori"
                    class="nav-link transition font-medium text-sm tracking-wide">Kategori</a>
+                <a href="{{ route('bagan') }}"
+                   class="nav-link transition font-medium text-sm tracking-wide">Bagan</a>
                 <a href="{{ route('registration.index') }}"
                    class="btn-primary font-display text-xs font-bold px-6 py-3 rounded-xl tracking-wider">
                     DAFTAR →
@@ -302,6 +304,7 @@
         </button>
         <a href="{{ url('/') }}" class="nav-link-mobile" onclick="closeMobileMenu()">Home</a>
         <a href="#kategori" class="nav-link-mobile" onclick="closeMobileMenu()">Kategori</a>
+        <a href="{{ route('bagan') }}" class="nav-link-mobile" onclick="closeMobileMenu()">Bagan</a>
         <a href="{{ route('registration.index') }}"
            class="btn-primary font-display text-sm font-bold px-8 py-4 rounded-xl tracking-wider mt-2">
             DAFTAR →

@@ -396,15 +396,16 @@ class RegistrationController extends Controller
             ]);
         }
 
-        $paymentUrl = route('registration.payment.token', $paymentToken);
+        // SESUDAH — selalu ke pending-payment dulu (halaman "cek email"):
+        $pendingPaymentUrl = route('registration.pending-payment', $registration->uuid);
 
         if ($isAjax) {
             return response()->json([
                 'success'       => true,
-                'redirect'      => $paymentUrl,
+                'redirect'      => $pendingPaymentUrl,   // ← ubah ini
                 'uuid'          => $registration->uuid,
                 'payment_token' => $paymentToken,
-                'message'       => 'Pendaftaran berhasil. Silakan lanjutkan pembayaran.',
+                'message'       => 'Pendaftaran berhasil. Silakan cek email untuk link pembayaran.',
             ]);
         }
 

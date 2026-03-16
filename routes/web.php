@@ -10,6 +10,8 @@ Route::get('/login', fn() => redirect()->route('filament.admin.auth.login'))->na
 
 // ── Home ────────────────────────────────────────────────────────
 Route::get('/', fn() => view('home'))->name('home');
+Route::get('/bagan', fn() => view('bagan'))->name('bagan');
+Route::get('/jadwal', fn() => view('jadwal'))->name('jadwal');
 
 // ── Wilayah cascade ─────────────────────────────────────────────
 Route::prefix('wilayah')->group(function () {
@@ -20,9 +22,11 @@ Route::prefix('wilayah')->group(function () {
 // ── OCR KTP ─────────────────────────────────────────────────────
 Route::post('/ocr/ktp', [KtpOcrController::class, 'scan'])->name('ocr.ktp');
 
-// SESUDAH — UUID format: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+// ── Payment by token ─────────────────────────────────────────────
+// Nama route HARUS cocok dengan yang dipanggil di RegistrationController:
+// route('registration.payment.token', $paymentToken)
 Route::get('/payment/{token}', [RegistrationController::class, 'paymentByToken'])
-    ->name('payment.by-token')
+    ->name('registration.payment.token')                               // ← fix nama
     ->where('token', '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}');
 
 // ── Pendaftaran ─────────────────────────────────────────────────
@@ -39,6 +43,12 @@ Route::prefix('daftar')->name('registration.')->group(function () {
 
     // Submit form
     Route::post('/', [RegistrationController::class, 'store'])->name('store');
+
+    // Di dalam group prefix('daftar')->name('registration.'):
+    Route::get('/pending-payment/{uuid}', function ($uuid) {
+        $registration = \App\Models\Registration::where('uuid', $uuid)->firstOrFail();
+        return view('registration.pending-payment', compact('registration'));
+    })->name('pending-payment');
 
     // Callback & status
     Route::get('/sukses',        [RegistrationController::class, 'success'])->name('success');
