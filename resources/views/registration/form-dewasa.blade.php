@@ -1785,6 +1785,8 @@ window._dewasa = {
     scan, hapus, tambah,
     inlineEdit, inlineSave, inlineKey,
     showUploadChoice, closeSheet,
+    get slotState() { return slotState; },   // ← expose read-only getter
+    get cardData()  { return cardData;  },
 };
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -1911,7 +1913,7 @@ function buildFormData() {
     var form = document.getElementById('regForm');
     var fd   = new FormData();
 
-    /* Ambil semua field text/select/hidden biasa */
+    // Ambil semua field text/select/hidden biasa
     var inputs = form.querySelectorAll('input:not([type="file"]), select, textarea');
     inputs.forEach(function (inp) {
         if (!inp.name) return;
@@ -1922,13 +1924,15 @@ function buildFormData() {
         }
     });
 
-    /* Ambil file KTP dari slotState (sudah dikonversi ke JPEG oleh processFile) */
+    // ← PERBAIKAN: akses via window._dewasa.slotState
+    var _slotState = (window._dewasa && window._dewasa.slotState) || {};
+
     var cards = document.querySelectorAll('.pemain-ocr-card');
     cards.forEach(function (card) {
-        var idx      = card.dataset.idx;
-        var fileObj  = slotState[idx] && slotState[idx].file;
+        var idx     = card.dataset.idx;
+        var fileObj = _slotState[idx] && _slotState[idx].file;
 
-        /* Fallback: coba ambil dari input DOM jika slotState kosong */
+        // Fallback dari input DOM
         if (!fileObj) {
             var sources = ['ktpCamera_', 'ktpFoto_', 'ktpFile_'];
             for (var si = 0; si < sources.length; si++) {
@@ -2006,27 +2010,33 @@ document.addEventListener('DOMContentLoaded', function () {
         var missing = window._dewasa ? [] : [];
         try {
             /* Panggil validasi client-side dari namespace _dewasa */
-            var cards = document.querySelectorAll('.pemain-ocr-card');
+           // Ganti blok try { var cards = ... } dengan ini:
+            var cards        = document.querySelectorAll('.pemain-ocr-card');
             var clientErrors = [];
+            var _slotState   = (window._dewasa && window._dewasa.slotState) || {};
+
             cards.forEach(function (card) {
                 var idx = card.dataset.idx;
-                /* Cek file ada di salah satu dari 3 input */
-                var inpCam  = document.getElementById('ktpCamera_' + idx);
-                var inpFoto = document.getElementById('ktpFoto_'   + idx);
-                var inpFile = document.getElementById('ktpFile_'   + idx);
-                var hasFile = (inpCam  && inpCam.files  && inpCam.files[0])
-                           || (inpFoto && inpFoto.files && inpFoto.files[0])
-                           || (inpFile && inpFile.files && inpFile.files[0]);
+
+                // Cek file KTP
+                var hasFile = (_slotState[idx] && _slotState[idx].file);
+                if (!hasFile) {
+                    // Fallback cek input DOM
+                    ['ktpCamera_','ktpFoto_','ktpFile_'].forEach(function(pfx){
+                        var inp = document.getElementById(pfx + idx);
+                        if (inp && inp.files && inp.files[0]) hasFile = true;
+                    });
+                }
                 if (!hasFile) {
                     clientErrors.push('Pemain ' + (parseInt(idx,10)+1) + ': File KTP wajib diupload');
                     card.classList.add('has-field-error');
                 }
-                /* Cek field KTP terisi */
-                ['nik[]','pemain[]','tgl_lahir[]'].forEach(function (n, fi) {
-                    var labels = ['NIK','Nama','Tanggal Lahir'];
-                    var hidEl  = document.getElementById('khid_' + idx + '_' + ['nik','nama','tanggal_lahir'][fi]);
+
+                // Cek field hidden KTP terisi
+                [['nik','NIK'], ['nama','Nama'], ['tanggal_lahir','Tanggal Lahir']].forEach(function(pair){
+                    var hidEl = document.getElementById('khid_' + idx + '_' + pair[0]);
                     if (hidEl && !hidEl.value.trim()) {
-                        clientErrors.push('Pemain ' + (parseInt(idx,10)+1) + ': ' + labels[fi] + ' wajib diisi (scan KTP atau isi manual)');
+                        clientErrors.push('Pemain ' + (parseInt(idx,10)+1) + ': ' + pair[1] + ' wajib diisi (scan KTP atau isi manual)');
                         card.classList.add('has-field-error');
                     }
                 });
@@ -2034,7 +2044,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (clientErrors.length > 0) {
                 showErrorBanner(clientErrors);
-                /* Scroll ke card pertama yang error */
                 var firstErr = document.querySelector('.pemain-ocr-card.has-field-error');
                 if (firstErr) firstErr.scrollIntoView({ behavior:'smooth', block:'center' });
                 return;
