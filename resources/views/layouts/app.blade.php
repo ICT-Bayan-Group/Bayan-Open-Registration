@@ -48,10 +48,8 @@
         }
         h1, h2, h3, .font-display { font-family: 'Unbounded', sans-serif; }
 
-        /* ── Hero background (halaman utama) ── */
-        .gradient-hero {
-            background: #f8f6f2;
-        }
+        /* ── Hero background ── */
+        .gradient-hero { background: #f8f6f2; }
 
         /* ── Card ── */
         .card-glass {
@@ -77,11 +75,27 @@
 
         /* Navbar links */
         .navbar a.nav-link {
-            color: rgba(0,0,0,0.55);
+            color: rgba(0,0,0,0.50);
+            position: relative;
+            padding-bottom: 2px;
         }
-        .navbar a.nav-link:hover {
-            color: #1a1a1a;
+        .navbar a.nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px; left: 0; right: 0;
+            height: 1.5px;
+            background: #f97316;
+            border-radius: 2px;
+            transform: scaleX(0);
+            transition: transform 0.2s ease;
         }
+        .navbar a.nav-link:hover { color: #1a1a1a; }
+        .navbar a.nav-link:hover::after { transform: scaleX(1); }
+        .navbar a.nav-link.active {
+            color: #f97316 !important;
+            font-weight: 600;
+        }
+        .navbar a.nav-link.active::after { transform: scaleX(1); }
 
         /* ── Mobile menu overlay ── */
         #mobile-menu {
@@ -102,12 +116,13 @@
             font-family: 'Unbounded', sans-serif;
             font-size: 1rem;
             font-weight: 700;
-            color: rgba(0,0,0,0.55);
+            color: rgba(0,0,0,0.50);
             text-decoration: none;
             letter-spacing: 0.08em;
             transition: color 0.2s;
         }
-        #mobile-menu a.nav-link-mobile:hover { color: #f97316; }
+        #mobile-menu a.nav-link-mobile:hover,
+        #mobile-menu a.nav-link-mobile.active { color: #f97316; }
 
         /* Hamburger */
         .hamburger {
@@ -179,14 +194,11 @@
             background-color: #ffffff !important;
             cursor: pointer;
         }
-        select.input-field option {
-            background-color: #ffffff;
-            color: #1a1a1a;
-        }
+        select.input-field option { background-color: #ffffff; color: #1a1a1a; }
         select.input-field option:disabled { color: rgba(0,0,0,0.35); }
         select.input-field:disabled        { opacity: .45 !important; cursor: not-allowed; }
 
-        /* ── Teks helper default (white/xx → slate) ── */
+        /* ── Teks helper ── */
         .text-white\/70  { color: rgba(0,0,0,0.65) !important; }
         .text-white\/60  { color: rgba(0,0,0,0.58) !important; }
         .text-white\/50  { color: rgba(0,0,0,0.50) !important; }
@@ -200,11 +212,11 @@
         .text-white\/80  { color: rgba(0,0,0,0.75) !important; }
         .text-white\/55  { color: rgba(0,0,0,0.52) !important; }
 
-        .border-white\/10  { border-color: rgba(0,0,0,0.08) !important; }
-        .border-white\/12  { border-color: rgba(0,0,0,0.10) !important; }
-        .border-white\/08  { border-color: rgba(0,0,0,0.07) !important; }
+        .border-white\/10 { border-color: rgba(0,0,0,0.08) !important; }
+        .border-white\/12 { border-color: rgba(0,0,0,0.10) !important; }
+        .border-white\/08 { border-color: rgba(0,0,0,0.07) !important; }
 
-        /* ── Section backgrounds ── */
+        /* ── Section cards ── */
         .pemain-ocr-card {
             background: #ffffff !important;
             border-color: rgba(249,115,22,0.2) !important;
@@ -214,7 +226,6 @@
             background: #f0fdf4 !important;
             border-color: rgba(16,185,129,0.35) !important;
         }
-
         .ktp-data-card.valid-card {
             background: #fffbf5 !important;
             border-color: rgba(249,115,22,0.2) !important;
@@ -227,37 +238,65 @@
             border-color: rgba(249,115,22,0.25) !important;
             color: #1a1a1a !important;
         }
-        .ktp-inline-input {
-            background: rgba(249,115,22,0.06) !important;
-            color: #1a1a1a !important;
-        }
-        .ktp-inline-input:focus {
-            background: rgba(249,115,22,0.1) !important;
-        }
-        .ktp-inline-select {
-            background: #ffffff !important;
-            color: #1a1a1a !important;
-        }
+        .ktp-inline-input  { background: rgba(249,115,22,0.06) !important; color: #1a1a1a !important; }
+        .ktp-inline-input:focus { background: rgba(249,115,22,0.1) !important; }
+        .ktp-inline-select { background: #ffffff !important; color: #1a1a1a !important; }
         .ktp-inline-select option { background:#fff; color:#1a1a1a; }
         .ktp-row { border-bottom-color: rgba(0,0,0,0.05) !important; }
         .ktp-edit-hint { color: rgba(249,115,22,0.55) !important; }
-
         .scan-loading-bar { background: rgba(249,115,22,0.1) !important; }
+        .bg-white\/05, [style*="background:rgba(255,255,255,0.05)"] { background: #ffffff !important; }
 
-        .bg-white\/05, [style*="background:rgba(255,255,255,0.05)"] {
-            background: #ffffff !important;
+        /* ── Footer ── */
+        @keyframes footerBar {
+            0%   { background-position: 0% 0%; }
+            100% { background-position: 200% 0%; }
         }
+        .footer-social-btn {
+            width: 36px; height: 36px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(0,0,0,.05);
+            border: 1px solid rgba(0,0,0,.09);
+            color: rgba(0,0,0,.4);
+            flex-shrink: 0;
+            transition: background .2s, color .2s, border-color .2s, transform .2s;
+        }
+        .footer-social-btn:hover {
+            background: rgba(249,115,22,.1);
+            border-color: rgba(249,115,22,.35);
+            color: #f97316;
+            transform: translateY(-2px);
+        }
+        .footer-link {
+            color: rgba(0,0,0,.45); font-size: 13px;
+            transition: color .2s; text-decoration: none;
+        }
+        .footer-link:hover { color: #f97316; }
+        .footer-nav-link {
+            color: rgba(0,0,0,.45); font-size: 13px; text-decoration: none;
+            display: flex; align-items: center; gap: 8px;
+            transition: color .2s;
+        }
+        .footer-nav-link:hover { color: #f97316; }
+        .footer-nav-link .dot {
+            width: 5px; height: 5px; border-radius: 50%;
+            background: #f97316; flex-shrink: 0;
+            opacity: .5; transition: opacity .2s;
+        }
+        .footer-nav-link:hover .dot { opacity: 1; }
     </style>
 
     @stack('styles')
     @stack('head')
 </head>
-{{-- Hapus class text-white dari body — warna teks diatur oleh CSS di atas --}}
+
 <body class="gradient-hero min-h-screen">
 
-    {{-- NAVBAR --}}
+    {{-- ══ NAVBAR ══ --}}
     <nav class="navbar fixed top-0 left-0 right-0 z-50" id="navbar">
         <div class="max-w-7xl mx-auto px-4 sm:px-8 h-16 sm:h-20 lg:h-24 flex items-center justify-between">
+
+            {{-- Logo --}}
             <a href="{{ url('/') }}" class="flex items-center gap-4 group">
                 <img
                     src="https://res.cloudinary.com/djs5pi7ev/image/upload/v1773109896/LOGO_BO2026_pzbvxh.png"
@@ -267,13 +306,36 @@
             </a>
 
             {{-- Desktop links --}}
-            <div class="hidden md:flex items-center gap-6">
-                <a href="{{ url('/') }}"
-                   class="nav-link transition font-medium text-sm tracking-wide">Home</a>
-                <a href="#kategori"
-                   class="nav-link transition font-medium text-sm tracking-wide">Kategori</a>
+            <div class="hidden md:flex items-center gap-1">
+                <a href="{{ route('home') }}"
+                   class="nav-link transition font-medium text-sm tracking-wide px-3 py-2 rounded-lg
+                          {{ request()->routeIs('home') ? 'active' : '' }}">
+                    Home
+                </a>
                 <a href="{{ route('bagan') }}"
-                   class="nav-link transition font-medium text-sm tracking-wide">Bagan</a>
+                   class="nav-link transition font-medium text-sm tracking-wide px-3 py-2 rounded-lg
+                          {{ request()->routeIs('bagan') ? 'active' : '' }}">
+                    Bagan
+                </a>
+                <a href="{{ route('jadwal') }}"
+                   class="nav-link transition font-medium text-sm tracking-wide px-3 py-2 rounded-lg
+                          {{ request()->routeIs('jadwal') ? 'active' : '' }}">
+                    Jadwal
+                </a>
+                <a href="{{ route('livescore') }}"
+                   class="nav-link transition font-medium text-sm tracking-wide px-3 py-2 rounded-lg
+                          {{ request()->routeIs('livescore') ? 'active' : '' }}">
+                    Live Score
+                    {{-- pulsing dot kalau di halaman lain --}}
+                    @unless(request()->routeIs('livescore'))
+                    <span style="display:inline-flex;align-items:center;justify-content:center;
+                                 width:7px;height:7px;border-radius:50%;
+                                 background:#ef4444;margin-left:5px;
+                                 box-shadow:0 0 0 0 rgba(239,68,68,.4);
+                                 animation:liveping 1.8s ease infinite;vertical-align:middle;"></span>
+                    @endunless
+                </a>
+                <div class="w-px h-5 mx-2" style="background:rgba(0,0,0,.1);"></div>
                 <a href="{{ route('registration.index') }}"
                    class="btn-primary font-display text-xs font-bold px-6 py-3 rounded-xl tracking-wider">
                     DAFTAR →
@@ -286,70 +348,78 @@
                    class="btn-primary font-display text-xs font-bold px-4 py-2.5 rounded-lg tracking-wider">
                     DAFTAR →
                 </a>
-                <button class="hamburger" id="hamburger-btn" aria-label="Buka menu" aria-expanded="false" aria-controls="mobile-menu">
-                    <span></span>
-                    <span></span>
-                    <span></span>
+                <button class="hamburger" id="hamburger-btn"
+                        aria-label="Buka menu" aria-expanded="false" aria-controls="mobile-menu">
+                    <span></span><span></span><span></span>
                 </button>
             </div>
         </div>
     </nav>
 
-    {{-- MOBILE MENU OVERLAY --}}
+    {{-- ══ MOBILE MENU OVERLAY ══ --}}
     <div id="mobile-menu" role="dialog" aria-modal="true" aria-label="Menu navigasi">
-        <button id="menu-close" style="position:absolute;top:1.25rem;right:1.25rem;background:none;border:none;cursor:pointer;padding:0.5rem;" aria-label="Tutup menu">
+        <button id="menu-close"
+                style="position:absolute;top:1.25rem;right:1.25rem;background:none;border:none;cursor:pointer;padding:0.5rem;"
+                aria-label="Tutup menu">
             <svg width="20" height="20" fill="none" stroke="#1a1a1a" stroke-width="2" viewBox="0 0 24 24">
                 <path d="M18 6L6 18M6 6l12 12"/>
             </svg>
         </button>
-        <a href="{{ url('/') }}" class="nav-link-mobile" onclick="closeMobileMenu()">Home</a>
-        <a href="#kategori" class="nav-link-mobile" onclick="closeMobileMenu()">Kategori</a>
-        <a href="{{ route('bagan') }}" class="nav-link-mobile" onclick="closeMobileMenu()">Bagan</a>
+
+        <a href="{{ route('home') }}"
+           class="nav-link-mobile {{ request()->routeIs('home') ? 'active' : '' }}"
+           onclick="closeMobileMenu()">Home</a>
+
+        <a href="{{ route('bagan') }}"
+           class="nav-link-mobile {{ request()->routeIs('bagan') ? 'active' : '' }}"
+           onclick="closeMobileMenu()">Bagan</a>
+
+        <a href="{{ route('jadwal') }}"
+           class="nav-link-mobile {{ request()->routeIs('jadwal') ? 'active' : '' }}"
+           onclick="closeMobileMenu()">Jadwal</a>
+
+        <a href="{{ route('livescore') }}"
+           class="nav-link-mobile {{ request()->routeIs('livescore') ? 'active' : '' }}"
+           onclick="closeMobileMenu()">
+            Live Score
+            <span style="display:inline-flex;width:7px;height:7px;border-radius:50%;
+                         background:#ef4444;margin-left:6px;vertical-align:middle;
+                         animation:liveping 1.8s ease infinite;"></span>
+        </a>
+
         <a href="{{ route('registration.index') }}"
-           class="btn-primary font-display text-sm font-bold px-8 py-4 rounded-xl tracking-wider mt-2">
+           class="btn-primary font-display text-sm font-bold px-8 py-4 rounded-xl tracking-wider mt-2"
+           onclick="closeMobileMenu()">
             DAFTAR →
         </a>
     </div>
 
-    {{-- Konten --}}
+    {{-- Live ping keyframe (global) --}}
+    <style>
+        @keyframes liveping {
+            0%   { box-shadow: 0 0 0 0 rgba(239,68,68,.55); }
+            70%  { box-shadow: 0 0 0 6px rgba(239,68,68,0); }
+            100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); }
+        }
+    </style>
+
+    {{-- ══ MAIN CONTENT ══ --}}
     <main class="pt-16 sm:pt-20 lg:pt-24">
         @yield('content')
     </main>
 
-    {{-- Footer --}}
+    {{-- ══ FOOTER ══ --}}
     <footer class="mt-24" style="background:#f0ede8;border-top:1px solid rgba(0,0,0,0.07);">
 
-        <div class="h-1 w-full" style="background:linear-gradient(90deg,#f97316,#ea580c,#fb923c,#f97316);background-size:200% 100%;animation:footerBar 3s linear infinite;"></div>
-
-        <style>
-            @keyframes footerBar {
-                0%   { background-position:0% 0%; }
-                100% { background-position:200% 0%; }
-            }
-            .footer-social-btn {
-                width:36px;height:36px;border-radius:10px;
-                display:flex;align-items:center;justify-content:center;
-                background:rgba(0,0,0,.05);
-                border:1px solid rgba(0,0,0,.09);
-                color:rgba(0,0,0,.4);
-                flex-shrink:0;
-                transition:background .2s,color .2s,border-color .2s,transform .2s;
-            }
-            .footer-social-btn:hover {
-                background:rgba(249,115,22,.1);
-                border-color:rgba(249,115,22,.35);
-                color:#f97316;transform:translateY(-2px);
-            }
-            .footer-link {
-                color:rgba(0,0,0,.45);font-size:13px;
-                transition:color .2s;text-decoration:none;
-            }
-            .footer-link:hover { color:#f97316; }
-        </style>
+        <div class="h-1 w-full"
+             style="background:linear-gradient(90deg,#f97316,#ea580c,#fb923c,#f97316);
+                    background-size:200% 100%;
+                    animation:footerBar 3s linear infinite;">
+        </div>
 
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-16 pb-8 sm:pb-10">
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 sm:gap-12 mb-10 sm:mb-14">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 sm:gap-12 mb-10 sm:mb-14">
 
                 {{-- Brand --}}
                 <div class="sm:col-span-2 lg:col-span-1">
@@ -375,14 +445,53 @@
                     </div>
                 </div>
 
+                {{-- Navigasi --}}
+                <div>
+                    <h4 class="font-display text-xs font-bold tracking-widest mb-5"
+                        style="color:rgba(0,0,0,.7);">NAVIGASI</h4>
+                    <ul class="space-y-3">
+                        <li>
+                            <a href="{{ route('home') }}" class="footer-nav-link">
+                                <span class="dot"></span>Home
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('bagan') }}" class="footer-nav-link">
+                                <span class="dot"></span>Bagan
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('jadwal') }}" class="footer-nav-link">
+                                <span class="dot"></span>Jadwal Pertandingan
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('livescore') }}" class="footer-nav-link">
+                                <span class="dot"></span>
+                                Live Score
+                                <span style="display:inline-flex;width:6px;height:6px;border-radius:50%;
+                                             background:#ef4444;margin-left:2px;
+                                             animation:liveping 1.8s ease infinite;"></span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('registration.index') }}" class="footer-nav-link">
+                                <span class="dot"></span>Pendaftaran
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
                 {{-- Kategori --}}
                 <div>
-                    <h4 class="font-display text-xs font-bold tracking-widest mb-5" style="color:rgba(0,0,0,.7);">KATEGORI</h4>
+                    <h4 class="font-display text-xs font-bold tracking-widest mb-5"
+                        style="color:rgba(0,0,0,.7);">KATEGORI</h4>
                     <ul class="space-y-3">
                         @foreach(['Ganda Dewasa Putra','Ganda Dewasa Putri','Ganda Veteran Putra','Ganda Veteran Putri','Beregu'] as $kat)
                         <li>
                             <a href="{{ route('home') }}" class="footer-link flex items-center gap-2">
-                                <span class="w-1.5 h-1.5 rounded-full flex-shrink-0" style="background:#f97316;"></span>
+                                <span class="w-1.5 h-1.5 rounded-full flex-shrink-0"
+                                      style="background:#f97316;"></span>
                                 {{ $kat }}
                             </a>
                         </li>
@@ -392,20 +501,31 @@
 
                 {{-- Info & Kontak --}}
                 <div>
-                    <h4 class="font-display text-xs font-bold tracking-widest mb-5" style="color:rgba(0,0,0,.7);">INFORMASI</h4>
+                    <h4 class="font-display text-xs font-bold tracking-widest mb-5"
+                        style="color:rgba(0,0,0,.7);">INFORMASI</h4>
                     <ul class="space-y-4">
                         <li class="flex items-start gap-3">
                             <span class="mt-0.5 flex-shrink-0" style="color:#f97316;">
-                                <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                                <svg width="14" height="14" fill="none" stroke="currentColor"
+                                     viewBox="0 0 24 24" stroke-width="2">
+                                    <rect x="3" y="4" width="18" height="18" rx="2"/>
+                                    <path d="M16 2v4M8 2v4M3 10h18"/>
+                                </svg>
                             </span>
                             <span style="color:rgba(0,0,0,.5);font-size:13px;line-height:1.6;">
-                                <span style="color:rgba(0,0,0,.75);font-weight:600;display:block;">Tanggal Turnamen</span>
+                                <span style="color:rgba(0,0,0,.75);font-weight:600;display:block;">
+                                    Tanggal Turnamen
+                                </span>
                                 22–24 Agustus 2026
                             </span>
                         </li>
                         <li class="flex items-start gap-3">
                             <span class="mt-0.5 flex-shrink-0" style="color:#f97316;">
-                                <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                <svg width="14" height="14" fill="none" stroke="currentColor"
+                                     viewBox="0 0 24 24" stroke-width="2">
+                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
+                                    <circle cx="12" cy="10" r="3"/>
+                                </svg>
                             </span>
                             <span style="color:rgba(0,0,0,.5);font-size:13px;line-height:1.6;">
                                 <span style="color:rgba(0,0,0,.75);font-weight:600;display:block;">Lokasi</span>
@@ -414,10 +534,15 @@
                         </li>
                         <li class="flex items-start gap-3">
                             <span class="mt-0.5 flex-shrink-0" style="color:#f97316;">
-                                <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.68A2 2 0 012 .82h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+                                <svg width="14" height="14" fill="none" stroke="currentColor"
+                                     viewBox="0 0 24 24" stroke-width="2">
+                                    <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.68A2 2 0 012 .82h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
+                                </svg>
                             </span>
                             <span style="color:rgba(0,0,0,.5);font-size:13px;line-height:1.6;">
-                                <span style="color:rgba(0,0,0,.75);font-weight:600;display:block;">Kontak Panitia</span>
+                                <span style="color:rgba(0,0,0,.75);font-weight:600;display:block;">
+                                    Kontak Panitia
+                                </span>
                                 +62 812-3456-7890
                             </span>
                         </li>
@@ -430,17 +555,44 @@
             <div class="h-px mb-8" style="background:rgba(0,0,0,.08);"></div>
 
             {{-- Bottom bar --}}
-            <div class="flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
                 <p class="font-display text-xs tracking-widest" style="color:rgba(0,0,0,.35);">
                     © 2026 BAYAN GROUP · All Rights Reserved
                 </p>
+                <div class="flex items-center gap-5">
+                    <a href="{{ route('home') }}"
+                       class="font-display text-xs tracking-wider"
+                       style="color:rgba(0,0,0,.3);text-decoration:none;transition:color .2s;"
+                       onmouseover="this.style.color='#f97316'" onmouseout="this.style.color='rgba(0,0,0,.3)'">
+                        Home
+                    </a>
+                    <a href="{{ route('jadwal') }}"
+                       class="font-display text-xs tracking-wider"
+                       style="color:rgba(0,0,0,.3);text-decoration:none;transition:color .2s;"
+                       onmouseover="this.style.color='#f97316'" onmouseout="this.style.color='rgba(0,0,0,.3)'">
+                        Jadwal
+                    </a>
+                    <a href="{{ route('livescore') }}"
+                       class="font-display text-xs tracking-wider"
+                       style="color:rgba(0,0,0,.3);text-decoration:none;transition:color .2s;"
+                       onmouseover="this.style.color='#f97316'" onmouseout="this.style.color='rgba(0,0,0,.3)'">
+                        Live Score
+                    </a>
+                    <a href="{{ route('bagan') }}"
+                       class="font-display text-xs tracking-wider"
+                       style="color:rgba(0,0,0,.3);text-decoration:none;transition:color .2s;"
+                       onmouseover="this.style.color='#f97316'" onmouseout="this.style.color='rgba(0,0,0,.3)'">
+                        Bagan
+                    </a>
+                </div>
             </div>
 
         </div>
     </footer>
 
-    {{-- Navbar scroll effect --}}
+    {{-- ══ SCRIPTS ══ --}}
     <script>
+        // Navbar scroll effect
         const navbar = document.getElementById('navbar');
         window.addEventListener('scroll', () => {
             navbar.classList.toggle('scrolled', window.scrollY > 50);
