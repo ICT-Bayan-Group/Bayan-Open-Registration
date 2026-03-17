@@ -19,9 +19,9 @@
   --fire-mid  : #fed7aa;
   --gold      : #fbbf24;
   --bg        : #f8f4f0;
-  --primary   : #1e3a8a;   /* kept from ref for player text */
-  --line      : rgba(149,170,200,0.9);   /* same grey-blue as reference */
-  --line-hi   : rgba(249,115,22,0.5);    /* orange line when completed */
+  --primary   : #1e3a8a;
+  --line      : rgba(149,170,200,0.9);
+  --line-hi   : rgba(249,115,22,0.5);
   --text-dark : #1c0a00;
   --text-mid  : #6b3a1f;
   --text-light: #b97a52;
@@ -31,20 +31,24 @@
   --font-hdr  : 'Syne', sans-serif;
   --font-body : 'DM Sans', sans-serif;
 
-  /* ── LAYOUT VARS ──
-     card-w  : card box width
-     conn    : connector zone width on each side (bracket { = conn/2, line = conn/2)
-     col-w   : total column width = card-w + conn (conn is split: left+right of card)
-  */
+  /* ── WIN / LOSE COLORS ── */
+  --win-bg    : #f0fdf4;   /* hijau muda */
+  --win-text  : #15803d;   /* hijau tua */
+  --win-score : #16a34a;   /* hijau skor */
+  --win-club  : rgba(21,128,61,0.55);
+  --win-bar   : #22c55e;   /* garis atas card completed */
+
+  --lose-bg   : #f3f4f6;   /* abu muda */
+  --lose-text : #9ca3af;   /* abu tua */
+  --lose-score: #9ca3af;
+  --lose-club : #c4c8ce;
+
   --card-w : 165px;
   --conn   :  60px;
   --col-w  : calc(var(--card-w) + var(--conn));
-  --hc     : calc(var(--conn) / 2);   /* half connector */
+  --hc     : calc(var(--conn) / 2);
 }
 
-/* ═══════════════════════════════════════════
-   RESET / BASE
-═══════════════════════════════════════════ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { height: 100%; overflow: hidden; }
 body {
@@ -120,7 +124,6 @@ body {
 }
 @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.25} }
 
-/* ── CATEGORY TABS ── */
 .cat-nav {
   display: flex;
   gap: 2px;
@@ -163,9 +166,6 @@ body {
 #scroll-viewport::-webkit-scrollbar-thumb  { background: rgba(249,115,22,.35); border-radius: 4px; }
 #scroll-viewport::-webkit-scrollbar-corner { background: rgba(249,115,22,.04); }
 
-/* ═══════════════════════════════════════════
-   BRACKET CANVAS  (inline-flex = grows naturally)
-═══════════════════════════════════════════ */
 #bracket-canvas {
   display: inline-flex;
   justify-content: center;
@@ -176,7 +176,6 @@ body {
   min-height: max-content;
 }
 
-/* left / right sides sit inside the canvas */
 .side {
   display: flex;
   align-items: stretch;
@@ -209,9 +208,6 @@ body {
   letter-spacing: .16em;
 }
 
-/* ═══════════════════════════════════════════
-   MATCH PAIR / SINGLE
-═══════════════════════════════════════════ */
 .match-pair {
   display: flex;
   flex-direction: column;
@@ -228,14 +224,6 @@ body {
   position: relative;
   min-height: 80px;
 }
-
-/* ═══════════════════════════════════════════
-   CONNECTORS  — exactly like the reference image
-   but hooked up to --conn / --hc variables
-
-   LEFT side  (side.left) → connectors go RIGHT  →  ::after = bracket on right, ::before = line right
-   RIGHT side (side.right)→ connectors go LEFT   →  ::after = bracket on left,  ::before = line left
-═══════════════════════════════════════════ */
 
 /* ── LEFT side connectors ── */
 .side.left .match-pair::after {
@@ -316,7 +304,7 @@ body {
 }
 
 /* ═══════════════════════════════════════════
-   MATCH CARD  (identical look to reference)
+   MATCH CARD
 ═══════════════════════════════════════════ */
 .match-card {
   background: #fff;
@@ -336,13 +324,14 @@ body {
   box-shadow: var(--shadow-md);
 }
 .match-card.completed {
-  background: var(--fire-light);
-  border-color: rgba(249,115,22,.45);
+  background: #fff;
+  border-color: rgba(34,197,94,.4);
 }
+/* top bar hijau untuk completed */
 .match-card.completed::before {
   content: '';
   position: absolute; top: 0; left: 0; right: 0; height: 2px;
-  background: var(--fire);
+  background: var(--win-bar);
   border-radius: 6px 6px 0 0;
 }
 
@@ -363,7 +352,6 @@ body {
   white-space: nowrap;
   box-shadow: 0 1px 4px rgba(0,0,0,.3);
 }
-/* pill sits ON the connector line */
 .side.left  .match-id { right: calc(-1 * var(--hc) - 14px); }
 .side.right .match-id { left:  calc(-1 * var(--hc) - 14px); }
 
@@ -387,16 +375,38 @@ body {
 .player:last-child  { border-bottom: none; }
 .player.bye         { color: #94a3b8; font-style: italic; font-weight: 400; font-size: 10px; }
 .player.tbd         { color: #94a3b8; font-weight: 400; font-size: 10px; }
-.player.winner      { color: var(--fire-deep); font-weight: 700; background: rgba(249,115,22,.07); }
-/* swap feature disabled */
+
+/* ── PEMENANG: HIJAU ── */
+.player.winner {
+  color: var(--win-text);
+  font-weight: 700;
+  background: var(--win-bg);
+}
+
+/* ── KALAH: ABU-ABU ── */
+.player.loser {
+  color: var(--lose-text);
+  font-weight: 400;
+  background: var(--lose-bg);
+  text-decoration: none;
+  opacity: 0.75;
+}
 
 .p-info  { flex: 1; display: flex; flex-direction: column; gap: 1px; overflow: hidden; min-width: 0; }
 .p-name  { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 10.5px; font-weight: 600; line-height: 1.3; }
 .p-club  { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 8.5px; font-weight: 400; color: #94a3b8; line-height: 1.2; }
-.player.winner .p-club { color: rgba(194,65,12,0.6); }
-.player.bye    .p-club, .player.tbd .p-club { display: none; }
+
+.player.winner .p-name { font-weight: 700; }
+.player.winner .p-club { color: var(--win-club); }
+
+.player.loser .p-name  { font-weight: 400; }
+.player.loser .p-club  { color: var(--lose-club); }
+
+.player.bye .p-club, .player.tbd .p-club { display: none; }
+
 .p-score { font-family: var(--font-hdr); font-size: 11px; font-weight: 800; color: rgba(0,0,0,.2); flex-shrink: 0; min-width: 14px; text-align: right; align-self: center; }
-.p-score.win { color: var(--fire); }
+.p-score.win  { color: var(--win-score); }
+.p-score.lose { color: var(--lose-score); }
 
 /* ═══════════════════════════════════════════
    FINAL CENTER AREA
@@ -475,7 +485,6 @@ body {
   font-weight: 600;
   letter-spacing: .1em;
 }
-/* connector stubs into final box */
 .final-left-conn  { position: absolute; left:  calc(-1 * var(--hc)); top: 50%; margin-top: -1px; width: var(--hc); height: 2px; background: var(--line); pointer-events: none; }
 .final-right-conn { position: absolute; right: calc(-1 * var(--hc)); top: 50%; margin-top: -1px; width: var(--hc); height: 2px; background: var(--line); pointer-events: none; }
 
@@ -535,9 +544,6 @@ body {
 }
 .scroll-hint.gone { opacity: 0; }
 
-/* ═══════════════════════════════════════════
-   RESPONSIVE — shrink card on small screens
-═══════════════════════════════════════════ */
 @media (max-width: 600px) {
   :root { --card-w: 140px; --conn: 44px; }
   .hdr-title  { font-size: 12px; }
@@ -582,7 +588,6 @@ body {
   display: inline-flex;
   transition: transform .12s ease;
 }
-/* View-only: disable all interactions inside bracket */
 #bracket-canvas, #bracket-canvas * {
   pointer-events: none !important;
   cursor: default !important;
@@ -591,7 +596,7 @@ body {
 }
 
 /* ═══════════════════════════════════════════
-   ZOOM CONTROLS — floating pill bottom-left
+   ZOOM CONTROLS
 ═══════════════════════════════════════════ */
 .zoom-controls {
   position: fixed;
@@ -678,7 +683,6 @@ body {
 <div id="scroll-viewport">
   <div id="zoom-wrapper">
     <div id="bracket-canvas">
-      <!-- left half, final center, right half injected here by JS -->
       <div class="state-box" id="stateBox">
         <div class="spinner"></div>
         <div class="state-lbl">Memuat bagan…</div>
@@ -698,7 +702,8 @@ body {
 
 <!-- ══════════ FOOTER ══════════ -->
 <footer class="legend">
-  <div class="leg-item"><div class="leg-dot" style="background:var(--fire)"></div>Selesai</div>
+  <div class="leg-item"><div class="leg-dot" style="background:#22c55e"></div>Menang</div>
+  <div class="leg-item"><div class="leg-dot" style="background:#d1d5db;border:1.5px solid #9ca3af"></div>Kalah</div>
   <div class="leg-item"><div class="leg-dot" style="background:#fff;border:1.5px solid #cbd5e1"></div>Menunggu</div>
   <div class="leg-item" style="margin-left:auto;font-size:9px;color:var(--text-light)">
     <i class="fas fa-sitemap" style="margin-right:4px;color:var(--fire)"></i>result.bayanopen.com
@@ -752,7 +757,6 @@ function initZoom() {
   document.getElementById('zoomOut').onclick  = () => applyZoom(currentZoom - ZOOM_STEP);
   document.getElementById('zoomPct').onclick  = () => applyZoom(1.0);
 
-  /* Ctrl + mouse wheel */
   vp.addEventListener('wheel', e => {
     if(!e.ctrlKey && !e.metaKey) return;
     e.preventDefault();
@@ -762,7 +766,6 @@ function initZoom() {
     applyZoom(currentZoom + (e.deltaY > 0 ? -ZOOM_STEP : ZOOM_STEP), pivotX, pivotY);
   }, { passive: false });
 
-  /* Pinch-to-zoom (mobile) */
   let lastDist = null, ppx = 0, ppy = 0;
   vp.addEventListener('touchstart', e => {
     if(e.touches.length === 2) {
@@ -783,7 +786,6 @@ function initZoom() {
   }, { passive: false });
   vp.addEventListener('touchend', () => { lastDist = null; }, { passive: true });
 
-  /* Keyboard: + / - / 0 */
   document.addEventListener('keydown', e => {
     if(e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
     if(e.key === '+' || e.key === '=') { e.preventDefault(); applyZoom(currentZoom + ZOOM_STEP); }
@@ -791,7 +793,6 @@ function initZoom() {
     if(e.key === '0')                  { e.preventDefault(); applyZoom(1.0); }
   });
 }
-
 
 /* ═══════════════════════════════════════════
    FETCH
@@ -810,7 +811,7 @@ async function loadData() {
 }
 
 /* ═══════════════════════════════════════════
-   BOOT — build category tabs
+   BOOT
 ═══════════════════════════════════════════ */
 function boot() {
   const cats = [...new Set(allMatches.map(m => m.kategori).filter(Boolean))];
@@ -831,10 +832,8 @@ function boot() {
 
   if(cats.length) render(cats[0]);
 
-  /* zoom */
   initZoom();
 
-  /* hide scroll hint */
   const vp = document.getElementById('scroll-viewport');
   const sh = document.getElementById('sh');
   vp.addEventListener('scroll', () => sh.classList.add('gone'), { once: true });
@@ -858,7 +857,6 @@ function render(cat) {
   const rightData  = data.filter(m => m.side === 'RIGHT');
   const finalMatch = data.find(m => m.babak === 'FINAL' || m.side === 'FINAL-CENTER');
 
-  /* ── LEFT SIDE ── */
   const leftSide = document.createElement('div');
   leftSide.className = 'side left';
 
@@ -868,17 +866,12 @@ function render(cat) {
     leftSide.appendChild(createRound(matches, rnd, 'left'));
   });
 
-  /* ── FINAL CENTER ── */
   const finalEl = finalMatch ? buildFinalArea(finalMatch) : buildEmptyFinal();
 
-  /* ── RIGHT SIDE ── */
   const rightSide = document.createElement('div');
   rightSide.className = 'side right';
 
   const rightRounds = getRoundsPresent(rightData);
-  /* NOTE: side.right uses flex-direction:row-reverse in CSS,
-     so we append in SAME order as left (early→semi) and CSS
-     will display them mirrored (semi near center, early on outside). */
   rightRounds.forEach(rnd => {
     const matches = rightData.filter(m => m.babak === rnd);
     rightSide.appendChild(createRound(matches, rnd, 'right'));
@@ -889,7 +882,6 @@ function render(cat) {
   canvas.appendChild(rightSide);
 }
 
-/* ── helper ── */
 function getRoundsPresent(matches) {
   const seen = new Set(matches.map(m => m.babak));
   return ROUND_ORDER.filter(r => seen.has(r) && r !== 'FINAL');
@@ -931,20 +923,17 @@ function buildMatchCard(m, side) {
   const card = document.createElement('div');
   card.className = 'match-card' + (m.status === 'COMPLETED' ? ' completed' : '');
 
-  /* ID pill */
   const pill = document.createElement('div');
   pill.className  = 'match-id';
   pill.textContent = m.id;
   card.appendChild(pill);
 
-  /* players */
   card.appendChild(buildPlayer(m, 1));
   card.appendChild(buildPlayer(m, 2));
 
   return card;
 }
 
-/* parse "Name (Club)" → { name, club } */
 function parseName(raw) {
   if(!raw) return { name: '—', club: '' };
   const m = raw.match(/^(.+?)\s*\((.+?)\)\s*$/);
@@ -958,6 +947,7 @@ function buildPlayer(m, slot) {
   const other = slot === 1 ? m.skor_p2 : m.skor_p1;
   const done  = m.status === 'COMPLETED';
   const win   = done && Number(score) > Number(other);
+  const lose  = done && !win && raw && raw !== 'BYE' && raw !== 'TBD';
   const bye   = raw === 'BYE';
   const tbd   = !raw || raw === 'TBD';
 
@@ -967,11 +957,11 @@ function buildPlayer(m, slot) {
 
   const div = document.createElement('div');
   div.className = 'player' +
-    (bye ? ' bye'    : '') +
-    (tbd ? ' tbd'    : '') +
-    (win ? ' winner' : '');
+    (bye  ? ' bye'    : '') +
+    (tbd  ? ' tbd'    : '') +
+    (win  ? ' winner' : '') +
+    (lose ? ' loser'  : '');
 
-  /* info wrapper: name + club stacked */
   const info = document.createElement('div');
   info.className = 'p-info';
 
@@ -991,7 +981,7 @@ function buildPlayer(m, slot) {
 
   if(!bye && !tbd && done) {
     const sc = document.createElement('span');
-    sc.className   = 'p-score' + (win ? ' win' : '');
+    sc.className   = 'p-score' + (win ? ' win' : lose ? ' lose' : '');
     sc.textContent = score ?? '';
     div.appendChild(sc);
   }
@@ -1028,7 +1018,6 @@ function buildEmptyFinal() {
   d.style.width = '40px';
   return d;
 }
-
 
 /* ─── START ─── */
 loadData();
