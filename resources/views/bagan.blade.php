@@ -6,7 +6,7 @@
 <title>Bagan Pertandingan – Bayan Open 2026</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 <style>
 /* ═══════════════════════════════════════════
@@ -28,8 +28,8 @@
   --shadow-sm : 0 1px 4px rgba(0,0,0,0.07);
   --shadow-md : 0 4px 16px rgba(249,115,22,0.15);
   --shadow-lg : 0 8px 32px rgba(249,115,22,0.2);
-  --font-hdr  : 'Syne', sans-serif;
-  --font-body : 'DM Sans', sans-serif;
+  --font-hdr  :  'Montserrat', sans-serif;
+  --font-body : 'Montserrat', sans-serif;
 
   /* ── WIN / LOSE COLORS ── */
   --win-bg    : #f0fdf4;   /* hijau muda */
