@@ -5,7 +5,7 @@
 @push('head')
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
 /* ═══════════════════════════════════════════════════
@@ -36,8 +36,8 @@
     --r-md:  18px;
     --r-lg:  24px;
     --r-xl:  32px;
-    --font-display: 'Syne', 'Unbounded', sans-serif;
-    --font-body:    'DM Sans', sans-serif;
+    --font-display: 'Montserrat', sans-serif;
+    --font-body:    'Montserrat', sans-serif;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -149,9 +149,27 @@
     border-bottom: 1px solid rgba(255,255,255,0.07);
     position: sticky;
     top: 64px; z-index: 40;
+    transition: background 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
 }
 @media (min-width:640px)  { .jp-date-strip-wrap { top: 80px; } }
 @media (min-width:1024px) { .jp-date-strip-wrap { top: 96px; } }
+
+/* ── Scrolled state ── */
+.jp-date-strip-wrap.scrolled {
+    background: var(--white);
+    border-bottom-color: var(--ink-12);
+    box-shadow: 0 4px 20px rgba(26,16,7,0.08);
+}
+.jp-date-strip-wrap.scrolled .jp-dtab-day { color: var(--ink-25); }
+.jp-date-strip-wrap.scrolled .jp-dtab-num { color: var(--ink-45); }
+.jp-date-strip-wrap.scrolled .jp-dtab-mon { color: var(--ink-25); }
+.jp-date-strip-wrap.scrolled .jp-date-tab:hover { background: rgba(26,16,7,0.03); }
+.jp-date-strip-wrap.scrolled .jp-date-tab:hover .jp-dtab-num { color: var(--ink); }
+.jp-date-strip-wrap.scrolled .jp-date-tab.active { background: rgba(249,115,22,0.06); }
+.jp-date-strip-wrap.scrolled .jp-date-tab.active .jp-dtab-day { color: var(--fire); }
+.jp-date-strip-wrap.scrolled .jp-date-tab.active .jp-dtab-num { color: var(--ink); }
+.jp-date-strip-wrap.scrolled .jp-date-tab.active .jp-dtab-mon { color: var(--ink-45); }
+.jp-date-strip-wrap.scrolled .jp-tab-sep { background: var(--ink-12); }
 
 .jp-date-strip {
     max-width: 1120px; margin: 0 auto;
@@ -204,6 +222,7 @@
 .jp-tab-sep {
     width: 1px; background: rgba(255,255,255,0.06);
     align-self: stretch; margin: 8px 0; flex-shrink: 0;
+    transition: background 0.35s ease;
 }
 
 /* ════════════════════════════════════════
@@ -536,6 +555,25 @@ async function init() {
             </div>`;
     }
 }
+
+// ── DATE STRIP SCROLL TRANSITION ──────────────────────────
+(function () {
+    const strip = document.querySelector('.jp-date-strip-wrap');
+    if (!strip) return;
+
+    // Threshold: begitu hero sudah hilang dari viewport
+    function onScroll() {
+        const heroHeight = document.querySelector('.jp-hero')?.offsetHeight ?? 400;
+        if (window.scrollY > heroHeight - 120) {
+            strip.classList.add('scrolled');
+        } else {
+            strip.classList.remove('scrolled');
+        }
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll(); // cek posisi awal
+})();
 
 // ── DATE TABS ─────────────────────────────────────────────
 function buildDateTabs(dates) {

@@ -9,7 +9,7 @@
     <link rel="apple-touch-icon" href="{{ asset('images/bayanopen.png') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;900&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -18,8 +18,8 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        'display': ['Unbounded', 'sans-serif'],
-                        'body':    ['DM Sans', 'sans-serif'],
+                        'display': ['Montserrat', 'sans-serif'],
+                        'body':    ['Montserrat', 'sans-serif'],
                     },
                     colors: {
                         'brand': {
@@ -43,11 +43,11 @@
     <style>
         /* ── Base ── */
         body {
-            font-family: 'DM Sans', sans-serif;
+            font-family: 'Montserrat', sans-serif;
             background: #f8f6f2;
             color: #1a1a1a;
         }
-        h1, h2, h3, .font-display { font-family: 'Unbounded', sans-serif; }
+        h1, h2, h3, .font-display { font-family: 'Montserrat', sans-serif; }
 
         /* ── Hero background ── */
         .gradient-hero { background: #f8f6f2; }
@@ -309,24 +309,24 @@
             {{-- Desktop links --}}
             <div class="hidden md:flex items-center gap-1">
                 <a href="{{ route('home') }}"
-                   class="nav-link transition font-medium text-sm tracking-wide px-3 py-2 rounded-lg
+                   class="nav-link transition font-semibold text-sm tracking-wide px-3 py-2 rounded-lg
                           {{ request()->routeIs('home') ? 'active' : '' }}">
-                    Home
+                    Beranda
                 </a>
                 <a href="{{ route('bagan') }}"
-                   class="nav-link transition font-medium text-sm tracking-wide px-3 py-2 rounded-lg
+                   class="nav-link transition font-semibold text-sm tracking-wide px-3 py-2 rounded-lg
                           {{ request()->routeIs('bagan') ? 'active' : '' }}">
                     Bagan
                 </a>
                 <a href="{{ route('jadwal') }}"
-                   class="nav-link transition font-medium text-sm tracking-wide px-3 py-2 rounded-lg
+                   class="nav-link transition font-semibold text-sm tracking-wide px-3 py-2 rounded-lg
                           {{ request()->routeIs('jadwal') ? 'active' : '' }}">
                     Jadwal
                 </a>
                 <a href="{{ route('livescore') }}"
-                   class="nav-link transition font-medium text-sm tracking-wide px-3 py-2 rounded-lg
+                   class="nav-link transition font-semibold text-sm tracking-wide px-3 py-2 rounded-lg
                           {{ request()->routeIs('livescore') ? 'active' : '' }}">
-                    Live Score
+                    Hasil Pertandingan
                     {{-- pulsing dot kalau di halaman lain --}}
                     @unless(request()->routeIs('livescore'))
                     <span style="display:inline-flex;align-items:center;justify-content:center;
@@ -336,19 +336,10 @@
                                  animation:liveping 1.8s ease infinite;vertical-align:middle;"></span>
                     @endunless
                 </a>
-                <div class="w-px h-5 mx-2" style="background:rgba(0,0,0,.1);"></div>
-                <a href="{{ route('registration.index') }}"
-                   class="btn-primary font-display text-xs font-bold px-6 py-3 rounded-xl tracking-wider">
-                    DAFTAR →
-                </a>
             </div>
 
             {{-- Mobile: DAFTAR + hamburger --}}
             <div class="flex md:hidden items-center gap-3">
-                <a href="{{ route('registration.index') }}"
-                   class="btn-primary font-display text-xs font-bold px-4 py-2.5 rounded-lg tracking-wider">
-                    DAFTAR →
-                </a>
                 <button class="hamburger" id="hamburger-btn"
                         aria-label="Buka menu" aria-expanded="false" aria-controls="mobile-menu">
                     <span></span><span></span><span></span>
@@ -382,16 +373,10 @@
         <a href="{{ route('livescore') }}"
            class="nav-link-mobile {{ request()->routeIs('livescore') ? 'active' : '' }}"
            onclick="closeMobileMenu()">
-            Live Score
+           Hasil Pertandingan
             <span style="display:inline-flex;width:7px;height:7px;border-radius:50%;
                          background:#ef4444;margin-left:6px;vertical-align:middle;
                          animation:liveping 1.8s ease infinite;"></span>
-        </a>
-
-        <a href="{{ route('registration.index') }}"
-           class="btn-primary font-display text-sm font-bold px-8 py-4 rounded-xl tracking-wider mt-2"
-           onclick="closeMobileMenu()">
-            DAFTAR →
         </a>
     </div>
 
@@ -452,8 +437,8 @@
                         style="color:rgba(0,0,0,.7);">NAVIGASI</h4>
                     <ul class="space-y-3">
                         <li>
-                            <a href="{{ route('home') }}" class="footer-nav-link">
-                                <span class="dot"></span>Home
+                            <a href="{{ route('home') }}" class="footer-nav-link ">
+                                <span class="dot"></span>Beranda
                             </a>
                         </li>
                         <li>
@@ -469,15 +454,10 @@
                         <li>
                             <a href="{{ route('livescore') }}" class="footer-nav-link">
                                 <span class="dot"></span>
-                                Live Score
+                                Hasil Pertandingan
                                 <span style="display:inline-flex;width:6px;height:6px;border-radius:50%;
                                              background:#ef4444;margin-left:2px;
                                              animation:liveping 1.8s ease infinite;"></span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('registration.index') }}" class="footer-nav-link">
-                                <span class="dot"></span>Pendaftaran
                             </a>
                         </li>
                     </ul>

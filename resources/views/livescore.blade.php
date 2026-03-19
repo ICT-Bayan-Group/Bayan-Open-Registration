@@ -5,7 +5,7 @@
 @push('head')
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
 /* ═══════════════════════════════════════════════════
@@ -38,9 +38,9 @@
     --r-md:  18px;
     --r-lg:  24px;
     --r-xl:  32px;
-    --font-display: 'Syne', 'Unbounded', sans-serif;
-    --font-body:    'DM Sans', sans-serif;
-    --font-mono:    'Courier New', monospace;
+    --font-display: 'Montserrat', sans-serif;
+    --font-body:    'Montserrat', sans-serif;
+    --font-mono:    'Montserrat', sans-serif;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -461,9 +461,9 @@
             <div>
                 <div class="ls-eyebrow">
                     <span class="ls-eyebrow-dot"></span>
-                    <span class="ls-eyebrow-text">Live Score · Real-time</span>
+                    <span class="ls-eyebrow-text">Live</span>
                 </div>
-                <h1 class="ls-hero-title">Live Score &amp; Hasil</h1>
+                <h1 class="ls-hero-title">Hasil Pertandingan</h1>
                 <p class="ls-hero-sub">Bayan Open 2026 &nbsp;·&nbsp; DOME &amp; HEVINDO &nbsp;·&nbsp; Balikpapan</p>
             </div>
             <div class="ls-stats" id="heroStats" style="display:none;">
