@@ -864,7 +864,7 @@ body {
 ══════════════════════════════════════════ --}}
 <section class="hero">
     <video class="hero-video"
-        src="https://res.cloudinary.com/djs5pi7ev/video/upload/v1769500972/202601271004_aepgij.mp4"
+        src="https://res.cloudinary.com/djs5pi7ev/video/upload/q_50,w_1280/v1769500972/202601271004_aepgij.mp4"
         autoplay muted loop playsinline preload="auto"></video>
     <div class="hero-overlay"></div>
     <div class="hero-vignette"></div>
@@ -893,7 +893,7 @@ body {
 
             {{-- Tagline --}}
             <p class="hero-headline" id="h-tag">
-                Turnamen bulutangkis bergengsi di Kalimantan Timur.<br>
+                Turnamen bulutangkis bergengsi dan Sirkuit Nasional.<br>
                 Daftar sekarang dan buktikan kemampuanmu.
             </p>
 
@@ -1156,16 +1156,16 @@ body {
 
     @php
     $photos = [
-        ['https://res.cloudinary.com/djs5pi7ev/image/upload/w_600,q_60,f_webp/v1767765503/Bayan-8672_iuuxhb.jpg',   'Pertandingan Sengit'],
+        ['https://res.cloudinary.com/djs5pi7ev/image/upload/w_600,q_60,f_webp/v1767765503/Bayan-8672_iuuxhb.jpg',   'Ganda Veteran Putra'],
         ['https://res.cloudinary.com/djs5pi7ev/image/upload/w_600,q_60,f_webp/v1767765503/Bayan-1739_e0mi1r.jpg',   'Aksi Lapangan'],
         ['https://res.cloudinary.com/djs5pi7ev/image/upload/w_600,q_60,f_webp/v1767765501/Bayan-1715_rppm7m.jpg',   'Smash Keras'],
-        ['https://res.cloudinary.com/djs5pi7ev/image/upload/w_600,q_60,f_webp/v1767765497/Bayan-8837_rpl0gl.jpg',   'Final Seru'],
+        ['https://res.cloudinary.com/djs5pi7ev/image/upload/w_600,q_60,f_webp/v1767765497/Bayan-8837_rpl0gl.jpg',   'Ganda Putri'],
         ['https://res.cloudinary.com/djs5pi7ev/image/upload/w_600,q_60,f_webp/v1767765495/PenyerahanMedali-575_yhyuds.jpg', 'Penyerahan Medali'],
-        ['https://res.cloudinary.com/djs5pi7ev/image/upload/w_600,q_60,f_webp/v1773113997/Bayan-2268_tnmwt4.jpg',   'Momen Juara'],
+        ['https://res.cloudinary.com/djs5pi7ev/image/upload/w_600,q_60,f_webp/v1773113997/Bayan-2268_tnmwt4.jpg',   'Guest Star'],
         ['https://res.cloudinary.com/djs5pi7ev/image/upload/w_600,q_60,f_webp/v1773113996/Bayan-36_mpnqui.jpg',     'Servis Perdana'],
-        ['https://res.cloudinary.com/djs5pi7ev/image/upload/w_600,q_60,f_webp/v1773113996/Bayan-2324_itnoc5.jpg',   'Ganda Putra'],
-        ['https://res.cloudinary.com/djs5pi7ev/image/upload/w_600,q_60,f_webp/v1773113995/Bayan-26_llektw.jpg',     'Warming Up'],
-        ['https://res.cloudinary.com/djs5pi7ev/image/upload/w_600,q_60,f_webp/v1773113995/Bayan-1427_s2frld.jpg',   'Veteran Bertanding'],
+        ['https://res.cloudinary.com/djs5pi7ev/image/upload/w_600,q_60,f_webp/v1773113996/Bayan-2324_itnoc5.jpg',   'Aksi Hendra Setiawan'],
+        ['https://res.cloudinary.com/djs5pi7ev/image/upload/w_600,q_60,f_webp/v1773113995/Bayan-26_llektw.jpg',     'Taruna Putra'],
+        ['https://res.cloudinary.com/djs5pi7ev/image/upload/w_600,q_60,f_webp/v1773113995/Bayan-1427_s2frld.jpg',   'Ganda Putra'],
     ];
     $doubled  = array_merge($photos, $photos);
     $doubled2 = array_merge(array_reverse($photos), array_reverse($photos));
