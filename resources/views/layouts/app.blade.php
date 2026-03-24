@@ -537,10 +537,10 @@
 
             {{-- Bottom bar --}}
             <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
-                <p class="font-display text-xs tracking-widest" style="color:rgba(0,0,0,.35);">
+                <p class="font-display font-semibold text-xs tracking-widest" style="color:rgba(0,0,0,.35);">
                     © 2026 BAYAN GROUP · All Rights Reserved
                 </p>
-                <div class="flex items-center gap-5">
+               {{-- <div class="flex items-center gap-5">
                     <a href="{{ route('home') }}"
                        class="font-display text-xs tracking-wider"
                        style="color:rgba(0,0,0,.3);text-decoration:none;transition:color .2s;"
@@ -565,7 +565,7 @@
                        onmouseover="this.style.color='#f97316'" onmouseout="this.style.color='rgba(0,0,0,.3)'">
                         Bagan
                     </a>
-                </div>
+                </div>--}}
             </div>
 
         </div>
