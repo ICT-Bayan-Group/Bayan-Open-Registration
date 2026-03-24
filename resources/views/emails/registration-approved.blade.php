@@ -228,13 +228,4 @@
   </div>
 
   <!-- Footer -->
-  <div class="footer">
-    <p><strong>BAYAN OPEN 2026</strong> — Official Badminton Tournament</p>
-    <p>Email ini dikirim secara otomatis, harap tidak membalas email ini.</p>
-    <p style="margin-top:8px;">Pertanyaan? Hubungi kami di <strong>bayan.open@gmail.com</strong></p>
-    <p style="margin-top:8px;">© 2026 Bayan Group. All rights reserved.</p>
-  </div>
-
-</div>
-</body>
-</html>
+  <div class="footer">-
