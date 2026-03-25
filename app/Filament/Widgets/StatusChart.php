@@ -7,30 +7,55 @@ use Filament\Widgets\ChartWidget;
 
 class StatusChart extends ChartWidget
 {
-    protected static ?string $heading = 'Breakdown Status';
-    protected static ?int $sort = 4;
+    protected static ?string $heading = 'Status Pembayaran';
+    protected static ?int    $sort    = 3;
+    public function getColumnSpan(): int | string | array
+        {
+            return 1;
+        }
 
     protected function getData(): array
     {
+        $paid    = Registration::where('status', 'paid')->count();
+        $pending = Registration::where('status', 'pending')->count();
+        $total   = max($paid + $pending, 1);
+
         return [
             'datasets' => [
                 [
-                    'data' => [
-                        Registration::where('status','paid')->count(),
-                        Registration::where('status','pending')->count(),
-                        Registration::where('status','failed')->count(),
-                        Registration::where('status','expired')->count(),
-                    ],
-                    'backgroundColor' => ['#10B981','#F59E0B','#EF4444','#6B7280'],
+                    'data'            => [$paid, $pending],
+                    'backgroundColor' => ['#10B981', '#F59E0B'],
                     'borderWidth'     => 0,
+                    'hoverOffset'     => 6,
                 ],
             ],
-            'labels' => ['Paid','Pending','Failed','Expired'],
+            'labels' => [
+                'Paid ('    . round($paid    / $total * 100) . '%)',
+                'Pending (' . round($pending / $total * 100) . '%)',
+            ],
         ];
     }
 
     protected function getType(): string
     {
-        return 'pie';
+        return 'doughnut';
+    }
+
+    protected function getOptions(): array
+    {
+        return [
+            'cutout'  => '68%',
+            'plugins' => [
+                'legend' => [
+                    'position' => 'bottom',
+                    'labels'   => [
+                        'usePointStyle' => true,
+                        'pointStyle'    => 'rectRounded',
+                        'padding'       => 14,
+                        'font'          => ['size' => 12],
+                    ],
+                ],
+            ],
+        ];
     }
 }
