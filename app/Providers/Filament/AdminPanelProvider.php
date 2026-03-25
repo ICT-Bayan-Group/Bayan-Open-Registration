@@ -39,18 +39,15 @@ class AdminPanelProvider extends PanelProvider
             ->sidebarCollapsibleOnDesktop()
 
             ->pages([
-                \Filament\Pages\Dashboard::class,
+                \App\Filament\Pages\Dashboard::class,  // ← pakai custom Dashboard
             ])
 
             ->resources([
                 RegistrationResource::class,
-            ])
-            ->resources([
-                RegistrationResource::class,
-                \App\Filament\Resources\VerifikasiBeregResource::class,  // ← tambah ini
+                \App\Filament\Resources\VerifikasiBeregResource::class,
             ])
 
-            ->widgets([
+           ->widgets([
                 StatsOverview::class,
                 RevenueChart::class,
                 CategoryChart::class,
