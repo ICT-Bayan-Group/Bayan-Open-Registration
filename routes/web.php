@@ -10,6 +10,7 @@ Route::get('/login', fn() => redirect()->route('filament.admin.auth.login'))->na
 
 // ── Home ────────────────────────────────────────────────────────
 Route::get('/', fn() => view('home'))->name('home');
+Route::get('/v1', fn() => view('welcome'))->name('welcome');
 Route::get('/bagan', fn() => view('bagan'))->name('bagan');
 Route::get('/jadwal', fn() => view('jadwal'))->name('jadwal');
 Route::get('/livescore', fn() => view('livescore'))->name('livescore');
