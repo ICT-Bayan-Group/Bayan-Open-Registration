@@ -378,7 +378,7 @@
     gsap.to('.loader-logo',{filter:'drop-shadow(0 6px 26px rgba(234,108,10,0.5))',duration:1.2,repeat:-1,yoyo:true,ease:'sine.inOut',delay:0.4});
 
     var prog={val:0};
-    gsap.to(prog,{val:100,duration:2.6,ease:'power1.inOut',delay:0.5,
+    gsap.to(prog,{val:100,duration:1.0,ease:'power1.inOut',delay:0.5,
         onUpdate:function(){var v=Math.round(prog.val);bar.style.width=v+'%';counter.textContent=v+'%';},
         onComplete:exitLoader});
 
