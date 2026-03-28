@@ -424,6 +424,279 @@ body {
 }
 
 /* ═══════════════════════════════════════
+   ABOUT SECTION — RESPONSIVE
+═══════════════════════════════════════ */
+.about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 72px;
+    align-items: center;
+}
+ 
+.about-stat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+ 
+/* ═══════════════════════════════════════
+   GUEST STAR — RESPONSIVE
+═══════════════════════════════════════ */
+.guest-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    max-width: 860px;
+    margin: 0 auto;
+}
+ 
+.guest-card {
+    background: #fff;
+    border: 1px solid rgba(26,16,7,0.08);
+    border-radius: 28px;
+    overflow: hidden;
+    transition: all 0.35s cubic-bezier(0.22,1,0.36,1);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+}
+.guest-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 28px 64px rgba(249,115,22,0.12), 0 0 0 1.5px rgba(249,115,22,0.2);
+    border-color: rgba(249,115,22,0.2);
+}
+ 
+.guest-photo-wrap {
+    width: 100%;
+    height: 220px;
+    position: relative;
+    overflow: hidden;
+    background: var(--paper-2);
+}
+.guest-photo-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: transform 0.5s ease;
+}
+.guest-card:hover .guest-photo-wrap img {
+    transform: scale(1.05);
+}
+.guest-photo-fallback {
+    display: none;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--paper-2) 0%, #ede8df 100%);
+    font-size: 56px;
+    font-weight: 800;
+    color: rgba(249,115,22,0.15);
+    letter-spacing: -0.04em;
+}
+.guest-photo-gradient {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 40%, rgba(255,247,237,0.6) 100%);
+    pointer-events: none;
+}
+ 
+.guest-body {
+    padding: 24px 28px 28px;
+}
+.guest-name {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    line-height: 1.2;
+    margin-bottom: 3px;
+}
+.guest-nickname {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: var(--fire);
+    margin-bottom: 12px;
+}
+.guest-divider {
+    height: 1px;
+    background: linear-gradient(90deg, rgba(249,115,22,0.15), rgba(249,115,22,0.05) 60%, transparent);
+    margin: 14px 0;
+}
+.guest-bio {
+    font-size: 12.5px;
+    line-height: 1.75;
+    color: var(--ink-60);
+    margin-bottom: 16px;
+}
+.guest-achv-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.guest-achv-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    font-size: 11.5px;
+    color: var(--ink-60);
+    line-height: 1.45;
+}
+.guest-achv-icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    flex-shrink: 0;
+    background: #fff7ed;
+    border: 1px solid rgba(249,115,22,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+}
+.guest-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(26,16,7,0.08);
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.guest-country {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.guest-flag {
+    width: 24px;
+    height: 16px;
+    border-radius: 3px;
+    overflow: hidden;
+    border: 1px solid rgba(26,16,7,0.08);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    line-height: 1;
+}
+.guest-country-name {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ink);
+}
+.guest-country-role {
+    font-size: 10.5px;
+    color: var(--ink-30);
+    margin-top: 1px;
+}
+.guest-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    background: #fff7ed;
+    border: 1px solid rgba(249,115,22,0.15);
+    border-radius: 99px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: #c2410c;
+    white-space: nowrap;
+}
+ 
+/* ── PILLS ABOUT ── */
+.about-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 28px;
+}
+.about-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 16px 7px 8px;
+    background: #fff;
+    border: 1px solid var(--ink-12);
+    border-radius: 99px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--ink);
+}
+.about-pill-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+ 
+/* ═══════════════════════════════════════
+   RESPONSIVE BREAKPOINTS
+═══════════════════════════════════════ */
+ 
+/* Tablet: max 1024px — stack about grid */
+@media (max-width: 1024px) {
+    .about-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+    .about-stat-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .guest-grid {
+        max-width: 600px;
+    }
+}
+ 
+/* Mobile: max 768px — stack guest grid */
+@media (max-width: 768px) {
+    .guest-grid {
+        grid-template-columns: 1fr;
+        max-width: 440px;
+    }
+    .guest-photo-wrap {
+        height: 260px;
+    }
+}
+ 
+/* Small mobile: max 480px */
+@media (max-width: 480px) {
+    .about-stat-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    .guest-body {
+        padding: 20px 20px 24px;
+    }
+    .guest-name {
+        font-size: 18px;
+    }
+    .guest-photo-wrap {
+        height: 220px;
+    }
+    .about-grid {
+        gap: 32px;
+    }
+}
+ 
+/* Extra small: max 360px */
+@media (max-width: 360px) {
+    .about-stat-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+    .guest-footer {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+/* ═══════════════════════════════════════
    KATEGORI SECTION — TAB SWITCHER
 ═══════════════════════════════════════ */
 .kategori-section { background: var(--paper); }
@@ -940,12 +1213,12 @@ body {
 </section>
 
 {{-- ══════════════════════════════════════════
-     ABOUT BAYAN OPEN
+     SECTION ABOUT 
 ══════════════════════════════════════════ --}}
 <section class="section" style="background: var(--paper-2); padding-top: 88px; padding-bottom: 80px;">
     <div class="section-inner">
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:72px; align-items:center;">
-
+        <div class="about-grid">
+ 
             {{-- Teks kiri --}}
             <div>
                 <span class="sec-tag reveal">Tentang Turnamen</span>
@@ -959,25 +1232,25 @@ body {
                 <p style="font-size:13.5px; line-height:1.8; color:var(--ink-60); margin-top:12px;" class="reveal">
                     Pada edisi 2026 ini, Bayan Open hadir lebih besar dengan jalur <strong>Sirkuit Nasional C (PBSI)</strong> di samping kategori Open, menjadikannya platform resmi bagi atlet muda untuk meraih poin nasional.
                 </p>
-
-                {{-- Pills --}}
-                <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:28px;" class="reveal">
+ 
+                {{-- Pills 
+                <div class="about-pills reveal">
                     @foreach([
                         ['Edisi 2026', '#f97316'],
                         ['Balikpapan, Kaltim', '#3b82f6'],
                         ['Sirkuit Nasional C', '#14b8a6'],
                         ['Open Kategori', '#e11d48'],
                     ] as $pill)
-                    <span style="display:inline-flex;align-items:center;gap:7px;padding:7px 16px 7px 8px;background:#fff;border:1px solid var(--ink-12);border-radius:99px;font-size:11px;font-weight:700;color:var(--ink);">
-                        <span style="width:8px;height:8px;border-radius:50%;background:{{ $pill[1] }};flex-shrink:0;"></span>
+                    <span class="about-pill">
+                        <span class="about-pill-dot" style="background:{{ $pill[1] }};"></span>
                         {{ $pill[0] }}
                     </span>
                     @endforeach
-                </div>
+                </div> --}}
             </div>
-
+ 
             {{-- Stat cards kanan --}}
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;" class="reveal">
+            <div class="about-stat-grid reveal">
                 @foreach([
                     ['3+',   'Tahun Digelar',   'Konsisten hadir sejak 2023',         '#f97316', '#f97316'],
                     ['22',   'Total Kategori',   '4 Open + 18 Sirkuit Nasional C',     '#2563eb', '#3b82f6'],
@@ -994,7 +1267,7 @@ body {
                 </div>
                 @endforeach
             </div>
-
+ 
         </div>
     </div>
 </section>
@@ -1200,15 +1473,15 @@ body {
      GUEST STAR — LIGHT VERSION
 ══════════════════════════════════════════ --}}
 <section style="background:var(--paper);padding:88px 24px 96px;position:relative;overflow:hidden;">
-
+ 
     {{-- Decorative top border --}}
     <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent 0%,#f97316 30%,#fbbf24 50%,#f97316 70%,transparent 100%);"></div>
-
+ 
     {{-- Soft warm bg glow --}}
     <div style="position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 70% 50% at 20% 60%,rgba(249,115,22,0.04) 0%,transparent 70%),radial-gradient(ellipse 60% 40% at 80% 30%,rgba(251,191,36,0.04) 0%,transparent 70%);"></div>
-
+ 
     <div class="section-inner" style="position:relative;z-index:1;">
-
+ 
         {{-- Header --}}
         <div style="text-align:center;margin-bottom:56px;">
             <span class="sec-tag reveal">Bintang Tamu Spesial</span>
@@ -1217,10 +1490,10 @@ body {
                 Dua legenda bulutangkis Indonesia hadir langsung di arena bersama para peserta dan penonton.
             </p>
         </div>
-
+ 
         {{-- Grid --}}
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:860px;margin:0 auto;">
-
+        <div class="guest-grid">
+ 
             @foreach([
                 [
                     'name'     => 'Hendra Setiawan',
@@ -1251,78 +1524,62 @@ body {
                     'id'   => 'mg',
                 ],
             ] as $guest)
-
-            <div class="reveal"
-                 style="background:#fff;border:1px solid rgba(26,16,7,0.08);border-radius:28px;overflow:hidden;transition:all 0.35s cubic-bezier(0.22,1,0.36,1);box-shadow:0 2px 12px rgba(0,0,0,0.04);"
-                 onmouseover="this.style.transform='translateY(-6px)';this.style.boxShadow='0 28px 64px rgba(249,115,22,0.12),0 0 0 1.5px rgba(249,115,22,0.2)';this.style.borderColor='rgba(249,115,22,0.2)'"
-                 onmouseout="this.style.transform='';this.style.boxShadow='0 2px 12px rgba(0,0,0,0.04)';this.style.borderColor='rgba(26,16,7,0.08)'">
-
+ 
+            <div class="guest-card reveal">
+ 
                 {{-- Photo strip --}}
-                <div style="width:100%;height:220px;position:relative;overflow:hidden;background:var(--paper-2);">
+                <div class="guest-photo-wrap">
                     <img src="{{ $guest['photo'] }}"
                          alt="{{ $guest['name'] }}"
                          id="photo-{{ $guest['id'] }}"
-                         style="width:100%;height:100%;object-fit:cover;object-position:top center;display:block;transition:transform 0.5s ease;"
-                         onmouseover="this.style.transform='scale(1.05)'"
-                         onmouseout="this.style.transform='scale(1)'"
                          onerror="this.style.display='none';document.getElementById('ph-{{ $guest['id'] }}').style.display='flex'">
-                    <div id="ph-{{ $guest['id'] }}"
-                         style="display:none;width:100%;height:100%;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--paper-2) 0%,#ede8df 100%);font-size:56px;font-weight:800;color:rgba(249,115,22,0.15);letter-spacing:-0.04em;">
+                    <div id="ph-{{ $guest['id'] }}" class="guest-photo-fallback">
                         {{ $guest['initial'] }}
                     </div>
-                    {{-- Gradient overlay --}}
-                    <div style="position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,rgba(255,247,237,0.6) 100%);pointer-events:none;"></div>
-                    {{-- Badge
-                    <div style="position:absolute;top:14px;left:14px;display:inline-flex;align-items:center;gap:5px;padding:5px 12px;background:rgba(255,255,255,0.92);border:1px solid rgba(249,115,22,0.2);border-radius:99px;font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#c2410c;">
-                        <span style="width:5px;height:5px;border-radius:50%;background:#f97316;animation:blink-dot 2.4s ease infinite;"></span>
-                        Guest Star
-                    </div> --}}
+                    <div class="guest-photo-gradient"></div>
                 </div>
-
+ 
                 {{-- Body --}}
-                <div style="padding:24px 28px 28px;">
-
-                    <h3 style="font-size:20px;font-weight:800;letter-spacing:-0.02em;color:var(--ink);line-height:1.2;margin-bottom:3px;">{{ $guest['name'] }}</h3>
-                    <p style="font-size:11px;font-weight:700;letter-spacing:0.10em;text-transform:uppercase;color:var(--fire);margin-bottom:12px;">{{ $guest['nickname'] }}</p>
-
-                    {{-- Fire line divider --}}
-                    <div style="height:1px;background:linear-gradient(90deg,rgba(249,115,22,0.15),rgba(249,115,22,0.05) 60%,transparent);margin:14px 0;"></div>
-
-                    <p style="font-size:12.5px;line-height:1.75;color:var(--ink-60);margin-bottom:16px;">{{ $guest['bio'] }}</p>
-
+                <div class="guest-body">
+                    <h3 class="guest-name">{{ $guest['name'] }}</h3>
+                    <p class="guest-nickname">{{ $guest['nickname'] }}</p>
+ 
+                    <div class="guest-divider"></div>
+ 
+                    <p class="guest-bio">{{ $guest['bio'] }}</p>
+ 
                     {{-- Achievements --}}
-                    <div style="display:flex;flex-direction:column;gap:8px;">
+                    <div class="guest-achv-list">
                         @foreach($guest['achv'] as $a)
-                        <div style="display:flex;align-items:flex-start;gap:9px;font-size:11.5px;color:var(--ink-60);line-height:1.45;">
-                            <div style="width:20px;height:20px;border-radius:6px;flex-shrink:0;background:#fff7ed;border:1px solid rgba(249,115,22,0.15);display:flex;align-items:center;justify-content:center;margin-top:1px;">
+                        <div class="guest-achv-item">
+                            <div class="guest-achv-icon">
                                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
                             </div>
                             {{ $a }}
                         </div>
                         @endforeach
                     </div>
-
+ 
                     {{-- Footer --}}
-                    <div style="display:flex;align-items:center;justify-content:space-between;margin-top:18px;padding-top:16px;border-top:1px solid rgba(26,16,7,0.08);">
-                        <div style="display:flex;align-items:center;gap:8px;">
-                            <div style="width:24px;height:16px;border-radius:3px;overflow:hidden;border:1px solid rgba(26,16,7,0.08);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;line-height:1;">🇮🇩</div>
+                    <div class="guest-footer">
+                        <div class="guest-country">
+                            <div class="guest-flag">🇮🇩</div>
                             <div>
-                                <div style="font-size:12px;font-weight:700;color:var(--ink);">Indonesia</div>
-                                <div style="font-size:10.5px;color:var(--ink-30);margin-top:1px;">{{ $guest['role'] }}</div>
+                                <div class="guest-country-name">Indonesia</div>
+                                <div class="guest-country-role">{{ $guest['role'] }}</div>
                             </div>
                         </div>
-                        <div style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;background:#fff7ed;border:1px solid rgba(249,115,22,0.15);border-radius:99px;font-size:10px;font-weight:700;letter-spacing:0.06em;color:#c2410c;">
+                        <div class="guest-pill">
                             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#c2410c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
                             Ganda Putra
                         </div>
                     </div>
-
+ 
                 </div>
             </div>
             @endforeach
-
+ 
         </div>
-
     </div>
 </section>
 
