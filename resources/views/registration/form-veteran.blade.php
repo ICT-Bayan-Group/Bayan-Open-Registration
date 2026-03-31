@@ -834,44 +834,77 @@ var usiaArr    = [null, null];
 
 /* ── Konversi HEIC/besar → JPEG via Canvas ─────────────────── */
 function convertToJpeg(file, callback) {
-    var skipTypes   = ['image/jpeg','image/jpg','image/png','image/webp'];
-    var needConvert = skipTypes.indexOf(file.type) === -1 || file.size > 3 * 1024 * 1024;
+    var MAX_SIZE_KB  = 300;          // target ≤ 300KB untuk OCR
+    var MAX_PIXEL    = 1600;         // max dimensi terpanjang
+    var QUALITY_STEP = 0.10;         // step turun kualitas
+    var MIN_QUALITY  = 0.35;         // batas bawah kualitas
 
     var reader = new FileReader();
     reader.onload = function (e) {
         var dataUrl = e.target.result;
-        if (!needConvert) { callback(file, dataUrl); return; }
+        var img     = new Image();
 
-        var img = new Image();
         img.onload = function () {
-            var MAX = 2048, w = img.naturalWidth, h = img.naturalHeight;
-            if (w > MAX || h > MAX) {
-                if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
-                else        { w = Math.round(w * MAX / h); h = MAX; }
+            /* ── Scale down ── */
+            var w = img.naturalWidth;
+            var h = img.naturalHeight;
+            if (w > MAX_PIXEL || h > MAX_PIXEL) {
+                if (w > h) { h = Math.round(h * MAX_PIXEL / w); w = MAX_PIXEL; }
+                else        { w = Math.round(w * MAX_PIXEL / h); h = MAX_PIXEL; }
             }
+
             var canvas = document.createElement('canvas');
-            canvas.width = w; canvas.height = h;
-            canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-            canvas.toBlob(function (blob) {
-                if (!blob) { callback(file, dataUrl); return; }
-                var converted = new File(
-                    [blob],
-                    file.name.replace(/\.[^.]+$/, '') + '.jpg',
-                    { type:'image/jpeg', lastModified: Date.now() }
-                );
-                callback(converted, URL.createObjectURL(blob));
-            }, 'image/jpeg', 0.88);
+            canvas.width  = w;
+            canvas.height = h;
+            var ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, w, h);
+
+            /* ── Compress iteratif sampai ukuran OK ── */
+            function tryCompress(quality) {
+                canvas.toBlob(function (blob) {
+                    if (!blob) { callback(file, dataUrl); return; }
+
+                    var sizeKB = blob.size / 1024;
+
+                    /* Kalau masih terlalu besar dan bisa diturunkan lagi */
+                    if (sizeKB > MAX_SIZE_KB && quality - QUALITY_STEP >= MIN_QUALITY) {
+                        tryCompress(parseFloat((quality - QUALITY_STEP).toFixed(2)));
+                        return;
+                    }
+
+                    /* Kalau masih terlalu besar → scale down lagi 50% */
+                    if (sizeKB > MAX_SIZE_KB) {
+                        w = Math.round(w * 0.7);
+                        h = Math.round(h * 0.7);
+                        canvas.width  = w;
+                        canvas.height = h;
+                        ctx.drawImage(img, 0, 0, w, h);
+                        tryCompress(0.55);
+                        return;
+                    }
+
+                    var converted  = new File(
+                        [blob],
+                        file.name.replace(/\.[^.]+$/, '') + '.jpg',
+                        { type: 'image/jpeg', lastModified: Date.now() }
+                    );
+                    var previewUrl = URL.createObjectURL(blob);
+                    console.log('[KTP] Compressed: ' + Math.round(sizeKB) + 'KB, quality=' + quality + ', ' + w + 'x' + h + 'px');
+                    callback(converted, previewUrl);
+
+                }, 'image/jpeg', quality);
+            }
+
+            tryCompress(0.82);
         };
+
         img.onerror = function () {
-            showToast('Format foto tidak didukung. Coba konversi ke JPG dulu.', 'warn');
+            showToast('Format foto tidak didukung browser ini. Coba konversi ke JPG dulu.', 'warn');
             callback(null, null);
         };
         img.src = dataUrl;
     };
-    reader.onerror = function () {
-        showToast('Gagal membaca file.', 'error');
-        callback(null, null);
-    };
+    reader.onerror = function () { showToast('Gagal membaca file foto.', 'error'); callback(null, null); };
     reader.readAsDataURL(file);
 }
 
