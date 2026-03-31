@@ -922,11 +922,7 @@ body {
     box-shadow: 0 24px 64px rgba(0,0,0,0.12), 0 4px 16px rgba(0,0,0,0.06);
     position: relative; overflow: hidden;
 }
-.mo-top-line {
-    position: absolute; top: 0; left: 50%; transform: translateX(-50%);
-    width: 90px; height: 3px; border-radius: 0 0 6px 6px;
-    background: linear-gradient(90deg, transparent, var(--orange), transparent);
-}
+
 .mo-top-line-indigo {
     position: absolute; top: 0; left: 50%; transform: translateX(-50%);
     width: 90px; height: 3px; border-radius: 0 0 6px 6px;
@@ -995,9 +991,7 @@ body {
 .sub-card {
     display: flex; align-items: center; gap: 20px; width: 100%;
     font-family: inherit; border-radius: 20px; padding: 26px 28px;
-    border: 1.5px solid var(--m-ink-12); background: var(--cream);
-    text-align: left; cursor: pointer; position: relative; overflow: hidden;
-    transition: all 0.2s cubic-bezier(0.22,1,0.36,1);
+    border: 1.5px solid var(--m-ink-12); background: #fff;
 }
 .sub-card:hover { transform: translateY(-1px); }
 .sub-card .sc-arrow { margin-left: auto; flex-shrink: 0; opacity: 0.2; transition: opacity 0.2s, transform 0.2s; }
@@ -1011,7 +1005,7 @@ body {
 .sub-card:hover .sub-icon { transform: scale(1.08); }
 .sub-name  { font-weight: 700; font-size: 17px; color: var(--m-ink); margin: 0 0 5px; }
 .sub-desc  { font-size: 14px; color: var(--m-ink-60); margin: 0; line-height: 1.5; }
-.sub-price { font-size: 15px; font-weight: 700; color: var(--orange-dk); flex-shrink: 0; margin-right: 6px; white-space: nowrap; }
+.sub-price { font-size: 15px; font-weight: 700; color: var(--m-ink); flex-shrink: 0; margin-right: 6px; white-space: nowrap; }
 .sub-price-indigo { font-size: 15px; font-weight: 700; color: #4338ca; flex-shrink: 0; margin-right: 6px; }
 
 .sirnas-modal-list { display: flex; flex-direction: column; gap: 14px; max-height: 72vh; overflow-y: auto; padding-right: 6px; }
@@ -1781,7 +1775,6 @@ body {
 @push('modals')
 <div id="modal1" class="mo-overlay" style="display:none;">
     <div id="modal1Card" class="mo-card" style="width:100%;max-width:560px;">
-        <div class="mo-top-line"></div>
         <div style="padding:36px 32px 30px;">
 
             <div style="display:flex;justify-content:center;margin-bottom:22px;">
@@ -1934,7 +1927,6 @@ body {
 ══════════════════════════════════════════ --}}
 <div id="modal2" class="mo-overlay" style="display:none;">
     <div id="modal2Card" class="mo-card" style="width:100%;max-width:520px;">
-        <div class="mo-top-line"></div>
         <div style="padding:30px 26px 26px;">
 
             <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
@@ -1949,8 +1941,8 @@ body {
 
             <div style="display:flex;flex-direction:column;gap:8px;">
                 <button type="button" class="sub-card sc-blue" onclick="pilihKategori('ganda-dewasa-putra')">
-                    <div class="sub-icon" style="background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.2);">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(59,130,246,1)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+                    <div class="sub-icon" style="background:#f5f5f5;border:1px solid rgba(0,0,0,0.06);">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(26,18,9,0.45)"stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
                     </div>
                     <div style="flex:1;min-width:0;">
                         <p class="sub-name">Ganda Dewasa Putra</p>
@@ -1962,7 +1954,7 @@ body {
 
                 <button type="button" class="sub-card sc-pink" onclick="pilihKategori('ganda-dewasa-putri')">
                     <div class="sub-icon" style="background:rgba(236,72,153,0.1);border:1px solid rgba(236,72,153,0.2);">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(236,72,153,1)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(26,18,9,0.45)"stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
                     </div>
                     <div style="flex:1;min-width:0;">
                         <p class="sub-name">Ganda Dewasa Putri</p>
@@ -1974,7 +1966,7 @@ body {
 
                 <button type="button" class="sub-card sc-yellow" onclick="pilihKategori('ganda-veteran-putra')">
                     <div class="sub-icon" style="background:rgba(234,179,8,0.1);border:1px solid rgba(234,179,8,0.2);">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(234,179,8,1)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(26,18,9,0.45)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
                     </div>
                     <div style="flex:1;min-width:0;">
                         <p class="sub-name">Ganda Veteran Putra</p>
