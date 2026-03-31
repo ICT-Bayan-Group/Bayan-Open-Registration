@@ -131,7 +131,7 @@
         </div>
 
         <h1 class="font-display text-2xl font-bold mb-2">Pendaftaran Berhasil!</h1>
-        <p class="text-white/45 text-sm">
+        <p class="text-black/45 text-sm">
             Link pembayaran telah dikirim ke email Anda
         </p>
     </div>
@@ -237,11 +237,6 @@
         <a href="{{ route('registration.index') }}"
            class="btn-primary w-full py-3.5 rounded-xl font-display text-sm font-bold text-white text-center tracking-wide">
             Daftar Kategori Lain
-        </a>
-        <a href="{{ route('registration.status', $registration->uuid) }}"
-           class="w-full py-3.5 rounded-xl font-display text-sm font-bold text-center tracking-wide transition"
-           style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.6);">
-            Cek Status Pendaftaran
         </a>
     </div>
 
