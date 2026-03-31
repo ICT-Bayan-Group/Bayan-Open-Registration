@@ -1,246 +1,323 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pembayaran Berhasil — Bayan Open 2026</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f1f5f9; color: #1e293b; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pembayaran Berhasil — Bayan Open 2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap');
 
-        .wrapper { max-width: 600px; margin: 32px auto; background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        /* Header */
-        .header {
-            background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
-            padding: 36px 40px;
-            text-align: center;
-            border-bottom: 4px solid #f97316;
-        }
-        .header img { height: 60px; object-fit: contain; margin-bottom: 16px; }
-        .header h1 { font-size: 22px; font-weight: 900; color: #fff; letter-spacing: 2px; }
-        .header h1 span { color: #f97316; }
-        .header p { font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 6px; letter-spacing: 1px; text-transform: uppercase; }
+  body {
+    font-family: 'IBM Plex Sans', sans-serif;
+    background: #f5f5f5;
+    color: #111;
+  }
 
-        /* Badge */
-        .badge-wrap { text-align: center; padding: 28px 40px 0; }
-        .badge-success {
-            display: inline-block;
-            background: #10b981;
-            color: #fff;
-            font-size: 13px;
-            font-weight: 700;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            padding: 10px 28px;
-            border-radius: 100px;
-        }
+  .wrapper {
+    max-width: 560px;
+    margin: 40px auto;
+    background: #fff;
+    border: 1px solid #ddd;
+  }
 
-        /* Body */
-        .body { padding: 32px 40px; }
+  /* Header */
+  .header {
+    padding: 32px 40px 28px;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .header img {
+    height: 48px;
+    object-fit: contain;
+  }
+  .header-text h1 {
+    font-size: 15px;
+    font-weight: 600;
+    color: #111;
+    letter-spacing: 0.5px;
+  }
+  .header-text p {
+    font-size: 11px;
+    color: #999;
+    margin-top: 2px;
+    letter-spacing: 0.5px;
+  }
 
-        .greeting { font-size: 16px; font-weight: 600; color: #1e293b; margin-bottom: 8px; }
-        .body-text { font-size: 14px; color: #64748b; line-height: 1.7; margin-bottom: 24px; }
+  /* Status */
+  .status-bar {
+    padding: 14px 40px;
+    border-bottom: 1px solid #ddd;
+    font-size: 12px;
+    font-weight: 600;
+    color: #111;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  .status-bar::before {
+    content: '● ';
+    color: #111;
+  }
 
-        /* Detail Card */
-        .detail-card {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 20px 24px;
-            margin-bottom: 24px;
-        }
-        .detail-title {
-            font-size: 10px;
-            font-weight: 700;
-            color: #94a3b8;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            border-bottom: 1px solid #e2e8f0;
-            padding-bottom: 8px;
-            margin-bottom: 14px;
-        }
-        .detail-row { display: flex; justify-content: space-between; padding: 5px 0; font-size: 13px; }
-        .detail-label { color: #64748b; }
-        .detail-value { font-weight: 600; color: #1e293b; text-align: right; max-width: 60%; }
-        .detail-value.order-id { font-family: monospace; color: #f97316; font-size: 12px; }
-        .detail-value.paid { color: #10b981; }
+  /* Body */
+  .body {
+    padding: 32px 40px;
+  }
 
-        /* Pemain */
-        .pemain-list { margin-top: 6px; }
-        .pemain-item { font-size: 13px; color: #1e293b; padding: 3px 0; }
-        .pemain-item::before { content: "↳ "; color: #f97316; }
+  .greeting {
+    font-size: 15px;
+    font-weight: 600;
+    color: #111;
+    margin-bottom: 10px;
+  }
 
-        /* Total */
-        .total-box {
-            background: linear-gradient(135deg, #0f172a, #1e3a5f);
-            border-radius: 12px;
-            padding: 20px 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-        }
-        .total-label { font-size: 13px; color: rgba(255,255,255,0.6); }
-        .total-amount { font-size: 24px; font-weight: 900; color: #10b981; }
+  .body-text {
+    font-size: 13px;
+    color: #555;
+    line-height: 1.75;
+    margin-bottom: 32px;
+  }
 
-        /* Info box */
-        .info-box {
-            background: #fffbeb;
-            border: 1px solid #fde68a;
-            border-radius: 10px;
-            padding: 14px 18px;
-            font-size: 13px;
-            color: #92400e;
-            margin-bottom: 24px;
-            line-height: 1.6;
-        }
+  /* Section label */
+  .section-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #999;
+    margin-bottom: 12px;
+    font-family: 'IBM Plex Mono', monospace;
+  }
 
-        /* CTA Button */
-        .cta-wrap { text-align: center; margin-bottom: 24px; }
-        .cta-btn {
-            display: inline-block;
-            background: linear-gradient(135deg, #f97316, #ea580c);
-            color: #fff;
-            font-weight: 700;
-            font-size: 13px;
-            letter-spacing: 1px;
-            text-decoration: none;
-            padding: 14px 32px;
-            border-radius: 10px;
-        }
+  /* Data rows */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 32px;
+  }
+  .data-table tr {
+    border-bottom: 1px solid #eee;
+  }
+  .data-table tr:last-child {
+    border-bottom: none;
+  }
+  .data-table td {
+    padding: 10px 0;
+    font-size: 13px;
+    vertical-align: top;
+  }
+  .data-table td:first-child {
+    color: #999;
+    width: 45%;
+  }
+  .data-table td:last-child {
+    color: #111;
+    font-weight: 500;
+    text-align: right;
+  }
+  .mono {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: #111;
+  }
 
-        /* Footer */
-        .footer {
-            background: #f8fafc;
-            border-top: 1px solid #e2e8f0;
-            padding: 24px 40px;
-            text-align: center;
-            font-size: 11px;
-            color: #94a3b8;
-            line-height: 1.8;
-        }
-        .footer strong { color: #64748b; }
-    </style>
+  /* Pemain list */
+  .pemain-list {
+    text-align: right;
+  }
+  .pemain-item {
+    font-size: 13px;
+    color: #111;
+    padding: 1px 0;
+  }
+  .pemain-item::before {
+    content: "↳ ";
+    color: #999;
+  }
+
+  /* Total */
+  .total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 16px 0;
+    border-top: 2px solid #111;
+    border-bottom: 2px solid #111;
+    margin-bottom: 32px;
+  }
+  .total-row .label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #111;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  .total-row .amount {
+    font-size: 22px;
+    font-weight: 600;
+    color: #111;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  /* Notice */
+  .notice {
+    border-left: 3px solid #111;
+    padding: 12px 16px;
+    font-size: 12px;
+    color: #555;
+    line-height: 1.7;
+    margin-bottom: 32px;
+  }
+  .notice strong {
+    color: #111;
+  }
+
+  /* CTA */
+  .cta-wrap {
+    margin-bottom: 0;
+  }
+  .cta-btn {
+    display: block;
+    background: #111;
+    color: #fff;
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 1px;
+    text-decoration: none;
+    padding: 16px 24px;
+    text-align: center;
+  }
+
+  /* Footer */
+  .footer {
+    border-top: 1px solid #ddd;
+    padding: 20px 40px;
+    font-size: 11px;
+    color: #aaa;
+    line-height: 1.8;
+    text-align: center;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+</style>
 </head>
 <body>
 <div class="wrapper">
 
-    {{-- Header --}}
-    <div class="header">
-        <img src="https://res.cloudinary.com/djs5pi7ev/image/upload/v1773109896/LOGO_BO2026_pzbvxh.png" alt="Bayan Open 2026">
-        <h1>BAYAN <span>OPEN</span> 2026</h1>
-        <p>Official Registration Confirmation</p>
+  <!-- Header -->
+  <div class="header">
+    <img src="https://res.cloudinary.com/djs5pi7ev/image/upload/v1773109896/LOGO_BO2026_pzbvxh.png" alt="Bayan Open 2026">
+    <div class="header-text">
+      <h1>Bayan Open 2026</h1>
+      <p>Official Registration Confirmation</p>
+    </div>
+  </div>
+
+  <!-- Status -->
+  <div class="status-bar">Pembayaran Berhasil — Lunas</div>
+
+  <!-- Body -->
+  <div class="body">
+
+    <p class="greeting">Halo, {{ $registration->nama }}</p>
+    <p class="body-text">
+      Pembayaran pendaftaran Anda untuk <strong>Bayan Open 2026</strong> telah berhasil dikonfirmasi.
+      Receipt PDF terlampir pada email ini sebagai bukti pendaftaran resmi Anda. Simpan baik-baik.
+    </p>
+
+    <!-- Data Peserta -->
+    <div class="section-label">Data Peserta</div>
+    <table class="data-table">
+      <tr>
+        <td>Nama Ketua Tim</td>
+        <td>{{ $registration->nama }}</td>
+      </tr>
+      <tr>
+        <td>Tim / PB</td>
+        <td>{{ $registration->tim_pb }}</td>
+      </tr>
+      <tr>
+        <td>Kategori</td>
+        <td>{{ $registration->kategori_label }}</td>
+      </tr>
+      <tr>
+        <td>Provinsi</td>
+        <td>{{ $registration->provinsi }}</td>
+      </tr>
+      @if($registration->pemain && count($registration->pemain) > 0)
+      <tr>
+        <td style="vertical-align:top;">Pemain ({{ $registration->jumlah_pemain }})</td>
+        <td>
+          <div class="pemain-list">
+            @foreach($registration->pemain as $pemain)
+            <div class="pemain-item">{{ $pemain }}</div>
+            @endforeach
+          </div>
+        </td>
+      </tr>
+      @endif
+    </table>
+
+    <!-- Data Transaksi -->
+    <div class="section-label">Informasi Transaksi</div>
+    <table class="data-table">
+      <tr>
+        <td>Order ID</td>
+        <td><span class="mono">{{ $registration->midtrans_order_id }}</span></td>
+      </tr>
+      @if($registration->midtrans_transaction_id)
+      <tr>
+        <td>Transaction ID</td>
+        <td><span class="mono">{{ $registration->midtrans_transaction_id }}</span></td>
+      </tr>
+      @endif
+      @if($registration->payment_type)
+      <tr>
+        <td>Metode Pembayaran</td>
+        <td>{{ strtoupper(str_replace('_', ' ', $registration->payment_type)) }}</td>
+      </tr>
+      @endif
+      <tr>
+        <td>Status</td>
+        <td>PAID / LUNAS</td>
+      </tr>
+      <tr>
+        <td>Waktu Pembayaran</td>
+        <td>{{ ($registration->payment_time ?? $registration->updated_at)->format('d M Y, H:i') }} WIB</td>
+      </tr>
+    </table>
+
+    <!-- Total -->
+    <div class="total-row">
+      <span class="label">Total Pembayaran</span>
+      <span class="amount">Rp {{ number_format($registration->harga, 0, ',', '.') }}</span>
     </div>
 
-    {{-- Badge --}}
-    <div class="badge-wrap">
-        <div class="badge-success">✓ Pembayaran Berhasil — Lunas</div>
+    <!-- Notice -->
+    <div class="notice">
+      <strong>Receipt PDF</strong> terlampir pada email ini. Harap simpan sebagai bukti pendaftaran resmi untuk ditunjukkan saat hari pelaksanaan turnamen.
     </div>
 
-    {{-- Body --}}
-    <div class="body">
-
-        <p class="greeting">Halo, {{ $registration->nama }}! 👋</p>
-        <p class="body-text">
-            Selamat! Pembayaran pendaftaran Anda untuk <strong>Bayan Open 2026</strong> telah berhasil dikonfirmasi.
-            Receipt PDF terlampir pada email ini sebagai bukti pendaftaran resmi Anda. Simpan baik-baik!
-        </p>
-
-        {{-- Data Peserta --}}
-        <div class="detail-card">
-            <div class="detail-title">Data Peserta</div>
-            <div class="detail-row">
-                <span class="detail-label">Nama Ketua Tim</span>
-                <span class="detail-value">{{ $registration->nama }}</span>
-            </div>
-            <div class="detail-row">
-                <span class="detail-label">Tim / PB</span>
-                <span class="detail-value">{{ $registration->tim_pb }}</span>
-            </div>
-            <div class="detail-row">
-                <span class="detail-label">Kategori</span>
-                <span class="detail-value">{{ $registration->kategori_label }}</span>
-            </div>
-            <div class="detail-row">
-                <span class="detail-label">Provinsi</span>
-                <span class="detail-value">{{ $registration->provinsi }}</span>
-            </div>
-            @if($registration->pemain && count($registration->pemain) > 0)
-            <div class="detail-row" style="align-items:flex-start;">
-                <span class="detail-label">Pemain ({{ $registration->jumlah_pemain }})</span>
-                <span class="detail-value">
-                    <div class="pemain-list">
-                        @foreach($registration->pemain as $pemain)
-                        <div class="pemain-item">{{ $pemain }}</div>
-                        @endforeach
-                    </div>
-                </span>
-            </div>
-            @endif
-        </div>
-
-        {{-- Data Transaksi --}}
-        <div class="detail-card">
-            <div class="detail-title">Informasi Transaksi</div>
-            <div class="detail-row">
-                <span class="detail-label">Order ID</span>
-                <span class="detail-value order-id">{{ $registration->midtrans_order_id }}</span>
-            </div>
-            @if($registration->midtrans_transaction_id)
-            <div class="detail-row">
-                <span class="detail-label">Transaction ID</span>
-                <span class="detail-value order-id">{{ $registration->midtrans_transaction_id }}</span>
-            </div>
-            @endif
-            @if($registration->payment_type)
-            <div class="detail-row">
-                <span class="detail-label">Metode Pembayaran</span>
-                <span class="detail-value">{{ strtoupper(str_replace('_', ' ', $registration->payment_type)) }}</span>
-            </div>
-            @endif
-            <div class="detail-row">
-                <span class="detail-label">Status</span>
-                <span class="detail-value paid">✅ PAID / LUNAS</span>
-            </div>
-            <div class="detail-row">
-                <span class="detail-label">Waktu Pembayaran</span>
-                <span class="detail-value">
-                    {{ ($registration->payment_time ?? $registration->updated_at)->format('d M Y, H:i') }} WIB
-                </span>
-            </div>
-        </div>
-
-        {{-- Total --}}
-        <div class="total-box">
-            <div>
-                <div class="total-label">Total Pembayaran</div>
-                <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:2px;">Kategori {{ $registration->kategori_label }}</div>
-            </div>
-            <div class="total-amount">Rp {{ number_format($registration->harga, 0, ',', '.') }}</div>
-        </div>
-
-        {{-- Info --}}
-        <div class="info-box">
-            📎 <strong>Receipt PDF</strong> terlampir pada email ini. Harap simpan sebagai bukti pendaftaran resmi Anda untuk ditunjukkan saat hari pelaksanaan turnamen.
-        </div>
-
-        {{-- CTA --}}
-        <div class="cta-wrap">
-            <a href="{{ url('/registration/status/' . $registration->uuid) }}" class="cta-btn">
-                Cek Status Pendaftaran →
-            </a>
-        </div>
-
+    <!-- CTA -->
+    <div class="cta-wrap">
+      <a href="{{ url('/registration/status/' . $registration->uuid) }}" class="cta-btn">
+        CEK STATUS PENDAFTARAN →
+      </a>
     </div>
 
-    {{-- Footer --}}
-    <div class="footer">
-        <p><strong>BAYAN OPEN 2026</strong> — Official Badminton Tournament</p>
-        <p>Email ini dikirim secara otomatis, harap tidak membalas email ini.</p>
-        <p style="margin-top:8px;">Pertanyaan? Hubungi kami di <strong>bayan.open@gmail.com</strong></p>
-        <p style="margin-top:8px;">© 2026 Bayan Group. All rights reserved.</p>
-    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    Bayan Open 2026 &mdash; Official Badminton Tournament<br>
+    Email ini dikirim otomatis, harap tidak membalas.<br>
+    Pertanyaan? Hubungi kami di bayan.open@gmail.com
+  </div>
 
 </div>
 </body>
