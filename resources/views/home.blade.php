@@ -246,13 +246,14 @@
             </div>
 
             <p class="cs-tagline" id="cs-tagline">
-                Turnamen bulutangkis bergengsi Bayan Open 2026 segera hadir.<br>
-                Pantau terus untuk informasi pendaftaran.
+                Kejuaraan Bulutangkis  Bayan Open 2026<br>
+                Sirkuit Nasional C<br>
+                Pantau terus IG @bayan_open untuk informasi pendaftaran
             </p>
 
             <div id="cs-fire-line"></div>
                 <!-- COUNTDOWN (OFF) -->
-                <!--
+                
                 <div class="cs-countdown" id="cs-countdown">
                     <div class="cs-count-unit">
                         <div class="cs-count-box"><span class="cs-count-num" id="cd-days">--</span></div>
@@ -274,11 +275,11 @@
                         <span class="cs-count-lbl">Detik</span>
                     </div>
                 </div>
-                -->
+               
 
                 <!-- TEXT PENGGANTI -->
                 <p style="margin-bottom: 32px; color: #a89282; font-size: 13px;">
-                    Tanggal pendaftaran akan diumumkan segera
+                    24-29 Agustus 2026 &mdash; BSCC Dome, Balikpapan, Kalimantan Timur
                 </p>
 
             <div class="cs-notify" id="cs-notify">
@@ -333,9 +334,9 @@
    Aktifkan kembali dengan
    menghapus comment ini
 ========================= */
-/*
+
 (function() {
-    var target = new Date('2026-07-01T08:00:00+08:00');
+    var target = new Date('2026-08-24T08:00:00+08:00');
     function pad(n) { return String(n).padStart(2, '0'); }
     function tick() {
         var diff = Math.max(0, target - new Date());
@@ -346,7 +347,7 @@
     }
     tick(); setInterval(tick, 1000);
 })();
-*/
+
 
 (function() {
     var loader  = document.getElementById('loader');
