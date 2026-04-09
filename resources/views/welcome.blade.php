@@ -1991,6 +1991,99 @@ body {
         </div>
     </div>
 </div>
+{{-- ══════════════════════════════════════════
+     MODAL DISCLAIMER — PERNYATAAN KESIAPAN
+══════════════════════════════════════════ --}}
+<div id="modalDisclaimer" class="mo-overlay" style="display:none;">
+    <div id="modalDisclaimerCard" class="mo-card" style="width:100%;max-width:520px;">
+
+        {{-- Top stripe oranye --}}
+        <div style="height:4px;background:linear-gradient(90deg,#f97316,#fbbf24,#f97316);"></div>
+
+        <div style="padding:28px 28px 0;">
+
+            {{-- Header --}}
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;">
+                     <img
+                    src="https://res.cloudinary.com/djs5pi7ev/image/upload/v1773109896/LOGO_BO2026_pzbvxh.png"
+                    alt="Bayan Open 2026"
+                    class="h-10 sm:h-12 lg:h-16 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+                >
+                <div>
+                    <p style="font-family:var(--font-display);font-size:17px;font-weight:800;color:var(--m-ink);letter-spacing:-0.02em;line-height:1.2;margin:0;">Pernyataan Kesiapan Peserta</p>
+                    <p style="font-size:12px;color:var(--m-ink-35);margin:2px 0 0;">Bayan Open 2026 — Balikpapan, Kalimantan Timur</p>
+                </div>
+            </div>
+
+            {{-- Scroll Box --}}
+            <div id="disclaimerScroll"
+                 style="height:220px;overflow-y:auto;border:1px solid var(--m-ink-12);border-radius:14px;padding:16px 18px;background:var(--cream);font-size:12.5px;line-height:1.75;color:var(--m-ink-60);position:relative;scroll-behavior:smooth;">
+
+                <p style="font-weight:800;font-size:13px;color:var(--m-ink);margin-bottom:10px;">SURAT PERNYATAAN PESERTA TURNAMEN</p>
+                <p>Saya yang bertanda tangan di bawah ini, dengan penuh kesadaran dan tanpa paksaan dari pihak manapun, menyatakan hal-hal sebagai berikut:</p>
+
+                <p style="margin-top:12px;font-weight:700;color:var(--m-ink);">1. Kondisi Kesehatan</p>
+                <p>Saya menyatakan bahwa saya dalam kondisi <strong>sehat walafiat</strong>, baik secara jasmani maupun rohani, dan tidak memiliki penyakit atau kondisi medis yang dapat membahayakan diri saya sendiri atau orang lain selama mengikuti pertandingan. Saya telah berkonsultasi dengan tenaga medis apabila diperlukan sebelum mendaftar.</p>
+
+                <p style="margin-top:12px;font-weight:700;color:var(--m-ink);">2. Kesiapan Bertanding</p>
+                <p>Saya menyatakan bahwa saya <strong>siap secara fisik dan mental</strong> untuk mengikuti Bayan Open 2026. Saya memahami bahwa turnamen ini bersifat kompetitif dan membutuhkan kesiapan fisik yang optimal. Segala risiko cedera yang timbul akibat kondisi fisik saya sendiri menjadi tanggung jawab saya sepenuhnya.</p>
+
+                <p style="margin-top:12px;font-weight:700;color:var(--m-ink);">3. Keabsahan Data</p>
+                <p>Seluruh data dan dokumen yang saya lampirkan dalam formulir pendaftaran ini adalah <strong>benar, sah, dan dapat dipertanggungjawabkan</strong>. Apabila ditemukan ketidaksesuaian data, panitia berhak mendiskualifikasi saya tanpa pengembalian biaya pendaftaran.</p>
+
+                <p style="margin-top:12px;font-weight:700;color:var(--m-ink);">4. Kepatuhan Peraturan</p>
+                <p>Saya berjanji untuk mematuhi seluruh <strong>peraturan pertandingan</strong> yang ditetapkan oleh panitia Bayan Open 2026 dan peraturan PBSI yang berlaku. Saya akan menjunjung tinggi sportivitas, fairplay, dan menghormati sesama peserta, official, serta penonton.</p>
+
+                <p style="margin-top:12px;font-weight:700;color:var(--m-ink);">5. Penggunaan Foto &amp; Dokumentasi</p>
+                <p>Saya memberikan izin kepada panitia untuk menggunakan foto dan video saya yang diambil selama kegiatan berlangsung untuk keperluan <strong>publikasi dan dokumentasi resmi</strong> Bayan Open 2026.</p>
+
+                <p style="margin-top:12px;font-weight:700;color:var(--m-ink);">6. Keputusan Panitia</p>
+                <p style="margin-bottom:8px;">Saya memahami bahwa <strong>keputusan panitia bersifat final</strong> dan tidak dapat diganggu gugat dalam hal penjadwalan, penempatan lapangan, maupun hasil pertandingan yang bersifat administratif.</p>
+
+                {{-- Scroll hint --}}
+                <div id="disclaimerScrollHint" style="position:sticky;bottom:0;left:0;right:0;height:40px;background:linear-gradient(transparent,var(--cream) 70%);display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px;pointer-events:none;transition:opacity 0.3s;">
+                    <span style="display:flex;align-items:center;gap:5px;font-family:var(--font-display);font-size:10px;font-weight:700;color:rgba(249,115,22,0.8);letter-spacing:0.08em;text-transform:uppercase;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="animation:wheel-anim 1.2s ease infinite;"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+                        Gulir untuk membaca
+                    </span>
+                </div>
+            </div>
+
+            {{-- Progress bar --}}
+            <div style="margin-top:8px;display:flex;align-items:center;gap:10px;">
+                <div style="flex:1;height:4px;background:var(--m-ink-12);border-radius:99px;overflow:hidden;">
+                    <div id="disclaimerProgress" style="height:100%;width:0%;background:linear-gradient(90deg,#f97316,#fbbf24);border-radius:99px;transition:width 0.15s ease;"></div>
+                </div>
+                <span id="disclaimerProgressLabel" style="font-family:var(--font-display);font-size:10px;font-weight:700;color:var(--m-ink-35);white-space:nowrap;min-width:60px;text-align:right;">0% dibaca</span>
+            </div>
+
+            {{-- Checkbox --}}
+            <div id="disclaimerCheckRow"
+                 onclick="toggleDisclaimerCheck()"
+                 style="display:flex;align-items:flex-start;gap:12px;background:rgba(249,115,22,0.06);border:1.5px solid rgba(249,115,22,0.18);border-radius:14px;padding:14px 16px;margin-top:14px;transition:all 0.25s;opacity:0.4;pointer-events:none;cursor:default;">
+                <div id="disclaimerCheckBox" style="width:22px;height:22px;border-radius:6px;border:2px solid rgba(249,115,22,0.4);background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;transition:all 0.2s;">
+                    <svg id="disclaimerTick" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><path d="M20 6L9 17l-5-5"/></svg>
+                </div>
+                <p style="font-size:12.5px;line-height:1.6;color:var(--m-ink-60);font-weight:500;">
+                    Saya telah membaca seluruh pernyataan di atas dan menyatakan bahwa <strong style="color:var(--m-ink);">saya sehat walafiat, siap bertanding</strong>, serta bersedia mematuhi seluruh ketentuan <strong style="color:var(--m-ink);">Bayan Open 2026</strong>.
+                </p>
+            </div>
+        </div>
+
+        {{-- Footer --}}
+        <div style="padding:16px 28px 24px;display:flex;flex-direction:column;gap:10px;">
+            <button id="disclaimerConfirmBtn"
+                    onclick="disclaimerConfirm()"
+                    disabled
+                    style="width:100%;padding:14px 24px;border-radius:13px;border:none;font-family:var(--font-display);font-size:11px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.4);background:rgba(26,16,7,0.12);cursor:not-allowed;transition:all 0.3s cubic-bezier(0.22,1,0.36,1);">
+                ✓ &nbsp; Saya Mengerti &amp; Siap Bertanding
+            </button>
+            <button onclick="tutupDisclaimerModal()" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--m-ink-12);background:transparent;font-family:var(--font-display);font-size:11px;color:var(--m-ink-35);cursor:pointer;transition:background 0.2s;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background='transparent'">
+                Batalkan Pendaftaran
+            </button>
+        </div>
+    </div>
+</div>
 @endpush
 
 @push('scripts')
@@ -2182,5 +2275,156 @@ function initGSAP() {
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initGSAP);
 else initGSAP();
+// ── Disclaimer Modal ────────────────────────────────────────
+var disclaimerScrollDone  = false;
+var disclaimerChecked     = false;
+var pendingKategoriRoute  = null;
+
+function pilihKategori(k) {
+    pendingKategoriRoute = kategoriRoutes[k];
+    var m2 = document.getElementById('modal2');
+    var m2c = document.getElementById('modal2Card');
+    m2.classList.add('anim-out');
+    animCard(m2c, 'out');
+    setTimeout(function() {
+        m2.style.display = 'none';
+        m2.classList.remove('anim-out');
+        bukaDisclaimerModal();
+    }, 200);
+}
+
+function bukaDisclaimerModal() {
+    disclaimerScrollDone = false;
+    disclaimerChecked    = false;
+    resetDisclaimer();
+
+    var md  = document.getElementById('modalDisclaimer');
+    var mdc = document.getElementById('modalDisclaimerCard');
+    md.style.display = 'flex';
+    md.classList.add('anim-in');
+    animCard(mdc, 'in');
+    setTimeout(function() { md.classList.remove('anim-in'); }, 400);
+    md.onclick = function(e) { if (e.target === md) tutupDisclaimerModal(); };
+
+    document.getElementById('disclaimerScroll').scrollTop = 0;
+    document.getElementById('disclaimerScroll').addEventListener('scroll', onDisclaimerScroll);
+}
+
+function resetDisclaimer() {
+    document.getElementById('disclaimerProgress').style.width     = '0%';
+    document.getElementById('disclaimerProgressLabel').textContent = '0% dibaca';
+    document.getElementById('disclaimerProgressLabel').style.color = 'var(--m-ink-35)';
+    document.getElementById('disclaimerScrollHint').style.opacity  = '1';
+
+    var checkRow = document.getElementById('disclaimerCheckRow');
+    checkRow.style.opacity       = '0.4';
+    checkRow.style.pointerEvents = 'none';
+    checkRow.style.cursor        = 'default';
+    checkRow.style.borderColor   = 'rgba(249,115,22,0.18)';
+    checkRow.style.background    = 'rgba(249,115,22,0.06)';
+
+    document.getElementById('disclaimerCheckBox').style.background   = '#fff';
+    document.getElementById('disclaimerCheckBox').style.borderColor  = 'rgba(249,115,22,0.4)';
+    document.getElementById('disclaimerTick').style.display          = 'none';
+
+    var btn  = document.getElementById('disclaimerConfirmBtn');
+    btn.disabled = true;
+    btn.style.background  = 'rgba(26,16,7,0.12)';
+    btn.style.color       = 'rgba(255,255,255,0.4)';
+    btn.style.cursor      = 'not-allowed';
+    btn.style.boxShadow   = 'none';
+    btn.style.transform   = '';
+}
+
+function onDisclaimerScroll() {
+    var box   = document.getElementById('disclaimerScroll');
+    var total = box.scrollHeight - box.clientHeight;
+    var pct   = total > 0 ? Math.min(100, Math.round((box.scrollTop / total) * 100)) : 100;
+
+    document.getElementById('disclaimerProgress').style.width = pct + '%';
+
+    var label = document.getElementById('disclaimerProgressLabel');
+    if (pct >= 98) {
+        disclaimerScrollDone = true;
+        label.textContent   = '✓ Selesai dibaca';
+        label.style.color   = '#f97316';
+        document.getElementById('disclaimerScrollHint').style.opacity = '0';
+
+        var checkRow = document.getElementById('disclaimerCheckRow');
+        checkRow.style.opacity       = '1';
+        checkRow.style.pointerEvents = 'auto';
+        checkRow.style.cursor        = 'pointer';
+    } else {
+        label.textContent = pct + '% dibaca';
+        if (pct < 30) document.getElementById('disclaimerScrollHint').style.opacity = '1';
+        else          document.getElementById('disclaimerScrollHint').style.opacity = '0';
+    }
+    updateDisclaimerBtn();
+}
+
+function toggleDisclaimerCheck() {
+    if (!disclaimerScrollDone) return;
+    disclaimerChecked = !disclaimerChecked;
+
+    var checkBox = document.getElementById('disclaimerCheckBox');
+    var tick     = document.getElementById('disclaimerTick');
+    var checkRow = document.getElementById('disclaimerCheckRow');
+
+    if (disclaimerChecked) {
+        checkBox.style.background  = '#f97316';
+        checkBox.style.borderColor = '#f97316';
+        tick.style.display         = 'block';
+        checkRow.style.borderColor = 'rgba(249,115,22,0.45)';
+        checkRow.style.background  = 'rgba(249,115,22,0.09)';
+    } else {
+        checkBox.style.background  = '#fff';
+        checkBox.style.borderColor = 'rgba(249,115,22,0.4)';
+        tick.style.display         = 'none';
+        checkRow.style.borderColor = 'rgba(249,115,22,0.18)';
+        checkRow.style.background  = 'rgba(249,115,22,0.06)';
+    }
+    updateDisclaimerBtn();
+}
+
+function updateDisclaimerBtn() {
+    var btn = document.getElementById('disclaimerConfirmBtn');
+    if (disclaimerScrollDone && disclaimerChecked) {
+        btn.disabled          = false;
+        btn.style.background  = 'linear-gradient(135deg, #f97316, #c2410c)';
+        btn.style.color       = '#fff';
+        btn.style.cursor      = 'pointer';
+        btn.style.boxShadow   = '0 8px 24px rgba(249,115,22,0.38)';
+    } else {
+        btn.disabled          = true;
+        btn.style.background  = 'rgba(26,16,7,0.12)';
+        btn.style.color       = 'rgba(255,255,255,0.4)';
+        btn.style.cursor      = 'not-allowed';
+        btn.style.boxShadow   = 'none';
+    }
+}
+
+function disclaimerConfirm() {
+    if (!disclaimerScrollDone || !disclaimerChecked) return;
+    if (!pendingKategoriRoute) return;
+    var md  = document.getElementById('modalDisclaimer');
+    var mdc = document.getElementById('modalDisclaimerCard');
+    md.classList.add('anim-out');
+    animCard(mdc, 'out');
+    document.body.style.overflow = '';
+    setTimeout(function() { window.location.href = pendingKategoriRoute; }, 220);
+}
+
+function tutupDisclaimerModal() {
+    var md  = document.getElementById('modalDisclaimer');
+    var mdc = document.getElementById('modalDisclaimerCard');
+    md.classList.add('anim-out');
+    animCard(mdc, 'out');
+    setTimeout(function() {
+        md.style.display = 'none';
+        md.classList.remove('anim-out');
+        document.body.style.overflow = '';
+        document.getElementById('disclaimerScroll').removeEventListener('scroll', onDisclaimerScroll);
+    }, 220);
+}
 </script>
 @endpush
