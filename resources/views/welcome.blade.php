@@ -1246,7 +1246,7 @@ body {
             </div>
 
             {{-- Logo --}}
-            <img src="https://res.cloudinary.com/djs5pi7ev/image/upload/v1773109896/LOGO_BO2026_pzbvxh.png"
+            <img src="https://res.cloudinary.com/djs5pi7ev/image/upload/q_auto/f_auto/v1775803080/bayanopen-logo_mfcb55.png"
                  alt="Bayan Open 2026" class="hero-logo" id="h-logo">
 
             {{-- Tagline --}}
@@ -2005,7 +2005,7 @@ body {
             {{-- Header --}}
             <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;">
                      <img
-                    src="https://res.cloudinary.com/djs5pi7ev/image/upload/v1773109896/LOGO_BO2026_pzbvxh.png"
+                    src="https://res.cloudinary.com/djs5pi7ev/image/upload/q_auto/f_auto/v1775803080/bayanopen-logo_mfcb55.png"
                     alt="Bayan Open 2026"
                     class="h-10 sm:h-12 lg:h-16 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
                 >
@@ -2044,7 +2044,6 @@ body {
                 <div id="disclaimerScrollHint" style="position:sticky;bottom:0;left:0;right:0;height:40px;background:linear-gradient(transparent,var(--cream) 70%);display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px;pointer-events:none;transition:opacity 0.3s;">
                     <span style="display:flex;align-items:center;gap:5px;font-family:var(--font-display);font-size:10px;font-weight:700;color:rgba(249,115,22,0.8);letter-spacing:0.08em;text-transform:uppercase;">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="animation:wheel-anim 1.2s ease infinite;"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
-                        Gulir untuk membaca
                     </span>
                 </div>
             </div>

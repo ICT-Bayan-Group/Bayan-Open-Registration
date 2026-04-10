@@ -667,7 +667,7 @@ body {
       Kembali
     </a>
     <img class="hdr-logo"
-      src="https://res.cloudinary.com/djs5pi7ev/image/upload/v1773109896/LOGO_BO2026_pzbvxh.png"
+      src="https://res.cloudinary.com/djs5pi7ev/image/upload/q_auto/f_auto/v1775803080/bayanopen-logo_mfcb55.png"
       alt="Bayan Open 2026"
       onerror="this.style.display='none'">
     <div class="hdr-title-block">
