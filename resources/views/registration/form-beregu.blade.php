@@ -398,8 +398,7 @@
     </div>
 
     {{-- ═══════ SECTION 3 — ANGGOTA TIM ═══════ --}}
-    <div class="rounded-2xl p-6 mb-6 form-section"
-         style="background:rgba(249,115,22,.03);border:1.5px solid rgba(249,115,22,.15);">
+    <div class=" card-glass rounded-2xl p-6 mb-6 form-section">
 
         <h2 class="font-display text-sm font-bold mb-1 flex items-center gap-2">
             <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-black"
@@ -414,15 +413,15 @@
         </p>
 
         {{-- Counter KTP Valid --}}
-        <div class="ml-9 mb-5 p-3 rounded-xl" style="background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.06);">
+        <div class=" mb-5 p-5 rounded-xl" style="background:#ffffff;border:0.5px solid rgba(0,0,0,.10);box-shadow:0 1px 4px rgba(0,0,0,.06);">
             <div class="flex items-center justify-between mb-1.5">
-                <span class="text-white/45 text-xs font-semibold uppercase tracking-wide">KTP Balikpapan Valid</span>
-                <span id="counterText" class="text-xs font-bold text-white/50">0 / 0 anggota</span>
+                <span class="text-xs font-semibold uppercase tracking-wide" style="color:#888780;">KTP Balikpapan Valid</span>
+                <span id="counterText" class="text-xs font-bold" style="color:#444441;">0 / 0 anggota</span>
             </div>
-            <div class="counter-bar">
-                <div id="counterFill" class="counter-fill" style="width:0%;background:#f97316;"></div>
+            <div class="counter-bar" style="background:rgba(0,0,0,.08);border-radius:99px;height:5px;overflow:hidden;">
+                <div id="counterFill" class="counter-fill" style="width:0%;background:#f97316;height:100%;border-radius:99px;transition:width .4s ease;"></div>
             </div>
-            <p id="counterNote" class="text-white/28 text-xs mt-1.5">Tambah anggota dan scan KTP untuk melihat progress</p>
+            <p id="counterNote" class="text-xs mt-1.5" style="color:#b4b2a9;">Scan KTP untuk melihat progress</p>
         </div>
 
         <div id="memberSlots"></div>
@@ -453,15 +452,14 @@
         </div>
     </div>
 
-    <div class="rounded-xl p-4 mb-6 form-section"
-         style="background:rgba(234,179,8,.05);border:1px solid rgba(234,179,8,.2);">
+        <div class="card-glass rounded-2xl p-6 mb-6 form-section">
         <div class="flex items-start gap-3">
-            <svg class="w-4 h-4 text-yellow-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+            <svg class="w-4 h-4 text-brand-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
             </svg>
             <div>
-                <p class="text-yellow-400 text-xs font-bold mb-1">Proses Verifikasi Admin</p>
-                <p class="text-white/40 text-xs leading-relaxed">
+                <p class="text-brand-400 text-xs font-bold mb-1">Proses Verifikasi Admin</p>
+                <p class="text-white/40 font-semibold text-xs leading-relaxed">
                     Pendaftaran beregu akan diverifikasi admin terlebih dahulu. Setelah disetujui, link pembayaran dikirim ke email.
                 </p>
             </div>
@@ -477,7 +475,7 @@
             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
         </svg>
     </button>
-    <p class="text-white/25 text-xs text-center mt-4 form-section">
+    <p class="text-black font-semibold text-xs text-center mt-4 form-section">
         Dengan mendaftar, Anda menyetujui syarat &amp; ketentuan Bayan Open 2026
     </p>
     </form>
@@ -784,21 +782,24 @@ function renderSlot(id) {
     var delBtn = deletable
         ? '<button type="button" onclick="BEREGU.remove(' + id + ')"'
           + ' class="w-6 h-6 rounded-md flex items-center justify-center transition flex-shrink-0"'
-          + ' style="background:rgba(239,68,68,.18);" title="Hapus">'
-          + '<svg width="10" height="10" fill="none" stroke="#f87171" viewBox="0 0 24 24" stroke-width="2.5">'
+          + ' style="background:rgba(239,68,68,.10);border:0.5px solid rgba(239,68,68,.2);" title="Hapus">'
+          + '<svg width="10" height="10" fill="none" stroke="#ef4444" viewBox="0 0 24 24" stroke-width="2.5">'
           + '<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>'
         : '';
 
     var html =
-        '<div id="mc_' + id + '" class="member-card" data-id="' + id + '">'
+        '<div id="mc_' + id + '" class="member-card" data-id="' + id + '"'
+        + ' style="background:#ffffff;border-radius:14px;border:0.5px solid rgba(0,0,0,0.1);padding:14px;margin-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,0.06);">'
+
         + '<div class="flex items-center justify-between mb-3">'
         +   '<div class="flex items-center gap-2">'
         +     '<div class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0"'
-        +          ' style="background:rgba(249,115,22,.14);border:1px solid rgba(249,115,22,.3);">'
-        +       '<span class="text-brand-400 font-black member-num" style="font-size:9px;">' + (idx+1) + '</span>'
+        +          ' style="background:rgba(249,115,22,.10);border:1px solid rgba(249,115,22,.25);">'
+        +       '<span class="member-num font-black" style="font-size:9px;color:#f97316;">' + (idx+1) + '</span>'
         +     '</div>'
-        +     '<span class="member-lbl text-white/75 font-bold" style="font-size:11px;">Anggota ' + (idx+1) + '</span>'
-        +     '<span id="scan_badge_' + id + '" class="scan-badge">'
+        +     '<span class="member-lbl font-bold" style="font-size:11px;color:#444441;">Anggota ' + (idx+1) + '</span>'
+        +     '<span id="scan_badge_' + id + '" class="scan-badge hidden items-center gap-1 font-semibold"'
+        +          ' style="font-size:9px;background:rgba(16,185,129,.10);color:#059669;border:0.5px solid rgba(16,185,129,.3);border-radius:20px;padding:2px 6px;">'
         +       '<svg width="8" height="8" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3">'
         +         '<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>Ter-scan'
         +     '</span>'
@@ -811,12 +812,16 @@ function renderSlot(id) {
         +     ' onclick="BEREGU.showSheet(' + id + ')"'
         +     ' ondragover="event.preventDefault();this.classList.add(\'drag-over\')"'
         +     ' ondragleave="this.classList.remove(\'drag-over\')"'
-        +     ' ondrop="BEREGU.onDrop(event,' + id + ')">'
+        +     ' ondrop="BEREGU.onDrop(event,' + id + ')"'
+        +     ' style="border:1.5px dashed rgba(249,115,22,.3);border-radius:10px;background:rgba(249,115,22,.03);'
+        +           'display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;'
+        +           'padding:14px 10px;cursor:pointer;transition:border-color .15s,background .15s;">'
 
         /* Preview */
         +   '<div id="prev_' + id + '" class="hidden w-full flex items-center gap-2 px-3 py-2">'
         +     '<div class="relative flex-shrink-0">'
-        +       '<img id="prevImg_' + id + '" src="" alt="" class="preview-img-compact">'
+        +       '<img id="prevImg_' + id + '" src="" alt="" class="preview-img-compact"'
+        +            ' style="width:48px;height:36px;border-radius:6px;object-fit:cover;border:0.5px solid rgba(0,0,0,0.1);">'
         +       '<button type="button" onclick="BEREGU.resetFile(event,' + id + ')"'
         +               ' class="absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center"'
         +               ' style="background:#ef4444;">'
@@ -824,16 +829,16 @@ function renderSlot(id) {
         +           '<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>'
         +       '</button>'
         +     '</div>'
-        +     '<p class="text-white/35" style="font-size:10px;">Ketuk ganti</p>'
+        +     '<p style="font-size:10px;color:#b4b2a9;">Ketuk ganti</p>'
         +   '</div>'
 
         /* Placeholder */
         +   '<div id="dzDefault_' + id + '" class="flex flex-col items-center py-2 gap-1">'
         +     '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"'
-        +          ' stroke="rgba(249,115,22,.5)" stroke-width="1.5">'
+        +          ' stroke="rgba(249,115,22,.45)" stroke-width="1.5">'
         +       '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 9h10M7 13h6"/>'
         +     '</svg>'
-        +     '<p class="text-white/40" style="font-size:10px;">Ketuk upload KTP</p>'
+        +     '<p style="font-size:10px;color:#b4b2a9;">Ketuk upload KTP</p>'
         +   '</div>'
         + '</div>'
 
@@ -844,9 +849,9 @@ function renderSlot(id) {
 
         /* Scan button */
         + '<button type="button" id="scanBtn_' + id + '" onclick="BEREGU.scan(' + id + ')"'
-        +         ' class="hidden mt-2 w-full rounded-lg font-display font-bold text-white tracking-wider'
+        +         ' class="hidden mt-2 w-full rounded-lg font-display font-bold tracking-wider'
         +         ' flex items-center justify-center gap-1.5"'
-        +         ' style="background:linear-gradient(135deg,#f97316,#c2410c);padding:6px 10px;font-size:10px;">'
+        +         ' style="background:linear-gradient(135deg,#f97316,#c2410c);color:#ffffff;padding:6px 10px;font-size:10px;border-radius:9px;border:none;cursor:pointer;">'
         +   '<svg width="11" height="11" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">'
         +     '<path stroke-linecap="round" stroke-linejoin="round"'
         +          ' d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/>'
@@ -855,13 +860,14 @@ function renderSlot(id) {
 
         /* Loading */
         + '<div id="scanLoading_' + id + '" class="hidden mt-2 text-center" style="padding:4px 0;">'
-        +   '<p class="text-brand-400 font-semibold" style="font-size:10px;">Membaca KTP...</p>'
+        +   '<p class="font-semibold" style="font-size:10px;color:#f97316;">Membaca KTP...</p>'
         +   '<div class="scan-loading-bar"><div class="scan-loading-bar-inner"></div></div>'
         + '</div>'
 
         /* KTP Data Card */
-        + '<div id="ktpDataCard_' + id + '" class="ktp-data-card">'
-        +   '<p class="ktp-edit-hint">✏ Klik untuk edit</p>'
+        + '<div id="ktpDataCard_' + id + '" class="ktp-data-card"'
+        +     ' style="margin-top:10px;background:#f8f7f4;border:0.5px solid rgba(0,0,0,0.08);border-radius:10px;padding:10px 12px;">'
+        +   '<p class="ktp-edit-hint" style="font-size:9px;color:#b4b2a9;margin-bottom:6px;">✏ Klik untuk edit</p>'
         +   '<div id="ktpDataRows_' + id + '"></div>'
         + '</div>'
 
