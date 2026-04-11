@@ -614,7 +614,7 @@ select.input-field:disabled        { opacity: .4 !important; cursor: not-allowed
             </div>
             <div class="text-right">
                 <p class="text-white/40 text-xs mb-1">Total Pembayaran</p>
-                <p class="font-display text-brand-400 font-bold text-2xl">Rp 150.000</p>
+                <p class="font-display text-brand-400 font-bold text-2xl">Rp 400.000</p>
             </div>
         </div>
     </div>

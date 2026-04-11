@@ -37,7 +37,7 @@ class RegistrationController extends Controller
         return view('registration.form-dewasa', [
             'kategori'  => 'ganda-dewasa-putra',
             'label'     => 'Ganda Dewasa Putra',
-            'harga'     => 150000,
+            'harga'     => 400000,
             'minPemain' => 2,
             'maxPemain' => 2,
         ]);
@@ -48,7 +48,7 @@ class RegistrationController extends Controller
         return view('registration.form-dewasa', [
             'kategori'  => 'ganda-dewasa-putri',
             'label'     => 'Ganda Dewasa Putri',
-            'harga'     => 150000,
+            'harga'     => 400000,
             'minPemain' => 2,
             'maxPemain' => 2,
         ]);
@@ -294,8 +294,8 @@ class RegistrationController extends Controller
 
         // ── 8. Harga ───────────────────────────────────────────────
         $harga = match ($kategori) {
-            'beregu' => 200000,
-            default  => 150000,
+            'beregu' => 1000000,
+            default  => 400000,
         };
 
         // ── 9. Tentukan approval status ────────────────────────────

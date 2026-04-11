@@ -80,7 +80,7 @@ class RegistrationResource extends Resource
                         ])
                         ->required()->live()
                         ->afterStateUpdated(fn ($state, Forms\Set $set) =>
-                            $set('harga', $state === 'beregu' ? 200000 : 150000)
+                            $set('harga', $state === 'beregu' ? 1000000 : 400000)
                         ),
 
                     Forms\Components\TextInput::make('harga')

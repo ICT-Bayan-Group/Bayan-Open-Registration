@@ -33,7 +33,7 @@ class AdminPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Orange,
             ])
-            ->brandLogo('https://res.cloudinary.com/djs5pi7ev/image/upload/v1773109896/LOGO_BO2026_pzbvxh.png')
+            ->brandLogo('https://res.cloudinary.com/djs5pi7ev/image/upload/q_auto/f_auto/v1775803080/bayanopen-logo_mfcb55.png')
             ->brandLogoHeight('3rem')
             ->darkMode(true)
             ->sidebarCollapsibleOnDesktop()

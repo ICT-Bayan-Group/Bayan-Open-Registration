@@ -211,7 +211,7 @@
 
   <!-- Header -->
   <div class="header">
-    <img src="https://res.cloudinary.com/djs5pi7ev/image/upload/v1773109896/LOGO_BO2026_pzbvxh.png" alt="Bayan Open 2026">
+    <img src="https://res.cloudinary.com/djs5pi7ev/image/upload/q_auto/f_auto/v1775803080/bayanopen-logo_mfcb55.png" alt="Bayan Open 2026">
     <div class="header-text">
       <h1>Bayan Open 2026</h1>
       <p>Official Registration Confirmation</p>

@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Pendaftaran') | Bayan Open 2026</title>
-    <link rel="icon" type="image/png" href="{{ asset('images/bayanopen.png') }}">
-    <link rel="apple-touch-icon" href="{{ asset('images/bayanopen.png') }}">
+    <link rel="icon" type="image/png" href="{{ asset('images/bayanopen-logo.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('images/bayanopen-logo.png') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -300,7 +300,7 @@
             {{-- Logo --}}
             <a href="{{ url('/') }}" class="flex items-center gap-4 group">
                 <img
-                    src="https://res.cloudinary.com/djs5pi7ev/image/upload/v1773109896/LOGO_BO2026_pzbvxh.png"
+                    src="https://res.cloudinary.com/djs5pi7ev/image/upload/q_auto/f_auto/v1775803080/bayanopen-logo_mfcb55.png"
                     alt="Bayan Open 2026"
                     class="h-10 sm:h-12 lg:h-16 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
                 >
@@ -410,7 +410,7 @@
                 {{-- Brand --}}
                 <div class="sm:col-span-2 lg:col-span-1">
                     <img
-                        src="https://res.cloudinary.com/djs5pi7ev/image/upload/v1773109896/LOGO_BO2026_pzbvxh.png"
+                        src="https://res.cloudinary.com/djs5pi7ev/image/upload/q_auto/f_auto/v1775803080/bayanopen-logo_mfcb55.png"
                         alt="Bayan Open 2026"
                         class="h-12 sm:h-14 object-contain mb-4 sm:mb-5"
                     >

@@ -821,7 +821,7 @@
             <div class="text-right">
                 <p class="text-white/40 text-xs mb-1">Total Pembayaran</p>
                 <p class="font-display text-brand-400 font-bold text-2xl">
-                    Rp {{ number_format($harga ?? 150000, 0, ',', '.') }}
+                    Rp {{ number_format($harga ?? 400000, 0, ',', '.') }}
                 </p>
             </div>
         </div>

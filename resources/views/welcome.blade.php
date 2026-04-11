@@ -1246,7 +1246,7 @@ body {
             </div>
 
             {{-- Logo --}}
-            <img src="https://res.cloudinary.com/djs5pi7ev/image/upload/v1773109896/LOGO_BO2026_pzbvxh.png"
+            <img src="https://res.cloudinary.com/djs5pi7ev/image/upload/q_auto/f_auto/v1775803080/bayanopen-logo_mfcb55.png"
                  alt="Bayan Open 2026" class="hero-logo" id="h-logo">
 
             {{-- Tagline --}}
@@ -1407,7 +1407,7 @@ body {
                     <p class="kat-desc">Upload KTP di akhir pendaftaran. Terbuka untuk semua usia dewasa.</p>
                     <div class="kat-footer">
                         <div class="kat-price-wrap">
-                            <p class="kat-price">Rp 150.000</p>
+                            <p class="kat-price">Rp 400.000</p>
                             <p class="kat-per">per pasangan</p>
                         </div>
                         <div class="kat-cta"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
@@ -1425,7 +1425,7 @@ body {
                     <p class="kat-desc">Upload KTP di akhir pendaftaran. Terbuka untuk semua usia dewasa.</p>
                     <div class="kat-footer">
                         <div class="kat-price-wrap">
-                            <p class="kat-price">Rp 150.000</p>
+                            <p class="kat-price">Rp 400.000</p>
                             <p class="kat-per">per pasangan</p>
                         </div>
                         <div class="kat-cta"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f43f5e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
@@ -1442,7 +1442,7 @@ body {
                     <p class="kat-desc">Scan KTP wajib. Minimal usia 45 tahun.</p>
                     <div class="kat-footer">
                         <div class="kat-price-wrap">
-                            <p class="kat-price">Rp 150.000</p>
+                            <p class="kat-price">Rp 400.000</p>
                             <p class="kat-per">per pasangan</p>
                         </div>
                         <div class="kat-cta"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
@@ -1460,7 +1460,7 @@ body {
                     <p class="kat-desc">Upload KTP, minimum 6 pemain per regu. Cocok untuk tim komunitas.</p>
                     <div class="kat-footer">
                         <div class="kat-price-wrap">
-                            <p class="kat-price">Rp 200.000</p>
+                            <p class="kat-price">Rp 1.000.000</p>
                             <p class="kat-per">per regu</p>
                         </div>
                         <div class="kat-cta"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#14b8a6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
@@ -1948,7 +1948,7 @@ body {
                         <p class="sub-name">Ganda Dewasa Putra</p>
                         <p class="sub-desc">Upload KTP di akhir pendaftaran</p>
                     </div>
-                    <span class="sub-price">Rp 150.000</span>
+                    <span class="sub-price">Rp 400.000</span>
                     <svg class="sc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(26,18,9,0.6)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
                 </button>
 
@@ -1960,7 +1960,7 @@ body {
                         <p class="sub-name">Ganda Dewasa Putri</p>
                         <p class="sub-desc">Upload KTP di akhir pendaftaran</p>
                     </div>
-                    <span class="sub-price">Rp 150.000</span>
+                    <span class="sub-price">Rp 400.000</span>
                     <svg class="sc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(26,18,9,0.6)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
                 </button>
 
@@ -1972,7 +1972,7 @@ body {
                         <p class="sub-name">Ganda Veteran Putra</p>
                         <p class="sub-desc">Scan KTP · Minimal umur 45 Tahun</p>
                     </div>
-                    <span class="sub-price">Rp 150.000</span>
+                    <span class="sub-price">Rp 400.000</span>
                     <svg class="sc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(26,18,9,0.6)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
                 </button>
 
@@ -1984,7 +1984,7 @@ body {
                         <p class="sub-name">Beregu</p>
                         <p class="sub-desc">Upload KTP · min. 6 pemain per regu</p>
                     </div>
-                    <span class="sub-price">Rp 200.000</span>
+                    <span class="sub-price">Rp 1.000.000</span>
                     <svg class="sc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(26,18,9,0.6)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
                 </button>
             </div>
@@ -2005,7 +2005,7 @@ body {
             {{-- Header --}}
             <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;">
                      <img
-                    src="https://res.cloudinary.com/djs5pi7ev/image/upload/v1773109896/LOGO_BO2026_pzbvxh.png"
+                    src="https://res.cloudinary.com/djs5pi7ev/image/upload/q_auto/f_auto/v1775803080/bayanopen-logo_mfcb55.png"
                     alt="Bayan Open 2026"
                     class="h-10 sm:h-12 lg:h-16 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
                 >
@@ -2044,7 +2044,6 @@ body {
                 <div id="disclaimerScrollHint" style="position:sticky;bottom:0;left:0;right:0;height:40px;background:linear-gradient(transparent,var(--cream) 70%);display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px;pointer-events:none;transition:opacity 0.3s;">
                     <span style="display:flex;align-items:center;gap:5px;font-family:var(--font-display);font-size:10px;font-weight:700;color:rgba(249,115,22,0.8);letter-spacing:0.08em;text-transform:uppercase;">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="animation:wheel-anim 1.2s ease infinite;"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
-                        Gulir untuk membaca
                     </span>
                 </div>
             </div>
