@@ -486,115 +486,121 @@
     }
 
     /* ════════════════════════════════════════════════════════════
-       GENDER ERROR MODAL
-    ════════════════════════════════════════════════════════════ */
-    #genderErrorModal {
-        display:         none;
-        position:        fixed;
-        inset:           0;
-        z-index:         99999;
-        align-items:     center;
-        justify-content: center;
-        padding:         1.5rem;
-    }
-    #genderErrorModal.show {
-        display: flex;
-        animation: modalBackdropIn .2s ease both;
-    }
-    .gem-backdrop {
-        position: absolute;
-        inset:    0;
-        background: rgba(0,0,0,.72);
-        backdrop-filter: blur(6px);
-        -webkit-backdrop-filter: blur(6px);
-    }
-    .gem-card {
-        position:      relative;
-        z-index:       1;
-        width:         100%;
-        max-width:     440px;
-        border-radius: 22px;
-        background:    rgba(14,6,2,.97);
-        border:        1.5px solid rgba(239,68,68,.35);
-        padding:       2rem 2rem 1.75rem;
-        box-shadow:    0 24px 80px rgba(0,0,0,.65), 0 0 0 1px rgba(239,68,68,.08) inset;
-        animation:     modalCardIn .25s cubic-bezier(.34,1.56,.64,1) both;
-    }
-    .gem-icon {
-        width:          60px; height: 60px;
-        border-radius:  50%;
-        margin:         0 auto 1.25rem;
-        display:        flex;
-        align-items:    center;
-        justify-content:center;
-        background:     rgba(239,68,68,.1);
-        border:         1.5px solid rgba(239,68,68,.3);
-        font-size:      1.75rem;
-    }
-    .gem-title {
-        text-align:  center;
-        font-size:   1.05rem;
-        font-weight: 800;
-        color:       #fca5a5;
-        margin:      0 0 .5rem;
-        line-height: 1.3;
-    }
-    .gem-subtitle {
-        text-align:  center;
-        font-size:   .78rem;
-        color:       rgba(255,255,255,.35);
-        margin:      0 0 1.5rem;
-    }
-    .gem-info-grid {
-        display:       grid;
-        grid-template-columns: 1fr 1fr;
-        gap:           .6rem;
-        margin-bottom: 1.4rem;
-    }
-    .gem-info-box {
-        border-radius: 12px;
-        padding:       .75rem 1rem;
-        text-align:    center;
-    }
-    .gem-info-box.detected { background: rgba(239,68,68,.08); border: 1px solid rgba(239,68,68,.25); }
-    .gem-info-box.required { background: rgba(16,185,129,.06); border: 1px solid rgba(16,185,129,.22); }
-    .gem-info-label {
-        font-size: 9px; font-weight: 700;
-        text-transform: uppercase; letter-spacing: .07em;
-        margin-bottom: .3rem;
-    }
-    .gem-info-box.detected .gem-info-label { color: rgba(252,165,165,.5); }
-    .gem-info-box.required .gem-info-label { color: rgba(52,211,153,.5); }
-    .gem-info-value { font-size: .9rem; font-weight: 800; }
-    .gem-info-box.detected .gem-info-value { color: #fca5a5; }
-    .gem-info-box.required .gem-info-value { color: #34d399; }
-    .gem-message {
-        background:   rgba(255,255,255,.03);
-        border:       1px solid rgba(255,255,255,.07);
-        border-radius: 12px;
-        padding:      .85rem 1rem;
-        font-size:    .8rem;
-        color:        rgba(255,255,255,.55);
-        line-height:  1.6;
-        margin-bottom: 1.4rem;
-        text-align:   center;
-    }
-    .gem-message strong { color: rgba(255,255,255,.85); }
-    .gem-btn {
-        width: 100%; padding: .75rem 1rem;
-        border-radius: 12px; border: none;
-        font-size: .85rem; font-weight: 800;
-        cursor: pointer;
-        transition: opacity .15s, transform .1s;
-        letter-spacing: .04em;
-    }
-    .gem-btn:hover  { opacity: .88; transform: translateY(-1px); }
-    .gem-btn:active { opacity: 1;   transform: translateY(0); }
-    .gem-btn-close {
-        background: linear-gradient(135deg, #dc2626, #991b1b);
-        color: #fff;
-        box-shadow: 0 4px 16px rgba(220,38,38,.35);
-    }
+   GENDER ERROR MODAL
+════════════════════════════════════════════════════════════ */
+#genderErrorModal {
+    display:         none;
+    position:        fixed;
+    inset:           0;
+    z-index:         99999;
+    align-items:     center;
+    justify-content: center;
+    padding:         1.5rem;
+}
+#genderErrorModal.show {
+    display: flex;
+    animation: modalBackdropIn .2s ease both;
+}
+.gem-backdrop {
+    position:   absolute;
+    inset:      0;
+    background: rgba(0,0,0,.35);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+.gem-card {
+    position:      relative;
+    z-index:       1;
+    width:         100%;
+    max-width:     440px;
+    border-radius: 22px;
+    background:    #ffffff;
+    border:        1.5px solid rgba(220,38,38,.18);
+    padding:       2rem 2rem 1.75rem;
+    box-shadow:    0 8px 40px rgba(0,0,0,.08);
+    animation:     modalCardIn .25s cubic-bezier(.34,1.56,.64,1) both;
+}
+.gem-icon {
+    width:           60px; height: 60px;
+    border-radius:   50%;
+    margin:          0 auto 1.25rem;
+display:         flex;
+    align-items:     center;
+    justify-content: center;
+    background:      #FEE8E8;
+    border:          1.5px solid rgba(220,38,38,.2);
+    font-size:       1.75rem;
+}
+.gem-title {
+    text-align:  center;
+    font-size:   1.05rem;
+    font-weight: 700;
+    color:       #B91C1C;
+    margin:      0 0 .5rem;
+    line-height: 1.3;
+}
+.gem-subtitle {
+    text-align: center;
+    font-size:  .78rem;
+    color:      #888;
+    margin:     0 0 1.5rem;
+}
+.gem-subtitle strong { color: #444; }
+.gem-info-grid {
+    display:               grid;
+    grid-template-columns: 1fr 1fr;
+    gap:                   .6rem;
+    margin-bottom:         1.4rem;
+}
+.gem-info-box {
+    border-radius: 12px;
+    padding:       .75rem 1rem;
+    text-align:    center;
+}
+.gem-info-box.detected { background: #FFF5F5; border: 1px solid #FFCCCC; }
+.gem-info-box.required { background: #EFF8FF; border: 1px solid #BFDBFE; }
+.gem-info-label {
+    font-size:      9px;
+    font-weight:    700;
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    margin-bottom:  .3rem;
+}
+.gem-info-box.detected .gem-info-label { color: #E57373; }
+.gem-info-box.required .gem-info-label { color: #3B82F6; }
+.gem-info-value { font-size: .9rem; font-weight: 700; }
+.gem-info-box.detected .gem-info-value { color: #B91C1C; }
+.gem-info-box.required .gem-info-value { color: #1D4ED8; }
+.gem-message {
+    background:    #FAFAFA;
+    border:        1px solid #EBEBEB;
+    border-radius: 12px;
+    padding:       .85rem 1rem;
+    font-size:     .8rem;
+    color:         #555;
+    line-height:   1.6;
+    margin-bottom: 1.4rem;
+    text-align:    center;
+}
+.gem-message strong { color: #222; }
+.gem-btn {
+    width:         100%;
+    padding:       .75rem 1rem;
+    border-radius: 12px;
+    border:        none;
+    font-size:     .85rem;
+    font-weight:   700;
+    cursor:        pointer;
+    transition:    opacity .15s, transform .1s;
+    letter-spacing:.04em;
+}
+.gem-btn:hover  { opacity: .88; transform: translateY(-1px); }
+.gem-btn:active { opacity: 1;   transform: translateY(0); }
+.gem-btn-close {
+    background: linear-gradient(135deg, #dc2626, #991b1b);
+    color:      #fff;
+    box-shadow: 0 4px 16px rgba(220,38,38,.25);
+}
 </style>
 @endpush
 
@@ -883,14 +889,6 @@
             Pemain <span id="gem-player-no">1</span> &mdash; <span id="gem-player-name"></span>
         </p>
         <div class="gem-info-grid">
-            <div class="gem-info-box detected">
-                <div class="gem-info-label">Terdeteksi di KTP</div>
-                <div class="gem-info-value" id="gem-detected">—</div>
-            </div>
-            <div class="gem-info-box required">
-                <div class="gem-info-label">Yang Dibutuhkan</div>
-                <div class="gem-info-value" id="gem-required">—</div>
-            </div>
         </div>
         <div class="gem-message" id="gem-message">
             KTP yang diupload <strong id="gem-wrong-gender">Perempuan</strong>,
