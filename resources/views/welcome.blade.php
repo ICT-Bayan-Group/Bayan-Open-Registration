@@ -1407,7 +1407,7 @@ body {
                     <p class="kat-desc">Upload KTP di akhir pendaftaran. Terbuka untuk semua usia dewasa.</p>
                     <div class="kat-footer">
                         <div class="kat-price-wrap">
-                            <p class="kat-price">Rp 150.000</p>
+                            <p class="kat-price">Rp 400.000</p>
                             <p class="kat-per">per pasangan</p>
                         </div>
                         <div class="kat-cta"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
@@ -1425,7 +1425,7 @@ body {
                     <p class="kat-desc">Upload KTP di akhir pendaftaran. Terbuka untuk semua usia dewasa.</p>
                     <div class="kat-footer">
                         <div class="kat-price-wrap">
-                            <p class="kat-price">Rp 150.000</p>
+                            <p class="kat-price">Rp 400.000</p>
                             <p class="kat-per">per pasangan</p>
                         </div>
                         <div class="kat-cta"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f43f5e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
@@ -1442,7 +1442,7 @@ body {
                     <p class="kat-desc">Scan KTP wajib. Minimal usia 45 tahun.</p>
                     <div class="kat-footer">
                         <div class="kat-price-wrap">
-                            <p class="kat-price">Rp 150.000</p>
+                            <p class="kat-price">Rp 400.000</p>
                             <p class="kat-per">per pasangan</p>
                         </div>
                         <div class="kat-cta"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
@@ -1460,7 +1460,7 @@ body {
                     <p class="kat-desc">Upload KTP, minimum 6 pemain per regu. Cocok untuk tim komunitas.</p>
                     <div class="kat-footer">
                         <div class="kat-price-wrap">
-                            <p class="kat-price">Rp 200.000</p>
+                            <p class="kat-price">Rp 1.000.000</p>
                             <p class="kat-per">per regu</p>
                         </div>
                         <div class="kat-cta"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#14b8a6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
@@ -1948,7 +1948,7 @@ body {
                         <p class="sub-name">Ganda Dewasa Putra</p>
                         <p class="sub-desc">Upload KTP di akhir pendaftaran</p>
                     </div>
-                    <span class="sub-price">Rp 150.000</span>
+                    <span class="sub-price">Rp 400.000</span>
                     <svg class="sc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(26,18,9,0.6)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
                 </button>
 
@@ -1960,7 +1960,7 @@ body {
                         <p class="sub-name">Ganda Dewasa Putri</p>
                         <p class="sub-desc">Upload KTP di akhir pendaftaran</p>
                     </div>
-                    <span class="sub-price">Rp 150.000</span>
+                    <span class="sub-price">Rp 400.000</span>
                     <svg class="sc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(26,18,9,0.6)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
                 </button>
 
@@ -1972,7 +1972,7 @@ body {
                         <p class="sub-name">Ganda Veteran Putra</p>
                         <p class="sub-desc">Scan KTP · Minimal umur 45 Tahun</p>
                     </div>
-                    <span class="sub-price">Rp 150.000</span>
+                    <span class="sub-price">Rp 400.000</span>
                     <svg class="sc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(26,18,9,0.6)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
                 </button>
 
@@ -1984,7 +1984,7 @@ body {
                         <p class="sub-name">Beregu</p>
                         <p class="sub-desc">Upload KTP · min. 6 pemain per regu</p>
                     </div>
-                    <span class="sub-price">Rp 200.000</span>
+                    <span class="sub-price">Rp 1.000.000</span>
                     <svg class="sc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(26,18,9,0.6)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
                 </button>
             </div>

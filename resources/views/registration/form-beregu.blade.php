@@ -516,7 +516,7 @@
             </div>
             <div class="text-right">
                 <p class="text-white/40 text-xs mb-1">Total Pembayaran</p>
-                <p class="font-display text-brand-400 font-bold text-2xl">Rp 200.000</p>
+                <p class="font-display text-brand-400 font-bold text-2xl">Rp 1.000.000</p>
             </div>
         </div>
     </div>
