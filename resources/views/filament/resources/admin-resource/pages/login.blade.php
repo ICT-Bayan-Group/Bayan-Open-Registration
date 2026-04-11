@@ -287,7 +287,7 @@
             <div class="bo-orb bo-orb-3"></div>
 
             <div class="bo-left-content">
-                <img src="https://res.cloudinary.com/djs5pi7ev/image/upload/v1773109896/LOGO_BO2026_pzbvxh.png"
+                <img src="https://res.cloudinary.com/djs5pi7ev/image/upload/q_auto/f_auto/v1775803080/bayanopen-logo_mfcb55.png"
                      alt="Bayan Open 2026" class="bo-logo">
 
                 <p class="bo-left-title">Admin Dashboard</p>

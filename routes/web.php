@@ -25,10 +25,8 @@ Route::prefix('wilayah')->group(function () {
 Route::post('/ocr/ktp', [KtpOcrController::class, 'scan'])->name('ocr.ktp');
 
 // ── Payment by token ─────────────────────────────────────────────
-// Nama route HARUS cocok dengan yang dipanggil di RegistrationController:
-// route('registration.payment.token', $paymentToken)
 Route::get('/payment/{token}', [RegistrationController::class, 'paymentByToken'])
-    ->name('registration.payment.token')                               // ← fix nama
+    ->name('registration.payment.token')
     ->where('token', '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}');
 
 // ── Pendaftaran ─────────────────────────────────────────────────
@@ -46,11 +44,17 @@ Route::prefix('daftar')->name('registration.')->group(function () {
     // Submit form
     Route::post('/', [RegistrationController::class, 'store'])->name('store');
 
-    // Di dalam group prefix('daftar')->name('registration.'):
+    // Status halaman setelah submit
     Route::get('/pending-payment/{uuid}', function ($uuid) {
         $registration = \App\Models\Registration::where('uuid', $uuid)->firstOrFail();
         return view('registration.pending-payment', compact('registration'));
     })->name('pending-payment');
+
+    // ↓ INI YANG HILANG — pending-review untuk kategori beregu
+    Route::get('/pending-review/{uuid}', function ($uuid) {
+        $registration = \App\Models\Registration::where('uuid', $uuid)->firstOrFail();
+        return view('registration.pending-review', compact('registration'));
+    })->name('pending-review');
 
     // Callback & status
     Route::get('/sukses',        [RegistrationController::class, 'success'])->name('success');

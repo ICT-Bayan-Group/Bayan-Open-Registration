@@ -19,7 +19,7 @@ class RegistrationFactory extends Factory
             'nama'          => $this->faker->name(),
             'tim_pb'        => 'PB ' . $this->faker->city(),
             'kategori'      => $kategori,
-            'harga'         => $kategori === 'regu' ? 200000 : 150000,
+            'harga'         => $kategori === 'regu' ? 1000000 : 400000,
             'status'        => $this->faker->randomElement(['pending', 'paid', 'paid', 'paid', 'failed', 'expired']),
             'midtrans_order_id' => 'BO2026-' . strtoupper(Str::random(8)),
             'midtrans_transaction_id' => $this->faker->optional()->uuid(),
