@@ -13,6 +13,10 @@
         100% { background-position:  200% center; }
     }
     @keyframes modalBackdropIn { from { opacity:0; } to { opacity:1; } }
+    @keyframes modalCardIn {
+        from { opacity: 0; transform: scale(.92) translateY(16px); }
+        to   { opacity: 1; transform: scale(1)   translateY(0);    }
+    }
     @keyframes spinLoader { to { transform: rotate(360deg); } }
     @keyframes progressBar { from { width:0%; } to { width:100%; } }
     @keyframes sheetIn {
@@ -28,6 +32,13 @@
     @keyframes pulseOrange {
         0%, 100% { box-shadow: 0 0 0 0 rgba(249,115,22,.4); }
         50%       { box-shadow: 0 0 0 8px rgba(249,115,22,0); }
+    }
+    @keyframes shake {
+        0%,100% { transform: translateX(0); }
+        20%     { transform: translateX(-6px); }
+        40%     { transform: translateX(6px); }
+        60%     { transform: translateX(-4px); }
+        80%     { transform: translateX(4px); }
     }
 
     .form-section              { animation: fadeSlideUp .45s ease both; }
@@ -62,10 +73,7 @@
         padding-right: 36px !important;
         cursor: pointer;
     }
-    select.input-field option {
-        background-color: #ffffff;
-        color: #2c2c2a;
-    }
+    select.input-field option { background-color: #ffffff; color: #2c2c2a; }
     select.input-field:disabled {
         opacity: .45 !important;
         cursor: not-allowed;
@@ -109,6 +117,11 @@
     .member-card.city-invalid {
         border-color: rgba(239,68,68,.4);
         box-shadow: 0 0 0 1px rgba(239,68,68,.06) inset, 0 1px 4px rgba(0,0,0,.06);
+    }
+    .member-card.gender-error {
+        border-color: rgba(239,68,68,.55) !important;
+        background:   rgba(239,68,68,.04) !important;
+        animation:    shake .4s ease;
     }
 
     /* ── KTP Dropzone compact ────────────────────────────────── */
@@ -203,14 +216,6 @@
         background: rgba(16,185,129,.1); border: 0.5px solid rgba(16,185,129,.3); color: #059669;
     }
 
-    /* ── Counter bar ─────────────────────────────────────────── */
-    .counter-bar { height: 5px; border-radius: 99px; background: rgba(0,0,0,.08); overflow: hidden; margin-top: 5px; }
-    .counter-fill { height: 100%; border-radius: 99px; transition: width .4s ease, background .4s; }
-
-    /* ── Preview compact ─────────────────────────────────────── */
-    .preview-img-compact { max-height: 52px; max-width: 100%; border-radius: 6px; object-fit: contain; }
-    .ktp-edit-hint { font-size: 8.5px; color: #b4b2a9; text-align: right; font-style: italic; margin-top: 2px; margin-bottom: 4px; }
-
     /* ── Scan semua button ───────────────────────────────────── */
     #scanAllBtn {
         display: flex; align-items: center; justify-content: center; gap: 8px;
@@ -226,9 +231,7 @@
     #scanAllBtn:disabled { opacity: .45; cursor: not-allowed; transform: none; }
 
     /* ── Submit button states ────────────────────────────────── */
-    #submitBtn {
-        transition: background .4s ease, box-shadow .4s ease, opacity .3s;
-    }
+    #submitBtn { transition: background .4s ease, box-shadow .4s ease, opacity .3s; }
     #submitBtn.btn-disabled {
         background: #d3d1c7 !important;
         color: #888780 !important;
@@ -323,6 +326,79 @@
 
     /* ── Hint text ───────────────────────────────────────────── */
     .hint-text { color: #b4b2a9; font-size: 11px; margin-top: 4px; }
+
+    /* ════════════════════════════════════════════════════════════
+       GENDER ERROR MODAL
+    ════════════════════════════════════════════════════════════ */
+    #genderErrorModal {
+        display: none; position: fixed; inset: 0; z-index: 99999;
+        align-items: center; justify-content: center; padding: 1.5rem;
+    }
+    #genderErrorModal.show { display: flex; animation: modalBackdropIn .2s ease both; }
+    .gem-backdrop {
+        position: absolute; inset: 0;
+        background: rgba(0,0,0,.45);
+        backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+    }
+    .gem-card {
+        position: relative; z-index: 1;
+        width: 100%; max-width: 440px;
+        border-radius: 22px;
+        background: #ffffff;
+        border: 1.5px solid rgba(220,38,38,.18);
+        padding: 2rem 2rem 1.75rem;
+        box-shadow: 0 8px 40px rgba(0,0,0,.12);
+        animation: modalCardIn .25s cubic-bezier(.34,1.56,.64,1) both;
+    }
+    .gem-icon {
+        width: 60px; height: 60px; border-radius: 50%;
+        margin: 0 auto 1.25rem;
+        display: flex; align-items: center; justify-content: center;
+        background: #FEE8E8; border: 1.5px solid rgba(220,38,38,.2);
+        font-size: 1.75rem;
+    }
+    .gem-title {
+        text-align: center; font-size: 1.05rem; font-weight: 700;
+        color: #B91C1C; margin: 0 0 .5rem; line-height: 1.3;
+    }
+    .gem-subtitle {
+        text-align: center; font-size: .78rem; color: #888; margin: 0 0 1.5rem;
+    }
+    .gem-subtitle strong { color: #444; }
+    .gem-info-grid {
+        display: grid; grid-template-columns: 1fr 1fr;
+        gap: .6rem; margin-bottom: 1.4rem;
+    }
+    .gem-info-box { border-radius: 12px; padding: .75rem 1rem; text-align: center; }
+    .gem-info-box.detected { background: #FFF5F5; border: 1px solid #FFCCCC; }
+    .gem-info-box.required { background: #EFF8FF; border: 1px solid #BFDBFE; }
+    .gem-info-label {
+        font-size: 9px; font-weight: 700; text-transform: uppercase;
+        letter-spacing: .07em; margin-bottom: .3rem;
+    }
+    .gem-info-box.detected .gem-info-label { color: #E57373; }
+    .gem-info-box.required .gem-info-label { color: #3B82F6; }
+    .gem-info-value { font-size: .9rem; font-weight: 700; }
+    .gem-info-box.detected .gem-info-value { color: #B91C1C; }
+    .gem-info-box.required .gem-info-value { color: #1D4ED8; }
+    .gem-message {
+        background: #FAFAFA; border: 1px solid #EBEBEB;
+        border-radius: 12px; padding: .85rem 1rem;
+        font-size: .8rem; color: #555; line-height: 1.6;
+        margin-bottom: 1.4rem; text-align: center;
+    }
+    .gem-message strong { color: #222; }
+    .gem-btn {
+        width: 100%; padding: .75rem 1rem; border-radius: 12px; border: none;
+        font-size: .85rem; font-weight: 700; cursor: pointer;
+        transition: opacity .15s, transform .1s; letter-spacing: .04em;
+    }
+    .gem-btn:hover  { opacity: .88; transform: translateY(-1px); }
+    .gem-btn:active { opacity: 1;   transform: translateY(0); }
+    .gem-btn-close {
+        background: linear-gradient(135deg, #dc2626, #991b1b);
+        color: #fff; box-shadow: 0 4px 16px rgba(220,38,38,.25);
+    }
 </style>
 @endpush
 
@@ -355,6 +431,7 @@
             Minimal <strong class="text-white/70">6</strong> dari
             <strong class="text-white/70">8</strong> anggota harus ber-KTP
             <strong class="text-brand-400">Kota Balikpapan</strong>
+            · Khusus <strong class="text-white/70">Laki-laki</strong>
         </p>
     </div>
 
@@ -468,7 +545,6 @@
 
     {{-- ═══════ SECTION 3 — ANGGOTA TIM ═══════ --}}
     <div class="card-glass rounded-2xl p-6 mb-6 form-section">
-
         <h2 class="font-display text-sm font-bold mb-1 flex items-center gap-2">
             <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-black flex-shrink-0"
                   style="background:rgba(249,115,22,.9);color:#fff;">3</span>
@@ -478,7 +554,7 @@
             Upload KTP lalu klik <strong style="color:#f97316;">SCAN</strong> — data terisi otomatis &amp; bisa diedit.
         </p>
         <p class="text-xs mb-5 ml-8" style="color:#b4b2a9;">
-            Minimal <strong style="color:#888780;">6 anggota</strong> harus ber-KTP Kota Balikpapan.
+            Minimal <strong style="color:#888780;">6 anggota</strong> harus ber-KTP Kota Balikpapan · Hanya <strong style="color:#888780;">Laki-laki</strong>.
         </p>
 
         {{-- Counter KTP Valid --}}
@@ -511,8 +587,8 @@
         <div class="flex justify-between items-center">
             <div>
                 <p class="text-white/40 text-xs mb-1">Kategori</p>
-                <p class="font-display text-white font-bold text-sm">Beregu</p>
-                <p class="text-white/28 text-xs mt-0.5">6–8 anggota · Syarat KTP Balikpapan</p>
+                <p class="font-display text-white font-bold text-sm">Beregu </p>
+                <p class="text-white/28 text-xs mt-0.5">6–8 anggota · KTP Balikpapan · Laki-laki</p>
             </div>
             <div class="text-right">
                 <p class="text-white/40 text-xs mb-1">Total Pembayaran</p>
@@ -535,7 +611,6 @@
         </div>
     </div>
 
-    {{-- Submit Button — abu-abu dulu, jadi oranye kalau sudah 6 KTP valid --}}
     <div class="form-section mb-2">
         <button type="submit" id="submitBtn" disabled
             class="btn-disabled w-full py-4 rounded-xl font-display text-sm font-bold tracking-wide
@@ -607,9 +682,34 @@
     <button type="button" class="upload-sheet-cancel" onclick="_SHEET.close()">Batal</button>
 </div>
 
+{{-- ── GENDER ERROR MODAL ───────────────────────────────────────── --}}
+<div id="genderErrorModal" role="dialog" aria-modal="true" aria-labelledby="gem-title">
+    <div class="gem-backdrop" onclick="_GEM.close()"></div>
+    <div class="gem-card">
+        <div class="gem-icon">🚫</div>
+        <h2 class="gem-title" id="gem-title">KTP Tidak Sesuai Kategori</h2>
+        <p class="gem-subtitle">
+            Anggota <span id="gem-player-no">1</span> &mdash; <span id="gem-player-name"></span>
+        </p>
+        <div class="gem-info-grid">
+        </div>
+        <div class="gem-message" id="gem-message">
+            KTP yang diupload <strong id="gem-wrong-gender"></strong>,
+            sedangkan kategori <strong>Beregu</strong>
+            hanya untuk pemain <strong>Laki-laki</strong>.<br><br>
+            Silakan upload KTP pemain <strong>Laki-laki</strong> yang sesuai.
+        </div>
+        <button class="gem-btn gem-btn-close" onclick="_GEM.close()">
+            ✕ &nbsp; Tutup &amp; Upload Ulang
+        </button>
+    </div>
+</div>
+
 @push('scripts')
 <script>
-/* ================================================================ WILAYAH ================================================================ */
+/* ================================================================
+   WILAYAH
+================================================================ */
 (function () {
 'use strict';
 async function loadProvinsi() {
@@ -633,10 +733,7 @@ async function loadProvinsi() {
 async function onProvinsiChange(sel) {
     var opt = sel.options[sel.selectedIndex], code = opt ? (opt.dataset.code||'') : '';
     var ks = document.getElementById('selectKota');
-    if (ks) {
-        ks.innerHTML = '<option value="">-- Pilih Kabupaten/Kota --</option>';
-        ks.disabled = true;
-    }
+    if (ks) { ks.innerHTML = '<option value="">-- Pilih Kabupaten/Kota --</option>'; ks.disabled = true; }
     if (code) await loadKota(code);
 }
 async function loadKota(provId, selectedName) {
@@ -668,7 +765,9 @@ document.addEventListener('DOMContentLoaded', loadProvinsi);
 </script>
 
 <script>
-/* ================================================================ _SHEET ================================================================ */
+/* ================================================================
+   _SHEET — Upload Bottom Sheet
+================================================================ */
 window._SHEET = (function () {
 'use strict';
 var _activeId = null, _isAnimating = false;
@@ -710,13 +809,94 @@ document.addEventListener('touchend', function (e) {
     if (!document.getElementById('uploadSheet').classList.contains('show')) return;
     if (e.changedTouches[0].clientY-_ty0>70) close();
 }, {passive:true});
-document.addEventListener('keydown', function (e) { if (e.key==='Escape') close(); });
+document.addEventListener('keydown', function (e) { if (e.key==='Escape' && !document.getElementById('genderErrorModal').classList.contains('show')) close(); });
 return { open:open, close:close, pick:pick };
 })();
 </script>
 
 <script>
-/* ================================================================ BEREGU ================================================================ */
+/* ================================================================
+   _GEM — Gender Error Modal
+   HARDCODED: Beregu = Putra = hanya Laki-laki (L)
+================================================================ */
+window._GEM = (function () {
+'use strict';
+
+/* ── Hardcoded rule: beregu selalu putra (Laki-laki) ── */
+var REQUIRED_GENDER = 'L';
+var LABEL_REQUIRED  = 'Laki-laki';
+var LABEL_WRONG     = 'Perempuan';
+var LABEL_KATEGORI  = 'Beregu ';
+
+function show(memberIdx, namaOcr, genderDetected) {
+    /* genderDetected: 'P' = Perempuan, '' = tidak terbaca */
+    var labelDetected = (genderDetected === 'P') ? 'Perempuan' : 'Tidak terbaca';
+
+    _setTxt('gem-player-no',   memberIdx + 1);
+    _setTxt('gem-player-name', namaOcr || ('Anggota ' + (memberIdx + 1)));
+    _setTxt('gem-detected',    labelDetected);
+    _setTxt('gem-required',    LABEL_REQUIRED);
+    _setTxt('gem-wrong-gender', labelDetected);
+
+    var msgEl = document.getElementById('gem-message');
+    if (msgEl) {
+        msgEl.innerHTML =
+            'KTP yang diupload terdeteksi <strong>' + _esc(labelDetected) + '</strong>,'
+            + ' sedangkan kategori <strong>' + _esc(LABEL_KATEGORI) + '</strong>'
+            + ' hanya untuk pemain <strong>' + _esc(LABEL_REQUIRED) + '</strong>.<br><br>'
+            + 'Silakan upload KTP pemain <strong>' + _esc(LABEL_REQUIRED) + '</strong> yang sesuai.';
+    }
+
+    var modal = document.getElementById('genderErrorModal');
+    if (modal) { modal.classList.add('show'); document.body.style.overflow = 'hidden'; }
+}
+
+function showUnknown(memberIdx, namaOcr) {
+    _setTxt('gem-player-no',   memberIdx + 1);
+    _setTxt('gem-player-name', namaOcr || ('Anggota ' + (memberIdx + 1)));
+    _setTxt('gem-detected',    'Tidak terbaca');
+    _setTxt('gem-required',    LABEL_REQUIRED);
+
+    var msgEl = document.getElementById('gem-message');
+    if (msgEl) {
+        msgEl.innerHTML =
+            'Jenis kelamin pada KTP Anggota <strong>' + (memberIdx + 1) + '</strong>'
+            + (namaOcr ? ' (<strong>' + _esc(namaOcr) + '</strong>)' : '')
+            + ' tidak berhasil terbaca.<br><br>'
+            + 'Pastikan foto KTP jelas dan bagian <strong>Jenis Kelamin</strong> terlihat,'
+            + ' lalu scan ulang.<br><br>'
+            + 'Kategori <strong>' + _esc(LABEL_KATEGORI) + '</strong> hanya untuk pemain'
+            + ' <strong>' + _esc(LABEL_REQUIRED) + '</strong>.';
+    }
+
+    var modal = document.getElementById('genderErrorModal');
+    if (modal) { modal.classList.add('show'); document.body.style.overflow = 'hidden'; }
+}
+
+function close() {
+    var modal = document.getElementById('genderErrorModal');
+    if (modal) modal.classList.remove('show');
+    document.body.style.overflow = '';
+}
+
+/* Expose required gender agar BEREGU bisa cek */
+function getRequiredGender() { return REQUIRED_GENDER; }
+
+function _setTxt(id, val) { var el = document.getElementById(id); if (el) el.textContent = val; }
+function _esc(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+
+return { show: show, showUnknown: showUnknown, close: close, getRequiredGender: getRequiredGender };
+})();
+</script>
+
+<script>
+/* ================================================================
+   BEREGU — Main Logic
+================================================================ */
 (function () {
 'use strict';
 
@@ -724,9 +904,12 @@ var MIN_MEMBERS   = 6;
 var MAX_MEMBERS   = 8;
 var MIN_KTP_VALID = 6;
 
-var members  = [];
-var nextId   = 0;
-var cardData = {};
+/* ── Ambil required gender dari _GEM (selalu 'L' untuk beregu) ── */
+var REQUIRED_GENDER = window._GEM.getRequiredGender(); /* 'L' */
+
+var members     = [];
+var nextId      = 0;
+var cardData    = {};
 var memberFiles = {};
 
 var TOURNAMENT_DATE = new Date(2026, 7, 24);
@@ -737,6 +920,17 @@ var CARD_FIELDS = [
     { l:'Nama',    k:'nama',          n:'pemain[]',    placeholder:'Nama sesuai KTP' },
     { l:'Tgl Lhr', k:'tanggal_lahir', n:'tgl_lahir[]', placeholder:'DD-MM-YYYY' },
 ];
+
+/* ── Normalize gender dari OCR ───────────────────────────────── */
+function normalizeGender(raw) {
+    if (!raw) return '';
+    raw = raw.toUpperCase().trim();
+    if (['P','PR','WANITA','PEREMPUAN'].indexOf(raw) !== -1) return 'P';
+    if (raw.indexOf('PEREMPUAN') !== -1 || raw.indexOf('WANITA') !== -1) return 'P';
+    if (['L','LK','PRIA','LAKI','LAKI-LAKI'].indexOf(raw) !== -1) return 'L';
+    if (raw.indexOf('LAKI') !== -1 || raw.indexOf('PRIA') !== -1) return 'L';
+    return '';
+}
 
 /* ── Hitung usia ─────────────────────────────────────────────── */
 function hitungUsia(str) {
@@ -761,84 +955,62 @@ function updateUsiaRow(id, tglValue) {
     else               { el.className = 'usia-display no-value';  el.textContent = '—'; }
 }
 
-function isCityValid(city) {
-    if (!city) return false;
-    city = city.toUpperCase().trim();
-    return VALID_CITY.some(function (k) { return city.indexOf(k) !== -1; });
-}
-
 /* ── Konversi HEIC/besar → JPEG ─────────────────────────────── */
 function convertToJpeg(file, callback) {
-    var MAX_SIZE_KB  = 300;
-    var MAX_PIXEL    = 1600;
-    var QUALITY_STEP = 0.10;
-    var MIN_QUALITY  = 0.35;
-
+    var MAX_SIZE_KB=300, MAX_PIXEL=1600, QUALITY_STEP=0.10, MIN_QUALITY=0.35;
     var reader = new FileReader();
     reader.onload = function (e) {
-        var dataUrl = e.target.result;
-        var img     = new Image();
+        var img = new Image();
         img.onload = function () {
-            var w = img.naturalWidth, h = img.naturalHeight;
-            if (w > MAX_PIXEL || h > MAX_PIXEL) {
-                if (w > h) { h = Math.round(h * MAX_PIXEL / w); w = MAX_PIXEL; }
-                else        { w = Math.round(w * MAX_PIXEL / h); h = MAX_PIXEL; }
+            var w=img.naturalWidth, h=img.naturalHeight;
+            if (w>MAX_PIXEL||h>MAX_PIXEL) {
+                if (w>h) { h=Math.round(h*MAX_PIXEL/w); w=MAX_PIXEL; }
+                else      { w=Math.round(w*MAX_PIXEL/h); h=MAX_PIXEL; }
             }
-            var canvas = document.createElement('canvas');
-            canvas.width = w; canvas.height = h;
-            var ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0, w, h);
+            var canvas=document.createElement('canvas');
+            canvas.width=w; canvas.height=h;
+            var ctx=canvas.getContext('2d');
+            ctx.drawImage(img,0,0,w,h);
             function tryCompress(quality) {
                 canvas.toBlob(function (blob) {
-                    if (!blob) { callback(file, dataUrl); return; }
-                    var sizeKB = blob.size / 1024;
-                    if (sizeKB > MAX_SIZE_KB && quality - QUALITY_STEP >= MIN_QUALITY) {
-                        tryCompress(parseFloat((quality - QUALITY_STEP).toFixed(2)));
-                        return;
-                    }
-                    if (sizeKB > MAX_SIZE_KB) {
-                        w = Math.round(w * 0.7); h = Math.round(h * 0.7);
-                        canvas.width = w; canvas.height = h;
-                        ctx.drawImage(img, 0, 0, w, h);
-                        tryCompress(0.55);
-                        return;
-                    }
-                    var converted = new File([blob], file.name.replace(/\.[^.]+$/, '') + '.jpg', { type: 'image/jpeg', lastModified: Date.now() });
-                    var previewUrl = URL.createObjectURL(blob);
-                    callback(converted, previewUrl);
+                    if (!blob) { callback(file, e.target.result); return; }
+                    var sizeKB=blob.size/1024;
+                    if (sizeKB>MAX_SIZE_KB && quality-QUALITY_STEP>=MIN_QUALITY) { tryCompress(parseFloat((quality-QUALITY_STEP).toFixed(2))); return; }
+                    if (sizeKB>MAX_SIZE_KB) { w=Math.round(w*0.7); h=Math.round(h*0.7); canvas.width=w; canvas.height=h; ctx.drawImage(img,0,0,w,h); tryCompress(0.55); return; }
+                    var converted=new File([blob],file.name.replace(/\.[^.]+$/,'')+'.jpg',{type:'image/jpeg',lastModified:Date.now()});
+                    callback(converted, URL.createObjectURL(blob));
                 }, 'image/jpeg', quality);
             }
             tryCompress(0.82);
         };
-        img.onerror = function () { showToast('Format foto tidak didukung. Coba konversi ke JPG.', 'warn'); callback(null, null); };
-        img.src = dataUrl;
+        img.onerror = function () { toast('Format foto tidak didukung.', 'warn'); callback(null,null); };
+        img.src = e.target.result;
     };
-    reader.onerror = function () { showToast('Gagal membaca file foto.', 'error'); callback(null, null); };
+    reader.onerror = function () { toast('Gagal membaca file.', 'error'); callback(null,null); };
     reader.readAsDataURL(file);
 }
 
-/* ── Init — langsung 8 card ──────────────────────────────────── */
+/* ── Init ────────────────────────────────────────────────────── */
 function init() {
-    for (var i = 0; i < MAX_MEMBERS; i++) addMember();
+    for (var i=0; i<MAX_MEMBERS; i++) addMember();
     updateCounter();
 }
 
-/* ── Tambah member ───────────────────────────────────────────── */
 function addMember() {
-    if (members.length >= MAX_MEMBERS) return;
-    var id = nextId++;
-    members.push({ id:id, scanned:false, cityValid:null });
-    cardData[id] = {};
-    memberFiles[id] = null;
+    if (members.length>=MAX_MEMBERS) return;
+    var id=nextId++;
+    /* genderValid: false karena ada REQUIRED_GENDER yang harus divalidasi */
+    members.push({ id:id, scanned:false, cityValid:null, genderValid:false });
+    cardData[id]={};
+    memberFiles[id]=null;
     renderSlot(id);
     updateCounter();
 }
 
-/* ── Hapus member ────────────────────────────────────────────── */
 function removeMember(id) {
-    var card = document.getElementById('mc_' + id);
+    var card=document.getElementById('mc_'+id);
     if (card) card.remove();
-    members = members.filter(function (m) { return m.id !== id; });
+    members=members.filter(function(m){return m.id!==id;});
     delete cardData[id];
     delete memberFiles[id];
     updateCounter();
@@ -846,206 +1018,243 @@ function removeMember(id) {
 }
 
 function renumber() {
-    document.querySelectorAll('.member-card').forEach(function (c, i) {
-        var n = c.querySelector('.member-num'), l = c.querySelector('.member-lbl');
-        if (n) n.textContent = i+1;
-        if (l) l.textContent = 'Anggota ' + (i+1);
+    document.querySelectorAll('.member-card').forEach(function(c,i){
+        var n=c.querySelector('.member-num'), l=c.querySelector('.member-lbl');
+        if (n) n.textContent=i+1;
+        if (l) l.textContent='Anggota '+(i+1);
     });
 }
 
 /* ── Render slot ─────────────────────────────────────────────── */
 function renderSlot(id) {
-    var idx = members.length - 1;
-    var deletable = members.length > MIN_MEMBERS;
-    var container = document.getElementById('memberSlots');
+    var idx=members.length-1;
+    var deletable=members.length>MIN_MEMBERS;
+    var container=document.getElementById('memberSlots');
 
-    var delBtn = deletable
-        ? '<button type="button" onclick="BEREGU.remove(' + id + ')"'
-          + ' class="w-6 h-6 rounded-md flex items-center justify-center transition flex-shrink-0"'
-          + ' style="background:rgba(239,68,68,.10);border:0.5px solid rgba(239,68,68,.2);" title="Hapus">'
-          + '<svg width="10" height="10" fill="none" stroke="#ef4444" viewBox="0 0 24 24" stroke-width="2.5">'
-          + '<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>'
+    var delBtn=deletable
+        ? '<button type="button" onclick="BEREGU.remove('+id+')"'
+          +' class="w-6 h-6 rounded-md flex items-center justify-center transition flex-shrink-0"'
+          +' style="background:rgba(239,68,68,.10);border:0.5px solid rgba(239,68,68,.2);" title="Hapus">'
+          +'<svg width="10" height="10" fill="none" stroke="#ef4444" viewBox="0 0 24 24" stroke-width="2.5">'
+          +'<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>'
         : '';
 
-    var html =
-        '<div id="mc_' + id + '" class="member-card" data-id="' + id + '">'
+    var html=
+        '<div id="mc_'+id+'" class="member-card" data-id="'+id+'">'
 
-        + '<div class="flex items-center justify-between mb-3">'
-        +   '<div class="flex items-center gap-2">'
-        +     '<div class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0"'
-        +          ' style="background:rgba(249,115,22,.10);border:1px solid rgba(249,115,22,.25);">'
-        +       '<span class="member-num font-black" style="font-size:9px;color:#f97316;">' + (idx+1) + '</span>'
-        +     '</div>'
-        +     '<span class="member-lbl font-bold" style="font-size:11px;color:#444441;">Anggota ' + (idx+1) + '</span>'
-        +     '<span id="scan_badge_' + id + '" class="scan-badge" style="display:none;">'
-        +       '<svg width="8" height="8" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3">'
-        +         '<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>Ter-scan'
-        +     '</span>'
-        +   '</div>'
-        +   delBtn
-        + '</div>'
+        +'<div class="flex items-center justify-between mb-3">'
+        +'<div class="flex items-center gap-2">'
+        +'<div class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0"'
+        +' style="background:rgba(249,115,22,.10);border:1px solid rgba(249,115,22,.25);">'
+        +'<span class="member-num font-black" style="font-size:9px;color:#f97316;">'+(idx+1)+'</span>'
+        +'</div>'
+        +'<span class="member-lbl font-bold" style="font-size:11px;color:#444441;">Anggota '+(idx+1)+'</span>'
+        +'<span id="scan_badge_'+id+'" class="scan-badge" style="display:none;">'
+        +'<svg width="8" height="8" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3">'
+        +'<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>Ter-scan'
+        +'</span>'
+        +'</div>'
+        +delBtn
+        +'</div>'
 
         /* Dropzone */
-        + '<div id="dz_' + id + '" class="ktp-dropzone"'
-        +     ' onclick="BEREGU.showSheet(' + id + ')"'
-        +     ' ondragover="event.preventDefault();this.classList.add(\'drag-over\')"'
-        +     ' ondragleave="this.classList.remove(\'drag-over\')"'
-        +     ' ondrop="BEREGU.onDrop(event,' + id + ')">'
+        +'<div id="dz_'+id+'" class="ktp-dropzone"'
+        +' onclick="BEREGU.showSheet('+id+')"'
+        +' ondragover="event.preventDefault();this.classList.add(\'drag-over\')"'
+        +' ondragleave="this.classList.remove(\'drag-over\')"'
+        +' ondrop="BEREGU.onDrop(event,'+id+')">'
 
-        /* Preview */
-        +   '<div id="prev_' + id + '" class="hidden w-full flex items-center gap-2 px-3 py-2">'
-        +     '<div class="relative flex-shrink-0">'
-        +       '<img id="prevImg_' + id + '" src="" alt="" style="width:48px;height:36px;border-radius:6px;object-fit:cover;border:0.5px solid rgba(0,0,0,.1);">'
-        +       '<button type="button" onclick="BEREGU.resetFile(event,' + id + ')"'
-        +               ' class="absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center"'
-        +               ' style="background:#ef4444;">'
-        +         '<svg width="7" height="7" fill="none" stroke="white" viewBox="0 0 24 24" stroke-width="3">'
-        +           '<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>'
-        +       '</button>'
-        +     '</div>'
-        +     '<p style="font-size:10px;color:#b4b2a9;">Ketuk ganti</p>'
-        +   '</div>'
+        +'<div id="prev_'+id+'" class="hidden w-full flex items-center gap-2 px-3 py-2">'
+        +'<div class="relative flex-shrink-0">'
+        +'<img id="prevImg_'+id+'" src="" alt="" style="width:48px;height:36px;border-radius:6px;object-fit:cover;border:0.5px solid rgba(0,0,0,.1);">'
+        +'<button type="button" onclick="BEREGU.resetFile(event,'+id+')"'
+        +' class="absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center"'
+        +' style="background:#ef4444;">'
+        +'<svg width="7" height="7" fill="none" stroke="white" viewBox="0 0 24 24" stroke-width="3">'
+        +'<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>'
+        +'</button></div>'
+        +'<p style="font-size:10px;color:#b4b2a9;">Ketuk ganti</p>'
+        +'</div>'
 
-        /* Placeholder */
-        +   '<div id="dzDefault_' + id + '" class="flex flex-col items-center py-2 gap-1">'
-        +     '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(249,115,22,.45)" stroke-width="1.5">'
-        +       '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 9h10M7 13h6"/>'
-        +     '</svg>'
-        +     '<p style="font-size:10px;color:#b4b2a9;">Ketuk upload KTP</p>'
-        +   '</div>'
-        + '</div>'
+        +'<div id="dzDefault_'+id+'" class="flex flex-col items-center py-2 gap-1">'
+        +'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(249,115,22,.45)" stroke-width="1.5">'
+        +'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 9h10M7 13h6"/>'
+        +'</svg>'
+        +'<p style="font-size:10px;color:#b4b2a9;">Ketuk upload KTP</p>'
+        +'</div>'
+        +'</div>'
 
-        /* 3 hidden file inputs */
-        + '<input type="file" id="fiCam_' + id + '"  accept="image/*" capture="environment" class="hidden" onchange="BEREGU.onFileSelect(this,' + id + ')">'
-        + '<input type="file" id="fiFoto_' + id + '" accept="image/*" class="hidden" name="ktp_files[]" onchange="BEREGU.onFileSelect(this,' + id + ')">'
-        + '<input type="file" id="fiFile_' + id + '" accept="image/*,.heic,.heif" class="hidden" onchange="BEREGU.onFileSelect(this,' + id + ')">'
+        +'<input type="file" id="fiCam_'+id+'" accept="image/*" capture="environment" class="hidden" onchange="BEREGU.onFileSelect(this,'+id+')">'
+        +'<input type="file" id="fiFoto_'+id+'" accept="image/*" class="hidden" name="ktp_files[]" onchange="BEREGU.onFileSelect(this,'+id+')">'
+        +'<input type="file" id="fiFile_'+id+'" accept="image/*,.heic,.heif" class="hidden" onchange="BEREGU.onFileSelect(this,'+id+')">'
 
-        /* Scan button per card */
-        + '<button type="button" id="scanBtn_' + id + '" onclick="BEREGU.scan(' + id + ')"'
-        +         ' class="hidden mt-2 w-full flex items-center justify-center gap-1.5"'
-        +         ' style="background:linear-gradient(135deg,#f97316,#c2410c);color:#fff;padding:6px 10px;font-size:10px;font-weight:800;border-radius:9px;border:none;cursor:pointer;letter-spacing:.06em;">'
-        +   '<svg width="11" height="11" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">'
-        +     '<path stroke-linecap="round" stroke-linejoin="round" d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/>'
-        +   '</svg>SCAN KTP'
-        + '</button>'
+        +'<button type="button" id="scanBtn_'+id+'" onclick="BEREGU.scan('+id+')"'
+        +' class="hidden mt-2 w-full flex items-center justify-center gap-1.5"'
+        +' style="background:linear-gradient(135deg,#f97316,#c2410c);color:#fff;padding:6px 10px;font-size:10px;font-weight:800;border-radius:9px;border:none;cursor:pointer;letter-spacing:.06em;">'
+        +'<svg width="11" height="11" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">'
+        +'<path stroke-linecap="round" stroke-linejoin="round" d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/>'
+        +'</svg>SCAN KTP'
+        +'</button>'
 
-        /* Loading */
-        + '<div id="scanLoading_' + id + '" class="hidden mt-2 text-center" style="padding:4px 0;">'
-        +   '<p style="font-size:10px;color:#f97316;font-weight:600;">Membaca KTP...</p>'
-        +   '<div class="scan-loading-bar"><div class="scan-loading-bar-inner"></div></div>'
-        + '</div>'
+        +'<div id="scanLoading_'+id+'" class="hidden mt-2 text-center" style="padding:4px 0;">'
+        +'<p style="font-size:10px;color:#f97316;font-weight:600;">Membaca KTP...</p>'
+        +'<div class="scan-loading-bar"><div class="scan-loading-bar-inner"></div></div>'
+        +'</div>'
 
-        /* KTP Data Card */
-        + '<div id="ktpDataCard_' + id + '" class="ktp-data-card">'
-        +   '<p class="ktp-edit-hint">✏ Klik untuk edit</p>'
-        +   '<div id="ktpDataRows_' + id + '"></div>'
-        + '</div>'
+        +'<div id="ktpDataCard_'+id+'" class="ktp-data-card">'
+        +'<p class="ktp-edit-hint">✏ Klik untuk edit</p>'
+        +'<div id="ktpDataRows_'+id+'"></div>'
+        +'</div>'
 
-        + '</div>';
+        +'</div>';
 
     container.insertAdjacentHTML('beforeend', html);
 }
 
 /* ── Scan Semua ──────────────────────────────────────────────── */
 function scanAll() {
-    /* Kumpulkan ID member yang punya file tapi belum di-scan */
-    var toScan = members.filter(function (m) {
-        return memberFiles[m.id] && !m.scanned;
-    }).map(function (m) { return m.id; });
-
-    if (toScan.length === 0) {
-        toast('Semua KTP yang sudah diupload telah di-scan.', 'warn');
-        return;
-    }
-
-    var btn = document.getElementById('scanAllBtn');
-    var txt = document.getElementById('scanAllText');
-    if (btn) { btn.disabled = true; }
-    if (txt) txt.textContent = 'Scanning ' + toScan.length + ' KTP...';
-
-    /* Scan berurutan pakai rekursi async */
-    var idx = 0;
+    var toScan=members.filter(function(m){return memberFiles[m.id]&&!m.scanned;}).map(function(m){return m.id;});
+    if (toScan.length===0) { toast('Semua KTP yang sudah diupload telah di-scan.','warn'); return; }
+    var btn=document.getElementById('scanAllBtn'), txt=document.getElementById('scanAllText');
+    if (btn) btn.disabled=true;
+    if (txt) txt.textContent='Scanning '+toScan.length+' KTP...';
+    var idx=0;
     function scanNext() {
-        if (idx >= toScan.length) {
-            if (txt) txt.textContent = 'SCAN SEMUA KTP';
-            updateScanAllBtn();
-            return;
-        }
-        var id = toScan[idx++];
-        if (txt) txt.textContent = 'Scanning ' + idx + ' / ' + toScan.length + '...';
-        scanWithCallback(id, function () {
-            setTimeout(scanNext, 400);
-        });
+        if (idx>=toScan.length) { if(txt) txt.textContent='SCAN SEMUA KTP'; updateScanAllBtn(); return; }
+        var id=toScan[idx++];
+        if (txt) txt.textContent='Scanning '+idx+' / '+toScan.length+'...';
+        scanWithCallback(id, function(){setTimeout(scanNext,400);});
     }
     scanNext();
 }
 
-/* Scan dengan callback setelah selesai */
+/* ── Core scan dengan callback ───────────────────────────────── */
 function scanWithCallback(id, cb) {
-    var fileToScan = memberFiles[id];
-    if (!fileToScan) { if (cb) cb(); return; }
+    var fileToScan=memberFiles[id];
+    if (!fileToScan) { if(cb) cb(); return; }
 
-    hide('scanBtn_' + id); show('scanLoading_' + id);
+    hide('scanBtn_'+id); show('scanLoading_'+id);
     resetCardUI(id);
 
-    var fd   = new FormData();
-    fd.append('image', fileToScan, fileToScan.name || 'ktp.jpg');
-    var csrf = (document.querySelector('meta[name="csrf-token"]') || {}).content || '';
+    var fd=new FormData();
+    fd.append('image', fileToScan, fileToScan.name||'ktp.jpg');
+    var csrf=(document.querySelector('meta[name="csrf-token"]')||{}).content||'';
 
     fetch('/ocr/ktp', {
-        method: 'POST',
-        headers: { 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json' },
-        body: fd,
+        method:'POST',
+        headers:{'X-CSRF-TOKEN':csrf,'Accept':'application/json'},
+        body:fd,
     })
-    .then(function (r) {
-        hide('scanLoading_' + id); show('scanBtn_' + id);
-        return r.json().then(function (j) { return { ok: r.ok, j: j }; });
+    .then(function(r){
+        hide('scanLoading_'+id); show('scanBtn_'+id);
+        return r.json().then(function(j){return{ok:r.ok,j:j};});
     })
-    .then(function (res) {
-        if (res.ok && res.j.success) {
-            renderKtpCard(id, res.j.data);
-            var m = getMember(id);
-            if (m) { m.scanned = true; m.cityValid = res.j.data.city_valid; }
-            var badge = document.getElementById('scan_badge_' + id);
-            if (badge) badge.style.display = 'inline-flex';
-            var mc = document.getElementById('mc_' + id);
-            if (mc) {
-                mc.classList.toggle('scanned', !!res.j.data.city_valid);
-                mc.classList.toggle('city-invalid', !res.j.data.city_valid);
-            }
-            updateCounter();
+    .then(function(res){
+        if (!res.ok||!res.j.success) {
+            toast('Gagal membaca KTP. Coba foto ulang lebih jelas.','error');
+            if(cb) cb(); return;
         }
-        if (cb) cb();
+
+        var data       = res.j.data;
+        var genderNorm = normalizeGender(data.jenis_kelamin||'');
+        var memberIdx  = getIndexById(id);
+
+        /* ══════════════════════════════════════════════════════
+           VALIDASI GENDER — harus Laki-laki (L)
+        ══════════════════════════════════════════════════════ */
+        if (genderNorm === '') {
+            /* Jenis kelamin tidak terbaca */
+            _onGenderFail(id);
+            _GEM.showUnknown(memberIdx, data.nama||'');
+            if(cb) cb(); return;
+        }
+
+        if (genderNorm !== REQUIRED_GENDER) {
+            /* Terdeteksi Perempuan — tolak */
+            _onGenderFail(id);
+            _GEM.show(memberIdx, data.nama||'', genderNorm);
+            if(cb) cb(); return;
+        }
+
+        /* ── Gender OK (Laki-laki) — lanjut render ── */
+        var m=getMember(id);
+        if (m) { m.scanned=true; m.cityValid=data.city_valid; m.genderValid=true; }
+
+        renderKtpCard(id, data, genderNorm);
+
+        var badge=document.getElementById('scan_badge_'+id);
+        if (badge) badge.style.display='inline-flex';
+
+        var mc=document.getElementById('mc_'+id);
+        if (mc) {
+            mc.classList.remove('gender-error');
+            mc.classList.toggle('scanned',      !!data.city_valid);
+            mc.classList.toggle('city-invalid', !data.city_valid);
+        }
+
+        updateCounter();
+        if(cb) cb();
     })
-    .catch(function () {
-        hide('scanLoading_' + id); show('scanBtn_' + id);
-        if (cb) cb();
+    .catch(function(){
+        hide('scanLoading_'+id); show('scanBtn_'+id);
+        toast('Koneksi ke OCR gagal. Coba lagi.','error');
+        if(cb) cb();
     });
+}
+
+/* ── Handler gender gagal ────────────────────────────────────── */
+function _onGenderFail(id) {
+    /* Reset file */
+    memberFiles[id]=null;
+    ['fiCam_','fiFoto_','fiFile_'].forEach(function(pfx){
+        var el=document.getElementById(pfx+id);
+        if(el) el.value='';
+    });
+
+    /* Reset member state */
+    var m=getMember(id);
+    if (m) { m.scanned=false; m.cityValid=null; m.genderValid=false; }
+
+    /* Reset UI */
+    hide('prev_'+id); show('dzDefault_'+id);
+    hide('scanBtn_'+id); hide('scanLoading_'+id);
+
+    /* Shake animation */
+    var mc=document.getElementById('mc_'+id);
+    if (mc) {
+        mc.classList.remove('scanned','city-invalid');
+        mc.classList.add('gender-error');
+        setTimeout(function(){ mc.classList.remove('gender-error'); }, 600);
+    }
+
+    resetCardUI(id);
+    updateCounter();
+    updateScanAllBtn();
 }
 
 /* ── File handling ───────────────────────────────────────────── */
 function showSheet(id) { _SHEET.open(id); }
 
 function onFileSelect(input, id) {
-    if (input.files && input.files[0]) processFile(input.files[0], id);
+    if (input.files&&input.files[0]) processFile(input.files[0], id);
 }
 
 function onDrop(e, id) {
     e.preventDefault();
-    document.getElementById('dz_' + id).classList.remove('drag-over');
-    var file = e.dataTransfer && e.dataTransfer.files[0];
-    if (file && file.type.startsWith('image/')) processFile(file, id);
+    document.getElementById('dz_'+id).classList.remove('drag-over');
+    var file=e.dataTransfer&&e.dataTransfer.files[0];
+    if (file&&file.type.startsWith('image/')) processFile(file,id);
 }
 
 function processFile(file, id) {
-    if (file.size > 10*1024*1024) { toast('File terlalu besar. Maks 10MB.', 'error'); return; }
-    convertToJpeg(file, function (converted, previewUrl) {
+    if (file.size>10*1024*1024) { toast('File terlalu besar. Maks 10MB.','error'); return; }
+    convertToJpeg(file, function(converted, previewUrl){
         if (!converted) return;
-        memberFiles[id] = converted;
-        var m = getMember(id);
-        if (m) { m.scanned = false; m.cityValid = null; }
-        document.getElementById('prevImg_' + id).src = previewUrl;
-        show('prev_' + id); hide('dzDefault_' + id); show('scanBtn_' + id);
+        memberFiles[id]=converted;
+        var m=getMember(id);
+        if (m) { m.scanned=false; m.cityValid=null; m.genderValid=false; }
+        document.getElementById('prevImg_'+id).src=previewUrl;
+        show('prev_'+id); hide('dzDefault_'+id); show('scanBtn_'+id);
         resetCardUI(id);
         updateScanAllBtn();
     });
@@ -1053,11 +1262,11 @@ function processFile(file, id) {
 
 function resetFile(e, id) {
     e.stopPropagation();
-    memberFiles[id] = null;
-    var m = getMember(id);
-    if (m) { m.scanned = false; m.cityValid = null; }
-    cardData[id] = {};
-    ['fiCam_','fiFoto_','fiFile_'].forEach(function(p){ var el=document.getElementById(p+id); if(el) el.value=''; });
+    memberFiles[id]=null;
+    var m=getMember(id);
+    if (m) { m.scanned=false; m.cityValid=null; m.genderValid=false; }
+    cardData[id]={};
+    ['fiCam_','fiFoto_','fiFile_'].forEach(function(p){var el=document.getElementById(p+id);if(el)el.value='';});
     hide('prev_'+id); show('dzDefault_'+id); hide('scanBtn_'+id); hide('scanLoading_'+id);
     resetCardUI(id);
     updateCounter();
@@ -1065,102 +1274,114 @@ function resetFile(e, id) {
 }
 
 function resetCardUI(id) {
-    var card  = document.getElementById('ktpDataCard_' + id);
-    var rows  = document.getElementById('ktpDataRows_' + id);
-    var badge = document.getElementById('scan_badge_'  + id);
-    var mc    = document.getElementById('mc_'          + id);
-    if (card)  { card.className = 'ktp-data-card'; }
-    if (rows)  rows.innerHTML = '';
-    if (badge) badge.style.display = 'none';
-    if (mc)    mc.classList.remove('scanned', 'city-invalid');
+    var card=document.getElementById('ktpDataCard_'+id);
+    var rows=document.getElementById('ktpDataRows_'+id);
+    var badge=document.getElementById('scan_badge_'+id);
+    var mc=document.getElementById('mc_'+id);
+    if (card) card.className='ktp-data-card';
+    if (rows) rows.innerHTML='';
+    if (badge) badge.style.display='none';
+    if (mc) mc.classList.remove('scanned','city-invalid','gender-error');
 }
 
-/* ── SCAN ────────────────────────────────────────────────────── */
+/* ── Scan single (dengan toast result) ──────────────────────── */
 function scan(id) {
-    scanWithCallback(id, function () {
-        var m = getMember(id);
-        var mi = getIndexById(id);
-        if (m) {
+    scanWithCallback(id, function(){
+        var m=getMember(id);
+        var mi=getIndexById(id);
+        if (m && m.scanned) {
             toast(m.cityValid
-                ? '✓ Anggota ' + (mi+1) + ' — KTP Balikpapan valid'
-                : '⚠ Anggota ' + (mi+1) + ' — Kota bukan Balikpapan',
-                m.cityValid ? 'success' : 'warn');
+                ? '✓ Anggota '+(mi+1)+' — KTP Balikpapan valid'
+                : '⚠ Anggota '+(mi+1)+' — Kota bukan Balikpapan',
+                m.cityValid?'success':'warn');
         }
     });
 }
 
 /* ── Render KTP Data Card ────────────────────────────────────── */
-function renderKtpCard(id, data) {
-    cardData[id] = {};
-    var card = document.getElementById('ktpDataCard_' + id);
-    var rows = document.getElementById('ktpDataRows_' + id);
-    if (!card || !rows) return;
-    rows.innerHTML = '';
+function renderKtpCard(id, data, genderNorm) {
+    cardData[id]={};
+    var card=document.getElementById('ktpDataCard_'+id);
+    var rows=document.getElementById('ktpDataRows_'+id);
+    if (!card||!rows) return;
+    rows.innerHTML='';
 
-    CARD_FIELDS.forEach(function (f) {
-        var raw = f.k === 'tanggal_lahir' ? (data.tanggal_lahir||data.tgl_lahir||'') : (data[f.k]||'');
-        var v   = ('' + raw).trim();
-        cardData[id][f.k] = v;
-        var valId = 'kval_'+id+'_'+f.k, inpId = 'kinp_'+id+'_'+f.k, hidId = 'khid_'+id+'_'+f.k;
-        var valContent = v ? esc(v) : '<span style="color:#b4b2a9;font-style:italic">—</span>';
-        rows.innerHTML +=
+    CARD_FIELDS.forEach(function(f){
+        var raw=f.k==='tanggal_lahir'?(data.tanggal_lahir||data.tgl_lahir||''):(data[f.k]||'');
+        var v=(''+ raw).trim();
+        cardData[id][f.k]=v;
+        var valId='kval_'+id+'_'+f.k, inpId='kinp_'+id+'_'+f.k, hidId='khid_'+id+'_'+f.k;
+        var valContent=v?esc(v):'<span style="color:#b4b2a9;font-style:italic">—</span>';
+        rows.innerHTML+=
             '<div class="ktp-row">'
-            + '<span class="ktp-label">' + f.l + ' <span style="color:#f97316">*</span></span>'
-            + '<span id="' + valId + '" class="ktp-value" title="Klik edit" onclick="BEREGU.inlineEdit(' + id + ',\'' + f.k + '\')">' + valContent + '</span>'
-            + '<input id="' + inpId + '" type="text" class="ktp-inline-input" style="display:none"'
-            +        ' value="' + esc(v) + '" placeholder="' + esc(f.placeholder||'') + '"'
-            +        ' onkeydown="BEREGU.inlineKey(event,' + id + ',\'' + f.k + '\')"'
-            +        ' onblur="BEREGU.inlineSave(' + id + ',\'' + f.k + '\')">'
-            + '<input type="hidden" id="' + hidId + '" name="' + f.n + '" value="' + esc(v) + '">'
-            + '</div>';
+            +'<span class="ktp-label">'+f.l+' <span style="color:#f97316">*</span></span>'
+            +'<span id="'+valId+'" class="ktp-value" title="Klik edit" onclick="BEREGU.inlineEdit('+id+',\''+f.k+'\')">'+valContent+'</span>'
+            +'<input id="'+inpId+'" type="text" class="ktp-inline-input" style="display:none"'
+            +' value="'+esc(v)+'" placeholder="'+esc(f.placeholder||'')+'"'
+            +' onkeydown="BEREGU.inlineKey(event,'+id+',\''+f.k+'\')"'
+            +' onblur="BEREGU.inlineSave('+id+',\''+f.k+'\')">'
+            +'<input type="hidden" id="'+hidId+'" name="'+f.n+'" value="'+esc(v)+'">'
+            +'</div>';
     });
 
-    rows.innerHTML += '<input type="hidden" id="khid_' + id + '_kota" name="kota_ktp[]" value="' + esc((data.kota||'').trim()) + '">';
+    /* Jenis Kelamin — read-only, selalu Laki-laki karena sudah divalidasi */
+    rows.innerHTML+=
+        '<div class="ktp-row" style="margin-top:4px;">'
+        +'<span class="ktp-label">Kelamin</span>'
+        +'<span style="flex:1;font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px;'
+        +'color:#1D4ED8;background:#EFF8FF;border:1px solid #BFDBFE;">♂ Laki-laki</span>'
+        +'<span style="font-size:8px;color:#b4b2a9;flex-shrink:0;">dari KTP</span>'
+        +'<input type="hidden" name="jenis_kelamin[]" value="L">'
+        +'</div>';
 
-    var tglVal = cardData[id]['tanggal_lahir']||'';
-    var usia   = hitungUsia(tglVal);
-    rows.innerHTML +=
+    /* Kota hidden */
+    rows.innerHTML+='<input type="hidden" id="khid_'+id+'_kota" name="kota_ktp[]" value="'+esc((data.kota||'').trim())+'">';
+
+    /* Usia */
+    var tglVal=cardData[id]['tanggal_lahir']||'';
+    var usia=hitungUsia(tglVal);
+    rows.innerHTML+=
         '<div class="ktp-row" style="margin-top:4px;padding-top:6px;border-top:1px solid rgba(249,115,22,.1);">'
-        + '<span class="ktp-label" style="color:rgba(249,115,22,.6);">Usia</span>'
-        + '<span id="usia_disp_' + id + '" class="' + (usia!==null?'usia-display has-value':'usia-display no-value') + '">'
-        + (usia!==null ? usia+' th (Ags 2026)' : '—') + '</span>'
-        + '<span style="font-size:8px;color:#b4b2a9;flex-shrink:0;">auto</span>'
-        + '</div>';
+        +'<span class="ktp-label" style="color:rgba(249,115,22,.6);">Usia</span>'
+        +'<span id="usia_disp_'+id+'" class="'+(usia!==null?'usia-display has-value':'usia-display no-value')+'">'
+        +(usia!==null?usia+' th (Ags 2026)':'—')+'</span>'
+        +'<span style="font-size:8px;color:#b4b2a9;flex-shrink:0;">auto</span>'
+        +'</div>';
 
-    var kotaRaw = data.kota||'';
-    rows.innerHTML += data.city_valid
-        ? '<div class="city-badge valid">✓ KTP Balikpapan — Memenuhi Syarat</div>'
-        : (kotaRaw
-            ? '<div class="city-badge invalid">✗ "' + esc(kotaRaw) + '" — Bukan Balikpapan</div>'
-            : '<div class="city-badge empty">— Kota belum terbaca</div>');
+    /* City badge */
+    rows.innerHTML+=data.city_valid
+        ?'<div class="city-badge valid">✓ KTP Balikpapan — Memenuhi Syarat</div>'
+        :(data.kota
+            ?'<div class="city-badge invalid">✗ "'+esc(data.kota)+'" — Bukan Balikpapan</div>'
+            :'<div class="city-badge empty">— Kota belum terbaca</div>');
 
-    card.className = 'ktp-data-card show valid-card';
+    card.className='ktp-data-card show valid-card';
 }
 
 /* ── Inline edit ─────────────────────────────────────────────── */
 function inlineEdit(id, key) {
-    var v = document.getElementById('kval_'+id+'_'+key);
-    var i = document.getElementById('kinp_'+id+'_'+key);
+    var v=document.getElementById('kval_'+id+'_'+key);
+    var i=document.getElementById('kinp_'+id+'_'+key);
     if (!v||!i) return;
     v.style.display='none'; i.style.display=''; i.focus(); if(i.select) i.select();
 }
 function inlineSave(id, key) {
-    var v = document.getElementById('kval_'+id+'_'+key);
-    var i = document.getElementById('kinp_'+id+'_'+key);
-    var h = document.getElementById('khid_'+id+'_'+key);
+    var v=document.getElementById('kval_'+id+'_'+key);
+    var i=document.getElementById('kinp_'+id+'_'+key);
+    var h=document.getElementById('khid_'+id+'_'+key);
     if (!v||!i) return;
-    var nv = i.value.trim(), ov = (cardData[id]&&cardData[id][key])||'', edited = nv!==ov;
-    if (h) h.value = nv;
-    if (cardData[id]) cardData[id][key] = nv;
-    v.innerHTML   = nv ? esc(nv) : '<span style="color:#b4b2a9;font-style:italic">—</span>';
-    v.style.color = edited ? '#d97706' : '';
-    v.title       = edited ? 'Diedit manual' : 'Klik untuk edit';
-    if (edited && i.classList) i.classList.add('was-edited');
+    var nv=i.value.trim(), ov=(cardData[id]&&cardData[id][key])||'', edited=nv!==ov;
+    if (h) h.value=nv;
+    if (cardData[id]) cardData[id][key]=nv;
+    v.innerHTML=nv?esc(nv):'<span style="color:#b4b2a9;font-style:italic">—</span>';
+    v.style.color=edited?'#d97706':'';
+    v.title=edited?'Diedit manual':'Klik untuk edit';
+    if (edited&&i.classList) i.classList.add('was-edited');
     i.style.display='none'; v.style.display='';
     if (key==='tanggal_lahir') updateUsiaRow(id, nv);
 }
 function inlineKey(e, id, key) {
-    if (e.key==='Enter')  { e.preventDefault(); inlineSave(id, key); }
+    if (e.key==='Enter')  { e.preventDefault(); inlineSave(id,key); }
     if (e.key==='Escape') {
         var i=document.getElementById('kinp_'+id+'_'+key);
         var v=document.getElementById('kval_'+id+'_'+key);
@@ -1168,110 +1389,93 @@ function inlineKey(e, id, key) {
     }
 }
 
-/* ── Counter + Submit Button State ──────────────────────────── */
+/* ── Counter + Submit State ──────────────────────────────────── */
 function updateCounter() {
     var total      = members.length;
-    var scanned    = members.filter(function (m) { return m.scanned; }).length;
-    var validCount = members.filter(function (m) { return m.cityValid === true; }).length;
-    var pct        = Math.round((validCount / MIN_KTP_VALID) * 100);
-    if (pct > 100) pct = 100;
+    var scanned    = members.filter(function(m){return m.scanned;}).length;
+    var validCount = members.filter(function(m){return m.cityValid===true;}).length;
+    var pct        = Math.min(Math.round((validCount/MIN_KTP_VALID)*100), 100);
 
-    var textEl = document.getElementById('counterText');
-    var fillEl = document.getElementById('counterFill');
-    var noteEl = document.getElementById('counterNote');
-    if (textEl) textEl.textContent = validCount + ' / ' + total + ' anggota KTP valid';
-    if (fillEl) {
-        fillEl.style.width = pct + '%';
-        fillEl.style.background = validCount >= MIN_KTP_VALID ? '#10b981' : '#f97316';
-    }
+    var textEl=document.getElementById('counterText');
+    var fillEl=document.getElementById('counterFill');
+    var noteEl=document.getElementById('counterNote');
+    if (textEl) textEl.textContent=validCount+' / '+total+' anggota KTP valid';
+    if (fillEl) { fillEl.style.width=pct+'%'; fillEl.style.background=validCount>=MIN_KTP_VALID?'#10b981':'#f97316'; }
     if (noteEl) {
-        if (!scanned) {
-            noteEl.textContent = 'Upload & scan KTP untuk melihat progress';
-            noteEl.style.color = '#b4b2a9';
-        } else if (validCount < MIN_KTP_VALID) {
-            noteEl.textContent = 'Butuh ' + (MIN_KTP_VALID - validCount) + ' KTP Balikpapan lagi';
-            noteEl.style.color = '#f97316';
-        } else {
-            noteEl.textContent = '✓ Syarat minimal terpenuhi — siap dikirim';
-            noteEl.style.color = '#059669';
-        }
+        if (!scanned)                         { noteEl.textContent='Upload & scan KTP untuk melihat progress'; noteEl.style.color='#b4b2a9'; }
+        else if (validCount<MIN_KTP_VALID)    { noteEl.textContent='Butuh '+(MIN_KTP_VALID-validCount)+' KTP Balikpapan lagi'; noteEl.style.color='#f97316'; }
+        else                                   { noteEl.textContent='✓ Syarat minimal terpenuhi — siap dikirim'; noteEl.style.color='#059669'; }
     }
 
-    /* Update submit button */
-    var btn  = document.getElementById('submitBtn');
-    var txt  = document.getElementById('submitBtnText');
-    var hint = document.getElementById('submitHint');
-    var need = document.getElementById('submitNeedCount');
+    var btn=document.getElementById('submitBtn');
+    var txt=document.getElementById('submitBtnText');
+    var hint=document.getElementById('submitHint');
+    var need=document.getElementById('submitNeedCount');
 
-    if (validCount >= MIN_KTP_VALID) {
-        if (btn) { btn.disabled = false; btn.className = btn.className.replace('btn-disabled','').trim(); btn.classList.add('btn-ready'); }
-        if (txt) txt.textContent = 'KIRIM PENDAFTARAN →';
-        if (hint) hint.style.display = 'none';
+    if (validCount>=MIN_KTP_VALID) {
+        if (btn) { btn.disabled=false; btn.className=btn.className.replace('btn-disabled','').trim(); btn.classList.add('btn-ready'); }
+        if (txt) txt.textContent='KIRIM PENDAFTARAN →';
+        if (hint) hint.style.display='none';
     } else {
-        if (btn) { btn.disabled = true; btn.classList.remove('btn-ready'); btn.classList.add('btn-disabled'); }
-        var kurang = MIN_KTP_VALID - validCount;
-        if (txt) txt.textContent = 'Scan minimal ' + MIN_KTP_VALID + ' KTP Balikpapan dulu';
-        if (hint) hint.style.display = '';
-        if (need) need.textContent = kurang;
+        if (btn) { btn.disabled=true; btn.classList.remove('btn-ready'); btn.classList.add('btn-disabled'); }
+        if (txt) txt.textContent='Scan minimal '+MIN_KTP_VALID+' KTP Balikpapan dulu';
+        if (hint) hint.style.display='';
+        if (need) need.textContent=MIN_KTP_VALID-validCount;
     }
 
     updateScanAllBtn();
 }
 
 function updateScanAllBtn() {
-    /* Aktif kalau ada file yang belum di-scan */
-    var hasPending = members.some(function (m) {
-        return memberFiles[m.id] && !m.scanned;
-    });
-    var btn = document.getElementById('scanAllBtn');
-    var txt = document.getElementById('scanAllText');
+    var hasPending=members.some(function(m){return memberFiles[m.id]&&!m.scanned;});
+    var btn=document.getElementById('scanAllBtn');
+    var txt=document.getElementById('scanAllText');
     if (!btn) return;
-    btn.disabled = !hasPending;
-    if (txt && !btn.disabled) txt.textContent = 'SCAN SEMUA KTP';
+    btn.disabled=!hasPending;
+    if (txt&&!btn.disabled) txt.textContent='SCAN SEMUA KTP';
 }
 
 /* ── Helpers ─────────────────────────────────────────────────── */
-function getMember(id)    { return members.find(function (m) { return m.id === id; }); }
-function getIndexById(id) { return members.findIndex(function (m) { return m.id === id; }); }
+function getMember(id)    { return members.find(function(m){return m.id===id;}); }
+function getIndexById(id) { return members.findIndex(function(m){return m.id===id;}); }
 function show(elId) { var el=document.getElementById(elId); if(el) el.classList.remove('hidden'); }
 function hide(elId) { var el=document.getElementById(elId); if(el) el.classList.add('hidden'); }
-function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function esc(s)  { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
 /* ── Toast ───────────────────────────────────────────────────── */
-var _tt = null;
-function showToast(msg, type) { toast(msg, type); }
+var _tt=null;
 function toast(msg, type) {
-    var el = document.getElementById('_beregToast');
+    var el=document.getElementById('_beregToast');
     if (!el) {
-        el = document.createElement('div');
-        el.id = '_beregToast';
-        el.style.cssText = 'position:fixed;top:88px;right:20px;z-index:99999;max-width:360px;padding:10px 14px;border-radius:11px;font-size:11px;line-height:1.5;font-weight:600;box-shadow:0 8px 36px rgba(0,0,0,.15);transition:opacity .3s,transform .3s;pointer-events:none;';
+        el=document.createElement('div');
+        el.id='_beregToast';
+        el.style.cssText='position:fixed;top:88px;right:20px;z-index:99999;max-width:360px;padding:10px 14px;border-radius:11px;font-size:11px;line-height:1.5;font-weight:600;box-shadow:0 8px 36px rgba(0,0,0,.15);transition:opacity .3s,transform .3s;pointer-events:none;';
         document.body.appendChild(el);
     }
-    var styles = {
+    var styles={
         success:'background:#f0fdf4;border:1px solid rgba(16,185,129,.3);color:#059669;',
         warn:'background:#fffbeb;border:1px solid rgba(234,179,8,.3);color:#d97706;',
         error:'background:#fef2f2;border:1px solid rgba(239,68,68,.3);color:#dc2626;'
     };
-    el.style.cssText += (styles[type]||styles.error) + 'opacity:1;transform:translateY(0);';
-    el.textContent = msg;
+    el.style.cssText+=(styles[type]||styles.error)+'opacity:1;transform:translateY(0);';
+    el.textContent=msg;
     if (_tt) clearTimeout(_tt);
-    _tt = setTimeout(function () { el.style.opacity='0'; el.style.transform='translateY(-8px)'; }, 5000);
+    _tt=setTimeout(function(){el.style.opacity='0';el.style.transform='translateY(-8px)';},5000);
 }
 
-/* ── AJAX Error helpers ──────────────────────────────────────── */
+/* ── Error banner helpers ────────────────────────────────────── */
 function clearAllErrors() {
-    document.querySelectorAll('.field-error-msg').forEach(function (e) { e.textContent=''; e.classList.remove('show'); });
-    document.querySelectorAll('.input-field.field-error').forEach(function (e) { e.classList.remove('field-error'); });
-    var banner = document.getElementById('ajaxErrorBanner');
+    document.querySelectorAll('.field-error-msg').forEach(function(e){e.textContent='';e.classList.remove('show');});
+    document.querySelectorAll('.input-field.field-error').forEach(function(e){e.classList.remove('field-error');});
+    var banner=document.getElementById('ajaxErrorBanner');
     if (banner) banner.classList.remove('show');
 }
 
 function showErrorBanner(errors) {
-    var banner = document.getElementById('ajaxErrorBanner'), list = document.getElementById('ajaxErrorList');
+    var banner=document.getElementById('ajaxErrorBanner'), list=document.getElementById('ajaxErrorList');
     if (!banner||!list) return;
-    list.innerHTML = '';
-    errors.forEach(function (m) { var li=document.createElement('li'); li.textContent=m; list.appendChild(li); });
+    list.innerHTML='';
+    errors.forEach(function(m){var li=document.createElement('li');li.textContent=m;list.appendChild(li);});
     banner.classList.add('show');
     banner.scrollIntoView({behavior:'smooth',block:'start'});
 }
@@ -1280,88 +1484,92 @@ function setSubmitLoading(loading) {
     var btn=document.getElementById('submitBtn'), txt=document.getElementById('submitBtnText');
     var sp=document.getElementById('submitBtnSpinner'), ov=document.getElementById('submitOverlay');
     if (loading) {
-        if(btn) btn.disabled=true; if(txt) txt.textContent='Memproses...';
-        if(sp) sp.classList.remove('hidden'); if(ov) ov.classList.add('show');
+        if(btn)btn.disabled=true; if(txt)txt.textContent='Memproses...';
+        if(sp)sp.classList.remove('hidden'); if(ov)ov.classList.add('show');
     } else {
-        if(btn) btn.disabled=false; if(txt) txt.innerHTML='KIRIM PENDAFTARAN →';
-        if(sp) sp.classList.add('hidden'); if(ov) ov.classList.remove('show');
+        if(btn)btn.disabled=false; if(txt)txt.innerHTML='KIRIM PENDAFTARAN →';
+        if(sp)sp.classList.add('hidden'); if(ov)ov.classList.remove('show');
     }
 }
 
-/* ── Expose ──────────────────────────────────────────────────── */
+/* ── Expose ke global ────────────────────────────────────────── */
 window.BEREGU = {
-    addMember: addMember, remove: removeMember,
-    onFileSelect: onFileSelect, onDrop: onDrop, resetFile: resetFile,
-    scan: scan, scanAll: scanAll, showSheet: showSheet,
-    inlineEdit: inlineEdit, inlineSave: inlineSave, inlineKey: inlineKey,
+    addMember:addMember, remove:removeMember,
+    onFileSelect:onFileSelect, onDrop:onDrop, resetFile:resetFile,
+    scan:scan, scanAll:scanAll, showSheet:showSheet,
+    inlineEdit:inlineEdit, inlineSave:inlineSave, inlineKey:inlineKey,
 };
 
 /* ── Bootstrap ───────────────────────────────────────────────── */
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function(){
     init();
-    var form = document.getElementById('regForm');
+
+    var form=document.getElementById('regForm');
     if (!form) return;
 
-    form.addEventListener('submit', async function (e) {
+    form.addEventListener('submit', async function(e){
         e.preventDefault();
         clearAllErrors();
 
-        var validKtp = members.filter(function (m) { return m.cityValid === true; }).length;
-        if (validKtp < MIN_KTP_VALID) {
-            showErrorBanner(['Minimal ' + MIN_KTP_VALID + ' KTP Balikpapan diperlukan. Saat ini: ' + validKtp + '.']);
+        /* Validasi: minimal 6 KTP Balikpapan valid */
+        var validKtp=members.filter(function(m){return m.cityValid===true;}).length;
+        if (validKtp<MIN_KTP_VALID) {
+            showErrorBanner(['Minimal '+MIN_KTP_VALID+' KTP Balikpapan diperlukan. Saat ini: '+validKtp+'.']);
             return;
         }
 
-        var clientErrors = [];
-        members.forEach(function (m, i) {
-            CARD_FIELDS.forEach(function (f) {
-                var h = document.getElementById('khid_'+m.id+'_'+f.k);
-                if (h && !h.value.trim()) {
-                    clientErrors.push('Anggota ' + (i+1) + ': ' + f.l + ' wajib diisi');
-                    var mc = document.getElementById('mc_'+m.id);
+        /* Validasi: semua field wajib terisi */
+        var clientErrors=[];
+        members.forEach(function(m,i){
+            CARD_FIELDS.forEach(function(f){
+                var h=document.getElementById('khid_'+m.id+'_'+f.k);
+                if (h&&!h.value.trim()) {
+                    clientErrors.push('Anggota '+(i+1)+': '+f.l+' wajib diisi');
+                    var mc=document.getElementById('mc_'+m.id);
                     if (mc) mc.classList.add('city-invalid');
                 }
             });
         });
-        if (clientErrors.length > 0) { showErrorBanner(clientErrors); return; }
+        if (clientErrors.length>0) { showErrorBanner(clientErrors); return; }
 
-        var fd = new FormData();
-        form.querySelectorAll('input:not([type="file"]), select, textarea').forEach(function (inp) {
+        /* Build FormData */
+        var fd=new FormData();
+        form.querySelectorAll('input:not([type="file"]), select, textarea').forEach(function(inp){
             if (!inp.name) return;
             fd.append(inp.name, inp.value);
         });
-        members.forEach(function (m, i) {
-            var f = memberFiles[m.id];
+        members.forEach(function(m,i){
+            var f=memberFiles[m.id];
             if (!f) {
-                ['fiCam_','fiFoto_','fiFile_'].some(function (p) {
-                    var el = document.getElementById(p + m.id);
-                    if (el && el.files && el.files[0]) { f = el.files[0]; return true; }
+                ['fiCam_','fiFoto_','fiFile_'].some(function(p){
+                    var el=document.getElementById(p+m.id);
+                    if(el&&el.files&&el.files[0]){f=el.files[0];return true;}
                 });
             }
-            if (f) fd.append('ktp_files[]', f, f.name || ('ktp-anggota-'+(i+1)+'.jpg'));
+            if (f) fd.append('ktp_files[]',f,f.name||('ktp-anggota-'+(i+1)+'.jpg'));
         });
 
         setSubmitLoading(true);
-        var csrf = (document.querySelector('meta[name="csrf-token"]')||{}).content||'';
+        var csrf=(document.querySelector('meta[name="csrf-token"]')||{}).content||'';
 
         try {
-            var response = await fetch("{{ route('registration.store') }}", {
-                method: 'POST',
-                headers: { 'X-CSRF-TOKEN':csrf, 'Accept':'application/json', 'X-Requested-With':'XMLHttpRequest' },
-                body: fd,
+            var response=await fetch("{{ route('registration.store') }}", {
+                method:'POST',
+                headers:{'X-CSRF-TOKEN':csrf,'Accept':'application/json','X-Requested-With':'XMLHttpRequest'},
+                body:fd,
             });
-            var data = await response.json();
+            var data=await response.json();
 
-            if (response.status === 422) {
+            if (response.status===422) {
                 setSubmitLoading(false);
-                var allMessages = [];
-                Object.keys(data.errors||{}).forEach(function (field) {
-                    var msgs = data.errors[field];
-                    if (!Array.isArray(msgs)) msgs = [msgs];
-                    allMessages = allMessages.concat(msgs);
-                    var errEl = document.getElementById('err_' + field.replace(/\.\d+$/,''));
+                var allMessages=[];
+                Object.keys(data.errors||{}).forEach(function(field){
+                    var msgs=data.errors[field];
+                    if (!Array.isArray(msgs)) msgs=[msgs];
+                    allMessages=allMessages.concat(msgs);
+                    var errEl=document.getElementById('err_'+field.replace(/\.\d+$/,''));
                     if (errEl) { errEl.textContent=msgs[0]; errEl.classList.add('show'); }
-                    var inp = document.getElementById('field_' + field.replace(/\.\d+$/,''));
+                    var inp=document.getElementById('field_'+field.replace(/\.\d+$/,''));
                     if (inp) inp.classList.add('field-error');
                 });
                 showErrorBanner(allMessages);
@@ -1374,11 +1582,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
-            var ovText = document.getElementById('submitOverlayText');
-            if (ovText) ovText.textContent = 'Pendaftaran berhasil! Menunggu verifikasi admin...';
-            window.location.href = data.redirect || '/';
+            var ovText=document.getElementById('submitOverlayText');
+            if (ovText) ovText.textContent='Pendaftaran berhasil! Menunggu verifikasi admin...';
+            window.location.href=data.redirect||'/';
 
-        } catch (err) {
+        } catch(err) {
             setSubmitLoading(false);
             showErrorBanner(['Koneksi gagal. Periksa internet dan coba lagi.']);
         }
