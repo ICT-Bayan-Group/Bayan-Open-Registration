@@ -538,7 +538,7 @@
             {{-- Bottom bar --}}
             <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
                 <p class="font-display font-semibold text-xs tracking-widest" style="color:rgba(0,0,0,.35);">
-                    © 2026 BAYAN GROUP · All Rights Reserved
+                    © 2026 PT Bayan Resources Tbk · All Rights Reserved
                 </p>
                {{-- <div class="flex items-center gap-5">
                     <a href="{{ route('home') }}"

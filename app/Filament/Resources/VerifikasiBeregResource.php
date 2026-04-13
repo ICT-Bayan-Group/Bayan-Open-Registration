@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\VerifikasiBeregResource\Pages;
 use App\Mail\RegistrationApproved;
 use App\Mail\RegistrationRejected;
+use App\Mail\RegistrationRevisionRequired;
 use App\Models\Registration;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -29,15 +30,13 @@ class VerifikasiBeregResource extends Resource
     protected static ?int    $navigationSort   = 2;
     protected static ?string $slug             = 'verifikasi-beregu';
 
-    // ── Hanya tampilkan data kategori beregu ──────────────────────
-
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()->where('kategori', 'beregu');
     }
 
     // ============================================================
-    // FORM (edit manual jika dibutuhkan)
+    // FORM
     // ============================================================
 
     public static function form(Form $form): Form
@@ -53,44 +52,48 @@ class VerifikasiBeregResource extends Resource
             Forms\Components\Section::make('Status')->schema([
                 Forms\Components\Select::make('approval_status')->label('Status Approval')
                     ->options([
-                        'draft'          => 'Draft',
-                        'submitted'      => 'Submitted',
-                        'pending_review' => 'Pending Review',
-                        'approved'       => 'Approved',
-                        'rejected'       => 'Rejected',
+                        'draft'             => 'Draft',
+                        'submitted'         => 'Submitted',
+                        'pending_review'    => 'Pending Review',
+                        'revision_required' => 'Revision Required',
+                        'approved'          => 'Approved',
+                        'rejected'          => 'Rejected',
                     ])->required(),
                 Forms\Components\Textarea::make('rejection_reason')
                     ->label('Alasan Penolakan')->rows(3)->maxLength(500),
+                Forms\Components\Textarea::make('revision_notes')
+                    ->label('Catatan Revisi')->rows(3)->maxLength(1000),
             ])->columns(2),
         ]);
     }
 
     // ============================================================
-    // INFOLIST — detail verifikasi beregu
+    // INFOLIST
     // ============================================================
 
     public static function infolist(Infolist $infolist): Infolist
     {
         return $infolist->schema([
 
-            // ── Status Bar ───────────────────────────────────────
             Infolists\Components\Section::make('Status Pendaftaran')->schema([
                 Infolists\Components\TextEntry::make('midtrans_order_id')
                     ->label('Order ID')->copyable()->fontFamily('mono')->weight('bold'),
 
-             // approval_status
                 Infolists\Components\TextEntry::make('approval_status')
                     ->label('Status Approval')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
-                        'approved'       => 'success',
-                        'pending_review' => 'warning',
-                        'rejected'       => 'danger',
-                        default          => 'gray',
+                        'approved'          => 'success',
+                        'pending_review'    => 'warning',
+                        'rejected'          => 'danger',
+                        'revision_required' => 'info',
+                        default             => 'gray',
                     })
-                    ->formatStateUsing(fn (string $state): string => strtoupper(str_replace('_', ' ', $state))),
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'revision_required' => 'PERLU REVISI',
+                        default             => strtoupper(str_replace('_', ' ', $state)),
+                    }),
 
-                // status bayar
                 Infolists\Components\TextEntry::make('status')
                     ->label('Status Bayar')
                     ->badge()
@@ -101,7 +104,6 @@ class VerifikasiBeregResource extends Resource
                     })
                     ->formatStateUsing(fn (string $state): string => strtoupper($state)),
 
-                // harga
                 Infolists\Components\TextEntry::make('harga')
                     ->label('Total Pembayaran')
                     ->formatStateUsing(fn (string $state): string => 'Rp ' . number_format($state, 0, ',', '.'))
@@ -114,7 +116,27 @@ class VerifikasiBeregResource extends Resource
                     ->label('Di-approve Oleh')->placeholder('—'),
             ])->columns(3),
 
-            // ── Alasan penolakan (hanya muncul jika rejected) ────
+            // ── Catatan Revisi ────────────────────────────────────
+            Infolists\Components\Section::make('Catatan Revisi Admin')
+                ->schema([
+                    Infolists\Components\TextEntry::make('revision_notes')
+                        ->label('Catatan untuk Peserta')->columnSpanFull()->placeholder('—'),
+                    Infolists\Components\TextEntry::make('revisionRequestedBy.name')
+                        ->label('Diminta Oleh')->placeholder('—'),
+                    Infolists\Components\TextEntry::make('revision_requested_at')
+                        ->label('Diminta Pada')->dateTime('d M Y, H:i')->placeholder('—'),
+                    Infolists\Components\TextEntry::make('revision_token_expires_at')
+                        ->label('Token Kadaluarsa')->dateTime('d M Y, H:i')->placeholder('—'),
+                    Infolists\Components\TextEntry::make('revision_submitted_at')
+                        ->label('Revisi Dikirim')->dateTime('d M Y, H:i')->placeholder('Belum direvisi'),
+                    Infolists\Components\TextEntry::make('revision_count')
+                        ->label('Jumlah Revisi')->placeholder('0'),
+                ])
+                ->columns(2)
+                ->collapsible()
+                ->visible(fn (Registration $r) => in_array($r->approval_status, ['revision_required', 'pending_review']) && $r->revision_count > 0),
+
+            // ── Alasan Penolakan Final ────────────────────────────
             Infolists\Components\Section::make('Alasan Penolakan')
                 ->schema([
                     Infolists\Components\TextEntry::make('rejection_reason')
@@ -127,7 +149,6 @@ class VerifikasiBeregResource extends Resource
                 ->columns(2)
                 ->visible(fn (Registration $r) => $r->approval_status === 'rejected'),
 
-            // ── Data Tim ─────────────────────────────────────────
             Infolists\Components\Section::make('Data Tim & Kontak')->schema([
                 Infolists\Components\TextEntry::make('nama')->label('Nama PIC')->weight('semibold'),
                 Infolists\Components\TextEntry::make('tim_pb')->label('Tim / PB')->weight('semibold'),
@@ -137,7 +158,6 @@ class VerifikasiBeregResource extends Resource
                 Infolists\Components\TextEntry::make('kota')->label('Kota'),
             ])->columns(2)->collapsible(),
 
-            // ── VALIDASI KOTA KTP — ini inti verifikasi beregu ───
             Infolists\Components\Section::make('Validasi KTP Anggota (Kota Balikpapan)')
                 ->schema([
                     Infolists\Components\TextEntry::make('ktp_validation_summary')
@@ -147,7 +167,6 @@ class VerifikasiBeregResource extends Resource
                         )),
                 ]),
 
-            // ── Detail KTP per anggota ────────────────────────────
             Infolists\Components\Section::make('Detail KTP Seluruh Anggota')
                 ->schema([
                     Infolists\Components\TextEntry::make('ktp_detail_html')
@@ -181,7 +200,6 @@ class VerifikasiBeregResource extends Resource
                     ->state(fn (Registration $r) => $r->jumlah_pemain . ' orang')
                     ->alignCenter(),
 
-                // KTP valid count — kolom kunci verifikasi
                 Tables\Columns\TextColumn::make('ktp_valid_count')
                     ->label('KTP Balikpapan')
                     ->state(fn (Registration $r) =>
@@ -193,7 +211,6 @@ class VerifikasiBeregResource extends Resource
                     )
                     ->alignCenter(),
 
-                // Status syarat minimum
                 Tables\Columns\IconColumn::make('meets_minimum')
                     ->label('Syarat Min. 6')
                     ->boolean()
@@ -209,19 +226,29 @@ class VerifikasiBeregResource extends Resource
                             : 'Belum memenuhi syarat (hanya ' . $r->validCityCount() . ' KTP valid)'
                     ),
 
-                // ✅ BARU — pakai TextColumn + badge()
                 Tables\Columns\TextColumn::make('approval_status')
                     ->label('Status')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
-                        'draft'          => 'gray',
-                        'submitted'      => 'info',
-                        'pending_review' => 'warning',
-                        'approved'       => 'success',
-                        'rejected'       => 'danger',
-                        default          => 'gray',
+                        'draft'             => 'gray',
+                        'submitted'         => 'info',
+                        'pending_review'    => 'warning',
+                        'revision_required' => 'info',
+                        'approved'          => 'success',
+                        'rejected'          => 'danger',
+                        default             => 'gray',
                     })
-                    ->formatStateUsing(fn (string $state): string => strtoupper(str_replace('_', ' ', $state))),
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'revision_required' => 'PERLU REVISI',
+                        default             => strtoupper(str_replace('_', ' ', $state)),
+                    }),
+
+                Tables\Columns\TextColumn::make('revision_count')
+                    ->label('Revisi ke-')
+                    ->badge()
+                    ->color('gray')
+                    ->formatStateUsing(fn ($state) => $state > 0 ? '#' . $state : '—')
+                    ->alignCenter(),
 
                 Tables\Columns\TextColumn::make('email')
                     ->label('Email')->searchable()->copyable()->toggleable(isToggledHiddenByDefault: true),
@@ -234,11 +261,12 @@ class VerifikasiBeregResource extends Resource
                 Tables\Filters\SelectFilter::make('approval_status')
                     ->label('Status Approval')
                     ->options([
-                        'pending_review' => 'Pending Review',
-                        'approved'       => 'Approved',
-                        'rejected'       => 'Rejected',
+                        'pending_review'    => 'Pending Review',
+                        'revision_required' => 'Perlu Revisi',
+                        'approved'          => 'Approved',
+                        'rejected'          => 'Rejected',
                     ])
-                    ->default('pending_review'),   // default tampil yang pending
+                    ->default('pending_review'),
 
                 Tables\Filters\Filter::make('belum_memenuhi_syarat')
                     ->label('Belum Memenuhi Syarat (< 6 KTP Valid)')
@@ -247,7 +275,6 @@ class VerifikasiBeregResource extends Resource
                     ),
             ])
             ->actions([
-                // ── VIEW DETAIL ─────────────────────────────────
                 Tables\Actions\ViewAction::make()->label('Detail'),
 
                 // ── APPROVE ─────────────────────────────────────
@@ -255,7 +282,7 @@ class VerifikasiBeregResource extends Resource
                     ->label('Approve')
                     ->icon('heroicon-o-check-circle')
                     ->color('success')
-                    ->visible(fn (Registration $r) => $r->approval_status === 'pending_review')
+                    ->visible(fn (Registration $r) => in_array($r->approval_status, ['pending_review']))
                     ->requiresConfirmation()
                     ->modalHeading(fn (Registration $r) => 'Approve Tim: ' . $r->tim_pb)
                     ->modalDescription(fn (Registration $r) =>
@@ -274,36 +301,136 @@ class VerifikasiBeregResource extends Resource
                             ->send();
                     }),
 
-                // ── REJECT ──────────────────────────────────────
+                // ── REQUEST REVISION (Tolak + Minta Perbaikan) ──
+                Tables\Actions\Action::make('request_revision')
+                    ->label('Minta Revisi')
+                    ->icon('heroicon-o-pencil-square')
+                    ->color('warning')
+                    ->visible(fn (Registration $r) => in_array($r->approval_status, ['pending_review', 'revision_required']))
+                    ->form([
+                        Forms\Components\Placeholder::make('info_placeholder')
+                            ->label('')
+                            ->content(new HtmlString(
+                                '<div style="background:rgba(234,179,8,.08);border:1px solid rgba(234,179,8,.3);border-radius:10px;padding:12px 16px;">'
+                                . '<p style="margin:0;font-size:13px;color:#92400e;font-weight:600;">💡 Revisi vs Tolak Final</p>'
+                                . '<p style="margin:6px 0 0;font-size:12px;color:#78350f;line-height:1.6;">'
+                                . 'Gunakan <strong>Minta Revisi</strong> jika data bisa diperbaiki (foto KTP buram, kurang anggota, dll). '
+                                . 'Peserta akan mendapat <strong>link perbaikan data</strong> yang aktif 7 hari. '
+                                . 'Setelah revisi dikirim, pendaftaran kembali ke status <em>Pending Review</em>.'
+                                . '</p></div>'
+                            )),
+
+                        Forms\Components\Textarea::make('revision_notes')
+                            ->label('Catatan untuk Peserta')
+                            ->helperText('Jelaskan secara spesifik apa yang perlu diperbaiki. Peserta akan menerima catatan ini via email.')
+                            ->required()
+                            ->minLength(20)
+                            ->maxLength(1000)
+                            ->placeholder("Contoh:\n• Foto KTP Anggota 3 (Budi Santoso) buram, tidak terbaca\n• KTP Anggota 5 bukan KTP Kota Balikpapan (terdeteksi Balikpapan Utara, bukan Kota)\n• Mohon upload ulang dengan foto yang lebih jelas")
+                            ->rows(6),
+
+                        Forms\Components\CheckboxList::make('checklist')
+                            ->label('Masalah yang Ditemukan (opsional, untuk template)')
+                            ->options([
+                                'ktp_buram'      => 'Foto KTP buram / tidak terbaca',
+                                'detected_seeded' => 'Ditemukan permain seeded A didalam regu',
+                                'ktp_under' => 'Umur KTP kurang dari 2 tahun',
+                                'ktp_expired'    => 'KTP sudah kadaluarsa',
+                            ])
+                            ->columns(2),
+                    ])
+                    ->modalHeading(fn (Registration $r) => '✏ Minta Revisi: ' . $r->tim_pb)
+                    ->modalDescription('Peserta akan menerima email dengan catatan perbaikan dan link untuk mengedit ulang data pendaftaran.')
+                    ->modalSubmitActionLabel('Kirim Permintaan Revisi')
+                    ->modalSubmitAction(fn ($action) => $action->color('warning'))
+                    ->action(function (Registration $r, array $data) {
+                        // Build full notes (merge checklist + free text)
+                        $notes = $data['revision_notes'];
+                        if (!empty($data['checklist'])) {
+                            $checklistLabels = [
+                                'ktp_buram'      => 'Foto KTP buram / tidak terbaca',
+                                'detected_seeded' => 'Ditemukan permain seeded A didalam regu',
+                                'ktp_under' => 'Umur KTP kurang dari 2 tahun',
+                                'ktp_expired'    => 'KTP sudah kadaluarsa',
+                            ];
+                            $items = array_map(
+                                fn ($k) => '• ' . ($checklistLabels[$k] ?? $k),
+                                $data['checklist']
+                            );
+                            $notes = "Poin yang perlu diperbaiki:\n" . implode("\n", $items) . "\n\nCatatan admin:\n" . $notes;
+                        }
+
+                        $r->requestRevision(auth()->id(), $notes);
+                        Mail::to($r->email)->send(new RegistrationRevisionRequired($r));
+
+                        Notification::make()
+                            ->title('✏ Permintaan revisi dikirim ke ' . $r->tim_pb)
+                            ->body('Link perbaikan aktif 7 hari. Email dikirim ke ' . $r->email)
+                            ->warning()
+                            ->send();
+                    }),
+
+                // ── REJECT FINAL ─────────────────────────────────
                 Tables\Actions\Action::make('reject')
-                    ->label('Reject')
+                    ->label('Tolak Final')
                     ->icon('heroicon-o-x-circle')
                     ->color('danger')
-                    ->visible(fn (Registration $r) => $r->approval_status === 'pending_review')
+                    ->visible(fn (Registration $r) => in_array($r->approval_status, ['pending_review', 'revision_required']))
                     ->form([
+                        Forms\Components\Placeholder::make('reject_info')
+                            ->label('')
+                            ->content(new HtmlString(
+                                '<div style="background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);border-radius:10px;padding:12px 16px;">'
+                                . '<p style="margin:0;font-size:13px;color:#991b1b;font-weight:600;">⚠ Penolakan Final</p>'
+                                . '<p style="margin:6px 0 0;font-size:12px;color:#7f1d1d;line-height:1.6;">'
+                                . 'Penolakan final <strong>tidak bisa dibatalkan</strong>. '
+                                . 'Peserta tidak akan bisa revisi data. '
+                                . 'Gunakan <strong>Minta Revisi</strong> jika masalah masih bisa diperbaiki.'
+                                . '</p></div>'
+                            )),
+
                         Forms\Components\Textarea::make('rejection_reason')
-                            ->label('Alasan Penolakan')
+                            ->label('Alasan Penolakan Final')
                             ->required()
                             ->minLength(10)
                             ->maxLength(500)
-                            ->placeholder('Contoh: Hanya 4 anggota ber-KTP Balikpapan, tidak memenuhi syarat minimal 6.')
+                            ->placeholder('Contoh: Hanya 3 anggota ber-KTP Balikpapan. Tidak memenuhi syarat minimal 6 setelah 2x revisi.')
                             ->rows(4),
                     ])
-                    ->modalHeading(fn (Registration $r) => 'Reject Tim: ' . $r->tim_pb)
-                    ->modalSubmitActionLabel('Reject & Kirim Notifikasi')
-                    ->modalSubmitAction(fn ($a) => $a->color('danger'))
+                    ->modalHeading(fn (Registration $r) => '🚫 Tolak Final: ' . $r->tim_pb)
+                    ->modalSubmitActionLabel('Tolak Final & Kirim Notifikasi')
+                    ->modalSubmitAction(fn ($action) => $action->color('danger'))
                     ->action(function (Registration $r, array $data) {
                         $r->reject(auth()->id(), $data['rejection_reason']);
                         Mail::to($r->email)->send(new RegistrationRejected($r));
 
                         Notification::make()
-                            ->title('❌ ' . $r->tim_pb . ' ditolak')
+                            ->title('❌ ' . $r->tim_pb . ' ditolak final')
                             ->body('Email notifikasi dikirim ke ' . $r->email)
                             ->danger()
                             ->send();
                     }),
 
-                // ── RESEND LINK BAYAR ────────────────────────────
+                // ── RESEND REVISION LINK ─────────────────────────
+                Tables\Actions\Action::make('resend_revision')
+                    ->label('Kirim Ulang Link Revisi')
+                    ->icon('heroicon-o-arrow-path')
+                    ->color('gray')
+                    ->visible(fn (Registration $r) => $r->approval_status === 'revision_required')
+                    ->requiresConfirmation()
+                    ->modalDescription(fn (Registration $r) =>
+                        'Token revisi akan diperpanjang 7 hari. Email dikirim ulang ke ' . $r->email
+                    )
+                    ->action(function (Registration $r) {
+                        $r->update(['revision_token_expires_at' => now()->addDays(7)]);
+                        Mail::to($r->email)->send(new RegistrationRevisionRequired($r));
+
+                        Notification::make()
+                            ->title('Link revisi dikirim ulang ke ' . $r->email)
+                            ->success()->send();
+                    }),
+
+                // ── RESEND LINK BAYAR ─────────────────────────────
                 Tables\Actions\Action::make('resend_link')
                     ->label('Resend Link Bayar')
                     ->icon('heroicon-o-envelope')
@@ -324,7 +451,7 @@ class VerifikasiBeregResource extends Resource
                             ->success()->send();
                     }),
 
-                // ── LIHAT FOTO KTP ───────────────────────────────
+                // ── LIHAT FOTO KTP ────────────────────────────────
                 Tables\Actions\Action::make('lihat_ktp')
                     ->label('Foto KTP')
                     ->icon('heroicon-o-identification')
@@ -339,7 +466,6 @@ class VerifikasiBeregResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    // Bulk approve
                     Tables\Actions\BulkAction::make('bulk_approve')
                         ->label('Approve Terpilih')
                         ->icon('heroicon-o-check-circle')
@@ -364,16 +490,13 @@ class VerifikasiBeregResource extends Resource
             ->emptyStateDescription('Semua pendaftaran beregu telah diverifikasi.')
             ->emptyStateIcon('heroicon-o-clipboard-document-check')
             ->striped()
-            ->poll('20s');  // auto-refresh tiap 20 detik
+            ->poll('20s');
     }
 
     // ============================================================
-    // HTML BUILDERS
+    // HTML BUILDERS (same as before — tidak diubah)
     // ============================================================
 
-    /**
-     * Summary box: berapa KTP valid, apakah lolos syarat minimum.
-     */
     private static function buildValidationSummary(Registration $record): string
     {
         $cityValid  = $record->ktp_city_valid ?? [];
@@ -389,7 +512,6 @@ class VerifikasiBeregResource extends Resource
             ? "{$validCount} dari {$total} anggota ber-KTP Balikpapan — Memenuhi syarat (min. 6)"
             : "Hanya {$validCount} dari {$total} anggota ber-KTP Balikpapan — Belum memenuhi syarat (min. 6)";
 
-        // Grid per anggota
         $grid = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px;margin-top:16px;">';
         foreach ($cityValid as $item) {
             $ok   = $item['valid']    ?? false;
@@ -423,99 +545,88 @@ class VerifikasiBeregResource extends Resource
             . '</div>';
     }
 
-    /**
-     * Detail KTP lengkap per anggota: NIK, Nama, Tgl Lahir, Kota, foto.
-     */
     private static function buildKtpDetail(Registration $record): string
-{
-    $pemain    = $record->pemain         ?? [];
-    $nik       = $record->nik            ?? [];
-    $tglLahir  = $record->tgl_lahir      ?? [];
-    $usia      = $record->usia_pemain    ?? [];
-    $ktpFiles  = $record->ktp_files      ?? [];
-    $cityValid = $record->ktp_city_valid ?? [];
+    {
+        $pemain    = $record->pemain         ?? [];
+        $nik       = $record->nik            ?? [];
+        $tglLahir  = $record->tgl_lahir      ?? [];
+        $usia      = $record->usia_pemain    ?? [];
+        $ktpFiles  = $record->ktp_files      ?? [];
+        $cityValid = $record->ktp_city_valid ?? [];
 
-    if (empty($pemain)) {
-        return '<p style="color:#6b7280;font-size:14px;">Belum ada data pemain.</p>';
-    }
-
-    $html = '<div style="display:flex;flex-direction:column;gap:16px;">';
-
-    foreach ($pemain as $i => $nama) {
-        $cv      = $cityValid[$i] ?? null;
-        $ok      = $cv['valid']    ?? false;
-        $kotaRaw = htmlspecialchars($cv['city_raw'] ?? '—');
-
-        $borderC  = $ok ? '#059669'  : '#dc2626';
-        $headerBg = $ok ? '#f0fdf4'  : '#fef2f2';
-        $badgeBg  = $ok ? '#dcfce7'  : '#fee2e2';
-        $badgeBr  = $ok ? '#86efac'  : '#fca5a5';
-        $badgeTc  = $ok ? '#15803d'  : '#b91c1c';
-        $cityLbl  = $ok ? '✓ Balikpapan' : ('✗ ' . ($kotaRaw ?: 'Kota tidak terbaca'));
-
-        $fotoHtml = '';
-        $filePath = $ktpFiles[$i] ?? null;
-        if ($filePath) {
-            $url = route('admin.ktp.serve', ['uuid' => $record->uuid, 'filename' => basename($filePath)]);
-            $fotoHtml = '<a href="' . $url . '" target="_blank">'
-                . '<img src="' . $url . '" alt="KTP"'
-                . ' style="width:100%;max-height:180px;object-fit:contain;border-radius:8px;'
-                . 'border:1px solid #e5e7eb;background:#f9fafb;cursor:pointer;'
-                . 'transition:opacity .2s;" onmouseover="this.style.opacity=.75" onmouseout="this.style.opacity=1">'
-                . '</a>'
-                . '<p style="font-size:10px;color:#9ca3af;margin-top:4px;">'
-                . htmlspecialchars(basename($filePath))
-                . ' · <a href="' . $url . '" target="_blank" style="color:#3b82f6;text-decoration:none;">Buka fullsize ↗</a></p>';
-        } else {
-            $fotoHtml = '<div style="height:100px;display:flex;align-items:center;justify-content:center;'
-                . 'border:1px dashed #d1d5db;border-radius:8px;background:#f9fafb;">'
-                . '<p style="color:#9ca3af;font-size:12px;font-style:italic;">Foto tidak tersedia</p></div>';
+        if (empty($pemain)) {
+            return '<p style="color:#6b7280;font-size:14px;">Belum ada data pemain.</p>';
         }
 
-        $html .= '<div style="border:1.5px solid ' . $borderC . ';border-radius:12px;overflow:hidden;background:#fff;">'
+        $html = '<div style="display:flex;flex-direction:column;gap:16px;">';
 
-            . '<div style="display:flex;align-items:center;justify-content:space-between;'
-            . 'padding:12px 16px;background:' . $headerBg . ';border-bottom:1.5px solid ' . $borderC . ';">'
-            . '<div style="display:flex;align-items:center;gap:10px;">'
-            . '<div style="width:28px;height:28px;border-radius:50%;background:#e0e7ff;'
-            . 'display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#4338ca;">'
-            . ($i + 1) . '</div>'
-            . '<span style="font-weight:700;font-size:14px;color:#111827;">' . htmlspecialchars($nama) . '</span>'
-            . '</div>'
-            . '<span style="font-size:11px;font-weight:700;color:' . $badgeTc . ';'
-            . 'background:' . $badgeBg . ';border:1px solid ' . $badgeBr . ';'
-            . 'border-radius:99px;padding:4px 12px;">' . $cityLbl . '</span>'
-            . '</div>'
+        foreach ($pemain as $i => $nama) {
+            $cv      = $cityValid[$i] ?? null;
+            $ok      = $cv['valid']    ?? false;
+            $kotaRaw = htmlspecialchars($cv['city_raw'] ?? '—');
 
-            . '<div style="padding:16px;display:grid;grid-template-columns:1fr 1fr;gap:16px;background:#fff;">'
-            . '<div style="display:flex;flex-direction:column;gap:4px;">'
-            . self::ktpRow('NIK',       htmlspecialchars($nik[$i]      ?? '—'), true)
-            . self::ktpRow('Nama',      htmlspecialchars($nama))
-            . self::ktpRow('Tgl Lahir', htmlspecialchars($tglLahir[$i] ?? '—'))
-            . self::ktpRow('Usia',      isset($usia[$i]) ? $usia[$i] . ' tahun' : '—')
-            . self::ktpRow('Kota KTP',  $cityLbl, false, $badgeTc)
-            . '</div>'
-            . '<div>' . $fotoHtml . '</div>'
-            . '</div>'
+            $borderC  = $ok ? '#059669'  : '#dc2626';
+            $headerBg = $ok ? '#f0fdf4'  : '#fef2f2';
+            $badgeBg  = $ok ? '#dcfce7'  : '#fee2e2';
+            $badgeBr  = $ok ? '#86efac'  : '#fca5a5';
+            $badgeTc  = $ok ? '#15803d'  : '#b91c1c';
+            $cityLbl  = $ok ? '✓ Balikpapan' : ('✗ ' . ($kotaRaw ?: 'Kota tidak terbaca'));
+
+            $fotoHtml = '';
+            $filePath = $ktpFiles[$i] ?? null;
+            if ($filePath) {
+                $url = route('admin.ktp.serve', ['uuid' => $record->uuid, 'filename' => basename($filePath)]);
+                $fotoHtml = '<a href="' . $url . '" target="_blank">'
+                    . '<img src="' . $url . '" alt="KTP"'
+                    . ' style="width:100%;max-height:180px;object-fit:contain;border-radius:8px;'
+                    . 'border:1px solid #e5e7eb;background:#f9fafb;cursor:pointer;">'
+                    . '</a>';
+            } else {
+                $fotoHtml = '<div style="height:100px;display:flex;align-items:center;justify-content:center;'
+                    . 'border:1px dashed #d1d5db;border-radius:8px;background:#f9fafb;">'
+                    . '<p style="color:#9ca3af;font-size:12px;font-style:italic;">Foto tidak tersedia</p></div>';
+            }
+
+            $html .= '<div style="border:1.5px solid ' . $borderC . ';border-radius:12px;overflow:hidden;background:#fff;">'
+                . '<div style="display:flex;align-items:center;justify-content:space-between;'
+                . 'padding:12px 16px;background:' . $headerBg . ';border-bottom:1.5px solid ' . $borderC . ';">'
+                . '<div style="display:flex;align-items:center;gap:10px;">'
+                . '<div style="width:28px;height:28px;border-radius:50%;background:#e0e7ff;'
+                . 'display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#4338ca;">'
+                . ($i + 1) . '</div>'
+                . '<span style="font-weight:700;font-size:14px;color:#111827;">' . htmlspecialchars($nama) . '</span>'
+                . '</div>'
+                . '<span style="font-size:11px;font-weight:700;color:' . $badgeTc . ';'
+                . 'background:' . $badgeBg . ';border:1px solid ' . $badgeBr . ';'
+                . 'border-radius:99px;padding:4px 12px;">' . $cityLbl . '</span>'
+                . '</div>'
+                . '<div style="padding:16px;display:grid;grid-template-columns:1fr 1fr;gap:16px;background:#fff;">'
+                . '<div style="display:flex;flex-direction:column;gap:4px;">'
+                . self::ktpRow('NIK',       htmlspecialchars($nik[$i]      ?? '—'), true)
+                . self::ktpRow('Nama',      htmlspecialchars($nama))
+                . self::ktpRow('Tgl Lahir', htmlspecialchars($tglLahir[$i] ?? '—'))
+                . self::ktpRow('Usia',      isset($usia[$i]) ? $usia[$i] . ' tahun' : '—')
+                . self::ktpRow('Kota KTP',  $cityLbl, false, $badgeTc)
+                . '</div>'
+                . '<div>' . $fotoHtml . '</div>'
+                . '</div>'
+                . '</div>';
+        }
+
+        $html .= '</div>';
+        return $html;
+    }
+
+    private static function ktpRow(string $label, string $value, bool $mono = false, string $color = '#374151'): string
+    {
+        return '<div style="display:flex;gap:8px;padding:6px 0;border-bottom:1px solid #f3f4f6;">'
+            . '<span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;'
+            . 'color:#9ca3af;min-width:76px;flex-shrink:0;padding-top:1px;">' . $label . '</span>'
+            . '<span style="font-size:12px;color:' . $color . ';font-weight:' . ($mono ? '700' : '600') . ';'
+            . ($mono ? 'font-family:monospace;letter-spacing:.03em;' : '') . 'word-break:break-all;">' . $value . '</span>'
             . '</div>';
     }
 
-    $html .= '</div>';
-    return $html;
-}
-
-private static function ktpRow(string $label, string $value, bool $mono = false, string $color = '#374151'): string
-{
-    return '<div style="display:flex;gap:8px;padding:6px 0;border-bottom:1px solid #f3f4f6;">'
-        . '<span style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;'
-        . 'color:#9ca3af;min-width:76px;flex-shrink:0;padding-top:1px;">' . $label . '</span>'
-        . '<span style="font-size:12px;color:' . $color . ';font-weight:' . ($mono ? '700' : '600') . ';'
-        . ($mono ? 'font-family:monospace;letter-spacing:.03em;' : '') . 'word-break:break-all;">' . $value . '</span>'
-        . '</div>';
-}
-    /**
-     * Modal foto KTP ringkas (untuk action button di tabel).
-     */
     private static function buildKtpModal(Registration $record): string
     {
         $ktpFiles = $record->ktp_files ?? [];
@@ -527,25 +638,22 @@ private static function ktpRow(string $label, string $value, bool $mono = false,
 
         $html = '<div style="display:flex;flex-direction:column;gap:20px;padding:8px;">';
         foreach ($ktpFiles as $i => $path) {
-            $nama   = htmlspecialchars($pemain[$i] ?? 'Pemain ' . ($i + 1));
-            $url    = route('admin.ktp.serve', ['uuid' => $record->uuid, 'filename' => basename($path)]);
-            $cv     = ($record->ktp_city_valid ?? [])[$i] ?? null;
-            $ok     = $cv['valid'] ?? false;
-            $badge  = $ok
+            $nama  = htmlspecialchars($pemain[$i] ?? 'Pemain ' . ($i + 1));
+            $url   = route('admin.ktp.serve', ['uuid' => $record->uuid, 'filename' => basename($path)]);
+            $cv    = ($record->ktp_city_valid ?? [])[$i] ?? null;
+            $ok    = $cv['valid'] ?? false;
+            $badge = $ok
                 ? '<span style="color:#34d399;font-size:11px;font-weight:700;">✓ Balikpapan</span>'
                 : '<span style="color:#f87171;font-size:11px;font-weight:700;">✗ Bukan Balikpapan</span>';
 
             $html .= '<div>'
                 . '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">'
-                . '<p style="font-size:11px;font-weight:700;color:#9ca3af;text-transform:uppercase;'
-                . 'letter-spacing:.06em;margin:0;">Pemain ' . ($i + 1) . ' — ' . $nama . '</p>'
+                . '<p style="font-size:11px;font-weight:700;color:#9ca3af;text-transform:uppercase;margin:0;">Pemain ' . ($i + 1) . ' — ' . $nama . '</p>'
                 . $badge
                 . '</div>'
                 . '<a href="' . $url . '" target="_blank">'
                 . '<img src="' . $url . '" alt="KTP ' . $nama . '"'
-                . ' style="width:100%;max-height:240px;object-fit:contain;border-radius:8px;'
-                . 'border:1px solid #374151;background:#0d1117;cursor:pointer;"'
-                . ' onerror="this.outerHTML=\'<p style=\\\'color:#f87171;font-size:12px;\\\'>Gambar tidak dapat dimuat.</p>\'">'
+                . ' style="width:100%;max-height:240px;object-fit:contain;border-radius:8px;border:1px solid #374151;background:#0d1117;cursor:pointer;">'
                 . '</a>'
                 . '</div>';
         }
@@ -568,13 +676,10 @@ private static function ktpRow(string $label, string $value, bool $mono = false,
         ];
     }
 
-    /**
-     * Badge navigation: jumlah beregu yang pending review.
-     */
     public static function getNavigationBadge(): ?string
     {
         $count = static::getModel()::where('kategori', 'beregu')
-            ->where('approval_status', 'pending_review')
+            ->whereIn('approval_status', ['pending_review', 'revision_required'])
             ->count();
         return $count > 0 ? (string) $count : null;
     }

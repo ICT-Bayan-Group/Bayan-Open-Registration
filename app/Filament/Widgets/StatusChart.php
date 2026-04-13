@@ -8,29 +8,38 @@ use Filament\Widgets\ChartWidget;
 class StatusChart extends ChartWidget
 {
     protected static ?string $heading = 'Status Pembayaran';
-    protected static ?int    $sort    = 3;
+    protected static ?int $sort = 3;
+
     public function getColumnSpan(): int | string | array
-        {
-            return 1;
-        }
+    {
+        return [
+            'default' => 2,
+            'md' => 1,
+            'lg' => 1,
+        ];
+    }
+
+    protected function getMaxHeight(): string
+    {
+        return '220px'; // 🔥 kecilin tinggi
+    }
 
     protected function getData(): array
     {
-        $paid    = Registration::where('status', 'paid')->count();
+        $paid = Registration::where('status', 'paid')->count();
         $pending = Registration::where('status', 'pending')->count();
-        $total   = max($paid + $pending, 1);
+        $total = max($paid + $pending, 1);
 
         return [
             'datasets' => [
                 [
-                    'data'            => [$paid, $pending],
+                    'data' => [$paid, $pending],
                     'backgroundColor' => ['#10B981', '#F59E0B'],
-                    'borderWidth'     => 0,
-                    'hoverOffset'     => 6,
+                    'borderWidth' => 0,
                 ],
             ],
             'labels' => [
-                'Paid ('    . round($paid    / $total * 100) . '%)',
+                'Paid (' . round($paid / $total * 100) . '%)',
                 'Pending (' . round($pending / $total * 100) . '%)',
             ],
         ];
@@ -44,15 +53,15 @@ class StatusChart extends ChartWidget
     protected function getOptions(): array
     {
         return [
-            'cutout'  => '68%',
+            'maintainAspectRatio' => false, // 🔥 WAJIB
+            'cutout' => '75%',
             'plugins' => [
                 'legend' => [
                     'position' => 'bottom',
-                    'labels'   => [
+                    'labels' => [
                         'usePointStyle' => true,
-                        'pointStyle'    => 'rectRounded',
-                        'padding'       => 14,
-                        'font'          => ['size' => 12],
+                        'padding' => 12,
+                        'font' => ['size' => 11],
                     ],
                 ],
             ],

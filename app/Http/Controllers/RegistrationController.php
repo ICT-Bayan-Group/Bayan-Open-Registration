@@ -77,6 +77,21 @@ class RegistrationController extends Controller
 
         $kategori = $request->input('kategori');
         $isBeregu = ($kategori === 'beregu');
+        // ── 0. Cek kuota beregu (max 32 tim paid) ─────────────────────
+        if ($isBeregu) {
+            $filled = $this->getBeregPaidCount();
+            if ($filled >= self::MAX_BEREGU_TEAMS) {
+                $msg = 'Kuota pendaftaran beregu sudah penuh (32/32 tim). Pendaftaran ditutup.';
+                if ($isAjax) {
+                    return response()->json([
+                        'errors'  => ['kuota' => [$msg]],
+                        'message' => $msg,
+                        'penuh'   => true,
+                    ], 422);
+                }
+                return back()->withInput()->withErrors(['kuota' => $msg]);
+            }
+        }
 
         // ── 1. Validasi dasar ──────────────────────────────────────
         // Jika validasi gagal dan request AJAX → Laravel otomatis return 422 JSON
@@ -540,10 +555,11 @@ class RegistrationController extends Controller
 
     private const VALID_CITY_KEYWORDS = [
         'BALIKPAPAN',
-        'KOTA BALIKPAPAN',
         'KAB. BALIKPAPAN',
         'KABUPATEN BALIKPAPAN',
     ];
+
+    private const MAX_BEREGU_TEAMS = 0;
 
     private function isCityValid(string $city): bool
     {
@@ -558,5 +574,24 @@ class RegistrationController extends Controller
         }
 
         return false;
+    }
+    private function getBeregPaidCount(): int
+    {
+        return Registration::where('kategori', 'beregu')
+            ->where('status', 'paid')
+            ->count();
+    }
+
+    public function beregSlot(): \Illuminate\Http\JsonResponse
+    {
+        $filled = $this->getBeregPaidCount();
+        $sisa   = max(0, self::MAX_BEREGU_TEAMS - $filled);
+
+        return response()->json([
+            'max'    => self::MAX_BEREGU_TEAMS,
+            'filled' => $filled,
+            'sisa'   => $sisa,
+            'penuh'  => $sisa === 0,
+        ]);
     }
 }

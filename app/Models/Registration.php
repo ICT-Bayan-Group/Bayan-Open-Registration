@@ -63,6 +63,14 @@ class Registration extends Model
         // ── Khusus Veteran ──
         'tgl_lahir_pemain',
         'usia_pemain',
+
+        'revision_token',
+        'revision_token_expires_at',
+        'revision_notes',
+        'revision_requested_by',
+        'revision_requested_at',
+        'revision_submitted_at',
+        'revision_count',
     ];
 
     protected $casts = [
@@ -80,6 +88,10 @@ class Registration extends Model
         'rejected_at'              => 'datetime',
         'payment_token_expires_at' => 'datetime',
         'harga'                    => 'integer',
+        'revision_token_expires_at' => 'datetime',
+        'revision_requested_at'     => 'datetime',
+        'revision_submitted_at'     => 'datetime',
+        'revision_count'            => 'integer',
     ];
 
     // ── Auto-generate UUID & Order ID ──────────────────────────────
@@ -127,6 +139,44 @@ class Registration extends Model
         ]);
     }
 
+    public function requestRevision(int $adminId, string $notes): void
+    {
+        $token = bin2hex(random_bytes(32)); // 64 char hex token
+    
+        $this->update([
+            'approval_status'           => 'revision_required',
+            'revision_token'            => $token,
+            'revision_token_expires_at' => now()->addDays(7),
+            'revision_notes'            => $notes,
+            'revision_requested_by'     => $adminId,
+            'revision_requested_at'     => now(),
+            'revision_submitted_at'     => null,
+            'revision_count'            => $this->revision_count + 1,
+        ]);
+    }
+
+    public function submitRevision(array $data): void
+        {
+            $this->update(array_merge($data, [
+                'approval_status'        => 'pending_review',
+                'revision_token'         => null,
+                'revision_token_expires_at' => null,
+                'revision_submitted_at'  => now(),
+            ]));
+        }
+
+    public function isRevisionTokenValid(string $token): bool
+        {
+            return $this->revision_token === $token
+                && $this->revision_token_expires_at
+                && $this->revision_token_expires_at->isFuture()
+                && $this->approval_status === 'revision_required';
+        }
+    public function revisionRequestedBy(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+        {
+            return $this->belongsTo(\App\Models\User::class, 'revision_requested_by');
+        }
+        
     /**
      * Reject pendaftaran.
      */
