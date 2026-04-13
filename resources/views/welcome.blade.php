@@ -899,6 +899,76 @@ body {
 .cta-banner-sub { font-size: 15px; color: rgba(255,255,255,0.4); margin-bottom: 36px; position: relative; z-index: 1; }
 
 /* ═══════════════════════════════════════
+   PERFORMANCE PATCHES
+═══════════════════════════════════════ */
+
+/* Isolasi repaint hero agar tidak menyeret section lain */
+.hero {
+    contain: layout paint;
+    transform: translateZ(0);
+}
+
+/* Video: paksa GPU layer, cegah layout shift */
+.hero-video {
+    will-change: transform;
+    contain: strict;
+    transform: translateZ(0);
+}
+
+/* Kurangi blur dari 32px → 16px — ini yang paling berat */
+.glass-card {
+    backdrop-filter: blur(16px) saturate(1.3);
+    -webkit-backdrop-filter: blur(16px) saturate(1.3);
+    will-change: transform;
+    contain: layout paint;
+}
+
+/* Orb: hanya GPU transform, tidak ada layout trigger */
+.hero-orb {
+    will-change: transform;
+    contain: layout paint;
+}
+
+/* Gallery juga sering jadi bottleneck */
+.gallery-section {
+    contain: layout paint;
+}
+.gallery-bg-video {
+    will-change: transform;
+    contain: strict;
+    transform: translateZ(0);
+}
+
+/* Kurangi overlay menjadi 2 layer saja — hapus hero-grain & hero-vignette dari CSS */
+.hero-overlay {
+    position: absolute; inset: 0; z-index: 1;
+    /* Merge 2 gradient + ambient jadi satu layer */
+    background:
+        linear-gradient(to bottom, rgba(13,9,6,0.60) 0%, rgba(13,9,6,0.30) 50%, rgba(13,9,6,0.80) 100%);
+    /* Grain via CSS — tidak perlu elemen DOM tambahan */
+    image-rendering: auto;
+}
+
+/* Grain: ganti jadi pseudo-element di hero, bukan elemen terpisah */
+.hero::after {
+    content: '';
+    position: absolute; inset: 0; z-index: 3;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    will-change: auto;
+}
+
+/* Prefer reduced motion — matikan semua animasi sekaligus */
+@media (prefers-reduced-motion: reduce) {
+    .hero-orb,
+    .eyebrow-dot,
+    .scroll-wheel,
+    .gallery-track,
+    .glass-card,
+    .hero-logo { animation: none !important; transition: none !important; }
+}
+
+/* ═══════════════════════════════════════
    MODAL
 ═══════════════════════════════════════ */
 @keyframes fadeInOverlay  { from { opacity: 0; } to { opacity: 1; } }
@@ -1221,9 +1291,14 @@ body {
      HERO — GLASS CARD
 ══════════════════════════════════════════ --}}
 <section class="hero">
-    <video class="hero-video"
-        src="https://res.cloudinary.com/djs5pi7ev/video/upload/q_50,w_1280/v1769500972/202601271004_aepgij.mp4"
-        autoplay muted loop playsinline preload="auto"></video>
+<!-- Tambah poster & decoding untuk cegah layout shift -->
+        <video class="hero-video"
+            src="https://res.cloudinary.com/djs5pi7ev/video/upload/q_auto/f_auto/v1776060629/202604131402_v5lt3b.mp4"
+            autoplay muted loop playsinline
+            preload="metadata"
+            decoding="async"
+            poster="https://res.cloudinary.com/djs5pi7ev/image/upload/q_30,f_webp,w_1280/v1769500972/202601271004_aepgij.jpg">
+        </video>
     <div class="hero-overlay"></div>
     <div class="hero-vignette"></div>
     <div class="hero-grain"></div>
@@ -1337,10 +1412,10 @@ body {
             {{-- Stat cards kanan --}}
             <div class="about-stat-grid reveal">
                 @foreach([
-                    ['3+',   'Tahun Digelar',   'Konsisten hadir sejak 2023',         '#f97316', '#f97316'],
+                    ['4',   'Tahun Digelar',   'Konsisten hadir sejak 2023',         '#f97316', '#f97316'],
                     ['22',   'Total Kategori',   '4 Open + 18 Sirkuit Nasional C',     '#2563eb', '#3b82f6'],
-                    ['500+', 'Peserta',          'Dari seluruh Kalimantan & Indonesia', '#e11d48', '#f43f5e'],
-                    ['PBSI', 'Resmi Sirknas',    'Terdaftar di si.pbsi.id',            '#0d9488', '#14b8a6'],
+                    ['1200+', 'Peserta',          'Dari seluruh Kalimantan & Indonesia', '#e11d48', '#f43f5e'],
+                    ['PBSI', 'Resmi Sirnas',    'Terdaftar di si.pbsi.id',            '#0d9488', '#14b8a6'],
                 ] as $stat)
                 <div style="background:#fff;border:1px solid var(--ink-12);border-radius:20px;padding:28px 22px;position:relative;overflow:hidden;transition:all 0.3s ease;"
                      onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 20px 48px rgba(0,0,0,0.08)'"
@@ -1557,17 +1632,12 @@ body {
 {{-- ══════════════════════════════════════════
      GUEST STAR — LIGHT VERSION
 ══════════════════════════════════════════ --}}
-<section style="background:var(--paper);padding:88px 24px 96px;position:relative;overflow:hidden;">
- 
-    {{-- Decorative top border --}}
+<!--<section style="background:var(--paper);padding:88px 24px 96px;position:relative;overflow:hidden;">
     <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent 0%,#f97316 30%,#fbbf24 50%,#f97316 70%,transparent 100%);"></div>
- 
-    {{-- Soft warm bg glow --}}
     <div style="position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 70% 50% at 20% 60%,rgba(249,115,22,0.04) 0%,transparent 70%),radial-gradient(ellipse 60% 40% at 80% 30%,rgba(251,191,36,0.04) 0%,transparent 70%);"></div>
  
     <div class="section-inner" style="position:relative;z-index:1;">
- 
-        {{-- Header --}}
+
         <div style="text-align:center;margin-bottom:56px;">
             <span class="sec-tag reveal">Bintang Tamu Spesial</span>
             <h2 class="sec-title reveal">Guest Star <em style="font-style:normal;color:var(--fire);">Bayan Open</em> 2026</h2>
@@ -1575,8 +1645,6 @@ body {
                 Dua legenda bulutangkis Indonesia hadir langsung di arena bersama para peserta dan penonton.
             </p>
         </div>
- 
-        {{-- Grid --}}
         <div class="guest-grid">
  
             @foreach([
@@ -1612,7 +1680,6 @@ body {
  
             <div class="guest-card reveal">
  
-                {{-- Photo strip --}}
                 <div class="guest-photo-wrap">
                     <img src="{{ $guest['photo'] }}"
                          alt="{{ $guest['name'] }}"
@@ -1624,7 +1691,6 @@ body {
                     <div class="guest-photo-gradient"></div>
                 </div>
  
-                {{-- Body --}}
                 <div class="guest-body">
                     <h3 class="guest-name">{{ $guest['name'] }}</h3>
                     <p class="guest-nickname">{{ $guest['nickname'] }}</p>
@@ -1632,8 +1698,7 @@ body {
                     <div class="guest-divider"></div>
  
                     <p class="guest-bio">{{ $guest['bio'] }}</p>
- 
-                    {{-- Achievements --}}
+
                     <div class="guest-achv-list">
                         @foreach($guest['achv'] as $a)
                         <div class="guest-achv-item">
@@ -1644,8 +1709,6 @@ body {
                         </div>
                         @endforeach
                     </div>
- 
-                    {{-- Footer --}}
                     <div class="guest-footer">
                         <div class="guest-country">
                             <div class="guest-flag">🇮🇩</div>
@@ -1666,7 +1729,7 @@ body {
  
         </div>
     </div>
-</section>
+</section>-->
 
 {{-- ══════════════════════════════════════════
      GALERI
@@ -2262,17 +2325,44 @@ function initGSAP() {
 
     // Parallax mouse on hero orbs
     var orbs = document.querySelectorAll('.hero-orb');
-    document.addEventListener('mousemove', e => {
-        var mx = (e.clientX / window.innerWidth  - 0.5);
-        var my = (e.clientY / window.innerHeight - 0.5);
-        orbs.forEach((orb, i) => {
-            var factor = (i + 1) * 18;
-            gsap.to(orb, { x: mx * factor, y: my * factor, duration: 2, ease: 'power2.out' });
+    // Parallax dengan RAF throttle + reduced motion check
+    var rafId = null;
+    var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (!prefersReduced) {
+        var orbs = document.querySelectorAll('.hero-orb');
+        var mx = 0, my = 0;
+
+        document.addEventListener('mousemove', function(e) {
+            mx = (e.clientX / window.innerWidth  - 0.5);
+            my = (e.clientY / window.innerHeight - 0.5);
+
+            if (rafId) return; // throttle: skip jika frame belum selesai
+            rafId = requestAnimationFrame(function() {
+                orbs.forEach(function(orb, i) {
+                    var f = (i + 1) * 12; // turunkan dari 18 → 12
+                    orb.style.transform = 'translate(' + (mx*f) + 'px,' + (my*f) + 'px)';
+                });
+                rafId = null;
+            });
         });
-    });
+    }
 }
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initGSAP);
+// Pause orb animations ketika hero keluar viewport
+if ('IntersectionObserver' in window) {
+    var heroEl = document.querySelector('.hero');
+    var heroOrbs = document.querySelectorAll('.hero-orb');
+    var orbObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            heroOrbs.forEach(function(orb) {
+                orb.style.animationPlayState = entry.isIntersecting ? 'running' : 'paused';
+            });
+        });
+    }, { threshold: 0 });
+    if (heroEl) orbObserver.observe(heroEl);
+}
 else initGSAP();
 // ── Disclaimer Modal ────────────────────────────────────────
 var disclaimerScrollDone  = false;

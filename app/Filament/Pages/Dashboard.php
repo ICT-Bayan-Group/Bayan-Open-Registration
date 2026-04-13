@@ -6,6 +6,7 @@ use App\Filament\Widgets\CategoryChart;
 use App\Filament\Widgets\RevenueChart;
 use App\Filament\Widgets\StatusChart;
 use App\Filament\Widgets\StatsOverview;
+use App\Filament\Widgets\ProvinceChart;
 use Filament\Pages\Dashboard as BaseDashboard;
 
 class Dashboard extends BaseDashboard
@@ -24,6 +25,7 @@ class Dashboard extends BaseDashboard
             CategoryChart::class,
             StatusChart::class,
             RevenueChart::class,
+            ProvinceChart::class,
         ];
     }
 }

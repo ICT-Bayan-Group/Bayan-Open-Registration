@@ -3,6 +3,7 @@
 use App\Http\Controllers\KtpOcrController;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\WilayahController;
+use App\Http\Controllers\RegistrationRevisionController;
 use Illuminate\Support\Facades\Route;
 
 // ── Auth ────────────────────────────────────────────────────────
@@ -39,7 +40,21 @@ Route::prefix('daftar')->name('registration.')->group(function () {
     Route::get('/ganda-dewasa-putra',  [RegistrationController::class, 'showGandaDewasaPutra'])->name('ganda-dewasa-putra');
     Route::get('/ganda-dewasa-putri',  [RegistrationController::class, 'showGandaDewasaPutri'])->name('ganda-dewasa-putri');
     Route::get('/ganda-veteran-putra', [RegistrationController::class, 'showGandaVeteranPutra'])->name('ganda-veteran-putra');
+    Route::get('/beregu/slot', [RegistrationController::class, 'beregSlot'])->name('beregu.slot');
     Route::get('/beregu',              [RegistrationController::class, 'showBeregu'])->name('beregu');
+    Route::get('/revisi/{token}',        [RegistrationRevisionController::class, 'show'])
+        ->name('revisi')
+        ->where('token', '[0-9a-f]{64}');
+
+    Route::put('/revisi/{token}',        [RegistrationRevisionController::class, 'update'])
+        ->name('revision.update')
+        ->where('token', '[0-9a-f]{64}');
+ 
+    Route::get('/revisi/sukses/{uuid}',  [RegistrationRevisionController::class, 'success'])
+        ->name('revision.success');
+    
+    Route::get('/revisi/preview-ktp/{token}/{index}', [RegistrationRevisionController::class, 'previewKtp'])
+        ->name('revision.ktp.preview');
 
     // Submit form
     Route::post('/', [RegistrationController::class, 'store'])->name('store');
@@ -63,6 +78,8 @@ Route::prefix('daftar')->name('registration.')->group(function () {
     Route::get('/status/{uuid}', [RegistrationController::class, 'status'])->name('status');
     Route::get('/receipt/{uuid}',[RegistrationController::class, 'downloadReceipt'])->name('receipt');
 });
+
+
 
 Route::get('/registration/{uuid}/receipt-status', [RegistrationController::class, 'receiptStatus'])
     ->name('registration.receipt.status');

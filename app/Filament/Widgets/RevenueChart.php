@@ -11,10 +11,7 @@ class RevenueChart extends ChartWidget
     protected static ?string $heading     = 'Revenue per Hari';
     protected static ?string $description = '30 hari terakhir';
     protected static ?int    $sort        = 1;
-    public function getColumnSpan(): int | string | array
-        {
-            return 1;
-        }
+
 
     protected function getData(): array
     {
