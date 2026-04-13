@@ -33,12 +33,24 @@
         0%, 100% { box-shadow: 0 0 0 0 rgba(249,115,22,.4); }
         50%       { box-shadow: 0 0 0 8px rgba(249,115,22,0); }
     }
+    @keyframes pulseRed {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,.3); }
+        50%       { box-shadow: 0 0 0 6px rgba(239,68,68,0); }
+    }
+    @keyframes pulseAmber {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(234,179,8,.3); }
+        50%       { box-shadow: 0 0 0 6px rgba(234,179,8,0); }
+    }
     @keyframes shake {
         0%,100% { transform: translateX(0); }
         20%     { transform: translateX(-6px); }
         40%     { transform: translateX(6px); }
         60%     { transform: translateX(-4px); }
         80%     { transform: translateX(4px); }
+    }
+    @keyframes slotBarFill {
+        from { width: 0%; }
+        to   { width: var(--slot-pct); }
     }
 
     .form-section              { animation: fadeSlideUp .45s ease both; }
@@ -327,6 +339,67 @@
     /* ── Hint text ───────────────────────────────────────────── */
     .hint-text { color: #b4b2a9; font-size: 11px; margin-top: 4px; }
 
+    /* ── SLOT BANNER ─────────────────────────────────────────── */
+    .slot-banner {
+        width: 100%; max-width: 420px; margin: 20px auto 0;
+        border-radius: 16px; padding: 14px 16px;
+        animation: fadeSlideUp .4s ease both;
+    }
+    .slot-banner.warning {
+        background: rgba(234,179,8,.08);
+        border: 1px solid rgba(234,179,8,.35);
+        animation: pulseAmber 2.5s ease infinite, fadeSlideUp .4s ease both;
+    }
+    .slot-banner.danger {
+        background: rgba(239,68,68,.08);
+        border: 1px solid rgba(239,68,68,.3);
+        animation: pulseRed 2.5s ease infinite, fadeSlideUp .4s ease both;
+    }
+    .slot-banner-header {
+        display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
+    }
+    .slot-banner-icon {
+        width: 28px; height: 28px; border-radius: 8px;
+        display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .slot-banner.warning .slot-banner-icon { background: rgba(234,179,8,.15); }
+    .slot-banner.danger  .slot-banner-icon { background: rgba(239,68,68,.12); }
+    .slot-banner-title {
+        font-size: 13px; font-weight: 700; flex: 1;
+    }
+    .slot-banner.warning .slot-banner-title { color: #b45309; }
+    .slot-banner.danger  .slot-banner-title { color: #dc2626; }
+    .slot-counter-row {
+        display: flex; align-items: baseline; justify-content: space-between;
+        margin-bottom: 8px;
+    }
+    .slot-counter-label { font-size: 11px; font-weight: 600; }
+    .slot-banner.warning .slot-counter-label { color: #92400e; }
+    .slot-banner.danger  .slot-counter-label { color: #991b1b; }
+    .slot-counter-num {
+        font-size: 22px; font-weight: 800; line-height: 1;
+    }
+    .slot-banner.warning .slot-counter-num { color: #d97706; }
+    .slot-banner.danger  .slot-counter-num { color: #ef4444; }
+    .slot-counter-denom { font-size: 12px; font-weight: 500; margin-left: 2px; }
+    .slot-banner.warning .slot-counter-denom { color: #b45309; }
+    .slot-banner.danger  .slot-counter-denom { color: #b91c1c; }
+    .slot-progress-track {
+        height: 7px; border-radius: 99px; overflow: hidden; margin-bottom: 6px;
+    }
+    .slot-banner.warning .slot-progress-track { background: rgba(234,179,8,.15); }
+    .slot-banner.danger  .slot-progress-track { background: rgba(239,68,68,.12); }
+    .slot-progress-fill {
+        height: 100%; border-radius: 99px;
+        animation: slotBarFill .8s cubic-bezier(.34,1.1,.64,1) .2s both;
+        width: var(--slot-pct);
+    }
+    .slot-banner.warning .slot-progress-fill { background: linear-gradient(90deg, #f59e0b, #d97706); }
+    .slot-banner.danger  .slot-progress-fill { background: linear-gradient(90deg, #f87171, #ef4444); }
+    .slot-note { font-size: 11px; }
+    .slot-banner.warning .slot-note { color: #92400e; opacity: .75; }
+    .slot-banner.danger  .slot-note { color: #991b1b; opacity: .75; }
+
     /* ════════════════════════════════════════════════════════════
        GENDER ERROR MODAL
     ════════════════════════════════════════════════════════════ */
@@ -402,6 +475,19 @@
 </style>
 @endpush
 
+@php
+    $beregSlot = cache()->remember('bereg_slot', 30, fn () =>
+        \App\Models\Registration::where('kategori', 'beregu')
+            ->where('status', 'paid')
+            ->count()
+    );
+    $maxBereg  = 32;
+    $sisaSlot  = max(0, $maxBereg - $beregSlot);
+    $isPenuh   = $sisaSlot === 0;
+    $showSisa  = $sisaSlot < 10; /* tampil banner jika sisa < 10 */
+    $slotPct   = min(100, round(($beregSlot / $maxBereg) * 100));
+@endphp
+
 @section('content')
 <section class="min-h-screen py-20 px-4">
 <div class="max-w-3xl mx-auto">
@@ -433,6 +519,60 @@
             <strong class="text-brand-400">Kota Balikpapan</strong>
             · Khusus <strong class="text-white/70">Laki-laki</strong>
         </p>
+
+        {{-- ── SLOT BANNER ─────────────────────────────────────────── --}}
+        @if ($isPenuh)
+            <div class="slot-banner danger" style="--slot-pct: 100%;">
+                <div class="slot-banner-header">
+                    <div class="slot-banner-icon">
+                        <svg width="14" height="14" fill="none" stroke="#ef4444" stroke-width="2.2" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="15" y1="9" x2="9" y2="15"/>
+                            <line x1="9" y1="9" x2="15" y2="15"/>
+                        </svg>
+                    </div>
+                    <span class="slot-banner-title">Pendaftaran Ditutup — Kuota Penuh</span>
+                </div>
+                <div class="slot-counter-row">
+                    <span class="slot-counter-label">Slot tersisa</span>
+                    <div>
+                        <span class="slot-counter-num">0</span>
+                        <span class="slot-counter-denom">/ {{ $maxBereg }} tim</span>
+                    </div>
+                </div>
+                <div class="slot-progress-track">
+                    <div class="slot-progress-fill" style="--slot-pct: 100%;"></div>
+                </div>
+                <p class="slot-note">Semua {{ $maxBereg }} slot tim beregu telah terisi. Formulir tidak dapat disubmit.</p>
+            </div>
+
+        @elseif ($showSisa)
+            <div class="slot-banner warning" style="--slot-pct: {{ $slotPct }}%;">
+                <div class="slot-banner-header">
+                    <div class="slot-banner-icon">
+                        <svg width="14" height="14" fill="none" stroke="#d97706" stroke-width="2.2" viewBox="0 0 24 24">
+                            <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+                            <line x1="12" y1="9" x2="12" y2="13"/>
+                            <line x1="12" y1="17" x2="12.01" y2="17"/>
+                        </svg>
+                    </div>
+                    <span class="slot-banner-title">Slot Terbatas — Segera Daftar!</span>
+                </div>
+                <div class="slot-counter-row">
+                    <span class="slot-counter-label">Slot tersisa</span>
+                    <div>
+                        <span class="slot-counter-num">{{ $sisaSlot }}</span>
+                        <span class="slot-counter-denom">/ {{ $maxBereg }} tim</span>
+                    </div>
+                </div>
+                <div class="slot-progress-track">
+                    <div class="slot-progress-fill" style="--slot-pct: {{ $slotPct }}%;"></div>
+                </div>
+                <p class="slot-note">{{ $beregSlot }} dari {{ $maxBereg }} slot sudah terisi</p>
+            </div>
+        @endif
+        {{-- ── END SLOT BANNER ─────────────────────────────────────── --}}
+
     </div>
 
     {{-- ── AJAX ERROR BANNER ───────────────────────────────────────── --}}
@@ -442,7 +582,7 @@
                 <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
             </svg>
             <div>
-                <p class="text-red-500 text-sm font-bold mb-2">Terdapat kesalahan — perbaiki dan coba lagi:</p>
+                <p class="text-red-500 text-sm font-bold mb-2">Informasi:</p>
                 <ul id="ajaxErrorList" class="text-red-400 text-sm space-y-1 list-disc list-inside"></ul>
             </div>
         </div>
@@ -587,7 +727,7 @@
         <div class="flex justify-between items-center">
             <div>
                 <p class="text-white/40 text-xs mb-1">Kategori</p>
-                <p class="font-display text-white font-bold text-sm">Beregu </p>
+                <p class="font-display text-white font-bold text-sm">Beregu</p>
                 <p class="text-white/28 text-xs mt-0.5">6–8 anggota · KTP Balikpapan · Laki-laki</p>
             </div>
             <div class="text-right">
@@ -706,6 +846,43 @@
 </div>
 
 @push('scripts')
+
+{{-- ── Disable form jika kuota penuh ──────────────────────────── --}}
+@if ($isPenuh)
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var form = document.getElementById('regForm');
+    if (form) form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var banner = document.getElementById('ajaxErrorBanner');
+        var list   = document.getElementById('ajaxErrorList');
+        list.innerHTML = '<li>Kuota pendaftaran beregu sudah penuh (32/32 tim). Pendaftaran ditutup.</li>';
+        banner.classList.add('show');
+        banner.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, true);
+
+    var btn = document.getElementById('submitBtn');
+    if (btn) {
+        btn.disabled = true;
+        btn.classList.remove('btn-ready');
+        btn.classList.add('btn-disabled');
+        document.getElementById('submitBtnText').textContent = 'Kuota Penuh — Pendaftaran Ditutup';
+        var hint = document.getElementById('submitHint');
+        hint.textContent = 'Maaf, semua 32 slot tim beregu telah terisi.';
+        hint.style.display = '';
+    }
+
+    /* Disable semua input */
+    document.querySelectorAll('#regForm input, #regForm select, #regForm textarea, #regForm button')
+        .forEach(function (el) {
+            el.disabled = true;
+            el.style.pointerEvents = 'none';
+            el.style.opacity = '.5';
+        });
+});
+</script>
+@endif
+
 <script>
 /* ================================================================
    WILAYAH
@@ -822,22 +999,17 @@ return { open:open, close:close, pick:pick };
 window._GEM = (function () {
 'use strict';
 
-/* ── Hardcoded rule: beregu selalu putra (Laki-laki) ── */
 var REQUIRED_GENDER = 'L';
 var LABEL_REQUIRED  = 'Laki-laki';
-var LABEL_WRONG     = 'Perempuan';
-var LABEL_KATEGORI  = 'Beregu ';
+var LABEL_KATEGORI  = 'Beregu';
 
 function show(memberIdx, namaOcr, genderDetected) {
-    /* genderDetected: 'P' = Perempuan, '' = tidak terbaca */
     var labelDetected = (genderDetected === 'P') ? 'Perempuan' : 'Tidak terbaca';
-
     _setTxt('gem-player-no',   memberIdx + 1);
     _setTxt('gem-player-name', namaOcr || ('Anggota ' + (memberIdx + 1)));
     _setTxt('gem-detected',    labelDetected);
     _setTxt('gem-required',    LABEL_REQUIRED);
     _setTxt('gem-wrong-gender', labelDetected);
-
     var msgEl = document.getElementById('gem-message');
     if (msgEl) {
         msgEl.innerHTML =
@@ -846,7 +1018,6 @@ function show(memberIdx, namaOcr, genderDetected) {
             + ' hanya untuk pemain <strong>' + _esc(LABEL_REQUIRED) + '</strong>.<br><br>'
             + 'Silakan upload KTP pemain <strong>' + _esc(LABEL_REQUIRED) + '</strong> yang sesuai.';
     }
-
     var modal = document.getElementById('genderErrorModal');
     if (modal) { modal.classList.add('show'); document.body.style.overflow = 'hidden'; }
 }
@@ -856,7 +1027,6 @@ function showUnknown(memberIdx, namaOcr) {
     _setTxt('gem-player-name', namaOcr || ('Anggota ' + (memberIdx + 1)));
     _setTxt('gem-detected',    'Tidak terbaca');
     _setTxt('gem-required',    LABEL_REQUIRED);
-
     var msgEl = document.getElementById('gem-message');
     if (msgEl) {
         msgEl.innerHTML =
@@ -868,7 +1038,6 @@ function showUnknown(memberIdx, namaOcr) {
             + 'Kategori <strong>' + _esc(LABEL_KATEGORI) + '</strong> hanya untuk pemain'
             + ' <strong>' + _esc(LABEL_REQUIRED) + '</strong>.';
     }
-
     var modal = document.getElementById('genderErrorModal');
     if (modal) { modal.classList.add('show'); document.body.style.overflow = 'hidden'; }
 }
@@ -879,17 +1048,14 @@ function close() {
     document.body.style.overflow = '';
 }
 
-/* Expose required gender agar BEREGU bisa cek */
 function getRequiredGender() { return REQUIRED_GENDER; }
-
 function _setTxt(id, val) { var el = document.getElementById(id); if (el) el.textContent = val; }
 function _esc(s) {
     return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
 document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
-
-return { show: show, showUnknown: showUnknown, close: close, getRequiredGender: getRequiredGender };
+return { show:show, showUnknown:showUnknown, close:close, getRequiredGender:getRequiredGender };
 })();
 </script>
 
@@ -904,8 +1070,7 @@ var MIN_MEMBERS   = 6;
 var MAX_MEMBERS   = 8;
 var MIN_KTP_VALID = 6;
 
-/* ── Ambil required gender dari _GEM (selalu 'L' untuk beregu) ── */
-var REQUIRED_GENDER = window._GEM.getRequiredGender(); /* 'L' */
+var REQUIRED_GENDER = window._GEM.getRequiredGender();
 
 var members     = [];
 var nextId      = 0;
@@ -913,7 +1078,6 @@ var cardData    = {};
 var memberFiles = {};
 
 var TOURNAMENT_DATE = new Date(2026, 7, 24);
-var VALID_CITY      = ['BALIKPAPAN'];
 
 var CARD_FIELDS = [
     { l:'NIK',     k:'nik',           n:'nik[]',       placeholder:'16 digit NIK' },
@@ -921,7 +1085,6 @@ var CARD_FIELDS = [
     { l:'Tgl Lhr', k:'tanggal_lahir', n:'tgl_lahir[]', placeholder:'DD-MM-YYYY' },
 ];
 
-/* ── Normalize gender dari OCR ───────────────────────────────── */
 function normalizeGender(raw) {
     if (!raw) return '';
     raw = raw.toUpperCase().trim();
@@ -932,7 +1095,6 @@ function normalizeGender(raw) {
     return '';
 }
 
-/* ── Hitung usia ─────────────────────────────────────────────── */
 function hitungUsia(str) {
     if (!str||!str.trim()) return null;
     str = str.trim();
@@ -955,7 +1117,6 @@ function updateUsiaRow(id, tglValue) {
     else               { el.className = 'usia-display no-value';  el.textContent = '—'; }
 }
 
-/* ── Konversi HEIC/besar → JPEG ─────────────────────────────── */
 function convertToJpeg(file, callback) {
     var MAX_SIZE_KB=300, MAX_PIXEL=1600, QUALITY_STEP=0.10, MIN_QUALITY=0.35;
     var reader = new FileReader();
@@ -990,7 +1151,6 @@ function convertToJpeg(file, callback) {
     reader.readAsDataURL(file);
 }
 
-/* ── Init ────────────────────────────────────────────────────── */
 function init() {
     for (var i=0; i<MAX_MEMBERS; i++) addMember();
     updateCounter();
@@ -999,7 +1159,6 @@ function init() {
 function addMember() {
     if (members.length>=MAX_MEMBERS) return;
     var id=nextId++;
-    /* genderValid: false karena ada REQUIRED_GENDER yang harus divalidasi */
     members.push({ id:id, scanned:false, cityValid:null, genderValid:false });
     cardData[id]={};
     memberFiles[id]=null;
@@ -1025,7 +1184,6 @@ function renumber() {
     });
 }
 
-/* ── Render slot ─────────────────────────────────────────────── */
 function renderSlot(id) {
     var idx=members.length-1;
     var deletable=members.length>MIN_MEMBERS;
@@ -1041,7 +1199,6 @@ function renderSlot(id) {
 
     var html=
         '<div id="mc_'+id+'" class="member-card" data-id="'+id+'">'
-
         +'<div class="flex items-center justify-between mb-3">'
         +'<div class="flex items-center gap-2">'
         +'<div class="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0"'
@@ -1056,14 +1213,11 @@ function renderSlot(id) {
         +'</div>'
         +delBtn
         +'</div>'
-
-        /* Dropzone */
         +'<div id="dz_'+id+'" class="ktp-dropzone"'
         +' onclick="BEREGU.showSheet('+id+')"'
         +' ondragover="event.preventDefault();this.classList.add(\'drag-over\')"'
         +' ondragleave="this.classList.remove(\'drag-over\')"'
         +' ondrop="BEREGU.onDrop(event,'+id+')">'
-
         +'<div id="prev_'+id+'" class="hidden w-full flex items-center gap-2 px-3 py-2">'
         +'<div class="relative flex-shrink-0">'
         +'<img id="prevImg_'+id+'" src="" alt="" style="width:48px;height:36px;border-radius:6px;object-fit:cover;border:0.5px solid rgba(0,0,0,.1);">'
@@ -1075,7 +1229,6 @@ function renderSlot(id) {
         +'</button></div>'
         +'<p style="font-size:10px;color:#b4b2a9;">Ketuk ganti</p>'
         +'</div>'
-
         +'<div id="dzDefault_'+id+'" class="flex flex-col items-center py-2 gap-1">'
         +'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(249,115,22,.45)" stroke-width="1.5">'
         +'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 9h10M7 13h6"/>'
@@ -1083,11 +1236,9 @@ function renderSlot(id) {
         +'<p style="font-size:10px;color:#b4b2a9;">Ketuk upload KTP</p>'
         +'</div>'
         +'</div>'
-
         +'<input type="file" id="fiCam_'+id+'" accept="image/*" capture="environment" class="hidden" onchange="BEREGU.onFileSelect(this,'+id+')">'
         +'<input type="file" id="fiFoto_'+id+'" accept="image/*" class="hidden" name="ktp_files[]" onchange="BEREGU.onFileSelect(this,'+id+')">'
         +'<input type="file" id="fiFile_'+id+'" accept="image/*,.heic,.heif" class="hidden" onchange="BEREGU.onFileSelect(this,'+id+')">'
-
         +'<button type="button" id="scanBtn_'+id+'" onclick="BEREGU.scan('+id+')"'
         +' class="hidden mt-2 w-full flex items-center justify-center gap-1.5"'
         +' style="background:linear-gradient(135deg,#f97316,#c2410c);color:#fff;padding:6px 10px;font-size:10px;font-weight:800;border-radius:9px;border:none;cursor:pointer;letter-spacing:.06em;">'
@@ -1095,23 +1246,19 @@ function renderSlot(id) {
         +'<path stroke-linecap="round" stroke-linejoin="round" d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/>'
         +'</svg>SCAN KTP'
         +'</button>'
-
         +'<div id="scanLoading_'+id+'" class="hidden mt-2 text-center" style="padding:4px 0;">'
         +'<p style="font-size:10px;color:#f97316;font-weight:600;">Membaca KTP...</p>'
         +'<div class="scan-loading-bar"><div class="scan-loading-bar-inner"></div></div>'
         +'</div>'
-
         +'<div id="ktpDataCard_'+id+'" class="ktp-data-card">'
         +'<p class="ktp-edit-hint">✏ Klik untuk edit</p>'
         +'<div id="ktpDataRows_'+id+'"></div>'
         +'</div>'
-
         +'</div>';
 
     container.insertAdjacentHTML('beforeend', html);
 }
 
-/* ── Scan Semua ──────────────────────────────────────────────── */
 function scanAll() {
     var toScan=members.filter(function(m){return memberFiles[m.id]&&!m.scanned;}).map(function(m){return m.id;});
     if (toScan.length===0) { toast('Semua KTP yang sudah diupload telah di-scan.','warn'); return; }
@@ -1128,7 +1275,6 @@ function scanAll() {
     scanNext();
 }
 
-/* ── Core scan dengan callback ───────────────────────────────── */
 function scanWithCallback(id, cb) {
     var fileToScan=memberFiles[id];
     if (!fileToScan) { if(cb) cb(); return; }
@@ -1159,24 +1305,18 @@ function scanWithCallback(id, cb) {
         var genderNorm = normalizeGender(data.jenis_kelamin||'');
         var memberIdx  = getIndexById(id);
 
-        /* ══════════════════════════════════════════════════════
-           VALIDASI GENDER — harus Laki-laki (L)
-        ══════════════════════════════════════════════════════ */
         if (genderNorm === '') {
-            /* Jenis kelamin tidak terbaca */
             _onGenderFail(id);
             _GEM.showUnknown(memberIdx, data.nama||'');
             if(cb) cb(); return;
         }
 
         if (genderNorm !== REQUIRED_GENDER) {
-            /* Terdeteksi Perempuan — tolak */
             _onGenderFail(id);
             _GEM.show(memberIdx, data.nama||'', genderNorm);
             if(cb) cb(); return;
         }
 
-        /* ── Gender OK (Laki-laki) — lanjut render ── */
         var m=getMember(id);
         if (m) { m.scanned=true; m.cityValid=data.city_valid; m.genderValid=true; }
 
@@ -1202,37 +1342,27 @@ function scanWithCallback(id, cb) {
     });
 }
 
-/* ── Handler gender gagal ────────────────────────────────────── */
 function _onGenderFail(id) {
-    /* Reset file */
     memberFiles[id]=null;
     ['fiCam_','fiFoto_','fiFile_'].forEach(function(pfx){
         var el=document.getElementById(pfx+id);
         if(el) el.value='';
     });
-
-    /* Reset member state */
     var m=getMember(id);
     if (m) { m.scanned=false; m.cityValid=null; m.genderValid=false; }
-
-    /* Reset UI */
     hide('prev_'+id); show('dzDefault_'+id);
     hide('scanBtn_'+id); hide('scanLoading_'+id);
-
-    /* Shake animation */
     var mc=document.getElementById('mc_'+id);
     if (mc) {
         mc.classList.remove('scanned','city-invalid');
         mc.classList.add('gender-error');
         setTimeout(function(){ mc.classList.remove('gender-error'); }, 600);
     }
-
     resetCardUI(id);
     updateCounter();
     updateScanAllBtn();
 }
 
-/* ── File handling ───────────────────────────────────────────── */
 function showSheet(id) { _SHEET.open(id); }
 
 function onFileSelect(input, id) {
@@ -1284,7 +1414,6 @@ function resetCardUI(id) {
     if (mc) mc.classList.remove('scanned','city-invalid','gender-error');
 }
 
-/* ── Scan single (dengan toast result) ──────────────────────── */
 function scan(id) {
     scanWithCallback(id, function(){
         var m=getMember(id);
@@ -1298,7 +1427,6 @@ function scan(id) {
     });
 }
 
-/* ── Render KTP Data Card ────────────────────────────────────── */
 function renderKtpCard(id, data, genderNorm) {
     cardData[id]={};
     var card=document.getElementById('ktpDataCard_'+id);
@@ -1324,7 +1452,6 @@ function renderKtpCard(id, data, genderNorm) {
             +'</div>';
     });
 
-    /* Jenis Kelamin — read-only, selalu Laki-laki karena sudah divalidasi */
     rows.innerHTML+=
         '<div class="ktp-row" style="margin-top:4px;">'
         +'<span class="ktp-label">Kelamin</span>'
@@ -1334,10 +1461,8 @@ function renderKtpCard(id, data, genderNorm) {
         +'<input type="hidden" name="jenis_kelamin[]" value="L">'
         +'</div>';
 
-    /* Kota hidden */
     rows.innerHTML+='<input type="hidden" id="khid_'+id+'_kota" name="kota_ktp[]" value="'+esc((data.kota||'').trim())+'">';
 
-    /* Usia */
     var tglVal=cardData[id]['tanggal_lahir']||'';
     var usia=hitungUsia(tglVal);
     rows.innerHTML+=
@@ -1348,7 +1473,6 @@ function renderKtpCard(id, data, genderNorm) {
         +'<span style="font-size:8px;color:#b4b2a9;flex-shrink:0;">auto</span>'
         +'</div>';
 
-    /* City badge */
     rows.innerHTML+=data.city_valid
         ?'<div class="city-badge valid">✓ KTP Balikpapan — Memenuhi Syarat</div>'
         :(data.kota
@@ -1358,7 +1482,6 @@ function renderKtpCard(id, data, genderNorm) {
     card.className='ktp-data-card show valid-card';
 }
 
-/* ── Inline edit ─────────────────────────────────────────────── */
 function inlineEdit(id, key) {
     var v=document.getElementById('kval_'+id+'_'+key);
     var i=document.getElementById('kinp_'+id+'_'+key);
@@ -1389,7 +1512,6 @@ function inlineKey(e, id, key) {
     }
 }
 
-/* ── Counter + Submit State ──────────────────────────────────── */
 function updateCounter() {
     var total      = members.length;
     var scanned    = members.filter(function(m){return m.scanned;}).length;
@@ -1412,6 +1534,12 @@ function updateCounter() {
     var hint=document.getElementById('submitHint');
     var need=document.getElementById('submitNeedCount');
 
+    @if ($isPenuh)
+    /* Kuota penuh — jangan pernah enable submit */
+    if (btn) { btn.disabled=true; btn.classList.remove('btn-ready'); btn.classList.add('btn-disabled'); }
+    if (txt) txt.textContent='Kuota Penuh — Pendaftaran Ditutup';
+    if (hint) { hint.textContent='Maaf, semua 32 slot tim beregu telah terisi.'; hint.style.display=''; }
+    @else
     if (validCount>=MIN_KTP_VALID) {
         if (btn) { btn.disabled=false; btn.className=btn.className.replace('btn-disabled','').trim(); btn.classList.add('btn-ready'); }
         if (txt) txt.textContent='KIRIM PENDAFTARAN →';
@@ -1422,6 +1550,7 @@ function updateCounter() {
         if (hint) hint.style.display='';
         if (need) need.textContent=MIN_KTP_VALID-validCount;
     }
+    @endif
 
     updateScanAllBtn();
 }
@@ -1435,14 +1564,12 @@ function updateScanAllBtn() {
     if (txt&&!btn.disabled) txt.textContent='SCAN SEMUA KTP';
 }
 
-/* ── Helpers ─────────────────────────────────────────────────── */
 function getMember(id)    { return members.find(function(m){return m.id===id;}); }
 function getIndexById(id) { return members.findIndex(function(m){return m.id===id;}); }
 function show(elId) { var el=document.getElementById(elId); if(el) el.classList.remove('hidden'); }
 function hide(elId) { var el=document.getElementById(elId); if(el) el.classList.add('hidden'); }
 function esc(s)  { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
-/* ── Toast ───────────────────────────────────────────────────── */
 var _tt=null;
 function toast(msg, type) {
     var el=document.getElementById('_beregToast');
@@ -1463,7 +1590,6 @@ function toast(msg, type) {
     _tt=setTimeout(function(){el.style.opacity='0';el.style.transform='translateY(-8px)';},5000);
 }
 
-/* ── Error banner helpers ────────────────────────────────────── */
 function clearAllErrors() {
     document.querySelectorAll('.field-error-msg').forEach(function(e){e.textContent='';e.classList.remove('show');});
     document.querySelectorAll('.input-field.field-error').forEach(function(e){e.classList.remove('field-error');});
@@ -1492,7 +1618,6 @@ function setSubmitLoading(loading) {
     }
 }
 
-/* ── Expose ke global ────────────────────────────────────────── */
 window.BEREGU = {
     addMember:addMember, remove:removeMember,
     onFileSelect:onFileSelect, onDrop:onDrop, resetFile:resetFile,
@@ -1500,7 +1625,6 @@ window.BEREGU = {
     inlineEdit:inlineEdit, inlineSave:inlineSave, inlineKey:inlineKey,
 };
 
-/* ── Bootstrap ───────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', function(){
     init();
 
@@ -1511,14 +1635,17 @@ document.addEventListener('DOMContentLoaded', function(){
         e.preventDefault();
         clearAllErrors();
 
-        /* Validasi: minimal 6 KTP Balikpapan valid */
+        @if ($isPenuh)
+        showErrorBanner(['Kuota pendaftaran beregu sudah penuh (32/32 tim). Pendaftaran ditutup.']);
+        return;
+        @endif
+
         var validKtp=members.filter(function(m){return m.cityValid===true;}).length;
         if (validKtp<MIN_KTP_VALID) {
             showErrorBanner(['Minimal '+MIN_KTP_VALID+' KTP Balikpapan diperlukan. Saat ini: '+validKtp+'.']);
             return;
         }
 
-        /* Validasi: semua field wajib terisi */
         var clientErrors=[];
         members.forEach(function(m,i){
             CARD_FIELDS.forEach(function(f){
@@ -1532,7 +1659,6 @@ document.addEventListener('DOMContentLoaded', function(){
         });
         if (clientErrors.length>0) { showErrorBanner(clientErrors); return; }
 
-        /* Build FormData */
         var fd=new FormData();
         form.querySelectorAll('input:not([type="file"]), select, textarea').forEach(function(inp){
             if (!inp.name) return;

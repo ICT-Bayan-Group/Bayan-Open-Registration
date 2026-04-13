@@ -8,11 +8,21 @@ use Filament\Widgets\ChartWidget;
 class CategoryChart extends ChartWidget
 {
     protected static ?string $heading = 'Kategori Peserta';
-    protected static ?int    $sort    = 2;
+    protected static ?int $sort = 2;
+
     public function getColumnSpan(): int | string | array
-        {
-            return 1;
-        }
+    {
+        return [
+            'default' => 2,
+            'md' => 1,
+            'lg' => 1,
+        ];
+    }
+
+    protected function getMaxHeight(): string
+    {
+        return '220px'; // 🔥 kecilin tinggi
+    }
 
     protected function getData(): array
     {
@@ -28,10 +38,9 @@ class CategoryChart extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'data'            => [$regu, $open],
+                    'data' => [$regu, $open],
                     'backgroundColor' => ['#6366F1', '#10B981'],
-                    'borderWidth'     => 0,
-                    'hoverOffset'     => 6,
+                    'borderWidth' => 0,
                 ],
             ],
             'labels' => [
@@ -49,15 +58,15 @@ class CategoryChart extends ChartWidget
     protected function getOptions(): array
     {
         return [
-            'cutout'  => '72%',
+            'maintainAspectRatio' => false, // 🔥 WAJIB
+            'cutout' => '75%', // donut lebih kecil
             'plugins' => [
                 'legend' => [
                     'position' => 'bottom',
-                    'labels'   => [
+                    'labels' => [
                         'usePointStyle' => true,
-                        'pointStyle'    => 'rectRounded',
-                        'padding'       => 16,
-                        'font'          => ['size' => 12],
+                        'padding' => 12,
+                        'font' => ['size' => 11], // 🔥 kecilin font
                     ],
                 ],
             ],

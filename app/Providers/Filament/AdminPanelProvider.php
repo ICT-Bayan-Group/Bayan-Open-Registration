@@ -7,6 +7,7 @@ use App\Filament\Widgets\StatsOverview;
 use App\Filament\Widgets\RevenueChart;
 use App\Filament\Widgets\CategoryChart;
 use App\Filament\Widgets\StatusChart;
+use App\Filament\Widgets\ProvinceChart;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -52,6 +53,7 @@ class AdminPanelProvider extends PanelProvider
                 RevenueChart::class,
                 CategoryChart::class,
                 StatusChart::class,
+                ProvinceChart::class,
             ])
 
             ->middleware([
