@@ -2009,7 +2009,7 @@ body {
                     </div>
                     <div style="flex:1;min-width:0;">
                         <p class="sub-name">Ganda Dewasa Putra</p>
-                        <p class="sub-desc">Upload KTP di akhir pendaftaran</p>
+                        <p class="sub-desc">Terbuka untuk umum</p>
                     </div>
                     <span class="sub-price">Rp 400.000</span>
                     <svg class="sc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(26,18,9,0.6)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
@@ -2021,7 +2021,7 @@ body {
                     </div>
                     <div style="flex:1;min-width:0;">
                         <p class="sub-name">Ganda Dewasa Putri</p>
-                        <p class="sub-desc">Upload KTP di akhir pendaftaran</p>
+                        <p class="sub-desc">Terbuka untuk umum</p>
                     </div>
                     <span class="sub-price">Rp 400.000</span>
                     <svg class="sc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(26,18,9,0.6)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
@@ -2033,7 +2033,7 @@ body {
                     </div>
                     <div style="flex:1;min-width:0;">
                         <p class="sub-name">Ganda Veteran Putra</p>
-                        <p class="sub-desc">Scan KTP · Minimal umur 45 Tahun</p>
+                        <p class="sub-desc">Terbuka untuk umum · Minimal umur 45 Tahun</p>
                     </div>
                     <span class="sub-price">Rp 400.000</span>
                     <svg class="sc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(26,18,9,0.6)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
@@ -2045,7 +2045,7 @@ body {
                     </div>
                     <div style="flex:1;min-width:0;">
                         <p class="sub-name">Beregu</p>
-                        <p class="sub-desc">Upload KTP · min. 6 pemain per regu</p>
+                        <p class="sub-desc">Khusus KTP Balikpapan · 1 Regu min. 6 pemain</p>
                     </div>
                     <span class="sub-price">Rp 1.000.000</span>
                     <svg class="sc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(26,18,9,0.6)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
