@@ -16,8 +16,8 @@ class ListBereg extends ListRecords
         return [BeregStats::class];
     }
 
-    protected function getHeaderActions(): array
-    {
+   // protected function getHeaderActions(): array
+   // {
         //return [Actions\CreateAction::make()];
-    }
+   // }
 }

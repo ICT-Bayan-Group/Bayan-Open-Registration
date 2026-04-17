@@ -16,8 +16,8 @@ class ListGandaDewasaPutri extends ListRecords
         return [GandaDewasaPutriStats::class];
     }
 
-    protected function getHeaderActions(): array
-    {
+   // protected function getHeaderActions(): array
+   // {
        // return [Actions\CreateAction::make()];
-    }
+   // }
 }
