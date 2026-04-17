@@ -608,17 +608,27 @@ class RegistrationResource extends Resource
                     ->url(fn (Registration $r) => route('registration.receipt', $r->uuid))
                     ->openUrlInNewTab(),
 
-                Tables\Actions\Action::make('mark_paid')
-                    ->label('Tandai Paid')
-                    ->icon('heroicon-o-check-circle')->color('success')
-                    ->visible(fn (Registration $r) => in_array($r->status, ['pending', 'failed', 'expired']))
-                    ->requiresConfirmation()
-                    ->action(function (Registration $r) {
-                        $r->update(['status' => 'paid', 'payment_time' => now()]);
-                        \App\Jobs\ProcessPaidRegistration::dispatch($r);
-                        Notification::make()->title('Status diupdate ke Paid')->success()->send();
-                    }),
+            Tables\Actions\Action::make('resend_payment_email')
+                ->label('Resend Link Bayar')
+                ->icon('heroicon-o-paper-airplane')
+                ->color('warning')
+                ->visible(fn (Registration $r) => in_array($r->status, ['pending', 'expired']))
+                ->requiresConfirmation()
+                ->modalHeading('Kirim Ulang Link Pembayaran?')
+                ->modalDescription(fn (Registration $r) =>
+                    'Link pembayaran baru akan dibuat dan dikirim ke ' . $r->email . '. Link lama akan otomatis tidak berlaku.'
+                )
+                ->action(function (Registration $r) {
+                    $r->regeneratePaymentToken(24); // token baru, link lama mati
 
+                    \Illuminate\Support\Facades\Mail::to($r->email)
+                        ->send(new \App\Mail\RegistrationPending($r->fresh()));
+
+                    Notification::make()
+                        ->title('Link pembayaran baru dikirim ke ' . $r->email)
+                        ->success()
+                        ->send();
+                }),
                 Tables\Actions\Action::make('resend_email')
                     ->label('Resend Email')
                     ->icon('heroicon-o-envelope')->color('info')
@@ -628,8 +638,6 @@ class RegistrationResource extends Resource
                             ->send(new \App\Mail\RegistrationPaid($r));
                         Notification::make()->title('Email berhasil dikirim ulang')->success()->send();
                     }),
-
-                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -688,7 +696,7 @@ class RegistrationResource extends Resource
     {
         return [
             'index'  => Pages\ListRegistrations::route('/'),
-            'create' => Pages\CreateRegistration::route('/create'),
+           // 'create' => Pages\CreateRegistration::route('/create'),
             'view'   => Pages\ViewRegistration::route('/{record}'),
             'edit'   => Pages\EditRegistration::route('/{record}/edit'),
         ];
@@ -702,5 +710,11 @@ class RegistrationResource extends Resource
     public static function getNavigationBadgeColor(): ?string
     {
         return 'warning';
+    }
+public static function getWidgets(): array
+    {
+        return [
+            \App\Filament\Resources\RegistrationResource\Widgets\RegistrationStatsOverview::class,
+        ];
     }
 }

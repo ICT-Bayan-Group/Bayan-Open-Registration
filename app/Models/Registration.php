@@ -203,6 +203,18 @@ class Registration extends Model
             && $this->payment_token_expires_at
             && $this->payment_token_expires_at->isFuture();
     }
+    /**
+     * Generate ulang payment token baru (link lama otomatis mati).
+     * Dipakai saat admin resend link pembayaran ke peserta pending/expired.
+     */
+    public function regeneratePaymentToken(int $expiresInHours = 24): void
+    {
+        $this->update([
+            'payment_token' => (string) Str::uuid(),
+            'payment_token_expires_at' => now()->addHours($expiresInHours),
+            'status'                   => 'pending', // reset expired → pending
+        ]);
+    }
 
     /**
      * Jumlah anggota dengan kota valid (Balikpapan).

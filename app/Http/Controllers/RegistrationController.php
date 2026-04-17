@@ -435,10 +435,16 @@ class RegistrationController extends Controller
     {
         $registration = Registration::where('payment_token', $token)
             ->where('approval_status', 'approved')
-            ->firstOrFail();
+            ->firstOrFail(); // ✅ Benar — token lama yang sudah diganti otomatis 404
 
         if (! $registration->paymentTokenValid()) {
             return view('registration.payment-expired', compact('registration'));
+            // ✅ Benar — token valid tapi sudah lewat expires_at → expired view
+        }
+
+        // ✅ Tambahkan: jangan tampilkan payment page jika sudah paid
+        if ($registration->status === 'paid') {
+            return redirect()->route('registration.status', $registration->uuid);
         }
 
         try {

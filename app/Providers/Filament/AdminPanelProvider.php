@@ -3,6 +3,10 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Resources\RegistrationResource;
+use App\Filament\Resources\GandaDewasaPutraResource;
+use App\Filament\Resources\GandaDewasaPutriResource;
+use App\Filament\Resources\GandaVeteranPutraResource;
+use App\Filament\Resources\BeregResource;
 use App\Filament\Widgets\StatsOverview;
 use App\Filament\Widgets\RevenueChart;
 use App\Filament\Widgets\CategoryChart;
@@ -40,15 +44,26 @@ class AdminPanelProvider extends PanelProvider
             ->sidebarCollapsibleOnDesktop()
 
             ->pages([
-                \App\Filament\Pages\Dashboard::class,  // ← pakai custom Dashboard
+                \App\Filament\Pages\Dashboard::class,
+                \App\Filament\Pages\IctPanel::class,        // ← tambahkan ini
+                  \App\Filament\Pages\RevenueReport::class,   // ← dan ini
             ])
 
             ->resources([
-                RegistrationResource::class,
+                // ── Semua peserta (gabungan semua kategori) ──────────────
+                //RegistrationResource::class,
+
+                // ── Verifikasi beregu ─────────────────────────────────────
                 \App\Filament\Resources\VerifikasiBeregResource::class,
+
+                // ── Per kategori ──────────────────────────────────────────
+                GandaDewasaPutraResource::class,
+                GandaDewasaPutriResource::class,
+                GandaVeteranPutraResource::class,
+                BeregResource::class,
             ])
 
-           ->widgets([
+            ->widgets([
                 StatsOverview::class,
                 RevenueChart::class,
                 CategoryChart::class,
