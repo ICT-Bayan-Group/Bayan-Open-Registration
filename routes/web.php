@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Route;
 
 // ── Auth ────────────────────────────────────────────────────────
 Route::get('/login', fn() => redirect()->route('filament.admin.auth.login'))->name('login');
-
 // ── Home ────────────────────────────────────────────────────────
 Route::get('/', fn() => view('home'))->name('home');
 Route::get('/v1', fn() => view('welcome'))->name('welcome');
