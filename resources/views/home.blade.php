@@ -1,468 +1,2519 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Bayan Open 2026 — Turnamen Bulutangkis Bergengsi, Balikpapan, Kalimantan Timur. Segera Hadir.">
-    <title>Coming Soon — Bayan Open 2026</title>
+@extends('layouts.app')
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+@section('title', 'Selamat Datang')
 
-    <style>
-    :root {
-        --fire:        #ea6c0a;
-        --fire-deep:   #c2500a;
-        --fire-light:  #ff8c38;
-        --gold:        #f5a623;
-        --bg:          #faf7f4;
-        --bg-2:        #f2ede7;
-        --bg-card:     #ffffff;
-        --border:      rgba(0,0,0,0.08);
-        --border-warm: rgba(234,108,10,0.22);
-        --text-primary:   #1a1208;
-        --text-secondary: #6b5c4a;
-        --text-muted:     #a89282;
-        --font: 'Montserrat', sans-serif;
-        --marquee-h: 38px;
-        --shadow-card: 0 2px 20px rgba(0,0,0,0.07), 0 0 0 1px rgba(0,0,0,0.05);
-        --shadow-fire: 0 8px 32px rgba(234,108,10,0.35);
+@push('head')
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+/* ═══════════════════════════════════════
+   TOKENS
+═══════════════════════════════════════ */
+:root {
+    --fire:      #f97316;
+    --fire-deep: #c2410c;
+    --fire-glow: rgba(249,115,22,0.35);
+    --gold:      #fbbf24;
+    --night:     #0d0906;
+    --night-2:   #140c07;
+    --night-3:   #1e1209;
+    --smoke:     rgba(255,255,255,0.06);
+    --smoke-2:   rgba(255,255,255,0.03);
+    --ash:       rgba(255,255,255,0.55);
+    --ash-2:     rgba(255,255,255,0.25);
+    --ash-3:     rgba(255,255,255,0.1);
+    --paper:     #faf8f5;
+    --paper-2:   #f2ede6;
+    --ink:       #1a1007;
+    --ink-60:    rgba(26,16,7,0.6);
+    --ink-30:    rgba(26,16,7,0.3);
+    --ink-12:    rgba(26,16,7,0.1);
+
+    --r-sm: 12px;
+    --r-md: 18px;
+    --r-lg: 24px;
+    --r-xl: 32px;
+    --font-display: 'Montserrat', sans-serif;
+    --font-body:    'Montserrat', sans-serif;
+
+    --orange:    #f97316;
+    --orange-dk: #ea580c;
+    --cream:     #f8f6f2;
+    --cream-dk:  #f0ede8;
+    --white:     #ffffff;
+    --m-ink:     #1a1209;
+    --m-ink-60:  rgba(26,18,9,0.6);
+    --m-ink-35:  rgba(26,18,9,0.35);
+    --m-ink-12:  rgba(26,18,9,0.12);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: var(--font-body);
+    background: var(--paper);
+    color: var(--ink);
+    overflow-x: hidden;
+}
+
+/* ═══════════════════════════════════════
+   HERO
+═══════════════════════════════════════ */
+.hero {
+    min-height: 100svh;
+    background: var(--night);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    margin-top: -96px;
+}
+
+.hero-video {
+    position: absolute; inset: 0; z-index: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+}
+
+.hero-overlay {
+    position: absolute; inset: 0; z-index: 1;
+    background:
+        linear-gradient(to bottom, rgba(13,9,6,0.60) 0%, rgba(13,9,6,0.35) 50%, rgba(13,9,6,0.82) 100%),
+        radial-gradient(ellipse 80% 60% at 50% 40%, rgba(249,115,22,0.10) 0%, transparent 65%);
+}
+
+.hero-vignette {
+    position: absolute; inset: 0; z-index: 2;
+    background: radial-gradient(ellipse 120% 100% at 50% 50%, transparent 40%, rgba(13,9,6,0.55) 100%);
+    pointer-events: none;
+}
+
+.hero-grain {
+    position: absolute; inset: 0; z-index: 3;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none;
+}
+
+.hero-orb {
+    position: absolute; border-radius: 50%; pointer-events: none; z-index: 4;
+}
+.hero-orb-1 {
+    width: 420px; height: 420px;
+    top: -80px; left: -120px;
+    background: radial-gradient(circle, rgba(249,115,22,0.14) 0%, transparent 70%);
+    animation: orb-drift-1 12s ease-in-out infinite alternate;
+}
+.hero-orb-2 {
+    width: 320px; height: 320px;
+    bottom: -60px; right: -80px;
+    background: radial-gradient(circle, rgba(251,191,36,0.10) 0%, transparent 70%);
+    animation: orb-drift-2 16s ease-in-out infinite alternate;
+}
+.hero-orb-3 {
+    width: 200px; height: 200px;
+    top: 30%; right: 10%;
+    background: radial-gradient(circle, rgba(249,115,22,0.07) 0%, transparent 70%);
+    animation: orb-drift-2 9s ease-in-out infinite alternate-reverse;
+}
+@keyframes orb-drift-1 {
+    from { transform: translate(0, 0) scale(1); }
+    to   { transform: translate(30px, -25px) scale(1.12); }
+}
+@keyframes orb-drift-2 {
+    from { transform: translate(0, 0) scale(1); }
+    to   { transform: translate(-20px, 20px) scale(1.08); }
+}
+
+.hero-content {
+    position: relative; z-index: 5;
+    display: flex; align-items: center; justify-content: center;
+    width: 100%;
+    padding: 140px 24px 120px;
+}
+
+.glass-card {
+    background: rgba(255,255,255,0.12);
+    backdrop-filter: blur(32px) saturate(1.5) brightness(1.05);
+    -webkit-backdrop-filter: blur(32px) saturate(1.5) brightness(1.05);
+    border: 1px solid rgba(255,255,255,0.26);
+    border-radius: 36px;
+    padding: 48px 52px 44px;
+    max-width: 580px;
+    width: 100%;
+    text-align: center;
+    box-shadow:
+        0 0 0 1px rgba(255,255,255,0.07) inset,
+        0 2px 0 rgba(255,255,255,0.12) inset,
+        0 40px 100px rgba(0,0,0,0.40),
+        0 8px 24px rgba(0,0,0,0.18);
+    position: relative;
+    overflow: hidden;
+    animation: glass-in 0.9s cubic-bezier(0.22,1,0.36,1) 0.05s both;
+}
+
+.glass-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 8%; right: 8%;
+    height: 1px;
+    background: linear-gradient(90deg,
+        transparent,
+        rgba(255,255,255,0.6) 30%,
+        rgba(255,255,255,0.75) 50%,
+        rgba(255,255,255,0.6) 70%,
+        transparent
+    );
+    pointer-events: none;
+}
+
+.glass-card::after {
+    content: '';
+    position: absolute;
+    bottom: -50px; left: 50%; transform: translateX(-50%);
+    width: 320px; height: 130px;
+    background: radial-gradient(ellipse, rgba(249,115,22,0.16) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+@keyframes glass-in {
+    from { opacity: 0; transform: translateY(36px) scale(0.96); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.eyebrow {
+    display: inline-flex; align-items: center; gap: 9px;
+    padding: 5px 16px 5px 7px;
+    border-radius: 99px;
+    background: rgba(255,255,255,0.10);
+    border: 1px solid rgba(255,255,255,0.22);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    margin-bottom: 24px;
+    animation: fade-up 0.7s cubic-bezier(0.22,1,0.36,1) 0.15s both;
+}
+.eyebrow-dot-wrap {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: rgba(249,115,22,0.18);
+    display: flex; align-items: center; justify-content: center;
+}
+.eyebrow-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--fire);
+    box-shadow: 0 0 8px rgba(249,115,22,0.9);
+    animation: blink-dot 2.4s ease infinite;
+}
+@keyframes blink-dot {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50%      { opacity: 0.45; transform: scale(0.75); }
+}
+.eyebrow-text {
+    font-family: var(--font-display);
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: rgba(255,255,255,0.92);
+}
+
+.hero-logo {
+    height: 110px; width: auto;
+    display: block; margin: 0 auto 20px;
+    filter:
+        drop-shadow(0 0 32px rgba(249,115,22,0.35))
+        drop-shadow(0 4px 16px rgba(0,0,0,0.55));
+    animation: logo-in 0.85s cubic-bezier(0.22,1,0.36,1) 0.28s both;
+}
+@keyframes logo-in {
+    from { opacity: 0; transform: scale(0.88) translateY(14px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.hero-headline {
+    font-family: var(--font-display);
+    font-size: clamp(13px, 1.8vw, 15px);
+    font-weight: 400;
+    letter-spacing: 0.03em;
+    color: rgba(255,255,255,0.68);
+    line-height: 1.8;
+    max-width: 360px;
+    margin: 0 auto 30px;
+    animation: fade-up 0.7s cubic-bezier(0.22,1,0.36,1) 0.42s both;
+}
+
+.cta-row {
+    display: flex; gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    animation: fade-up 0.65s cubic-bezier(0.22,1,0.36,1) 0.54s both;
+}
+
+.btn-fire {
+    display: inline-flex; align-items: center; gap: 9px;
+    font-family: var(--font-display);
+    font-size: 10.5px; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: #fff; text-decoration: none;
+    background: linear-gradient(135deg, var(--fire) 0%, var(--fire-deep) 100%);
+    padding: 14px 30px;
+    border-radius: 15px;
+    border: none; cursor: pointer;
+    box-shadow:
+        0 0 0 1px rgba(249,115,22,0.4),
+        0 8px 28px rgba(249,115,22,0.45),
+        inset 0 1px 0 rgba(255,255,255,0.18);
+    transition: all 0.3s cubic-bezier(0.22,1,0.36,1);
+    position: relative; overflow: hidden;
+}
+.btn-fire::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.10), transparent);
+    pointer-events: none;
+}
+.btn-fire:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 0 0 1px rgba(249,115,22,0.5),
+        0 16px 44px rgba(249,115,22,0.6),
+        inset 0 1px 0 rgba(255,255,255,0.22);
+}
+.btn-fire:active { transform: translateY(0); }
+
+.btn-glass-outline {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--font-display);
+    font-size: 10.5px; font-weight: 600;
+    letter-spacing: 0.10em; text-transform: uppercase;
+    color: rgba(255,255,255,0.85); text-decoration: none;
+    background: rgba(255,255,255,0.10);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 14px 26px;
+    border-radius: 15px;
+    border: 1px solid rgba(255,255,255,0.22);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.14);
+}
+.btn-glass-outline:hover {
+    background: rgba(255,255,255,0.18);
+    border-color: rgba(255,255,255,0.36);
+    color: #fff;
+    transform: translateY(-1px);
+}
+.btn-glass-outline:active { transform: translateY(0); }
+
+.glass-divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg,
+        transparent,
+        rgba(255,255,255,0.14) 25%,
+        rgba(255,255,255,0.18) 50%,
+        rgba(255,255,255,0.14) 75%,
+        transparent
+    );
+    margin: 26px 0;
+    animation: fade-up 0.6s ease 0.66s both;
+}
+
+.stats-row {
+    display: flex; justify-content: center;
+    animation: fade-up 0.6s ease 0.72s both;
+}
+.stat-cell {
+    flex: 1; text-align: center;
+    padding: 2px 8px;
+    position: relative;
+}
+.stat-cell + .stat-cell::before {
+    content: '';
+    position: absolute; left: 0; top: 10%; bottom: 10%;
+    width: 1px;
+    background: rgba(255,255,255,0.14);
+}
+.stat-val {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 22px; font-weight: 800;
+    color: var(--fire);
+    line-height: 1;
+    text-shadow: 0 0 14px rgba(249,115,22,0.4);
+}
+.stat-lbl {
+    display: block;
+    font-size: 9px; font-weight: 600;
+    color: rgba(255,255,255,0.38);
+    letter-spacing: 0.10em; text-transform: uppercase;
+    margin-top: 5px;
+}
+
+.scroll-cue {
+    position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 7px;
+    z-index: 5;
+    animation: fade-in 0.5s ease 1.1s both;
+}
+.scroll-mouse {
+    width: 20px; height: 30px;
+    border: 1.5px solid rgba(255,255,255,0.2);
+    border-radius: 10px;
+    display: flex; justify-content: center; padding-top: 5px;
+}
+.scroll-wheel {
+    width: 3px; height: 5px;
+    background: var(--fire);
+    border-radius: 2px;
+    animation: wheel-anim 1.8s ease infinite;
+}
+@keyframes wheel-anim {
+    0%   { opacity: 0; transform: translateY(0); }
+    50%  { opacity: 1; }
+    100% { opacity: 0; transform: translateY(7px); }
+}
+.scroll-label {
+    font-family: var(--font-display);
+    font-size: 8px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: rgba(255,255,255,0.28);
+}
+
+@keyframes fade-up {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* ═══════════════════════════════════════
+   SECTION COMMONS
+═══════════════════════════════════════ */
+.section { padding: 80px 24px; }
+.section-inner { max-width: 1120px; margin: 0 auto; }
+.sec-tag {
+    font-family: var(--font-display);
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--fire); margin-bottom: 12px; display: block;
+}
+.sec-title {
+    font-family: var(--font-display);
+    font-size: clamp(26px, 4.5vw, 42px); font-weight: 800;
+    color: var(--ink); letter-spacing: -0.03em; line-height: 1.1;
+}
+.sec-title.light { color: #fff; }
+.sec-sub {
+    font-size: 15px; color: var(--ink-60);
+    line-height: 1.75; max-width: 480px; margin-top: 14px;
+}
+
+/* ═══════════════════════════════════════
+   ABOUT
+═══════════════════════════════════════ */
+.about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 72px;
+    align-items: center;
+}
+.about-stat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+.about-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 28px;
+}
+.about-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 16px 7px 8px;
+    background: #fff;
+    border: 1px solid var(--ink-12);
+    border-radius: 99px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--ink);
+}
+.about-pill-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════════
+   GUEST STAR
+═══════════════════════════════════════ */
+.guest-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    max-width: 860px;
+    margin: 0 auto;
+}
+.guest-card {
+    background: #fff;
+    border: 1px solid rgba(26,16,7,0.08);
+    border-radius: 28px;
+    overflow: hidden;
+    transition: all 0.35s cubic-bezier(0.22,1,0.36,1);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+}
+.guest-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 28px 64px rgba(249,115,22,0.12), 0 0 0 1.5px rgba(249,115,22,0.2);
+    border-color: rgba(249,115,22,0.2);
+}
+.guest-photo-wrap {
+    width: 100%;
+    height: 220px;
+    position: relative;
+    overflow: hidden;
+    background: var(--paper-2);
+}
+.guest-photo-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: transform 0.5s ease;
+}
+.guest-card:hover .guest-photo-wrap img { transform: scale(1.05); }
+.guest-photo-fallback {
+    display: none;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--paper-2) 0%, #ede8df 100%);
+    font-size: 56px;
+    font-weight: 800;
+    color: rgba(249,115,22,0.15);
+    letter-spacing: -0.04em;
+}
+.guest-photo-gradient {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 40%, rgba(255,247,237,0.6) 100%);
+    pointer-events: none;
+}
+.guest-body { padding: 24px 28px 28px; }
+.guest-name {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    line-height: 1.2;
+    margin-bottom: 3px;
+}
+.guest-nickname {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: var(--fire);
+    margin-bottom: 12px;
+}
+.guest-divider {
+    height: 1px;
+    background: linear-gradient(90deg, rgba(249,115,22,0.15), rgba(249,115,22,0.05) 60%, transparent);
+    margin: 14px 0;
+}
+.guest-bio {
+    font-size: 12.5px;
+    line-height: 1.75;
+    color: var(--ink-60);
+    margin-bottom: 16px;
+}
+.guest-achv-list { display: flex; flex-direction: column; gap: 8px; }
+.guest-achv-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    font-size: 11.5px;
+    color: var(--ink-60);
+    line-height: 1.45;
+}
+.guest-achv-icon {
+    width: 20px; height: 20px; border-radius: 6px; flex-shrink: 0;
+    background: #fff7ed;
+    border: 1px solid rgba(249,115,22,0.15);
+    display: flex; align-items: center; justify-content: center;
+    margin-top: 1px;
+}
+.guest-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(26,16,7,0.08);
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.guest-country { display: flex; align-items: center; gap: 8px; }
+.guest-flag {
+    width: 24px; height: 16px; border-radius: 3px; overflow: hidden;
+    border: 1px solid rgba(26,16,7,0.08); flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; line-height: 1;
+}
+.guest-country-name { font-size: 12px; font-weight: 700; color: var(--ink); }
+.guest-country-role { font-size: 10.5px; color: var(--ink-30); margin-top: 1px; }
+.guest-pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 5px 12px;
+    background: #fff7ed;
+    border: 1px solid rgba(249,115,22,0.15);
+    border-radius: 99px;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.06em;
+    color: #c2410c;
+    white-space: nowrap;
+}
+
+/* ═══════════════════════════════════════
+   KATEGORI — TAB SWITCHER
+═══════════════════════════════════════ */
+.kategori-section { background: var(--paper); }
+
+.kat-tab-switcher {
+    display: inline-flex;
+    background: var(--ink-12);
+    border-radius: 14px;
+    padding: 5px;
+    gap: 4px;
+    margin-top: 32px;
+    position: relative;
+}
+.kat-tab-btn {
+    position: relative; z-index: 1;
+    padding: 10px 22px;
+    border-radius: 10px;
+    border: none; cursor: pointer;
+    font-family: var(--font-display);
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    transition: color 0.25s ease;
+    background: transparent;
+    color: var(--ink-30);
+}
+.kat-tab-btn.active {
+    background: #fff;
+    color: var(--ink);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+}
+.kat-tab-btn.active.tab-sirnas {
+    background: linear-gradient(135deg, #312e81, #4338ca);
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(67,56,202,0.35);
+}
+.kat-tab-btn.active.tab-open {
+    background: linear-gradient(135deg, var(--fire), var(--fire-deep));
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(249,115,22,0.35);
+}
+.kat-tab-badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 18px; height: 18px; border-radius: 99px;
+    font-size: 9px; font-weight: 800;
+    margin-left: 6px; vertical-align: middle;
+}
+.tab-open .kat-tab-badge { background: rgba(249,115,22,0.15); color: var(--fire-deep); }
+.tab-open.active .kat-tab-badge { background: rgba(255,255,255,0.25); color: #fff; }
+.tab-sirnas .kat-tab-badge { background: rgba(67,56,202,0.15); color: #4338ca; }
+.tab-sirnas.active .kat-tab-badge { background: rgba(255,255,255,0.25); color: #fff; }
+
+.kat-panel { display: none; }
+.kat-panel.active { display: block; }
+
+/* ── Kategori Grid & Card ── */
+.kategori-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    margin-top: 28px;
+}
+.kat-card {
+    position: relative; overflow: hidden;
+    background: #fff;
+    border: 1px solid var(--ink-12);
+    border-radius: var(--r-xl);
+    padding: 32px 28px 28px;
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    transition: all 0.35s cubic-bezier(0.22,1,0.36,1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    cursor: pointer; border: none; text-align: left; font-family: inherit; width: 100%;
+}
+.kat-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 24px 56px rgba(0,0,0,0.1), 0 0 0 2px rgba(249,115,22,0.15);
+}
+.kat-card::after {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    border-radius: var(--r-xl) var(--r-xl) 0 0;
+    opacity: 0; transition: opacity 0.3s;
+}
+.kat-card:hover::after { opacity: 1; }
+.kat-card.c-blue::after  { background: linear-gradient(90deg,#3b82f6,#818cf8); }
+.kat-card.c-rose::after  { background: linear-gradient(90deg,#f43f5e,#ec4899); }
+.kat-card.c-amber::after { background: linear-gradient(90deg,#f97316,#fbbf24); }
+.kat-card.c-teal::after  { background: linear-gradient(90deg,#14b8a6,#06b6d4); }
+.kat-card.c-blue:hover  { background: linear-gradient(135deg,#fff,#eff6ff); }
+.kat-card.c-rose:hover  { background: linear-gradient(135deg,#fff,#fff1f2); }
+.kat-card.c-amber:hover { background: linear-gradient(135deg,#fff,#fff7ed); }
+.kat-card.c-teal:hover  { background: linear-gradient(135deg,#fff,#f0fdfa); }
+.kat-icon {
+    width: 48px; height: 48px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 22px;
+    flex-shrink: 0;
+    transition: transform 0.25s cubic-bezier(0.22,1,0.36,1);
+}
+.kat-card:hover .kat-icon { transform: scale(1.1) rotate(-4deg); }
+.c-blue  .kat-icon { background: rgba(59,130,246,0.09);  border: 1px solid rgba(59,130,246,0.18); }
+.c-rose  .kat-icon { background: rgba(244,63,94,0.09);   border: 1px solid rgba(244,63,94,0.18); }
+.c-amber .kat-icon { background: rgba(249,115,22,0.09);  border: 1px solid rgba(249,115,22,0.18); }
+.c-teal  .kat-icon { background: rgba(20,184,166,0.09);  border: 1px solid rgba(20,184,166,0.18); }
+.kat-name {
+    font-family: var(--font-display);
+    font-size: 16px; font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 6px;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+}
+.kat-desc {
+    font-size: 12.5px; color: var(--ink-60);
+    line-height: 1.65;
+    margin-bottom: 24px;
+    flex: 1;
+}
+.kat-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: nowrap;
+}
+.kat-price {
+    font-family: var(--font-display);
+    font-size: 22px; font-weight: 800;
+    line-height: 1;
+    white-space: nowrap;
+}
+.c-blue  .kat-price { color: #2563eb; }
+.c-rose  .kat-price { color: #e11d48; }
+.c-amber .kat-price { color: var(--fire-deep); }
+.c-teal  .kat-price { color: #0d9488; }
+.kat-per { font-size: 11px; color: var(--ink-30); margin-top: 4px; white-space: nowrap; }
+.kat-cta {
+    width: 36px; height: 36px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; transform: translateX(-4px);
+    transition: all 0.25s ease;
+    flex-shrink: 0;
+}
+.kat-card:hover .kat-cta { opacity: 1; transform: translateX(0); }
+.c-blue  .kat-cta { background: rgba(59,130,246,0.1); }
+.c-rose  .kat-cta { background: rgba(244,63,94,0.1); }
+.c-amber .kat-cta { background: rgba(249,115,22,0.1); }
+.c-teal  .kat-cta { background: rgba(20,184,166,0.1); }
+
+/* ── Sirnas Panel ── */
+.sirnas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+    margin-top: 28px;
+}
+.sirnas-card {
+    display: flex; align-items: center; gap: 14px;
+    background: #fff;
+    border: 1px solid rgba(67,56,202,0.1);
+    border-radius: 16px;
+    padding: 16px 18px;
+    text-decoration: none; cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.22,1,0.36,1);
+    position: relative; overflow: hidden;
+    font-family: inherit; width: 100%; text-align: left;
+}
+.sirnas-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, #4338ca, #818cf8);
+    opacity: 0; transition: opacity 0.25s;
+}
+.sirnas-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(67,56,202,0.3);
+    box-shadow: 0 12px 32px rgba(67,56,202,0.12);
+    background: linear-gradient(135deg,#fff,#eef2ff);
+}
+.sirnas-card:hover::before { opacity: 1; }
+.sirnas-card-icon {
+    width: 40px; height: 40px; border-radius: 12px; flex-shrink: 0;
+    background: rgba(67,56,202,0.08);
+    border: 1px solid rgba(67,56,202,0.15);
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.2s;
+}
+.sirnas-card:hover .sirnas-card-icon { transform: scale(1.08) rotate(-3deg); }
+.sirnas-card-body { flex: 1; min-width: 0; }
+.sirnas-card-name { font-family: var(--font-display); font-size: 13px; font-weight: 700; color: var(--ink); line-height: 1.3; }
+.sirnas-card-sub  { font-size: 10.5px; color: rgba(67,56,202,0.65); margin-top: 2px; }
+.sirnas-card-arrow { opacity: 0.2; transition: opacity 0.2s, transform 0.2s; flex-shrink: 0; }
+.sirnas-card:hover .sirnas-card-arrow { opacity: 0.6; transform: translateX(3px); }
+
+.sirnas-note {
+    display: flex; align-items: center; gap: 12px;
+    background: rgba(67,56,202,0.05);
+    border: 1px solid rgba(67,56,202,0.15);
+    border-radius: 14px;
+    padding: 14px 18px;
+    margin-top: 20px;
+}
+.sirnas-note-icon {
+    width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0;
+    background: rgba(67,56,202,0.1);
+    display: flex; align-items: center; justify-content: center;
+}
+.sirnas-note-text { font-size: 12px; color: rgba(67,56,202,0.8); line-height: 1.55; }
+.sirnas-note-text strong { color: #3730a3; }
+
+/* ═══════════════════════════════════════
+   GALLERY MARQUEE
+═══════════════════════════════════════ */
+.gallery-section { padding: 80px 0 100px; overflow: hidden; position: relative; background: var(--night); }
+.gallery-bg-video { position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+.gallery-video-overlay {
+    position: absolute; inset: 0; z-index: 1;
+    background:
+        linear-gradient(to bottom, rgba(13,9,6,0.80) 0%, rgba(13,9,6,0.65) 50%, rgba(13,9,6,0.85) 100%),
+        radial-gradient(ellipse 70% 60% at 50% 50%, rgba(249,115,22,0.07) 0%, transparent 90%);
+}
+.gallery-section .grain {
+    position: absolute; inset: 0; z-index: 2; pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
+    opacity: 0.5;
+}
+.gallery-header { text-align: center; padding: 0 24px; margin-bottom: 52px; position: relative; z-index: 4; }
+.gallery-track-wrap { display: flex; flex-direction: column; gap: 18px; position: relative; z-index: 4; }
+.gallery-track-wrap::before, .gallery-track-wrap::after {
+    content: '';
+    position: absolute; top: 0; bottom: 0; width: 180px; z-index: 5; pointer-events: none;
+}
+.gallery-track-wrap::before { left: 0; background: linear-gradient(90deg, rgba(13,9,6,0.92), transparent); }
+.gallery-track-wrap::after  { right: 0; background: linear-gradient(-90deg, rgba(13,9,6,0.92), transparent); }
+.gallery-track { display: flex; gap: 16px; width: max-content; will-change: transform; }
+.gallery-item {
+    flex-shrink: 0; width: 260px; height: 175px; border-radius: var(--r-lg); overflow: hidden;
+    position: relative; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+}
+.gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
+.gallery-item:hover img { transform: scale(1.07); }
+.gallery-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(249,115,22,0.75) 0%, transparent 50%);
+    opacity: 0; transition: opacity 0.3s ease;
+    display: flex; align-items: flex-end; padding: 14px;
+}
+.gallery-item:hover .gallery-overlay { opacity: 1; }
+.gallery-overlay span { font-family: var(--font-display); font-size: 9.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #fff; }
+
+/* ═══════════════════════════════════════
+   CARA DAFTAR
+═══════════════════════════════════════ */
+.steps-section { background: var(--paper-2); }
+.steps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-top: 52px; }
+.step-card {
+    background: #fff; border: 1px solid var(--ink-12); border-radius: var(--r-xl);
+    padding: 32px 24px 28px; position: relative; overflow: hidden;
+    transition: all 0.32s cubic-bezier(0.22,1,0.36,1); box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+.step-card:hover { transform: translateY(-5px); box-shadow: 0 20px 48px rgba(249,115,22,0.12); border-color: rgba(249,115,22,0.2); }
+.step-num {
+    font-family: var(--font-display); font-size: 56px; font-weight: 800;
+    color: rgba(249,115,22,0.07); line-height: 1; position: absolute; top: 16px; right: 20px;
+    user-select: none; pointer-events: none; transition: color 0.3s;
+}
+.step-card:hover .step-num { color: rgba(249,115,22,0.12); }
+.step-badge {
+    width: 40px; height: 40px; border-radius: 12px;
+    background: linear-gradient(135deg, var(--fire), var(--fire-deep));
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-size: 15px; font-weight: 800; color: #fff;
+    margin-bottom: 20px; box-shadow: 0 4px 16px rgba(249,115,22,0.35);
+}
+.step-title { font-family: var(--font-display); font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+.step-desc  { font-size: 13px; color: var(--ink-60); line-height: 1.65; }
+@media(min-width:768px) {
+    .steps-grid { position: relative; }
+    .steps-grid::before {
+        content: ''; position: absolute; top: 56px; left: calc(25% - 2px); right: calc(25% - 2px);
+        height: 1px; background: repeating-linear-gradient(90deg, rgba(249,115,22,0.3) 0, rgba(249,115,22,0.3) 6px, transparent 6px, transparent 16px);
+        pointer-events: none; z-index: 0;
+    }
+}
+
+/* ═══════════════════════════════════════
+   CTA BANNER
+═══════════════════════════════════════ */
+.cta-banner {
+    background: var(--night-2); border-radius: 28px; padding: 64px 48px 56px;
+    text-align: center; position: relative; overflow: hidden; border: 1px solid rgba(249,115,22,0.15);
+}
+.cta-banner::before {
+    content: ''; position: absolute; top: -80px; right: -80px;
+    width: 360px; height: 360px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(249,115,22,0.2) 0%, transparent 65%); pointer-events: none;
+}
+.cta-banner::after {
+    content: ''; position: absolute; bottom: -60px; left: -60px;
+    width: 260px; height: 260px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(251,191,36,0.1) 0%, transparent 65%); pointer-events: none;
+}
+.cta-fire-line {
+    width: 80px; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--fire), transparent);
+    margin: 0 auto 28px; position: relative; z-index: 1;
+}
+.cta-banner-title {
+    font-family: var(--font-display);
+    font-size: clamp(24px, 4.5vw, 40px); font-weight: 800;
+    color: #fff; letter-spacing: -0.03em; line-height: 1.15; margin-bottom: 14px; position: relative; z-index: 1;
+}
+.cta-banner-title em { font-style: normal; color: var(--fire); }
+.cta-banner-sub { font-size: 15px; color: rgba(255,255,255,0.4); margin-bottom: 36px; position: relative; z-index: 1; }
+
+/* ═══════════════════════════════════════
+   PERFORMANCE PATCHES
+═══════════════════════════════════════ */
+
+/* Isolasi repaint hero agar tidak menyeret section lain */
+.hero {
+    contain: layout paint;
+    transform: translateZ(0);
+}
+
+/* Video: paksa GPU layer, cegah layout shift */
+.hero-video {
+    will-change: transform;
+    contain: strict;
+    transform: translateZ(0);
+}
+
+/* Kurangi blur dari 32px → 16px — ini yang paling berat */
+.glass-card {
+    backdrop-filter: blur(16px) saturate(1.3);
+    -webkit-backdrop-filter: blur(16px) saturate(1.3);
+    will-change: transform;
+    contain: layout paint;
+}
+
+/* Orb: hanya GPU transform, tidak ada layout trigger */
+.hero-orb {
+    will-change: transform;
+    contain: layout paint;
+}
+
+/* Gallery juga sering jadi bottleneck */
+.gallery-section {
+    contain: layout paint;
+}
+.gallery-bg-video {
+    will-change: transform;
+    contain: strict;
+    transform: translateZ(0);
+}
+
+/* Kurangi overlay menjadi 2 layer saja — hapus hero-grain & hero-vignette dari CSS */
+.hero-overlay {
+    position: absolute; inset: 0; z-index: 1;
+    /* Merge 2 gradient + ambient jadi satu layer */
+    background:
+        linear-gradient(to bottom, rgba(13,9,6,0.60) 0%, rgba(13,9,6,0.30) 50%, rgba(13,9,6,0.80) 100%);
+    /* Grain via CSS — tidak perlu elemen DOM tambahan */
+    image-rendering: auto;
+}
+
+/* Grain: ganti jadi pseudo-element di hero, bukan elemen terpisah */
+.hero::after {
+    content: '';
+    position: absolute; inset: 0; z-index: 3;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    will-change: auto;
+}
+
+/* Prefer reduced motion — matikan semua animasi sekaligus */
+@media (prefers-reduced-motion: reduce) {
+    .hero-orb,
+    .eyebrow-dot,
+    .scroll-wheel,
+    .gallery-track,
+    .glass-card,
+    .hero-logo { animation: none !important; transition: none !important; }
+}
+
+/* ═══════════════════════════════════════
+   MODAL
+═══════════════════════════════════════ */
+@keyframes fadeInOverlay  { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fadeOutOverlay { from { opacity: 1; } to { opacity: 0; } }
+@keyframes slideUpCard    { from { opacity: 0; transform: translateY(28px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes slideDownCard  { from { opacity: 1; transform: translateY(0) scale(1); } to { opacity: 0; transform: translateY(16px) scale(0.97); } }
+@keyframes pulseDot       { 0%,100% { box-shadow: 0 0 0 0 rgba(249,115,22,0.5); } 50% { box-shadow: 0 0 0 4px rgba(249,115,22,0); } }
+
+.mo-overlay {
+    position: fixed; inset: 0; z-index: 9999;
+    display: flex; align-items: center; justify-content: center; padding: 16px;
+    background: rgba(0,0,0,0.55);
+}
+.mo-overlay.anim-in  { animation: fadeInOverlay  0.3s ease forwards; }
+.mo-overlay.anim-out { animation: fadeOutOverlay 0.2s ease forwards; pointer-events: none; }
+.mo-card-in          { animation: slideUpCard 0.4s cubic-bezier(0.22,1,0.36,1) 0.04s both; }
+
+.mo-card {
+    background: var(--white); border: 1px solid var(--m-ink-12);
+    border-radius: 24px;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.12), 0 4px 16px rgba(0,0,0,0.06);
+    position: relative; overflow: hidden;
+}
+
+.mo-top-line-indigo {
+    position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+    width: 90px; height: 3px; border-radius: 0 0 6px 6px;
+    background: linear-gradient(90deg, transparent, #6366f1, transparent);
+}
+
+.mo-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 14px; border-radius: 99px;
+    border: 1.5px solid rgba(249,115,22,0.25);
+    background: rgba(249,115,22,0.06);
+}
+.mo-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--orange); animation: pulseDot 2s ease infinite; }
+.mo-badge-text {
+    font-family: var(--font-display); font-size: 10px; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--orange-dk);
+}
+
+/* Jalur grid: 2 kolom default */
+.jalur-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.jalur-card {
+    display: block; text-decoration: none; border-radius: 16px; padding: 26px 16px;
+    text-align: center; position: relative; overflow: hidden;
+    transition: all 0.25s cubic-bezier(0.22,1,0.36,1); cursor: pointer;
+}
+.jalur-card.jc-indigo { border: 1.5px solid rgba(99,102,241,0.2); background: rgba(99,102,241,0.04); }
+.jalur-card.jc-orange { border: 1.5px solid rgba(249,115,22,0.2); background: rgba(249,115,22,0.04); font-family: inherit; width: 100%; }
+.jalur-card.jc-indigo:hover { border-color: rgba(99,102,241,0.5); background: rgba(99,102,241,0.08); box-shadow: 0 8px 28px rgba(99,102,241,0.12); transform: translateY(-2px); }
+.jalur-card.jc-orange:hover { border-color: rgba(249,115,22,0.45); background: rgba(249,115,22,0.08); box-shadow: 0 8px 28px rgba(249,115,22,0.15); transform: translateY(-2px); }
+.jalur-shimmer { position: absolute; top: 0; left: 0; right: 0; height: 1px; opacity: 0; transition: opacity 0.3s; }
+.jc-indigo .jalur-shimmer { background: linear-gradient(90deg,transparent,rgba(99,102,241,0.5),transparent); }
+.jc-orange .jalur-shimmer { background: linear-gradient(90deg,transparent,rgba(249,115,22,0.6),transparent); }
+.jalur-card:hover .jalur-shimmer { opacity: 1; }
+.jalur-icon { width: 52px; height: 52px; border-radius: 14px; margin: 0 auto 14px; display: flex; align-items: center; justify-content: center; transition: transform 0.25s; }
+.jalur-card:hover .jalur-icon { transform: scale(1.08); }
+.jc-indigo .jalur-icon { background: rgba(99,102,241,0.1); border: 1px solid rgba(99,102,241,0.2); }
+.jc-orange .jalur-icon { background: rgba(249,115,22,0.1);  border: 1px solid rgba(249,115,22,0.2); }
+.jalur-title { font-family: var(--font-display); font-weight: 800; font-size: 12px; color: var(--m-ink); letter-spacing: 0.04em; line-height: 1.4; margin: 0 0 4px; }
+.jalur-sub-indigo { font-size: 11px; color: rgba(99,102,241,0.7); margin: 0 0 13px; }
+.jalur-sub-orange { font-size: 11px; color: rgba(249,115,22,0.7); margin: 0 0 13px; }
+.jalur-badge-pill { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 99px; }
+.jc-indigo .jalur-badge-pill { background: rgba(99,102,241,0.1); border: 1px solid rgba(99,102,241,0.2); }
+.jc-orange .jalur-badge-pill { background: rgba(249,115,22,0.1); border: 1px solid rgba(249,115,22,0.2); }
+.jalur-badge-pill-text { font-size: 10px; font-weight: 700; letter-spacing: 0.06em; font-family: var(--font-display); }
+.jc-indigo .jalur-badge-pill-text { color: rgba(99,102,241,0.9); }
+.jc-orange .jalur-badge-pill-text { color: rgba(249,115,22,0.9); }
+.jc-ext { position: absolute; top: 10px; right: 10px; opacity: 0.2; transition: opacity 0.2s; }
+.jalur-card:hover .jc-ext { opacity: 0.6; }
+
+.mo-info-row { display: flex; align-items: center; gap: 10px; }
+.mo-divider-line { flex: 1; height: 1px; background: var(--m-ink-12); }
+.mo-divider-label { font-size: 9px; color: var(--m-ink-35); letter-spacing: 0.1em; text-transform: uppercase; font-family: var(--font-display); }
+.mo-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.mo-info-box { padding: 10px 12px; border-radius: 10px; background: var(--cream); border: 1px solid var(--m-ink-12); }
+.mo-info-title { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--m-ink-35); margin: 0 0 3px; font-family: var(--font-display); }
+.mo-info-desc { font-size: 11px; color: var(--m-ink-60); margin: 0; line-height: 1.45; }
+
+.mo2-back {
+    width: 34px; height: 34px; flex-shrink: 0; border-radius: 99px;
+    border: 1px solid var(--m-ink-12); background: var(--cream);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: all 0.2s;
+}
+.mo2-back:hover { border-color: rgba(249,115,22,0.35); background: rgba(249,115,22,0.06); }
+.mo2-back-indigo:hover { border-color: rgba(99,102,241,0.35); background: rgba(99,102,241,0.06); }
+.sub-card {
+    display: flex; align-items: center; gap: 20px; width: 100%;
+    font-family: inherit; border-radius: 20px; padding: 26px 28px;
+    border: 1.5px solid var(--m-ink-12); background: #fff;
+}
+.sub-card:hover { transform: translateY(-1px); }
+.sub-card .sc-arrow { margin-left: auto; flex-shrink: 0; opacity: 0.2; transition: opacity 0.2s, transform 0.2s; }
+.sub-card:hover .sc-arrow { opacity: 0.65; transform: translateX(3px); }
+.sub-card.sc-blue:hover   { border-color:rgba(59,130,246,0.4);  background:rgba(59,130,246,0.06);  box-shadow:0 4px 16px rgba(59,130,246,0.1); }
+.sub-card.sc-pink:hover   { border-color:rgba(236,72,153,0.4);  background:rgba(236,72,153,0.06);  box-shadow:0 4px 16px rgba(236,72,153,0.1); }
+.sub-card.sc-yellow:hover { border-color:rgba(234,179,8,0.4);   background:rgba(234,179,8,0.06);   box-shadow:0 4px 16px rgba(234,179,8,0.1); }
+.sub-card.sc-green:hover  { border-color:rgba(16,185,129,0.4);  background:rgba(16,185,129,0.06);  box-shadow:0 4px 16px rgba(16,185,129,0.1); }
+.sub-card.sc-indigo:hover { border-color:rgba(99,102,241,0.4);  background:rgba(99,102,241,0.06);  box-shadow:0 4px 16px rgba(99,102,241,0.1); }
+.sub-icon { width: 60px; height: 60px; border-radius: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: transform 0.2s; }
+.sub-card:hover .sub-icon { transform: scale(1.08); }
+.sub-name  { font-weight: 700; font-size: 17px; color: var(--m-ink); margin: 0 0 5px; }
+.sub-desc  { font-size: 14px; color: var(--m-ink-60); margin: 0; line-height: 1.5; }
+.sub-price { font-size: 15px; font-weight: 700; color: var(--m-ink); flex-shrink: 0; margin-right: 6px; white-space: nowrap; }
+.sub-price-indigo { font-size: 15px; font-weight: 700; color: #4338ca; flex-shrink: 0; margin-right: 6px; }
+
+.sirnas-modal-list { display: flex; flex-direction: column; gap: 14px; max-height: 72vh; overflow-y: auto; padding-right: 6px; }
+.sirnas-modal-list::-webkit-scrollbar { width: 5px; }
+.sirnas-modal-list::-webkit-scrollbar-track { background: transparent; }
+.sirnas-modal-list::-webkit-scrollbar-thumb { background: rgba(99,102,241,0.25); border-radius: 99px; }
+
+.sirnas-group-label {
+    font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+    color: rgba(99,102,241,0.5); padding: 6px 4px 2px;
+    font-family: var(--font-display);
+}
+
+/* ═══════════════════════════════════════
+   RESPONSIVE — TABLET (max 1024px)
+═══════════════════════════════════════ */
+@media (max-width: 1024px) {
+    .about-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+    .about-stat-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .guest-grid {
+        max-width: 600px;
+    }
+}
+
+/* ═══════════════════════════════════════
+   RESPONSIVE — MOBILE (max 768px)
+═══════════════════════════════════════ */
+@media (max-width: 768px) {
+    .guest-grid {
+        grid-template-columns: 1fr;
+        max-width: 440px;
+    }
+    .guest-photo-wrap { height: 260px; }
+}
+
+/* ═══════════════════════════════════════
+   RESPONSIVE — SMALL MOBILE (max 640px)
+═══════════════════════════════════════ */
+@media (max-width: 640px) {
+    /* Hero */
+    .glass-card          { padding: 36px 28px 32px; border-radius: 28px; }
+    .hero-logo           { height: 88px; }
+    .hero-headline       { font-size: 13px; }
+    .cta-row             { gap: 8px; }
+    .btn-fire,
+    .btn-glass-outline   { padding: 12px 22px; font-size: 10px; }
+
+    /* CTA Banner */
+    .cta-banner { padding: 44px 24px 40px; }
+
+    /* Section */
+    .section { padding: 64px 20px; }
+
+    /* Steps */
+    .steps-grid { grid-template-columns: 1fr 1fr; }
+
+    /* ── Kategori grid: 2 kolom ── */
+    .kategori-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+    .kat-card {
+        padding: 18px 14px 16px;
+        border-radius: 20px;
+    }
+    .kat-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 11px;
+        margin-bottom: 12px;
+    }
+    .kat-icon svg {
+        width: 18px;
+        height: 18px;
+    }
+    .kat-name {
+        font-size: 13px;
+        margin-bottom: 5px;
+        line-height: 1.35;
+    }
+    .kat-desc {
+        font-size: 11px;
+        line-height: 1.5;
+        margin-bottom: 14px;
+    }
+    .kat-price { font-size: 15px; }
+    .kat-per   { font-size: 9px; margin-top: 3px; }
+    /* Sembunyikan arrow — tidak ada hover di mobile */
+    .kat-cta   { display: none; }
+
+    /* Tab switcher: full width */
+    .kat-tab-switcher {
+        width: 100%;
+        justify-content: stretch;
+    }
+    .kat-tab-btn {
+        flex: 1;
+        padding: 10px 8px;
+        font-size: 9.5px;
     }
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    html, body {
-        width: 100%; height: 100%;
-        font-family: var(--font);
-        background: var(--bg);
-        color: var(--text-primary);
-        overflow: hidden;
+    /* ── Modal: jalur 1 kolom horizontal ── */
+    .jalur-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    .jalur-card {
+        padding: 16px 18px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 16px;
+        text-align: left;
+        border-radius: 14px;
+    }
+    .jalur-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        flex-shrink: 0;
+        margin: 0;
+    }
+    .jalur-title {
+        font-size: 13px;
+        margin: 0 0 2px;
+        line-height: 1.3;
+    }
+    .jalur-sub-indigo,
+    .jalur-sub-orange {
+        font-size: 11px;
+        margin: 0 0 8px;
     }
 
-    /* ─── LOADER ─── */
-    #loader {
-        position: fixed; inset: 0; z-index: 9999;
-        background: var(--bg);
-        display: flex; flex-direction: column;
-        align-items: center; justify-content: center;
-    }
-    .loader-logo-wrap {
-        position: relative; width: 130px; height: 130px;
-        display: flex; align-items: center; justify-content: center;
-        margin-bottom: 40px; opacity: 0;
-    }
-    .loader-logo { width: 90px; height: auto; filter: drop-shadow(0 4px 20px rgba(234,108,10,0.35)); position: relative; z-index: 2; }
-    .loader-ring { position: absolute; inset: 0; border-radius: 50%; }
-    .loader-ring svg { width: 100%; height: 100%; position: absolute; inset: 0; }
-    .loader-ring-inner { position: absolute; inset: 10px; border-radius: 50%; border: 1px solid rgba(234,108,10,0.15); }
-    .loader-progress-wrap { width: 210px; height: 2px; background: rgba(0,0,0,0.08); border-radius: 99px; overflow: hidden; margin-bottom: 18px; opacity: 0; }
-    .loader-bar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--fire-deep), var(--fire), var(--gold)); border-radius: 99px; box-shadow: 0 0 10px rgba(234,108,10,0.55); }
-    .loader-counter { font-size: 11px; font-weight: 700; letter-spacing: 0.22em; color: var(--text-muted); opacity: 0; }
-    .loader-label { position: absolute; bottom: 44px; font-size: 9px; font-weight: 600; letter-spacing: 0.26em; text-transform: uppercase; color: var(--text-muted); opacity: 0; }
-    .loader-particle { position: absolute; border-radius: 50%; pointer-events: none; opacity: 0; }
-
-    /* ─── PAGE ─── */
-    #cs-page {
-        position: fixed; inset: 0;
-        display: flex; flex-direction: column;
-        visibility: hidden; overflow: hidden;
-        background: #0a0704;
+    /* Modal padding */
+    #modal1 .mo-card > div { padding: 24px 20px 20px !important; }
+    #modal2 .mo-card > div { padding: 20px 16px 18px !important; }
+    #modal1 .mo-card,
+    #modal2 .mo-card,
+    #modalSirnas .mo-card {
+        border-radius: 20px;
+        margin: 0 4px;
     }
 
-    /* ─── VIDEO BACKGROUND ─── */
-    #cs-video-bg {
-        position: absolute; inset: 0; z-index: 0;
-        overflow: hidden;
+    /* Modal info grid: 1 kolom */
+    .mo-info-grid { grid-template-columns: 1fr; }
+
+    /* sub-card (modal 2 — pilih kategori open) */
+    .sub-card {
+        padding: 14px 14px;
+        gap: 12px;
+        border-radius: 14px;
     }
-    #cs-video-bg video {
-        width: 100%; height: 100%;
-        object-fit: cover;
-        object-position: center center;
-        opacity: 0;
-        transition: opacity 1.2s ease;
+    .sub-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        flex-shrink: 0;
     }
-    #cs-video-bg video.loaded { opacity: 1; }
-    /* Dark overlay agar teks tetap terbaca */
-    #cs-video-overlay {
-        position: absolute; inset: 0; z-index: 1;
-        background: linear-gradient(
-            to bottom,
-            rgba(10,7,4,0.55) 0%,
-            rgba(10,7,4,0.42) 40%,
-            rgba(10,7,4,0.60) 75%,
-            rgba(10,7,4,0.82) 100%
-        );
+    .sub-name { font-size: 14px; margin-bottom: 2px; }
+    .sub-desc { font-size: 12px; line-height: 1.4; }
+    .sub-price,
+    .sub-price-indigo { font-size: 12px; }
+
+    /* Sirnas modal */
+    #modalSirnas .mo-card > div { padding: 24px 16px 20px !important; }
+    .sirnas-modal-list { max-height: 58vh; }
+    .sub-card.sc-indigo { padding: 14px 12px; gap: 10px; }
+}
+
+/* ═══════════════════════════════════════
+   RESPONSIVE — EXTRA SMALL (max 480px)
+═══════════════════════════════════════ */
+@media (max-width: 480px) {
+    .about-stat-grid  { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .guest-body       { padding: 20px 20px 24px; }
+    .guest-name       { font-size: 18px; }
+    .guest-photo-wrap { height: 220px; }
+    .about-grid       { gap: 32px; }
+
+    .kat-name  { font-size: 12.5px; }
+    .kat-price { font-size: 14px; }
+    .kat-desc  { display: none; } /* terlalu sempit, sembunyikan deskripsi */
+}
+
+/* ═══════════════════════════════════════
+   RESPONSIVE — MINI (max 360px)
+═══════════════════════════════════════ */
+@media (max-width: 360px) {
+    .about-stat-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+    .guest-footer    { flex-direction: column; align-items: flex-start; }
+
+    .kategori-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
     }
+    .kat-card  { padding: 14px 10px 14px; }
+    .kat-name  { font-size: 11px; }
+    .kat-price { font-size: 13px; }
+    .kat-icon  { width: 34px; height: 34px; margin-bottom: 10px; }
+    .kat-icon svg { width: 15px; height: 15px; }
+}
+</style>
+@endpush
 
-    /* Background decorations (subtle on top of video) */
-    .bg-blob { position: absolute; border-radius: 50%; pointer-events: none; z-index: 2; }
-    .bg-blob-1 { width: 600px; height: 600px; top: -200px; right: -150px; background: radial-gradient(circle, rgba(234,108,10,0.07) 0%, transparent 65%); animation: blob1 16s ease-in-out infinite alternate; }
-    .bg-blob-2 { width: 500px; height: 500px; bottom: 0; left: -150px; background: radial-gradient(circle, rgba(245,166,35,0.05) 0%, transparent 65%); animation: blob2 20s ease-in-out infinite alternate; }
-    .bg-blob-3 { width: 300px; height: 300px; top: 40%; left: 55%; background: radial-gradient(circle, rgba(234,108,10,0.045) 0%, transparent 65%); animation: blob2 13s ease-in-out infinite alternate-reverse; }
-    @keyframes blob1 { from{transform:translate(0,0) scale(1)} to{transform:translate(-30px,30px) scale(1.12)} }
-    @keyframes blob2 { from{transform:translate(0,0) scale(1)} to{transform:translate(20px,-20px) scale(1.08)} }
+@section('content')
 
-    /* Top fire accent */
-    #cs-top-bar { position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, transparent 0%, var(--fire-deep) 20%, var(--fire) 50%, var(--gold) 70%, var(--fire) 85%, transparent 100%); z-index: 7; opacity: 0; transform: scaleX(0); transform-origin: left; }
-
-    /* Corner */
-    #cs-corner-logo { position: absolute; top: 22px; left: 28px; z-index: 6; opacity: 0; }
-    #cs-corner-logo img { height: 50px; width: auto; filter: drop-shadow(0 2px 6px rgba(234,108,10,0.3)) brightness(1.1); }
-    #cs-edition-tag { position: absolute; top: 30px; right: 28px; z-index: 6; opacity: 0; font-size: 9px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(255,255,255,0.55); }
-
-    /* Socials */
-    #cs-socials { position: absolute; right: 28px; bottom: calc(var(--marquee-h) + 16px); display: flex; flex-direction: column; gap: 10px; z-index: 6; opacity: 0; }
-    .cs-social-btn { width: 36px; height: 36px; border-radius: 10px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.18); display: flex; align-items: center; justify-content: center; text-decoration: none; color: rgba(255,255,255,0.7); transition: all 0.25s ease; backdrop-filter: blur(8px); }
-    .cs-social-btn:hover { background: var(--fire); border-color: var(--fire); color: #fff; transform: scale(1.1); box-shadow: var(--shadow-fire); }
-
-    .shuttle-particle { position: absolute; pointer-events: none; z-index: 4; opacity: 0; }
-
-    /* ─── SCROLL AREA ─── */
-    #cs-scroll { position: relative; z-index: 5; flex: 1 1 auto; overflow-y: auto; overflow-x: hidden; scrollbar-width: none; -ms-overflow-style: none; }
-    #cs-scroll::-webkit-scrollbar { display: none; }
-
-    #cs-content {
-        min-height: 100%;
-        display: flex; flex-direction: column;
-        align-items: center; text-align: center;
-        width: 100%; max-width: 760px;
-        padding: 68px 24px 24px;
-        margin: 0 auto;
-        justify-content: center;
-    }
-
-    /* Eyebrow */
-    .cs-eyebrow { display: inline-flex; align-items: center; gap: 9px; padding: 5px 16px 5px 7px; border-radius: 99px; background: rgba(234,108,10,0.18); border: 1px solid rgba(234,108,10,0.45); margin-bottom: 22px; opacity: 0; transform: translateY(16px); backdrop-filter: blur(8px); }
-    .eyebrow-dot-wrap { width: 22px; height: 22px; border-radius: 50%; background: rgba(234,108,10,0.28); display: flex; align-items: center; justify-content: center; }
-    .eyebrow-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--fire); box-shadow: 0 0 6px rgba(234,108,10,0.85); animation: blink 2.4s ease infinite; }
-    @keyframes blink { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.35;transform:scale(0.75)} }
-    .eyebrow-text { font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: #ffb870; }
-
-    /* Logo */
-    .cs-logo { height: clamp(74px, 11vw, 96px); width: auto; display: block; margin: 0 auto 16px; filter: drop-shadow(0 4px 24px rgba(234,108,10,0.45)) brightness(1.08); opacity: 0; transform: scale(0.88) translateY(14px); }
-
-    /* Headline */
-    .cs-headline-wrap { margin-bottom: 12px; }
-    .cs-headline { font-size: clamp(38px, 9vw, 84px); font-weight: 900; letter-spacing: -0.045em; line-height: 0.96; color: #ffffff; display: block; opacity: 0; transform: translateY(40px); text-shadow: 0 2px 30px rgba(0,0,0,0.5); }
-    .cs-headline em { font-style: normal; color: var(--fire); }
-
-    /* Tagline */
-    .cs-tagline { font-size: clamp(12px, 1.8vw, 15px); font-weight: 400; color: rgba(255,255,255,0.72); line-height: 1.78; max-width: 420px; margin: 0 auto 30px; opacity: 0; transform: translateY(18px); }
-
-    /* Fire line */
-    #cs-fire-line { width: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--fire), var(--gold), var(--fire), transparent); margin: 0 auto 30px; border-radius: 99px; }
-
-    /* ─── COUNTDOWN ─── */
-    .cs-countdown { display: flex; gap: 8px; align-items: center; justify-content: center; margin-bottom: 32px; opacity: 0; transform: translateY(18px); flex-wrap: nowrap; }
-    .cs-count-unit { display: flex; flex-direction: column; align-items: center; }
-    .cs-count-box { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.18); border-radius: 16px; padding: clamp(10px,2vw,18px) clamp(14px,2.5vw,24px) clamp(8px,1.5vw,14px); min-width: clamp(60px,10vw,78px); position: relative; overflow: hidden; backdrop-filter: blur(12px); transition: border-color 0.3s, box-shadow 0.3s, transform 0.2s; }
-    .cs-count-box::before { content: ''; position: absolute; top: 0; left: 15%; right: 15%; height: 2px; background: linear-gradient(90deg, transparent, rgba(234,108,10,0.5), transparent); border-radius: 0 0 99px 99px; }
-    .cs-count-box:hover { border-color: var(--border-warm); box-shadow: 0 4px 24px rgba(234,108,10,0.25); transform: translateY(-2px); }
-    .cs-count-num { font-size: clamp(24px, 4.5vw, 40px); font-weight: 800; color: #ffffff; line-height: 1; letter-spacing: -0.02em; display: block; text-align: center; transition: color 0.2s; }
-    .cs-count-lbl { font-size: clamp(7px,1.2vw,9px); font-weight: 600; color: rgba(255,255,255,0.55); letter-spacing: 0.15em; text-transform: uppercase; margin-top: 7px; }
-    .cs-count-sep { font-size: clamp(22px, 4vw, 30px); font-weight: 800; color: var(--fire); opacity: 0.7; align-self: flex-start; margin-top: 10px; line-height: 1; animation: sep-blink 1.2s ease infinite; }
-    @keyframes sep-blink { 0%,100%{opacity:0.7} 50%{opacity:0.2} }
-
-    /* ─── BUTTONS ─── */
-    .cs-notify { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 18px; opacity: 0; transform: translateY(16px); }
-    .btn-fire { display: inline-flex; align-items: center; gap: 9px; font-family: var(--font); font-size: 10.5px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #fff; text-decoration: none; background: linear-gradient(135deg, var(--fire-light) 0%, var(--fire-deep) 100%); padding: 13px 28px; border-radius: 14px; border: none; cursor: pointer; box-shadow: var(--shadow-fire), inset 0 1px 0 rgba(255,255,255,0.22); transition: all 0.3s cubic-bezier(0.22,1,0.36,1); position: relative; overflow: hidden; }
-    .btn-fire::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(255,255,255,0.14),transparent); pointer-events:none; }
-    .btn-fire:hover { transform:translateY(-2px); box-shadow:0 12px 40px rgba(234,108,10,0.58), inset 0 1px 0 rgba(255,255,255,0.26); }
-    .btn-ghost { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font); font-size: 10.5px; font-weight: 600; letter-spacing: 0.10em; text-transform: uppercase; color: rgba(255,255,255,0.8); text-decoration: none; background: rgba(255,255,255,0.1); padding: 13px 24px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.22); cursor: pointer; transition: all 0.25s ease; backdrop-filter: blur(8px); }
-    .btn-ghost:hover { background: rgba(255,255,255,0.18); border-color: rgba(234,108,10,0.5); color: #ffb870; transform: translateY(-1px); }
-
-    /* ─── COPYRIGHT ─── */
-    .cs-copyright { opacity: 0; transform: translateY(12px); font-size: 12px; font-weight: 500; letter-spacing: 0.08em; color: rgba(255,255,255,0.35); margin-bottom: 10px; }
-    .cs-copyright a { color: rgba(255,255,255,0.45); text-decoration: none; transition: color 0.2s; }
-    .cs-copyright a:hover { color: rgba(234,108,10,0.85); }
-
-    /* ─── STATS ─── */
-    .cs-stats { display: flex; gap: 0; opacity: 0; transform: translateY(16px); background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 20px; overflow: hidden; flex-wrap: wrap; justify-content: center; backdrop-filter: blur(12px); }
-    .cs-stat-cell { padding: clamp(12px,1.8vw,18px) clamp(18px,3vw,32px); text-align: center; position: relative; flex: 1 0 auto; }
-    .cs-stat-cell + .cs-stat-cell::before { content: ''; position: absolute; left: 0; top: 20%; bottom: 20%; width: 1px; background: rgba(255,255,255,0.12); }
-    .cs-stat-val { display: block; font-size: clamp(17px,3vw,22px); font-weight: 800; color: var(--fire); line-height: 1; }
-    .cs-stat-lbl { display: block; font-size: 9px; font-weight: 600; color: rgba(255,255,255,0.5); letter-spacing: 0.12em; text-transform: uppercase; margin-top: 5px; }
-
-    /* ─── MARQUEE BAR ─── */
-    #cs-marquee-bar { position: relative; z-index: 10; flex: 0 0 var(--marquee-h); height: var(--marquee-h); background: rgba(0,0,0,0.45); border-top: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; overflow: hidden; opacity: 0; backdrop-filter: blur(8px); mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
-    .cs-marquee-track { display: flex; white-space: nowrap; width: max-content; }
-    .cs-marquee-item { display: inline-flex; align-items: center; gap: 10px; font-size: 9px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.45); padding: 0 22px; }
-    .cs-marquee-item .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--fire); opacity: 0.7; flex-shrink: 0; }
-
-    /* ─── RESPONSIVE ─── */
-    @media (max-width: 640px) {
-        #cs-content { padding: 62px 18px 20px; }
-        #cs-corner-logo, #cs-edition-tag, #cs-socials { display: none; }
-        .cs-notify { flex-direction: column; align-items: center; }
-        .cs-stats { width: 100%; }
-        .cs-stat-cell { flex: 1 0 40%; }
-        .cs-stat-cell + .cs-stat-cell::before { display: none; }
-    }
-    @media (max-height: 600px) {
-        #cs-content { justify-content: flex-start; padding-top: 50px; }
-        .cs-logo { height: 52px; }
-        .cs-tagline { display: none; }
-        #cs-fire-line { margin-bottom: 18px; }
-    }
-    </style>
-</head>
-<body>
-
-<!-- LOADER -->
-<div id="loader">
-    <div class="loader-logo-wrap" id="loaderLogoWrap">
-        <div class="loader-ring" id="loaderRing">
-            <svg viewBox="0 0 130 130" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                    <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%"   stop-color="#ea6c0a" stop-opacity="1"/>
-                        <stop offset="50%"  stop-color="#f5a623" stop-opacity="1"/>
-                        <stop offset="100%" stop-color="#ea6c0a" stop-opacity="0"/>
-                    </linearGradient>
-                </defs>
-                <circle cx="65" cy="65" r="60" stroke="url(#ringGrad)" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="220 160"/>
-            </svg>
-        </div>
-        <div class="loader-ring-inner"></div>
-        <img src="https://res.cloudinary.com/djs5pi7ev/image/upload/q_auto/f_auto/v1775803080/bayanopen-logo_mfcb55.png" alt="Bayan Open 2026" class="loader-logo">
-    </div>
-    <div class="loader-progress-wrap" id="loaderProgressWrap">
-        <div class="loader-bar" id="loaderBar"></div>
-    </div>
-    <div class="loader-counter" id="loaderCounter">0%</div>
-    <div class="loader-label" id="loaderLabel">Bayan Open 2026 &mdash; Balikpapan, Kalimantan Timur</div>
-</div>
-
-<!-- PAGE -->
-<div id="cs-page">
-
-    <!-- VIDEO BACKGROUND -->
-    <div id="cs-video-bg">
-        <video id="cs-bg-video" autoplay muted loop playsinline preload="none">
-            <source src="https://res.cloudinary.com/djs5pi7ev/video/upload/q_50,w_1280/v1769502814/bayanopen-hero_iqhyip.mp4" type="video/mp4">
+{{-- ══════════════════════════════════════════
+     HERO — GLASS CARD
+══════════════════════════════════════════ --}}
+<section class="hero">
+<!-- Tambah poster & decoding untuk cegah layout shift -->
+        <video class="hero-video"
+            src="https://res.cloudinary.com/djs5pi7ev/video/upload/q_auto/f_auto/v1776060629/202604131402_v5lt3b.mp4"
+            autoplay muted loop playsinline
+            preload="metadata"
+            decoding="async"
+            poster="https://res.cloudinary.com/djs5pi7ev/image/upload/q_30,f_webp,w_1280/v1769500972/202601271004_aepgij.jpg">
         </video>
-    </div>
-    <div id="cs-video-overlay"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-vignette"></div>
+    <div class="hero-grain"></div>
 
-    <div class="bg-blob bg-blob-1"></div>
-    <div class="bg-blob bg-blob-2"></div>
-    <div class="bg-blob bg-blob-3"></div>
+    {{-- Ambient floating orbs --}}
+    <div class="hero-orb hero-orb-1"></div>
+    <div class="hero-orb hero-orb-2"></div>
+    <div class="hero-orb hero-orb-3"></div>
 
-    <div id="cs-top-bar"></div>
+    <div class="hero-content">
+        {{-- ── GLASS CARD ── --}}
+        <div class="glass-card">
 
-    <div id="cs-corner-logo">
-        <img src="https://res.cloudinary.com/djs5pi7ev/image/upload/q_auto/f_auto/v1771040875/BAYAN_R_-_SAMPING_HD_PUTIH_nepvgb.png" alt="Bayan Open">
-    </div>
-    <div id="cs-edition-tag">Edisi 2026</div>
-
-    <!-- CONTENT -->
-    <div id="cs-scroll">
-        <div id="cs-content">
-
-            <div class="cs-eyebrow" id="cs-eyebrow">
-                <div class="eyebrow-dot-wrap"><div class="eyebrow-dot"></div></div>
-                <span class="eyebrow-text">Segera Hadir</span>
+            {{-- Eyebrow badge --}}
+            <div class="eyebrow" id="h-badge">
+                <div class="eyebrow-dot-wrap">
+                    <div class="eyebrow-dot"></div>
+                </div>
+                <span class="eyebrow-text">Pendaftaran Resmi Dibuka</span>
             </div>
 
-            <img src="https://res.cloudinary.com/djs5pi7ev/image/upload/q_auto/f_auto/v1776413938/LOGO_BO2026_White_bpz9gb.png" alt="Bayan Open 2026" class="cs-logo" id="cs-logo">
+            {{-- Logo --}}
+            <img src="https://res.cloudinary.com/djs5pi7ev/image/upload/q_auto/f_auto/v1775803080/bayanopen-logo_mfcb55.png"
+                 alt="Bayan Open 2026" class="hero-logo" id="h-logo">
 
-            <div class="cs-headline-wrap">
-                <span class="cs-headline" id="cs-headline">COMING<br><em>SOON</em></span>
-            </div>
-
-            <p class="cs-tagline font-semibold" id="cs-tagline">
-                Kejuaraan Bulutangkis  Bayan Open 2026<br>
-                Sirkuit Nasional C<br>
-                Pantau terus IG @bayan_open untuk informasi pendaftaran
+            {{-- Tagline --}}
+            <p class="hero-headline" id="h-tag">
+                Turnamen bulutangkis bergengsi dan Sirkuit Nasional.<br>
+                Daftar sekarang dan buktikan kemampuanmu.
             </p>
 
-            <div id="cs-fire-line"></div>
-
-            <div class="cs-countdown" id="cs-countdown">
-                <div class="cs-count-unit">
-                    <div class="cs-count-box"><span class="cs-count-num" id="cd-days">--</span></div>
-                    <span class="cs-count-lbl">Hari</span>
-                </div>
-                <span class="cs-count-sep">:</span>
-                <div class="cs-count-unit">
-                    <div class="cs-count-box"><span class="cs-count-num" id="cd-hours">--</span></div>
-                    <span class="cs-count-lbl">Jam</span>
-                </div>
-                <span class="cs-count-sep">:</span>
-                <div class="cs-count-unit">
-                    <div class="cs-count-box"><span class="cs-count-num" id="cd-mins">--</span></div>
-                    <span class="cs-count-lbl">Menit</span>
-                </div>
-                <span class="cs-count-sep">:</span>
-                <div class="cs-count-unit">
-                    <div class="cs-count-box"><span class="cs-count-num" id="cd-secs">--</span></div>
-                    <span class="cs-count-lbl">Detik</span>
-                </div>
-            </div>
-
-            <p style="margin-bottom: 32px; color: rgba(255,255,255,0.5); font-size: 13px; font-semibold: 600; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.75;">
-                24-29 Agustus 2026 | BSCC Dome, Balikpapan, Kalimantan Timur
-            </p>
-
-            <div class="cs-notify" id="cs-notify">
-                <a href="https://www.instagram.com/bayan_open/" target="_blank" class="btn-ghost">
-                    Follow Instagram
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+            {{-- CTA Buttons --}}
+            <div class="cta-row" id="h-cta">
+                <button type="button" onclick="bukaModalDaftar()" class="btn-fire">
+                    Daftar Sekarang
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </button>
+                <a href="#kategori" class="btn-glass-outline">
+                    Lihat Kategori
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 9l-7 7-7-7"/></svg>
                 </a>
             </div>
 
-            <!-- COPYRIGHT -->
-            <div class="cs-copyright" id="cs-copyright">
-                &copy; 2026 PT Bayan Resources Tbk. All rights reserved.
+            {{-- Divider --}}
+            <div class="glass-divider" id="h-div"></div>
+
+            {{-- Stats strip --}}
+            <div class="stats-row" id="h-stats">
+                <div class="stat-cell">
+                    <span class="stat-val">4</span>
+                    <span class="stat-lbl">Kategori Open</span>
+                </div>
+                <div class="stat-cell">
+                    <span class="stat-val">18</span>
+                    <span class="stat-lbl">Sirkuit Nasional C</span>
+                </div>
+                <div class="stat-cell">
+                    <span class="stat-val">2026</span>
+                    <span class="stat-lbl">Edisi</span>
+                </div>
             </div>
 
         </div>
+        {{-- ── /GLASS CARD ── --}}
     </div>
 
-    <!-- MARQUEE -->
-    <div id="cs-marquee-bar">
-        <div class="cs-marquee-track" id="cs-marquee-track">
-            <span class="cs-marquee-item"><span class="dot"></span>Bayan Open 2026</span>
-            <span class="cs-marquee-item"><span class="dot"></span>Balikpapan</span>
-            <span class="cs-marquee-item"><span class="dot"></span>Kalimantan Timur</span>
-            <span class="cs-marquee-item"><span class="dot"></span>Sirkuit Nasional C</span>
-            <span class="cs-marquee-item"><span class="dot"></span>Open Kategori</span>
-            <span class="cs-marquee-item"><span class="dot"></span>PBSI</span>
-            <span class="cs-marquee-item"><span class="dot"></span>Bulutangkis</span>
-            <span class="cs-marquee-item"><span class="dot"></span>Segera Hadir</span>
-            <span class="cs-marquee-item"><span class="dot"></span>Bayan Open 2026</span>
-            <span class="cs-marquee-item"><span class="dot"></span>Balikpapan</span>
-            <span class="cs-marquee-item"><span class="dot"></span>Kalimantan Timur</span>
-            <span class="cs-marquee-item"><span class="dot"></span>Sirkuit Nasional C</span>
-            <span class="cs-marquee-item"><span class="dot"></span>Open Kategori</span>
-            <span class="cs-marquee-item"><span class="dot"></span>PBSI</span>
-            <span class="cs-marquee-item"><span class="dot"></span>Bulutangkis</span>
-            <span class="cs-marquee-item"><span class="dot"></span>Segera Hadir</span>
+    {{-- Scroll cue --}}
+    <div class="scroll-cue" id="h-scroll">
+        <div class="scroll-mouse"><div class="scroll-wheel"></div></div>
+        <span class="scroll-label">Scroll</span>
+    </div>
+</section>
+
+{{-- ══════════════════════════════════════════
+     SECTION ABOUT 
+══════════════════════════════════════════ --}}
+<section class="section" style="background: var(--paper-2); padding-top: 88px; padding-bottom: 80px;">
+    <div class="section-inner">
+        <div class="about-grid">
+ 
+            {{-- Teks kiri --}}
+            <div>
+                <span class="sec-tag reveal">Tentang Turnamen</span>
+                <h2 class="sec-title reveal">Mengenal<br><em style="font-style:normal;color:var(--fire);">Bayan Open</em></h2>
+                <p class="sec-sub reveal" style="max-width:100%; margin-bottom:16px;">
+                    Bayan Open adalah turnamen bulutangkis bergengsi yang diselenggarakan di Balikpapan, Kalimantan Timur — menjadi salah satu ajang paling ditunggu-tunggu oleh para pecinta olahraga tepuk bulu di wilayah Kalimantan dan sekitarnya.
+                </p>
+                <p style="font-size:13.5px; line-height:1.8; color:var(--ink-60);" class="reveal">
+                    Pertama kali digelar pada 2023, Bayan Open hadir dengan misi mempertemukan atlet-atlet terbaik dari berbagai daerah dalam satu arena yang kompetitif, sportif, dan berkesan. Turnamen ini bukan sekadar pertandingan — ia adalah perayaan semangat juang, kebersamaan komunitas, dan cinta terhadap bulutangkis Indonesia.
+                </p>
+                <p style="font-size:13.5px; line-height:1.8; color:var(--ink-60); margin-top:12px;" class="reveal">
+                    Pada edisi 2026 ini, Bayan Open hadir lebih besar dengan jalur <strong>Sirkuit Nasional C (PBSI)</strong> di samping kategori Open, menjadikannya platform resmi bagi atlet muda untuk meraih poin nasional.
+                </p>
+ 
+                {{-- Pills 
+                <div class="about-pills reveal">
+                    @foreach([
+                        ['Edisi 2026', '#f97316'],
+                        ['Balikpapan, Kaltim', '#3b82f6'],
+                        ['Sirkuit Nasional C', '#14b8a6'],
+                        ['Open Kategori', '#e11d48'],
+                    ] as $pill)
+                    <span class="about-pill">
+                        <span class="about-pill-dot" style="background:{{ $pill[1] }};"></span>
+                        {{ $pill[0] }}
+                    </span>
+                    @endforeach
+                </div> --}}
+            </div>
+ 
+            {{-- Stat cards kanan --}}
+            <div class="about-stat-grid reveal">
+                @foreach([
+                    ['4',   'Tahun Digelar',   'Konsisten hadir sejak 2023',         '#f97316', '#f97316'],
+                    ['22',   'Total Kategori',   '4 Open + 18 Sirkuit Nasional C',     '#2563eb', '#3b82f6'],
+                    ['1200+', 'Peserta',          'Dari seluruh Kalimantan & Indonesia', '#e11d48', '#f43f5e'],
+                    ['PBSI', 'Resmi Sirnas',    'Terdaftar di si.pbsi.id',            '#0d9488', '#14b8a6'],
+                ] as $stat)
+                <div style="background:#fff;border:1px solid var(--ink-12);border-radius:20px;padding:28px 22px;position:relative;overflow:hidden;transition:all 0.3s ease;"
+                     onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 20px 48px rgba(0,0,0,0.08)'"
+                     onmouseout="this.style.transform='';this.style.boxShadow=''">
+                    <div style="position:absolute;top:0;left:0;right:0;height:3px;border-radius:20px 20px 0 0;background:linear-gradient(90deg,{{ $stat[4] }},{{ $stat[3] }});"></div>
+                    <div style="font-size:36px;font-weight:800;line-height:1;color:{{ $stat[3] }};margin-bottom:4px;">{{ $stat[0] }}</div>
+                    <div style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-30);margin-bottom:6px;">{{ $stat[1] }}</div>
+                    <div style="font-size:12px;color:var(--ink-60);line-height:1.5;">{{ $stat[2] }}</div>
+                </div>
+                @endforeach
+            </div>
+ 
         </div>
     </div>
+</section>
 
+{{-- ══════════════════════════════════════════
+     KATEGORI
+══════════════════════════════════════════ --}}
+<section id="kategori" class="section kategori-section">
+    <div class="section-inner">
+        <div style="max-width:640px;">
+            <span class="sec-tag reveal">Pilihan Kategori</span>
+            <h2 class="sec-title reveal">Kategori Turnamen 2026</h2>
+            <p class="sec-sub reveal">Pilih jalur dan kategori yang sesuai. Tersedia jalur Open dan Sirkuit Nasional C.</p>
+
+            <div class="kat-tab-switcher reveal" role="tablist" aria-label="Pilih jalur turnamen">
+                <button
+                    type="button"
+                    id="tab-open"
+                    class="kat-tab-btn tab-open active"
+                    role="tab"
+                    aria-selected="true"
+                    aria-controls="panel-open"
+                    onclick="switchTab('open')">
+                    Open
+                    <span class="kat-tab-badge">4</span>
+                </button>
+                <button
+                    type="button"
+                    id="tab-sirnas"
+                    class="kat-tab-btn tab-sirnas"
+                    role="tab"
+                    aria-selected="false"
+                    aria-controls="panel-sirnas"
+                    onclick="switchTab('sirnas')">
+                    Sirkuit Nasional C
+                    <span class="kat-tab-badge">18</span>
+                </button>
+            </div>
+        </div>
+
+        {{-- Panel: Open --}}
+        <div id="panel-open" class="kat-panel active" role="tabpanel" aria-labelledby="tab-open">
+            <div class="kategori-grid">
+                <a href="{{ route('registration.ganda-dewasa-putra') }}" class="kat-card c-blue reveal">
+                    <div class="kat-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/>
+                            <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
+                        </svg>
+                    </div>
+                    <p class="kat-name">Ganda Dewasa Putra</p>
+                    <p class="kat-desc">Upload KTP di akhir pendaftaran. Terbuka untuk semua usia dewasa.</p>
+                    <div class="kat-footer">
+                        <div class="kat-price-wrap">
+                            <p class="kat-price">Rp 400.000</p>
+                            <p class="kat-per">per pasangan</p>
+                        </div>
+                        <div class="kat-cta"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+                    </div>
+                </a>
+
+                <a href="{{ route('registration.ganda-dewasa-putri') }}" class="kat-card c-rose reveal">
+                    <div class="kat-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f43f5e" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/>
+                            <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
+                        </svg>
+                    </div>
+                    <p class="kat-name">Ganda Dewasa Putri</p>
+                    <p class="kat-desc">Upload KTP di akhir pendaftaran. Terbuka untuk semua usia dewasa.</p>
+                    <div class="kat-footer">
+                        <div class="kat-price-wrap">
+                            <p class="kat-price">Rp 400.000</p>
+                            <p class="kat-per">per pasangan</p>
+                        </div>
+                        <div class="kat-cta"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f43f5e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+                    </div>
+                </a>
+
+                <a href="{{ route('registration.ganda-veteran-putra') }}" class="kat-card c-amber reveal">
+                    <div class="kat-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                    </div>
+                    <p class="kat-name">Ganda Veteran Putra</p>
+                    <p class="kat-desc">Scan KTP wajib. Minimal usia 45 tahun.</p>
+                    <div class="kat-footer">
+                        <div class="kat-price-wrap">
+                            <p class="kat-price">Rp 400.000</p>
+                            <p class="kat-per">per pasangan</p>
+                        </div>
+                        <div class="kat-cta"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+                    </div>
+                </a>
+
+                <a href="{{ route('registration.beregu') }}" class="kat-card c-teal reveal">
+                    <div class="kat-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#14b8a6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/>
+                            <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
+                        </svg>
+                    </div>
+                    <p class="kat-name">Beregu</p>
+                    <p class="kat-desc">Upload KTP, minimum 6 pemain per regu. Cocok untuk tim komunitas.</p>
+                    <div class="kat-footer">
+                        <div class="kat-price-wrap">
+                            <p class="kat-price">Rp 1.000.000</p>
+                            <p class="kat-per">per regu</p>
+                        </div>
+                        <div class="kat-cta"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#14b8a6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        {{-- Panel: Sirkuit Nasional C --}}
+        <div id="panel-sirnas" class="kat-panel" role="tabpanel" aria-labelledby="tab-sirnas">
+
+            <div class="sirnas-note reveal">
+                <div class="sirnas-note-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4338ca" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/>
+                    </svg>
+                </div>
+                <p class="sirnas-note-text">
+                    Semua kategori Sirkuit Nasional C didaftarkan melalui <strong>sistem resmi PBSI</strong> di
+                    <strong>si.pbsi.id</strong>. Klik kategori di bawah untuk langsung menuju halaman pendaftaran.
+                </p>
+            </div>
+
+            @php
+            $sirnas_groups = [
+                'Usia Dini' => [
+                    ['Tunggal Usia Dini Putra', 'Putra · Usia Dini'],
+                    ['Tunggal Usia Dini Putri', 'Putri · Usia Dini'],
+                ],
+                'Anak-Anak' => [
+                    ['Tunggal Anak-Anak Putra', 'Putra · Anak-Anak'],
+                    ['Tunggal Anak-Anak Putri', 'Putri · Anak-Anak'],
+                ],
+                'Pemula' => [
+                    ['Tunggal Pemula Putra', 'Putra · Kelas Pemula'],
+                    ['Tunggal Pemula Putri', 'Putri · Kelas Pemula'],
+                    ['Ganda Pemula Putra',   'Putra · Kelas Pemula'],
+                    ['Ganda Pemula Putri',   'Putri · Kelas Pemula'],
+                ],
+                'Remaja' => [
+                    ['Tunggal Remaja Putra',  'Putra · Kelas Remaja'],
+                    ['Tunggal Remaja Putri',  'Putri · Kelas Remaja'],
+                    ['Ganda Remaja Putra',    'Putra · Kelas Remaja'],
+                    ['Ganda Remaja Putri',    'Putri · Kelas Remaja'],
+                    ['Ganda Remaja Campuran', 'Campuran · Kelas Remaja'],
+                ],
+                'Taruna' => [
+                    ['Tunggal Taruna Putra',  'Putra · Kelas Taruna'],
+                    ['Tunggal Taruna Putri',  'Putri · Kelas Taruna'],
+                    ['Ganda Taruna Putra',    'Putra · Kelas Taruna'],
+                    ['Ganda Taruna Putri',    'Putri · Kelas Taruna'],
+                    ['Ganda Taruna Campuran', 'Campuran · Kelas Taruna'],
+                ],
+            ];
+            @endphp
+
+            @foreach($sirnas_groups as $group => $items)
+            <div style="margin-top: 24px;">
+                <p class="sirnas-group-label reveal">{{ $group }}</p>
+                <div class="sirnas-grid">
+                    @foreach($items as $item)
+                    <a href="https://si.pbsi.id/" target="_blank" rel="noopener noreferrer" class="sirnas-card reveal">
+                        <div class="sirnas-card-icon">
+                            @if(str_contains($item[0], 'Tunggal'))
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4338ca" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="7" r="4"/><path d="M6 21v-2a6 6 0 0112 0v2"/>
+                            </svg>
+                            @elseif(str_contains($item[0], 'Campuran'))
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4338ca" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="8" cy="7" r="3"/><circle cx="16" cy="7" r="3"/>
+                                <path d="M2 21v-1a6 6 0 016-6h2M22 21v-1a6 6 0 00-6-6h-2"/>
+                            </svg>
+                            @else
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4338ca" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/>
+                                <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
+                            </svg>
+                            @endif
+                        </div>
+                        <div class="sirnas-card-body">
+                            <p class="sirnas-card-name">{{ $item[0] }}</p>
+                            <p class="sirnas-card-sub">{{ $item[1] }}</p>
+                        </div>
+                        <svg class="sirnas-card-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(0,0,0,0.5)" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
+                    </a>
+                    @endforeach
+                </div>
+            </div>
+            @endforeach
+        </div>
+    </div>
+</section>
+
+{{-- ══════════════════════════════════════════
+     GUEST STAR — LIGHT VERSION
+══════════════════════════════════════════ --}}
+<!--<section style="background:var(--paper);padding:88px 24px 96px;position:relative;overflow:hidden;">
+    <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent 0%,#f97316 30%,#fbbf24 50%,#f97316 70%,transparent 100%);"></div>
+    <div style="position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 70% 50% at 20% 60%,rgba(249,115,22,0.04) 0%,transparent 70%),radial-gradient(ellipse 60% 40% at 80% 30%,rgba(251,191,36,0.04) 0%,transparent 70%);"></div>
+ 
+    <div class="section-inner" style="position:relative;z-index:1;">
+
+        <div style="text-align:center;margin-bottom:56px;">
+            <span class="sec-tag reveal">Bintang Tamu Spesial</span>
+            <h2 class="sec-title reveal">Guest Star <em style="font-style:normal;color:var(--fire);">Bayan Open</em> 2026</h2>
+            <p class="sec-sub reveal" style="margin:14px auto 0;max-width:420px;">
+                Dua legenda bulutangkis Indonesia hadir langsung di arena bersama para peserta dan penonton.
+            </p>
+        </div>
+        <div class="guest-grid">
+ 
+            @foreach([
+                [
+                    'name'     => 'Hendra Setiawan',
+                    'nickname' => '"The Wall"',
+                    'initial'  => 'HS',
+                    'photo'    => 'https://redaktur.tvrinews.com/storage/images/1080x840/415c5c3b-9728-4574-b0e2-f6dde9bc2196.jpeg',
+                    'bio'      => 'Salah satu ganda putra terbaik sepanjang masa. Dikenal lewat teknik net sempurna, gerakan elegan, dan mentalitas juara yang tak tertandingi di kancah internasional.',
+                    'achv'     => [
+                        'Juara Dunia BWF 2007 & 2013',
+                        'Medali Emas Olimpiade 2004 & 2016',
+                        'Ikon generasi emas badminton Indonesia',
+                    ],
+                    'role' => 'Ganda Putra · Legenda BWF',
+                    'id'   => 'hs',
+                ],
+                [
+                    'name'     => 'Marcus Fernaldi Gideon',
+                    'nickname' => '"The Minion"',
+                    'initial'  => 'MG',
+                    'photo'    => 'https://jurnalbogor.com/wp-content/uploads/2024/03/Marcus-Fernaldi-Gideon.jpg',
+                    'bio'      => 'Bagian dari duo legendaris "The Minions" bersama Kevin Sanjaya. Marcus membawa era baru dominasi ganda putra dengan kecepatan reflek luar biasa dan smash yang mematikan.',
+                    'achv'     => [
+                        'Juara Dunia BWF 2019',
+                        'All England Champion 2017 & 2018',
+                        'Peraih Medali Thomas Cup & Sudirman Cup',
+                    ],
+                    'role' => 'Ganda Putra · "The Minions"',
+                    'id'   => 'mg',
+                ],
+            ] as $guest)
+ 
+            <div class="guest-card reveal">
+ 
+                <div class="guest-photo-wrap">
+                    <img src="{{ $guest['photo'] }}"
+                         alt="{{ $guest['name'] }}"
+                         id="photo-{{ $guest['id'] }}"
+                         onerror="this.style.display='none';document.getElementById('ph-{{ $guest['id'] }}').style.display='flex'">
+                    <div id="ph-{{ $guest['id'] }}" class="guest-photo-fallback">
+                        {{ $guest['initial'] }}
+                    </div>
+                    <div class="guest-photo-gradient"></div>
+                </div>
+ 
+                <div class="guest-body">
+                    <h3 class="guest-name">{{ $guest['name'] }}</h3>
+                    <p class="guest-nickname">{{ $guest['nickname'] }}</p>
+ 
+                    <div class="guest-divider"></div>
+ 
+                    <p class="guest-bio">{{ $guest['bio'] }}</p>
+
+                    <div class="guest-achv-list">
+                        @foreach($guest['achv'] as $a)
+                        <div class="guest-achv-item">
+                            <div class="guest-achv-icon">
+                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                            </div>
+                            {{ $a }}
+                        </div>
+                        @endforeach
+                    </div>
+                    <div class="guest-footer">
+                        <div class="guest-country">
+                            <div class="guest-flag">🇮🇩</div>
+                            <div>
+                                <div class="guest-country-name">Indonesia</div>
+                                <div class="guest-country-role">{{ $guest['role'] }}</div>
+                            </div>
+                        </div>
+                        <div class="guest-pill">
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#c2410c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+                            Ganda Putra
+                        </div>
+                    </div>
+ 
+                </div>
+            </div>
+            @endforeach
+ 
+        </div>
+    </div>
+</section>-->
+
+{{-- ══════════════════════════════════════════
+     GALERI
+══════════════════════════════════════════ --}}
+<section class="gallery-section">
+    <video class="gallery-bg-video"
+        src="https://res.cloudinary.com/djs5pi7ev/video/upload/q_50,w_1280/v1769502814/bayanopen-hero_iqhyip.mp4"
+        autoplay muted loop playsinline preload="none"></video>
+    <div class="gallery-video-overlay"></div>
+    <div class="grain" aria-hidden="true"></div>
+
+    <div class="gallery-header reveal">
+        <span class="sec-tag" style="color:var(--fire);">Momen Bayan Open</span>
+        <h2 class="sec-title light">Galeri Turnamen</h2>
+        <p class="sec-sub" style="color:rgba(255,255,255,0.4); margin:14px auto 0; max-width:400px;">
+            Rekaman semangat &amp; keseruan dari tahun-tahun sebelumnya.
+        </p>
+    </div>
+
+    @php
+    $photos = [
+        ['https://res.cloudinary.com/djs5pi7ev/image/upload/w_600,q_60,f_webp/v1767765503/Bayan-8672_iuuxhb.jpg',   'Ganda Veteran Putra'],
+        ['https://res.cloudinary.com/djs5pi7ev/image/upload/w_600,q_60,f_webp/v1767765503/Bayan-1739_e0mi1r.jpg',   'Aksi Lapangan'],
+        ['https://res.cloudinary.com/djs5pi7ev/image/upload/w_600,q_60,f_webp/v1767765501/Bayan-1715_rppm7m.jpg',   'Smash Keras'],
+        ['https://res.cloudinary.com/djs5pi7ev/image/upload/w_600,q_60,f_webp/v1767765497/Bayan-8837_rpl0gl.jpg',   'Ganda Putri'],
+        ['https://res.cloudinary.com/djs5pi7ev/image/upload/w_600,q_60,f_webp/v1767765495/PenyerahanMedali-575_yhyuds.jpg', 'Penyerahan Medali'],
+        ['https://res.cloudinary.com/djs5pi7ev/image/upload/w_600,q_60,f_webp/v1773113997/Bayan-2268_tnmwt4.jpg',   'Guest Star'],
+        ['https://res.cloudinary.com/djs5pi7ev/image/upload/w_600,q_60,f_webp/v1773113996/Bayan-36_mpnqui.jpg',     'Servis Perdana'],
+        ['https://res.cloudinary.com/djs5pi7ev/image/upload/w_600,q_60,f_webp/v1773113996/Bayan-2324_itnoc5.jpg',   'Aksi Hendra Setiawan'],
+        ['https://res.cloudinary.com/djs5pi7ev/image/upload/w_600,q_60,f_webp/v1773113995/Bayan-26_llektw.jpg',     'Taruna Putra'],
+        ['https://res.cloudinary.com/djs5pi7ev/image/upload/w_600,q_60,f_webp/v1773113995/Bayan-1427_s2frld.jpg',   'Ganda Putra'],
+    ];
+    $doubled  = array_merge($photos, $photos);
+    $doubled2 = array_merge(array_reverse($photos), array_reverse($photos));
+    @endphp
+
+    <div class="gallery-track-wrap">
+        <div class="gallery-track" id="track1">
+            @foreach($doubled as $photo)
+            <div class="gallery-item">
+                <img src="{{ $photo[0] }}" alt="{{ $photo[1] }}" loading="lazy" decoding="async">
+                <div class="gallery-overlay"><span>{{ $photo[1] }}</span></div>
+            </div>
+            @endforeach
+        </div>
+        <div class="gallery-track" id="track2">
+            @foreach($doubled2 as $photo)
+            <div class="gallery-item">
+                <img src="{{ $photo[0] }}" alt="{{ $photo[1] }}" loading="lazy" decoding="async">
+                <div class="gallery-overlay"><span>{{ $photo[1] }}</span></div>
+            </div>
+            @endforeach
+        </div>
+    </div>
+</section>
+
+{{-- ══════════════════════════════════════════
+     CARA DAFTAR
+══════════════════════════════════════════ --}}
+<section class="section steps-section" style="padding-bottom: 40px; padding-top: 72px;">
+    <div class="section-inner">
+        <div style="max-width:440px; margin:0 auto; text-align:center;">
+            <span class="sec-tag reveal">Cara Daftar</span>
+            <h2 class="sec-title reveal">4 Langkah Mudah</h2>
+        </div>
+        <div class="steps-grid">
+            @foreach([
+                ['1','Pilih Kategori','Pilih jalur dan kategori turnamen yang ingin diikuti.'],
+                ['2','Isi Data','Isi data tim, kontak, dan upload scan KTP pemain.'],
+                ['3','Bayar','Lakukan pembayaran via transfer, QRIS, atau metode tersedia.'],
+                ['4','Bertanding!','Konfirmasi diterima — sampai jumpa di lapangan!'],
+            ] as $s)
+            <div class="step-card reveal">
+                <div class="step-num">{{ $s[0] }}</div>
+                <div class="step-badge">{{ $s[0] }}</div>
+                <h4 class="step-title">{{ $s[1] }}</h4>
+                <p class="step-desc">{{ $s[2] }}</p>
+            </div>
+            @endforeach
+        </div>
+    </div>
+</section>
+
+{{-- ══════════════════════════════════════════
+     CTA BANNER
+══════════════════════════════════════════ --}}
+<section style="padding: 0 24px; background: var(--paper-2); margin-bottom: -1px;">
+    <div style="max-width: 1120px; margin: 0 auto; padding-bottom: 48px;">
+        <div class="cta-banner reveal">
+            <div class="cta-fire-line"></div>
+            <p class="cta-banner-title">SIAP BERTANDING di<br><em>BAYAN OPEN 2026?</em></p>
+            <p class="cta-banner-sub">Tempat terbatas — jangan sampai ketinggalan!</p>
+            <button type="button" onclick="bukaModalDaftar()" class="btn-fire" style="font-size:11px;">
+                Daftar Sekarang
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+        </div>
+    </div>
+</section>
+
+@endsection
+
+{{-- ══════════════════════════════════════════
+     MODAL 1 — PILIH JALUR
+══════════════════════════════════════════ --}}
+@push('modals')
+<div id="modal1" class="mo-overlay" style="display:none;">
+    <div id="modal1Card" class="mo-card" style="width:100%;max-width:560px;">
+        <div style="padding:36px 32px 30px;">
+
+            <div style="display:flex;justify-content:center;margin-bottom:22px;">
+                <div class="mo-badge">
+                    <span class="mo-badge-dot"></span>
+                    <span class="mo-badge-text">Bayan Open 2026</span>
+                </div>
+            </div>
+
+            <div style="text-align:center;margin-bottom:26px;">
+                <h2 style="font-family:var(--font-display);font-size:24px;font-weight:800;color:var(--m-ink);margin:0 0 8px;letter-spacing:-0.02em;line-height:1.2;">Pilih Jalur Pendaftaran</h2>
+                <p style="color:var(--m-ink-60);font-size:13px;margin:0;">Silakan pilih jalur turnamen yang ingin Anda ikuti</p>
+            </div>
+
+            <div class="jalur-grid" style="margin-bottom:22px;">
+                <button type="button" onclick="bukaModalSirnas()" class="jalur-card jc-indigo" style="font-family:inherit;width:100%;">
+                    <div class="jalur-shimmer"></div>
+                    <div class="jalur-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(99,102,241,1)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                    </div>
+                    <p class="jalur-title">SIRKUIT<br>NASIONAL C</p>
+                    <div class="jalur-badge-pill">
+                        <span class="mo-badge-dot" style="width:5px;height:5px;background:#6366f1;animation:none;"></span>
+                        <span class="jalur-badge-pill-text">18 KATEGORI</span>
+                    </div>
+                </button>
+
+                <button type="button" onclick="bukaModal2()" class="jalur-card jc-orange">
+                    <div class="jalur-shimmer"></div>
+                    <div class="jalur-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(249,115,22,1)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>
+                        </svg>
+                    </div>
+                    <p class="jalur-title">OPEN</p>
+                    <div class="jalur-badge-pill">
+                        <span class="mo-badge-dot" style="width:5px;height:5px;"></span>
+                        <span class="jalur-badge-pill-text">DAFTAR SEKARANG</span>
+                    </div>
+                    <div class="jc-ext" style="bottom:11px;right:11px;top:auto;">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(0,0,0,0.4)" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+                    </div>
+                </button>
+            </div>
+
+            <div class="mo-info-row" style="margin-bottom:12px;">
+                <div class="mo-divider-line"></div>
+                <span class="mo-divider-label">Info</span>
+                <div class="mo-divider-line"></div>
+            </div>
+            <div class="mo-info-grid">
+                <div class="mo-info-box">
+                    <p class="mo-info-title">Sirkuit Nasional C</p>
+                    <p class="mo-info-desc">Didaftarkan melalui sistem resmi PBSI</p>
+                </div>
+                <div class="mo-info-box">
+                    <p class="mo-info-title">Open</p>
+                    <p class="mo-info-desc">Pendaftaran mandiri, pilih kategori sesuai kelas</p>
+                </div>
+            </div>
+
+            <button type="button" onclick="tutupModalDaftar()" style="width:100%;margin-top:16px;padding:10px;border:1px solid var(--m-ink-12);border-radius:10px;background:transparent;color:var(--m-ink-60);font-size:12px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background='transparent'">
+                Tutup
+            </button>
+        </div>
+    </div>
 </div>
 
+{{-- ══════════════════════════════════════════
+     MODAL SIRNAS
+══════════════════════════════════════════ --}}
+<div id="modalSirnas" class="mo-overlay" style="display:none;">
+    <div id="modalSirnasCard" class="mo-card" style="width:100%;max-width:780px;">
+        <div class="mo-top-line-indigo"></div>
+        <div style="padding:44px 44px 40px;">
+
+            <div style="display:flex;align-items:center;gap:18px;margin-bottom:32px;">
+                <button type="button" onclick="tutupModalSirnas()" class="mo2-back mo2-back-indigo" style="width:48px;height:48px;flex-shrink:0;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(26,18,9,0.6)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+                </button>
+                <div>
+                    <h2 style="font-family:var(--font-display);font-size:26px;font-weight:800;color:var(--m-ink);margin:0 0 6px;letter-spacing:-0.02em;">Sirkuit Nasional C</h2>
+                    <p style="color:var(--m-ink-60);font-size:15px;margin:0;">Pilih kategori — semua daftar via <span style="color:#4338ca;font-weight:700;">si.pbsi.id</span></p>
+                </div>
+            </div>
+
+            <div class="sirnas-modal-list">
+                @php
+                $sicon_single = '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="rgba(99,102,241,1)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a6 6 0 0112 0v2"/></svg>';
+                $sicon_double = '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="rgba(99,102,241,1)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>';
+                $sicon_mixed  = '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="rgba(99,102,241,1)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="7" r="3"/><circle cx="16" cy="7" r="3"/><path d="M2 21v-1a6 6 0 016-6h2M22 21v-1a6 6 0 00-6-6h-2"/></svg>';
+                $ext_arrow = '<svg class="sc-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(26,18,9,0.6)" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>';
+                $modal_groups = [
+                    'Usia Dini' => [
+                        ['Tunggal Usia Dini Putra','Usia Dini · Putra','single'],
+                        ['Tunggal Usia Dini Putri','Usia Dini · Putri','single'],
+                    ],
+                    'Anak-Anak' => [
+                        ['Tunggal Anak-Anak Putra','Anak-Anak · Putra','single'],
+                        ['Tunggal Anak-Anak Putri','Anak-Anak · Putri','single'],
+                    ],
+                    'Pemula' => [
+                        ['Tunggal Pemula Putra','Pemula · Putra','single'],
+                        ['Tunggal Pemula Putri','Pemula · Putri','single'],
+                        ['Ganda Pemula Putra',  'Pemula · Putra','double'],
+                        ['Ganda Pemula Putri',  'Pemula · Putri','double'],
+                    ],
+                    'Remaja' => [
+                        ['Tunggal Remaja Putra',  'Remaja · Putra',    'single'],
+                        ['Tunggal Remaja Putri',  'Remaja · Putri',    'single'],
+                        ['Ganda Remaja Putra',    'Remaja · Putra',    'double'],
+                        ['Ganda Remaja Putri',    'Remaja · Putri',    'double'],
+                        ['Ganda Remaja Campuran', 'Remaja · Campuran', 'mixed'],
+                    ],
+                    'Taruna' => [
+                        ['Tunggal Taruna Putra',  'Taruna · Putra',    'single'],
+                        ['Tunggal Taruna Putri',  'Taruna · Putri',    'single'],
+                        ['Ganda Taruna Putra',    'Taruna · Putra',    'double'],
+                        ['Ganda Taruna Putri',    'Taruna · Putri',    'double'],
+                        ['Ganda Taruna Campuran', 'Taruna · Campuran', 'mixed'],
+                    ],
+                ];
+                @endphp
+
+                @foreach($modal_groups as $gname => $grows)
+                <p class="sirnas-group-label" style="padding:{{ $loop->first ? '0' : '12px' }} 4px 6px;font-size:11px;">{{ $gname }}</p>
+                @foreach($grows as $row)
+                <a href="https://si.pbsi.id/" target="_blank" rel="noopener noreferrer" class="sub-card sc-indigo">
+                    <div class="sub-icon" style="background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2);">
+                        {!! $row[2]==='single' ? $sicon_single : ($row[2]==='mixed' ? $sicon_mixed : $sicon_double) !!}
+                    </div>
+                    <div style="flex:1;min-width:0;">
+                        <p class="sub-name">{{ $row[0] }}</p>
+                        <p class="sub-desc">{{ $row[1] }}</p>
+                    </div>
+                    <span class="sub-price-indigo">si.pbsi.id</span>
+                    {!! $ext_arrow !!}
+                </a>
+                @endforeach
+                @endforeach
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- ══════════════════════════════════════════
+     MODAL 2 — PILIH KATEGORI (OPEN)
+══════════════════════════════════════════ --}}
+<div id="modal2" class="mo-overlay" style="display:none;">
+    <div id="modal2Card" class="mo-card" style="width:100%;max-width:520px;">
+        <div style="padding:30px 26px 26px;">
+
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
+                <button type="button" onclick="tutupModal2()" class="mo2-back">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(26,18,9,0.6)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+                </button>
+                <div>
+                    <h2 style="font-family:var(--font-display);font-size:18px;font-weight:800;color:var(--m-ink);margin:0 0 3px;letter-spacing:-0.02em;">Pilih Kategori Open</h2>
+                    <p style="color:var(--m-ink-60);font-size:12px;margin:0;">Pilih kelas pertandingan yang akan Anda ikuti</p>
+                </div>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:8px;">
+                <button type="button" class="sub-card sc-blue" onclick="pilihKategori('ganda-dewasa-putra')">
+                    <div class="sub-icon" style="background:#f5f5f5;border:1px solid rgba(0,0,0,0.06);">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(26,18,9,0.45)"stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+                    </div>
+                    <div style="flex:1;min-width:0;">
+                        <p class="sub-name">Ganda Dewasa Putra</p>
+                        <p class="sub-desc">Terbuka untuk umum</p>
+                    </div>
+                    <span class="sub-price">Rp 400.000</span>
+                    <svg class="sc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(26,18,9,0.6)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+                </button>
+
+                <button type="button" class="sub-card sc-pink" onclick="pilihKategori('ganda-dewasa-putri')">
+                    <div class="sub-icon" style="background:rgba(236,72,153,0.1);border:1px solid rgba(236,72,153,0.2);">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(26,18,9,0.45)"stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+                    </div>
+                    <div style="flex:1;min-width:0;">
+                        <p class="sub-name">Ganda Dewasa Putri</p>
+                        <p class="sub-desc">Terbuka untuk umum</p>
+                    </div>
+                    <span class="sub-price">Rp 400.000</span>
+                    <svg class="sc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(26,18,9,0.6)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+                </button>
+
+                <button type="button" class="sub-card sc-yellow" onclick="pilihKategori('ganda-veteran-putra')">
+                    <div class="sub-icon" style="background:rgba(234,179,8,0.1);border:1px solid rgba(234,179,8,0.2);">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(26,18,9,0.45)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    </div>
+                    <div style="flex:1;min-width:0;">
+                        <p class="sub-name">Ganda Veteran Putra</p>
+                        <p class="sub-desc">Terbuka untuk umum · Minimal umur 45 Tahun</p>
+                    </div>
+                    <span class="sub-price">Rp 400.000</span>
+                    <svg class="sc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(26,18,9,0.6)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+                </button>
+
+                <button type="button" class="sub-card sc-green" onclick="pilihKategori('beregu')">
+                    <div class="sub-icon" style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="rgba(16,185,129,1)"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"/></svg>
+                    </div>
+                    <div style="flex:1;min-width:0;">
+                        <p class="sub-name">Beregu</p>
+                        <p class="sub-desc">Khusus KTP Balikpapan · 1 Regu min. 6 pemain</p>
+                    </div>
+                    <span class="sub-price">Rp 1.000.000</span>
+                    <svg class="sc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(26,18,9,0.6)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{{-- ══════════════════════════════════════════
+     MODAL DISCLAIMER — PERNYATAAN KESIAPAN
+══════════════════════════════════════════ --}}
+<div id="modalDisclaimer" class="mo-overlay" style="display:none;">
+    <div id="modalDisclaimerCard" class="mo-card" style="width:100%;max-width:520px;">
+
+        {{-- Top stripe oranye --}}
+        <div style="height:4px;background:linear-gradient(90deg,#f97316,#fbbf24,#f97316);"></div>
+
+        <div style="padding:28px 28px 0;">
+
+            {{-- Header --}}
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;">
+                     <img
+                    src="https://res.cloudinary.com/djs5pi7ev/image/upload/q_auto/f_auto/v1775803080/bayanopen-logo_mfcb55.png"
+                    alt="Bayan Open 2026"
+                    class="h-10 sm:h-12 lg:h-16 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+                >
+                <div>
+                    <p style="font-family:var(--font-display);font-size:17px;font-weight:800;color:var(--m-ink);letter-spacing:-0.02em;line-height:1.2;margin:0;">Pernyataan Kesiapan Peserta</p>
+                    <p style="font-size:12px;color:var(--m-ink-35);margin:2px 0 0;">Bayan Open 2026 — Balikpapan, Kalimantan Timur</p>
+                </div>
+            </div>
+
+            {{-- Scroll Box --}}
+            <div id="disclaimerScroll"
+                 style="height:220px;overflow-y:auto;border:1px solid var(--m-ink-12);border-radius:14px;padding:16px 18px;background:var(--cream);font-size:12.5px;line-height:1.75;color:var(--m-ink-60);position:relative;scroll-behavior:smooth;">
+
+                <p style="font-weight:800;font-size:13px;color:var(--m-ink);margin-bottom:10px;">SURAT PERNYATAAN PESERTA TURNAMEN</p>
+                <p>Saya yang bertanda tangan di bawah ini, dengan penuh kesadaran dan tanpa paksaan dari pihak manapun, menyatakan hal-hal sebagai berikut:</p>
+
+                <p style="margin-top:12px;font-weight:700;color:var(--m-ink);">1. Kondisi Kesehatan</p>
+                <p>Saya menyatakan bahwa saya dalam kondisi <strong>sehat walafiat</strong>, baik secara jasmani maupun rohani, dan tidak memiliki penyakit atau kondisi medis yang dapat membahayakan diri saya sendiri atau orang lain selama mengikuti pertandingan. Saya telah berkonsultasi dengan tenaga medis apabila diperlukan sebelum mendaftar.</p>
+
+                <p style="margin-top:12px;font-weight:700;color:var(--m-ink);">2. Kesiapan Bertanding</p>
+                <p>Saya menyatakan bahwa saya <strong>siap secara fisik dan mental</strong> untuk mengikuti Bayan Open 2026. Saya memahami bahwa turnamen ini bersifat kompetitif dan membutuhkan kesiapan fisik yang optimal. Segala risiko cedera yang timbul akibat kondisi fisik saya sendiri menjadi tanggung jawab saya sepenuhnya.</p>
+
+                <p style="margin-top:12px;font-weight:700;color:var(--m-ink);">3. Keabsahan Data</p>
+                <p>Seluruh data dan dokumen yang saya lampirkan dalam formulir pendaftaran ini adalah <strong>benar, sah, dan dapat dipertanggungjawabkan</strong>. Apabila ditemukan ketidaksesuaian data, panitia berhak mendiskualifikasi saya tanpa pengembalian biaya pendaftaran.</p>
+
+                <p style="margin-top:12px;font-weight:700;color:var(--m-ink);">4. Kepatuhan Peraturan</p>
+                <p>Saya berjanji untuk mematuhi seluruh <strong>peraturan pertandingan</strong> yang ditetapkan oleh panitia Bayan Open 2026 dan peraturan PBSI yang berlaku. Saya akan menjunjung tinggi sportivitas, fairplay, dan menghormati sesama peserta, official, serta penonton.</p>
+
+                <p style="margin-top:12px;font-weight:700;color:var(--m-ink);">5. Penggunaan Foto &amp; Dokumentasi</p>
+                <p>Saya memberikan izin kepada panitia untuk menggunakan foto dan video saya yang diambil selama kegiatan berlangsung untuk keperluan <strong>publikasi dan dokumentasi resmi</strong> Bayan Open 2026.</p>
+
+                <p style="margin-top:12px;font-weight:700;color:var(--m-ink);">6. Keputusan Panitia</p>
+                <p style="margin-bottom:8px;">Saya memahami bahwa <strong>keputusan panitia bersifat final</strong> dan tidak dapat diganggu gugat dalam hal penjadwalan, penempatan lapangan, maupun hasil pertandingan yang bersifat administratif.</p>
+
+                {{-- Scroll hint --}}
+                <div id="disclaimerScrollHint" style="position:sticky;bottom:0;left:0;right:0;height:40px;background:linear-gradient(transparent,var(--cream) 70%);display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px;pointer-events:none;transition:opacity 0.3s;">
+                    <span style="display:flex;align-items:center;gap:5px;font-family:var(--font-display);font-size:10px;font-weight:700;color:rgba(249,115,22,0.8);letter-spacing:0.08em;text-transform:uppercase;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="animation:wheel-anim 1.2s ease infinite;"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+                    </span>
+                </div>
+            </div>
+
+            {{-- Progress bar --}}
+            <div style="margin-top:8px;display:flex;align-items:center;gap:10px;">
+                <div style="flex:1;height:4px;background:var(--m-ink-12);border-radius:99px;overflow:hidden;">
+                    <div id="disclaimerProgress" style="height:100%;width:0%;background:linear-gradient(90deg,#f97316,#fbbf24);border-radius:99px;transition:width 0.15s ease;"></div>
+                </div>
+                <span id="disclaimerProgressLabel" style="font-family:var(--font-display);font-size:10px;font-weight:700;color:var(--m-ink-35);white-space:nowrap;min-width:60px;text-align:right;">0% dibaca</span>
+            </div>
+
+            {{-- Checkbox --}}
+            <div id="disclaimerCheckRow"
+                 onclick="toggleDisclaimerCheck()"
+                 style="display:flex;align-items:flex-start;gap:12px;background:rgba(249,115,22,0.06);border:1.5px solid rgba(249,115,22,0.18);border-radius:14px;padding:14px 16px;margin-top:14px;transition:all 0.25s;opacity:0.4;pointer-events:none;cursor:default;">
+                <div id="disclaimerCheckBox" style="width:22px;height:22px;border-radius:6px;border:2px solid rgba(249,115,22,0.4);background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;transition:all 0.2s;">
+                    <svg id="disclaimerTick" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><path d="M20 6L9 17l-5-5"/></svg>
+                </div>
+                <p style="font-size:12.5px;line-height:1.6;color:var(--m-ink-60);font-weight:500;">
+                    Saya telah membaca seluruh pernyataan di atas dan menyatakan bahwa <strong style="color:var(--m-ink);">saya sehat walafiat, siap bertanding</strong>, serta bersedia mematuhi seluruh ketentuan <strong style="color:var(--m-ink);">Bayan Open 2026</strong>.
+                </p>
+            </div>
+        </div>
+
+        {{-- Footer --}}
+        <div style="padding:16px 28px 24px;display:flex;flex-direction:column;gap:10px;">
+            <button id="disclaimerConfirmBtn"
+                    onclick="disclaimerConfirm()"
+                    disabled
+                    style="width:100%;padding:14px 24px;border-radius:13px;border:none;font-family:var(--font-display);font-size:11px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.4);background:rgba(26,16,7,0.12);cursor:not-allowed;transition:all 0.3s cubic-bezier(0.22,1,0.36,1);">
+                ✓ &nbsp; Saya Mengerti &amp; Siap Bertanding
+            </button>
+            <button onclick="tutupDisclaimerModal()" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--m-ink-12);background:transparent;font-family:var(--font-display);font-size:11px;color:var(--m-ink-35);cursor:pointer;transition:background 0.2s;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background='transparent'">
+                Batalkan Pendaftaran
+            </button>
+        </div>
+    </div>
+</div>
+@endpush
+
+@push('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
 <script>
-/* ── COUNTDOWN ── */
-(function() {
-    var target = new Date('2026-08-24T08:00:00+08:00');
-    function pad(n) { return String(n).padStart(2, '0'); }
-    function tick() {
-        var diff = Math.max(0, target - new Date());
-        document.getElementById('cd-days').textContent  = pad(Math.floor(diff / 864e5));
-        document.getElementById('cd-hours').textContent = pad(Math.floor((diff % 864e5) / 36e5));
-        document.getElementById('cd-mins').textContent  = pad(Math.floor((diff % 36e5) / 6e4));
-        document.getElementById('cd-secs').textContent  = pad(Math.floor((diff % 6e4) / 1e3));
+// ── Route map ───────────────────────────────────────────────
+const kategoriRoutes = {
+    'ganda-dewasa-putra'  : '{{ route("registration.ganda-dewasa-putra") }}',
+    'ganda-dewasa-putri'  : '{{ route("registration.ganda-dewasa-putri") }}',
+    'ganda-veteran-putra' : '{{ route("registration.ganda-veteran-putra") }}',
+    'beregu'              : '{{ route("registration.beregu") }}',
+};
+
+// ── Tab Switcher ────────────────────────────────────────────
+function switchTab(tab) {
+    document.querySelectorAll('.kat-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.kat-tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('panel-' + tab).classList.add('active');
+    document.getElementById('tab-' + tab).classList.add('active');
+}
+
+// ── Modal helpers ───────────────────────────────────────────
+function animCard(card, inOut) {
+    card.style.animation = 'none';
+    void card.offsetWidth;
+    card.style.animation = inOut === 'in'
+        ? 'slideUpCard 0.4s cubic-bezier(0.22,1,0.36,1) 0.04s both'
+        : 'slideDownCard 0.2s ease forwards';
+}
+
+function bukaModalDaftar() {
+    document.body.style.overflow = 'hidden';
+    showModal1();
+}
+
+function showModal1() {
+    const m1 = document.getElementById('modal1');
+    const m1c = document.getElementById('modal1Card');
+    m1.style.display = 'flex';
+    m1.classList.add('anim-in');
+    animCard(m1c, 'in');
+    setTimeout(() => m1.classList.remove('anim-in'), 400);
+    m1.onclick = (e) => { if (e.target === m1) tutupModalDaftar(); };
+}
+
+function showModal2() {
+    const m2 = document.getElementById('modal2');
+    const m2c = document.getElementById('modal2Card');
+    m2.style.display = 'flex';
+    m2.classList.add('anim-in');
+    animCard(m2c, 'in');
+    setTimeout(() => m2.classList.remove('anim-in'), 400);
+    m2.onclick = (e) => { if (e.target === m2) tutupModalDaftar(); };
+}
+
+function showModalSirnas() {
+    const ms = document.getElementById('modalSirnas');
+    const msc = document.getElementById('modalSirnasCard');
+    ms.style.display = 'flex';
+    ms.classList.add('anim-in');
+    animCard(msc, 'in');
+    setTimeout(() => ms.classList.remove('anim-in'), 400);
+    ms.onclick = (e) => { if (e.target === ms) tutupModalDaftar(); };
+}
+
+function tutupModalDaftar() {
+    ['modal1','modal2','modalSirnas'].forEach(id => {
+        const mo = document.getElementById(id);
+        if (mo && mo.style.display !== 'none') {
+            const card = mo.querySelector('.mo-card');
+            mo.classList.add('anim-out');
+            animCard(card, 'out');
+            setTimeout(() => {
+                mo.style.display = 'none';
+                mo.classList.remove('anim-out');
+            }, 220);
+        }
+    });
+    document.body.style.overflow = '';
+}
+
+function bukaModal2() {
+    const m1 = document.getElementById('modal1');
+    const m1c = document.getElementById('modal1Card');
+    m1.classList.add('anim-out');
+    animCard(m1c, 'out');
+    setTimeout(() => { m1.style.display = 'none'; m1.classList.remove('anim-out'); showModal2(); }, 200);
+}
+
+function tutupModal2() {
+    const m2 = document.getElementById('modal2');
+    const m2c = document.getElementById('modal2Card');
+    m2.classList.add('anim-out');
+    animCard(m2c, 'out');
+    setTimeout(() => { m2.style.display = 'none'; m2.classList.remove('anim-out'); showModal1(); }, 200);
+}
+
+function bukaModalSirnas() {
+    const m1 = document.getElementById('modal1');
+    const m1c = document.getElementById('modal1Card');
+    m1.classList.add('anim-out');
+    animCard(m1c, 'out');
+    setTimeout(() => { m1.style.display = 'none'; m1.classList.remove('anim-out'); showModalSirnas(); }, 200);
+}
+
+function tutupModalSirnas() {
+    const ms = document.getElementById('modalSirnas');
+    const msc = document.getElementById('modalSirnasCard');
+    ms.classList.add('anim-out');
+    animCard(msc, 'out');
+    setTimeout(() => { ms.style.display = 'none'; ms.classList.remove('anim-out'); showModal1(); }, 200);
+}
+
+function pilihKategori(k) {
+    const m2 = document.getElementById('modal2');
+    const m2c = document.getElementById('modal2Card');
+    m2.classList.add('anim-out');
+    animCard(m2c, 'out');
+    setTimeout(() => { window.location.href = kategoriRoutes[k]; }, 220);
+}
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') tutupModalDaftar();
+});
+
+// ── GSAP + Marquee ──────────────────────────────────────────
+var t1 = document.getElementById('track1');
+var t2 = document.getElementById('track2');
+if (t1) t1.classList.add('is-marquee-left');
+if (t2) t2.classList.add('is-marquee-right');
+
+/* CSS fallback marquee (before GSAP loads) */
+var styleEl = document.createElement('style');
+styleEl.textContent = `
+    @keyframes marquee-left  { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+    @keyframes marquee-right { from{transform:translateX(-50%)} to{transform:translateX(0)} }
+    .is-marquee-left  { animation: marquee-left  38s linear infinite; }
+    .is-marquee-right { animation: marquee-right 46s linear infinite; }
+    .gallery-track:hover { animation-play-state: paused; }
+`;
+document.head.appendChild(styleEl);
+
+function initGSAP() {
+    if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
+        setTimeout(initGSAP, 100); return;
     }
-    tick(); setInterval(tick, 1000);
-})();
+    gsap.registerPlugin(ScrollTrigger);
 
-/* ── LOADER & PAGE ── */
-(function() {
-    var loader  = document.getElementById('loader');
-    var lWrap   = document.getElementById('loaderLogoWrap');
-    var lRing   = document.getElementById('loaderRing');
-    var progW   = document.getElementById('loaderProgressWrap');
-    var bar     = document.getElementById('loaderBar');
-    var counter = document.getElementById('loaderCounter');
-    var label   = document.getElementById('loaderLabel');
-    var page    = document.getElementById('cs-page');
-    var bgVideo = document.getElementById('cs-bg-video');
+    // Scroll reveal
+    document.querySelectorAll('.reveal').forEach(el => {
+        var rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight) return;
+        gsap.set(el, { opacity: 0, y: 28 });
+        ScrollTrigger.create({
+            trigger: el, start: 'top 88%', once: true,
+            onEnter: () => gsap.to(el, { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' })
+        });
+    });
 
-    var colors = ['#ea6c0a','#f5a623','#c2500a','rgba(234,108,10,0.35)'];
-    for (var i = 0; i < 20; i++) {
-        var p = document.createElement('div');
-        p.className = 'loader-particle';
-        var sz = (Math.random()*3+2)+'px';
-        p.style.cssText = 'left:'+Math.random()*100+'vw;top:'+Math.random()*100+'vh;width:'+sz+';height:'+sz+';background:'+colors[Math.floor(Math.random()*colors.length)];
-        loader.appendChild(p);
-        gsap.to(p,{opacity:Math.random()*0.4+0.05,y:(Math.random()-0.5)*80,x:(Math.random()-0.5)*60,duration:Math.random()*3.5+2.5,repeat:-1,yoyo:true,ease:'sine.inOut',delay:Math.random()*2});
-    }
+    // GSAP marquee (override CSS)
+    if (t1 && t2) {
+        t1.classList.remove('is-marquee-left');
+        t2.classList.remove('is-marquee-right');
+        t1.style.transform = ''; t2.style.transform = '';
 
-    gsap.timeline()
-        .to(lWrap,  {opacity:1,y:0,duration:0.7,ease:'power3.out'})
-        .to(progW,  {opacity:1,duration:0.4},'-=0.3')
-        .to(counter,{opacity:1,duration:0.4},'-=0.25')
-        .to(label,  {opacity:1,duration:0.5},'-=0.2');
+        var tw1 = gsap.fromTo(t1, { x: 0 }, { x: -t1.scrollWidth/2, duration: 38, ease: 'none', repeat: -1 });
+        var tw2 = gsap.fromTo(t2, { x: -t2.scrollWidth/2 }, { x: 0, duration: 46, ease: 'none', repeat: -1 });
 
-    gsap.to(lRing,{rotation:360,duration:1.5,repeat:-1,ease:'none',transformOrigin:'center center'});
-    gsap.to('.loader-logo',{filter:'drop-shadow(0 6px 26px rgba(234,108,10,0.5))',duration:1.2,repeat:-1,yoyo:true,ease:'sine.inOut',delay:0.4});
-
-    var prog={val:0};
-    gsap.to(prog,{val:100,duration:1.0,ease:'power1.inOut',delay:0.5,
-        onUpdate:function(){var v=Math.round(prog.val);bar.style.width=v+'%';counter.textContent=v+'%';},
-        onComplete:exitLoader});
-
-    function exitLoader(){
-        gsap.timeline({onComplete:revealPage})
-            .to(bar,{boxShadow:'0 0 20px rgba(234,108,10,0.85)',duration:0.15,yoyo:true,repeat:1})
-            .to('.loader-logo',{scale:1.08,duration:0.18,ease:'power2.out'})
-            .to(loader,{opacity:0,duration:0.45,ease:'power2.inOut'},'+=0.06');
-    }
-
-    function revealPage(){
-        loader.style.display='none';
-        page.style.visibility='visible';
-
-        /* Mulai load video setelah loader selesai */
-        bgVideo.src = bgVideo.querySelector('source').src;
-        bgVideo.load();
-        bgVideo.play().catch(function(){});
-        bgVideo.addEventListener('canplay', function(){
-            bgVideo.classList.add('loaded');
-        }, {once: true});
-
-        gsap.timeline()
-            .to('#cs-top-bar',    {opacity:1,scaleX:1,duration:1.0,ease:'power3.out'},0.05)
-            .to(['#cs-corner-logo','#cs-edition-tag'],{opacity:1,stagger:0.1,duration:0.55,ease:'power2.out'},0.3)
-            .to('#cs-eyebrow',    {opacity:1,y:0,duration:0.65,ease:'power3.out'},0.4)
-            .to('#cs-logo',       {opacity:1,scale:1,y:0,duration:0.85,ease:'back.out(1.4)'},0.55)
-            .to('#cs-headline',   {opacity:1,y:0,duration:0.8,ease:'power3.out'},0.7)
-            .to('#cs-tagline',    {opacity:1,y:0,duration:0.65,ease:'power2.out'},0.88)
-            .to('#cs-fire-line',  {width:'160px',duration:0.9,ease:'power2.out'},0.96)
-            .to('#cs-countdown',  {opacity:1,y:0,duration:0.65,ease:'power2.out'},1.06)
-            .to('#cs-notify',     {opacity:1,y:0,duration:0.6,ease:'power2.out'},1.2)
-            .to('#cs-copyright',  {opacity:1,y:0,duration:0.5,ease:'power2.out'},1.32)
-            .to('#cs-stats',      {opacity:1,y:0,duration:0.55,ease:'power2.out'},1.38)
-            .to('#cs-socials',    {opacity:1,duration:0.5,ease:'power2.out'},1.44)
-            .to('#cs-marquee-bar',{opacity:1,duration:0.7,ease:'power2.out'},1.5)
-            .to('.cs-count-num',  {scale:1.12,color:'#ea6c0a',stagger:0.06,duration:0.25,yoyo:true,repeat:1,ease:'power2.inOut'},1.1);
-
-        setTimeout(spawnParticles,1700);
-        setTimeout(startMarquee,1900);
-
-        document.addEventListener('mousemove',function(e){
-            var mx=e.clientX/window.innerWidth-0.5,my=e.clientY/window.innerHeight-0.5;
-            gsap.to('.bg-blob-1',{x:mx*28,y:my*22,duration:2.5,ease:'power2.out'});
-            gsap.to('.bg-blob-2',{x:mx*-22,y:my*-18,duration:3.0,ease:'power2.out'});
-            gsap.to('.bg-blob-3',{x:mx*36,y:my*28,duration:2.0,ease:'power2.out'});
+        var paused = false;
+        [t1, t2].forEach(track => {
+            track.addEventListener('mouseenter', () => { if (!paused) { tw1.pause(); tw2.pause(); paused = true; } });
+            track.addEventListener('mouseleave', () => { if (paused)  { tw1.resume(); tw2.resume(); paused = false; } });
         });
     }
 
-    function spawnParticles(){
-        var emojis=['🏸','✦','·','◦','∘'];
-        for(var i=0;i<8;i++){
-            var el=document.createElement('div');
-            el.className='shuttle-particle';
-            el.textContent=emojis[i%emojis.length];
-            el.style.left=(8+Math.random()*84)+'%';
-            el.style.top=(8+Math.random()*84)+'%';
-            el.style.fontSize=(Math.random()*10+8)+'px';
-            el.style.color=Math.random()>0.5?'rgba(234,108,10,0.12)':'rgba(255,255,255,0.06)';
-            page.appendChild(el);
-            gsap.to(el,{opacity:Math.random()*0.28+0.04,y:(Math.random()-0.5)*110,x:(Math.random()-0.5)*70,rotation:(Math.random()-0.5)*40,duration:Math.random()*5+4,repeat:-1,yoyo:true,ease:'sine.inOut',delay:Math.random()*2});
-        }
-    }
+    // Parallax mouse on hero orbs
+    var orbs = document.querySelectorAll('.hero-orb');
+    // Parallax dengan RAF throttle + reduced motion check
+    var rafId = null;
+    var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    function startMarquee(){
-        var track=document.getElementById('cs-marquee-track');
-        if(!track)return;
-        gsap.fromTo(track,{x:0},{x:-(track.scrollWidth/2),duration:42,ease:'none',repeat:-1});
+    if (!prefersReduced) {
+        var orbs = document.querySelectorAll('.hero-orb');
+        var mx = 0, my = 0;
+
+        document.addEventListener('mousemove', function(e) {
+            mx = (e.clientX / window.innerWidth  - 0.5);
+            my = (e.clientY / window.innerHeight - 0.5);
+
+            if (rafId) return; // throttle: skip jika frame belum selesai
+            rafId = requestAnimationFrame(function() {
+                orbs.forEach(function(orb, i) {
+                    var f = (i + 1) * 12; // turunkan dari 18 → 12
+                    orb.style.transform = 'translate(' + (mx*f) + 'px,' + (my*f) + 'px)';
+                });
+                rafId = null;
+            });
+        });
     }
-})();
+}
+
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initGSAP);
+// Pause orb animations ketika hero keluar viewport
+if ('IntersectionObserver' in window) {
+    var heroEl = document.querySelector('.hero');
+    var heroOrbs = document.querySelectorAll('.hero-orb');
+    var orbObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            heroOrbs.forEach(function(orb) {
+                orb.style.animationPlayState = entry.isIntersecting ? 'running' : 'paused';
+            });
+        });
+    }, { threshold: 0 });
+    if (heroEl) orbObserver.observe(heroEl);
+}
+else initGSAP();
+// ── Disclaimer Modal ────────────────────────────────────────
+var disclaimerScrollDone  = false;
+var disclaimerChecked     = false;
+var pendingKategoriRoute  = null;
+
+function pilihKategori(k) {
+    pendingKategoriRoute = kategoriRoutes[k];
+    var m2 = document.getElementById('modal2');
+    var m2c = document.getElementById('modal2Card');
+    m2.classList.add('anim-out');
+    animCard(m2c, 'out');
+    setTimeout(function() {
+        m2.style.display = 'none';
+        m2.classList.remove('anim-out');
+        bukaDisclaimerModal();
+    }, 200);
+}
+
+function bukaDisclaimerModal() {
+    disclaimerScrollDone = false;
+    disclaimerChecked    = false;
+    resetDisclaimer();
+
+    var md  = document.getElementById('modalDisclaimer');
+    var mdc = document.getElementById('modalDisclaimerCard');
+    md.style.display = 'flex';
+    md.classList.add('anim-in');
+    animCard(mdc, 'in');
+    setTimeout(function() { md.classList.remove('anim-in'); }, 400);
+    md.onclick = function(e) { if (e.target === md) tutupDisclaimerModal(); };
+
+    document.getElementById('disclaimerScroll').scrollTop = 0;
+    document.getElementById('disclaimerScroll').addEventListener('scroll', onDisclaimerScroll);
+}
+
+function resetDisclaimer() {
+    document.getElementById('disclaimerProgress').style.width     = '0%';
+    document.getElementById('disclaimerProgressLabel').textContent = '0% dibaca';
+    document.getElementById('disclaimerProgressLabel').style.color = 'var(--m-ink-35)';
+    document.getElementById('disclaimerScrollHint').style.opacity  = '1';
+
+    var checkRow = document.getElementById('disclaimerCheckRow');
+    checkRow.style.opacity       = '0.4';
+    checkRow.style.pointerEvents = 'none';
+    checkRow.style.cursor        = 'default';
+    checkRow.style.borderColor   = 'rgba(249,115,22,0.18)';
+    checkRow.style.background    = 'rgba(249,115,22,0.06)';
+
+    document.getElementById('disclaimerCheckBox').style.background   = '#fff';
+    document.getElementById('disclaimerCheckBox').style.borderColor  = 'rgba(249,115,22,0.4)';
+    document.getElementById('disclaimerTick').style.display          = 'none';
+
+    var btn  = document.getElementById('disclaimerConfirmBtn');
+    btn.disabled = true;
+    btn.style.background  = 'rgba(26,16,7,0.12)';
+    btn.style.color       = 'rgba(255,255,255,0.4)';
+    btn.style.cursor      = 'not-allowed';
+    btn.style.boxShadow   = 'none';
+    btn.style.transform   = '';
+}
+
+function onDisclaimerScroll() {
+    var box   = document.getElementById('disclaimerScroll');
+    var total = box.scrollHeight - box.clientHeight;
+    var pct   = total > 0 ? Math.min(100, Math.round((box.scrollTop / total) * 100)) : 100;
+
+    document.getElementById('disclaimerProgress').style.width = pct + '%';
+
+    var label = document.getElementById('disclaimerProgressLabel');
+    if (pct >= 98) {
+        disclaimerScrollDone = true;
+        label.textContent   = '✓ Selesai dibaca';
+        label.style.color   = '#f97316';
+        document.getElementById('disclaimerScrollHint').style.opacity = '0';
+
+        var checkRow = document.getElementById('disclaimerCheckRow');
+        checkRow.style.opacity       = '1';
+        checkRow.style.pointerEvents = 'auto';
+        checkRow.style.cursor        = 'pointer';
+    } else {
+        label.textContent = pct + '% dibaca';
+        if (pct < 30) document.getElementById('disclaimerScrollHint').style.opacity = '1';
+        else          document.getElementById('disclaimerScrollHint').style.opacity = '0';
+    }
+    updateDisclaimerBtn();
+}
+
+function toggleDisclaimerCheck() {
+    if (!disclaimerScrollDone) return;
+    disclaimerChecked = !disclaimerChecked;
+
+    var checkBox = document.getElementById('disclaimerCheckBox');
+    var tick     = document.getElementById('disclaimerTick');
+    var checkRow = document.getElementById('disclaimerCheckRow');
+
+    if (disclaimerChecked) {
+        checkBox.style.background  = '#f97316';
+        checkBox.style.borderColor = '#f97316';
+        tick.style.display         = 'block';
+        checkRow.style.borderColor = 'rgba(249,115,22,0.45)';
+        checkRow.style.background  = 'rgba(249,115,22,0.09)';
+    } else {
+        checkBox.style.background  = '#fff';
+        checkBox.style.borderColor = 'rgba(249,115,22,0.4)';
+        tick.style.display         = 'none';
+        checkRow.style.borderColor = 'rgba(249,115,22,0.18)';
+        checkRow.style.background  = 'rgba(249,115,22,0.06)';
+    }
+    updateDisclaimerBtn();
+}
+
+function updateDisclaimerBtn() {
+    var btn = document.getElementById('disclaimerConfirmBtn');
+    if (disclaimerScrollDone && disclaimerChecked) {
+        btn.disabled          = false;
+        btn.style.background  = 'linear-gradient(135deg, #f97316, #c2410c)';
+        btn.style.color       = '#fff';
+        btn.style.cursor      = 'pointer';
+        btn.style.boxShadow   = '0 8px 24px rgba(249,115,22,0.38)';
+    } else {
+        btn.disabled          = true;
+        btn.style.background  = 'rgba(26,16,7,0.12)';
+        btn.style.color       = 'rgba(255,255,255,0.4)';
+        btn.style.cursor      = 'not-allowed';
+        btn.style.boxShadow   = 'none';
+    }
+}
+
+function disclaimerConfirm() {
+    if (!disclaimerScrollDone || !disclaimerChecked) return;
+    if (!pendingKategoriRoute) return;
+    var md  = document.getElementById('modalDisclaimer');
+    var mdc = document.getElementById('modalDisclaimerCard');
+    md.classList.add('anim-out');
+    animCard(mdc, 'out');
+    document.body.style.overflow = '';
+    setTimeout(function() { window.location.href = pendingKategoriRoute; }, 220);
+}
+
+function tutupDisclaimerModal() {
+    var md  = document.getElementById('modalDisclaimer');
+    var mdc = document.getElementById('modalDisclaimerCard');
+    md.classList.add('anim-out');
+    animCard(mdc, 'out');
+    setTimeout(function() {
+        md.style.display = 'none';
+        md.classList.remove('anim-out');
+        document.body.style.overflow = '';
+        document.getElementById('disclaimerScroll').removeEventListener('scroll', onDisclaimerScroll);
+    }, 220);
+}
 </script>
-</body>
-</html>
+@endpush
