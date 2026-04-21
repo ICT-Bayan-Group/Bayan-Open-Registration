@@ -696,7 +696,7 @@ class RegistrationResource extends Resource
     {
         return [
             'index'  => Pages\ListRegistrations::route('/'),
-           // 'create' => Pages\CreateRegistration::route('/create'),
+         'create' => Pages\CreateRegistration::route('/create'),
             'view'   => Pages\ViewRegistration::route('/{record}'),
             'edit'   => Pages\EditRegistration::route('/{record}/edit'),
         ];
