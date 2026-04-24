@@ -98,7 +98,7 @@ class RegistrationController extends Controller
             'nama'          => 'required|string|max:100',
             'tim_pb'        => 'required|string|max:100',
             'email'         => 'required|email|max:150',
-            'no_hp'         => 'required|string|max:20',
+            'no_hp'         => ['required','string','max:20','regex:/^(\+62|62|0)8[1-9][0-9]{6,}$/'],
             'provinsi'      => 'required|string|max:100',
             'kota'          => 'required|string|max:100',
             'nama_pelatih'  => 'nullable|string|max:100',
@@ -112,6 +112,7 @@ class RegistrationController extends Controller
             'email.required'    => 'Email wajib diisi.',
             'email.email'       => 'Format email tidak valid.',
             'no_hp.required'    => 'Nomor HP wajib diisi.',
+            'no_hp.regex'       => 'Nomor HP harus dalam format Indonesia, misal 081234567890 atau +6281234567890.',
             'provinsi.required' => 'Provinsi wajib dipilih.',
             'kota.required'     => 'Kota wajib dipilih.',
             'pemain.required'   => 'Data pemain wajib diisi.',
@@ -409,16 +410,25 @@ class RegistrationController extends Controller
             ]);
         }
 
+        $whatsappService = app(\App\Services\WhatsAppService::class);
+        try {
+            $whatsappService->sendPaymentLink($registration);
+        } catch (\Throwable $e) {
+            logger()->error('[Registration] Gagal kirim WhatsApp payment link: ' . $e->getMessage(), [
+                'registration_id' => $registration->id,
+            ]);
+        }
+
         // SESUDAH — selalu ke pending-payment dulu (halaman "cek email"):
         $pendingPaymentUrl = route('registration.pending-payment', $registration->uuid);
 
         if ($isAjax) {
             return response()->json([
                 'success'       => true,
-                'redirect'      => $pendingPaymentUrl,   // ← ubah ini
+                'redirect'      => $pendingPaymentUrl,
                 'uuid'          => $registration->uuid,
                 'payment_token' => $paymentToken,
-                'message'       => 'Pendaftaran berhasil. Silakan cek email untuk link pembayaran.',
+                'message'       => 'Pendaftaran berhasil. Silakan cek email dan WhatsApp untuk link pembayaran.',
             ]);
         }
 

@@ -12,6 +12,7 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use App\Services\WhatsAppService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\HtmlString;
 
@@ -643,6 +644,7 @@ class RegistrationResource extends Resource
                     ->action(function (Registration $r) {
                         $r->approvePayment(auth()->id());
                         \Illuminate\Support\Facades\Mail::to($r->email)->send(new \App\Mail\RegistrationPaid($r));
+                        app(WhatsAppService::class)->sendPaymentSuccess($r);
                         Notification::make()->title('Pembayaran berhasil di-approve')->success()->send();
                     }),
 
@@ -664,6 +666,7 @@ class RegistrationResource extends Resource
                     ->action(function (Registration $r, array $data) {
                         $r->rejectPayment(auth()->id(), $data['note']);
                         \Illuminate\Support\Facades\Mail::to($r->email)->send(new \App\Mail\RegistrationRejected($r));
+                        app(WhatsAppService::class)->sendPaymentRejected($r);
                         Notification::make()->title('Pembayaran berhasil di-reject')->success()->send();
                     }),
 
@@ -700,6 +703,8 @@ class RegistrationResource extends Resource
 
                     \Illuminate\Support\Facades\Mail::to($r->email)
                         ->send(new \App\Mail\RegistrationPending($r->fresh()));
+
+                    app(WhatsAppService::class)->sendPaymentLink($r->fresh());
 
                     Notification::make()
                         ->title('Link pembayaran baru dikirim ke ' . $r->email)

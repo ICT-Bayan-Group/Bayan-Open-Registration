@@ -49,6 +49,8 @@ class Registration extends Model
         'rejected_by',
         'payment_token',
         'payment_token_expires_at',
+        'whatsapp_sent_at',
+        'whatsapp_reminder_sent',
 
         // ── Manual Payment Verification ──
         'payment_proof',
@@ -92,6 +94,8 @@ class Registration extends Model
         'revision_submitted_at'     => 'datetime',
         'revision_count'            => 'integer',
         'payment_verified_at'       => 'datetime',
+        'whatsapp_sent_at'          => 'datetime',
+        'whatsapp_reminder_sent'    => 'boolean',
     ];
 
     // ── Auto-generate UUID & Order ID ──────────────────────────────
@@ -205,6 +209,16 @@ class Registration extends Model
             && $this->payment_token_expires_at
             && $this->payment_token_expires_at->isFuture();
     }
+
+    public function paymentLink(): ?string
+    {
+        if (! $this->payment_token) {
+            return null;
+        }
+
+        return route('registration.payment.token', $this->payment_token);
+    }
+
     /**
      * Generate ulang payment token baru (link lama otomatis mati).
      * Dipakai saat admin resend link pembayaran ke peserta pending/expired.
