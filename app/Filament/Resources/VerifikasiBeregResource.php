@@ -76,8 +76,8 @@ class VerifikasiBeregResource extends Resource
         return $infolist->schema([
 
             Infolists\Components\Section::make('Status Pendaftaran')->schema([
-                Infolists\Components\TextEntry::make('midtrans_order_id')
-                    ->label('Order ID')->copyable()->fontFamily('mono')->weight('bold'),
+Infolists\Components\TextEntry::make('uuid')
+                        ->label('ID Pendaftaran')->copyable()->fontFamily('mono')->weight('bold'),
 
                 Infolists\Components\TextEntry::make('approval_status')
                     ->label('Status Approval')
@@ -186,8 +186,8 @@ class VerifikasiBeregResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('midtrans_order_id')
-                    ->label('Order ID')->searchable()->copyable()->fontFamily('mono')->size('sm'),
+                Tables\Columns\TextColumn::make('uuid')
+                    ->label('ID')->searchable()->copyable()->fontFamily('mono')->size('sm'),
 
                 Tables\Columns\TextColumn::make('tim_pb')
                     ->label('Nama Tim')->searchable()->weight('bold'),

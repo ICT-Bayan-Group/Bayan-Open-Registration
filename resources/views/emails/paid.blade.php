@@ -238,10 +238,6 @@
         <td>{{ $registration->nama }}</td>
       </tr>
       <tr>
-        <td>Tim / PB</td>
-        <td>{{ $registration->tim_pb }}</td>
-      </tr>
-      <tr>
         <td>Kategori</td>
         <td>{{ $registration->kategori_label }}</td>
       </tr>
@@ -268,18 +264,12 @@
     <table class="data-table">
       <tr>
         <td>Order ID</td>
-        <td><span class="mono">{{ $registration->midtrans_order_id }}</span></td>
+        <td><span class="mono">{{ $registration->uuid }}</span></td>
       </tr>
-      @if($registration->midtrans_transaction_id)
+      @if($registration->payment_verified_at)
       <tr>
-        <td>Transaction ID</td>
-        <td><span class="mono">{{ $registration->midtrans_transaction_id }}</span></td>
-      </tr>
-      @endif
-      @if($registration->payment_type)
-      <tr>
-        <td>Metode Pembayaran</td>
-        <td>{{ strtoupper(str_replace('_', ' ', $registration->payment_type)) }}</td>
+        <td>Diverifikasi Pada</td>
+        <td>{{ $registration->payment_verified_at->format('d M Y, H:i') }}</td>
       </tr>
       @endif
       <tr>
@@ -287,8 +277,8 @@
         <td>PAID / LUNAS</td>
       </tr>
       <tr>
-        <td>Waktu Pembayaran</td>
-        <td>{{ ($registration->payment_time ?? $registration->updated_at)->format('d M Y, H:i') }} WIB</td>
+        <td>Waktu Verifikasi</td>
+        <td>{{ ($registration->payment_verified_at ?? $registration->updated_at)->format('d M Y, H:i') }} WIB</td>
       </tr>
     </table>
 

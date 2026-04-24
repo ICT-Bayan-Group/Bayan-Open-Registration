@@ -51,10 +51,10 @@ class RevenueReport extends Page implements HasTable
                                     : 0,
 
             // ── Time-based ────────────────────────────────────────
-            'todayRevenue'      => $paid()->whereDate('payment_time', today())->sum('harga'),
+            'todayRevenue'      => $paid()->whereDate('payment_verified_at', today())->sum('harga'),
             'thisMonthRevenue'  => $paid()
-                                    ->whereYear('payment_time', now()->year)   // ← tambah year agar tidak salah bulan tahun lalu
-                                    ->whereMonth('payment_time', now()->month)
+                                    ->whereYear('payment_verified_at', now()->year)
+                                    ->whereMonth('payment_verified_at', now()->month)
                                     ->sum('harga'),
 
             // ── Pending (potensi revenue belum masuk) ────────────
@@ -69,11 +69,11 @@ class RevenueReport extends Page implements HasTable
         ->query(
             \App\Models\Registration::query()
                 ->where('status', 'paid')
-                ->orderBy('payment_time', 'desc')
+                ->orderBy('payment_verified_at', 'desc')
         )
         ->columns([
-            Tables\Columns\TextColumn::make('midtrans_order_id')
-                ->label('Order ID')->fontFamily('mono')->copyable(),
+            Tables\Columns\TextColumn::make('uuid')
+                ->label('ID Pendaftaran')->fontFamily('mono')->copyable()->size('sm'),
             Tables\Columns\TextColumn::make('nama')->label('Nama'),
             Tables\Columns\TextColumn::make('tim_pb')->label('Tim'),
             Tables\Columns\BadgeColumn::make('kategori')
@@ -94,12 +94,9 @@ class RevenueReport extends Page implements HasTable
                 ->label('Nominal')
                 ->formatStateUsing(fn ($state) => 'Rp ' . number_format($state, 0, ',', '.'))
                 ->sortable(),
-            Tables\Columns\TextColumn::make('payment_type')
-                ->label('Metode')
-                ->formatStateUsing(fn ($state) => $state ?? '-'),
-            Tables\Columns\TextColumn::make('payment_time')
+            Tables\Columns\TextColumn::make('payment_verified_at')
                 ->label('Waktu Bayar')->dateTime('d M Y, H:i')->sortable(),
         ])
-        ->defaultSort('payment_time', 'desc');
+        ->defaultSort('payment_verified_at', 'desc');
 }
 }

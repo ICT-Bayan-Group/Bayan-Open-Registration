@@ -20,11 +20,10 @@ class RegistrationFactory extends Factory
             'tim_pb'        => 'PB ' . $this->faker->city(),
             'kategori'      => $kategori,
             'harga'         => $kategori === 'regu' ? 1000000 : 400000,
-            'status'        => $this->faker->randomElement(['pending', 'paid', 'paid', 'paid', 'failed', 'expired']),
-            'midtrans_order_id' => 'BO2026-' . strtoupper(Str::random(8)),
-            'midtrans_transaction_id' => $this->faker->optional()->uuid(),
-            'payment_type'  => $this->faker->optional()->randomElement(['bank_transfer', 'gopay', 'qris', 'credit_card']),
-            'payment_time'  => $this->faker->optional()->dateTimeBetween('-30 days', 'now'),
+            'status'        => $this->faker->randomElement(['pending', 'pending_verification', 'paid', 'paid', 'paid', 'failed', 'expired']),
+            'payment_verified_at' => $this->faker->optional()->dateTimeBetween('-30 days', 'now'),
+            'payment_verified_by' => $this->faker->optional()->numberBetween(1, 10),
+            'payment_note' => $this->faker->optional()->sentence(),
         ];
     }
 

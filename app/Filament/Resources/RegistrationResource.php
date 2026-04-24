@@ -90,19 +90,32 @@ class RegistrationResource extends Resource
                         ->label('Status Pembayaran')
                         ->options([
                             'pending' => 'Pending',
-                            'paid'    => 'Paid',
-                            'failed'  => 'Failed',
+                            'pending_verification' => 'Menunggu Verifikasi',
+                            'paid' => 'Paid',
+                            'failed' => 'Failed',
                             'expired' => 'Expired',
                         ])->required(),
 
-                    Forms\Components\TextInput::make('midtrans_order_id')
-                        ->label('Order ID')->readOnly(),
+                    Forms\Components\FileUpload::make('payment_proof')
+                        ->label('Bukti Pembayaran')
+                        ->directory('payment_proofs')
+                        ->visibility('public')
+                        ->image()
+                        ->maxSize(5120)
+                        ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+                        ->disabled(),
 
-                    Forms\Components\TextInput::make('payment_type')
-                        ->label('Metode Bayar')->readOnly(),
+                    Forms\Components\DateTimePicker::make('payment_verified_at')
+                        ->label('Waktu Verifikasi')->readOnly(),
 
-                    Forms\Components\DateTimePicker::make('payment_time')
-                        ->label('Waktu Bayar')->readOnly(),
+                    Forms\Components\Select::make('payment_verified_by')
+                        ->label('Diverifikasi Oleh')
+                        ->relationship('paymentVerifiedBy', 'name')
+                        ->disabled(),
+
+                    Forms\Components\Textarea::make('payment_note')
+                        ->label('Catatan Verifikasi')
+                        ->readOnly(),
                 ])->columns(2),
         ]);
     }
@@ -118,8 +131,8 @@ class RegistrationResource extends Resource
             // ── Ringkasan ────────────────────────────────────────
             Infolists\Components\Section::make('Ringkasan Pendaftaran')
                 ->schema([
-                    Infolists\Components\TextEntry::make('midtrans_order_id')
-                        ->label('Order ID')->copyable()->fontFamily('mono')->weight('bold'),
+                    Infolists\Components\TextEntry::make('uuid')
+                        ->label('ID Pendaftaran')->copyable()->fontFamily('mono')->weight('bold'),
 
                     Infolists\Components\TextEntry::make('kategori')
                         ->label('Kategori')
@@ -141,24 +154,35 @@ class RegistrationResource extends Resource
                         ->label('Status')
                         ->badge()
                         ->color(fn ($state) => match ($state) {
-                            'paid'    => 'success',
+                            'paid' => 'success',
+                            'pending_verification' => 'warning',
                             'pending' => 'warning',
-                            'failed'  => 'danger',
+                            'failed' => 'danger',
                             'expired' => 'gray',
-                            default   => 'gray',
+                            default => 'gray',
                         })
-                        ->formatStateUsing(fn ($state) => strtoupper($state)),
+                        ->formatStateUsing(fn ($state) => match ($state) {
+                            'pending_verification' => 'Menunggu Verifikasi',
+                            'pending' => 'Belum Bayar',
+                            'paid' => 'Sudah Bayar',
+                            'failed' => 'Pembayaran Ditolak',
+                            'expired' => 'Kadaluarsa',
+                            default => strtoupper($state),
+                        }),
 
                     Infolists\Components\TextEntry::make('harga')
                         ->label('Total Pembayaran')
                         ->formatStateUsing(fn ($state) => 'Rp ' . number_format($state, 0, ',', '.'))
                         ->weight('bold')->color('primary'),
 
-                    Infolists\Components\TextEntry::make('payment_type')
-                        ->label('Metode Bayar')->placeholder('-'),
+                    Infolists\Components\TextEntry::make('payment_verified_at')
+                        ->label('Waktu Verifikasi')
+                        ->dateTime('d M Y, H:i')
+                        ->placeholder('-'),
 
-                    Infolists\Components\TextEntry::make('payment_time')
-                        ->label('Waktu Bayar')->dateTime('d M Y, H:i')->placeholder('-'),
+                    Infolists\Components\TextEntry::make('paymentVerifiedBy.name')
+                        ->label('Diverifikasi Oleh')
+                        ->placeholder('-'),
                 ])->columns(3),
 
             // ── Data Tim ─────────────────────────────────────────
@@ -455,8 +479,8 @@ class RegistrationResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('midtrans_order_id')
-                    ->label('Order ID')->searchable()->copyable()
+                Tables\Columns\TextColumn::make('uuid')
+                    ->label('ID Pendaftaran')->searchable()->copyable()
                     ->fontFamily('mono')->size('sm'),
 
                 Tables\Columns\TextColumn::make('nama')
@@ -497,11 +521,19 @@ class RegistrationResource extends Resource
                     ->label('Status')
                     ->colors([
                         'warning' => 'pending',
+                        'info'    => 'pending_verification',
                         'success' => 'paid',
                         'danger'  => 'failed',
                         'gray'    => 'expired',
                     ])
-                    ->formatStateUsing(fn ($state) => strtoupper($state)),
+                    ->formatStateUsing(fn ($state) => match ($state) {
+                        'pending_verification' => 'Verifikasi',
+                        'pending' => 'Pending',
+                        'paid' => 'Paid',
+                        'failed' => 'Failed',
+                        'expired' => 'Expired',
+                        default => strtoupper($state),
+                    }),
 
                 Tables\Columns\IconColumn::make('ktp_scanned')
                     ->label('KTP Scan')->boolean()
@@ -547,8 +579,7 @@ class RegistrationResource extends Resource
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
                     ->options([
-                        'pending' => 'Pending',
-                        'paid'    => 'Paid',
+                        'pending' => 'Pending',                        'pending_verification' => 'Menunggu Verifikasi',                        'paid'    => 'Paid',
                         'failed'  => 'Failed',
                         'expired' => 'Expired',
                     ]),
@@ -589,6 +620,52 @@ class RegistrationResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+
+                Tables\Actions\Action::make('view_payment_proof')
+                    ->label('Lihat Bukti')
+                    ->icon('heroicon-o-photo')
+                    ->color('info')
+                    ->visible(fn (Registration $r) => $r->hasPaymentProof())
+                    ->modalHeading(fn (Registration $r) => 'Bukti Pembayaran — ' . $r->nama)
+                    ->modalContent(fn (Registration $r) => view('filament.modals.payment-proof', compact('r')))
+                    ->modalSubmitAction(false)
+                    ->modalCancelActionLabel('Tutup'),
+
+                Tables\Actions\Action::make('approve_payment')
+                    ->label('Approve')
+                    ->icon('heroicon-o-check-circle')
+                    ->color('success')
+                    ->visible(fn (Registration $r) => $r->status === 'pending_verification')
+                    ->requiresConfirmation()
+                    ->modalHeading('Approve Pembayaran?')
+                    ->modalDescription('Pembayaran akan disetujui dan email konfirmasi akan dikirim ke peserta.')
+                    ->modalSubmitActionLabel('Approve')
+                    ->action(function (Registration $r) {
+                        $r->approvePayment(auth()->id());
+                        \Illuminate\Support\Facades\Mail::to($r->email)->send(new \App\Mail\RegistrationPaid($r));
+                        Notification::make()->title('Pembayaran berhasil di-approve')->success()->send();
+                    }),
+
+                Tables\Actions\Action::make('reject_payment')
+                    ->label('Reject')
+                    ->icon('heroicon-o-x-circle')
+                    ->color('danger')
+                    ->visible(fn (Registration $r) => $r->status === 'pending_verification')
+                    ->requiresConfirmation()
+                    ->modalHeading('Tolak Pembayaran?')
+                    ->modalDescription('Pembayaran akan ditolak. Peserta dapat upload ulang bukti pembayaran.')
+                    ->modalSubmitActionLabel('Tolak')
+                    ->form([
+                        Forms\Components\Textarea::make('note')
+                            ->label('Alasan Penolakan')
+                            ->required()
+                            ->maxLength(500),
+                    ])
+                    ->action(function (Registration $r, array $data) {
+                        $r->rejectPayment(auth()->id(), $data['note']);
+                        \Illuminate\Support\Facades\Mail::to($r->email)->send(new \App\Mail\RegistrationRejected($r));
+                        Notification::make()->title('Pembayaran berhasil di-reject')->success()->send();
+                    }),
 
                 Tables\Actions\Action::make('lihat_ktp')
                     ->label('Lihat KTP')

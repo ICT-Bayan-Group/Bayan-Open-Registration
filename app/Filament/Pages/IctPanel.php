@@ -36,8 +36,8 @@ class IctPanel extends Page implements HasTable
         return $table
             ->query(Registration::query())
             ->columns([
-                Tables\Columns\TextColumn::make('midtrans_order_id')
-                    ->label('Order ID')->searchable()->copyable()
+                Tables\Columns\TextColumn::make('uuid')
+                    ->label('ID')->searchable()->copyable()
                     ->fontFamily('mono')->size('sm'),
 
                 Tables\Columns\TextColumn::make('nama')

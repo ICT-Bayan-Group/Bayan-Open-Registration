@@ -322,23 +322,12 @@
       </tr>
       <tr>
         <td>Order ID</td>
-        <td><span class="mono">{{ $registration->midtrans_order_id }}</span></td>
+        <td><span class="mono">{{ $registration->uuid }}</span></td>
       </tr>
       <tr>
         <td>Status</td>
         <td>DITERIMA</td>
       </tr>
-    </table>
-
-    <!-- Daftar Pemain -->
-    <div class="section-label">Daftar Pemain</div>
-    <table class="players-table">
-      <tr><td>01</td><td>Ahmad Fauzi Rahmadani</td></tr>
-      <tr><td>02</td><td>Budi Santoso</td></tr>
-      <tr><td>03</td><td>Cahya Putra Wijaya</td></tr>
-      <tr><td>04</td><td>Denny Kurniawan</td></tr>
-      <tr><td>05</td><td>Eko Prasetyo</td></tr>
-      <tr><td>06</td><td>Fajar Nugroho</td></tr>
     </table>
 
     <!-- Total -->

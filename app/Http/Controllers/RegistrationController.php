@@ -7,7 +7,6 @@ use App\Mail\RegistrationApproved;
 use App\Mail\RegistrationPaid;
 use App\Mail\RegistrationRejected;
 use App\Models\Registration;
-use App\Services\MidtransService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -17,7 +16,6 @@ use Illuminate\Support\Facades\Log;
 
 class RegistrationController extends Controller
 {
-    public function __construct(private MidtransService $midtrans) {}
 
     // ============================================================
     // HALAMAN PILIHAN KATEGORI
@@ -435,71 +433,19 @@ class RegistrationController extends Controller
     {
         $registration = Registration::where('payment_token', $token)
             ->where('approval_status', 'approved')
-            ->firstOrFail(); // ✅ Benar — token lama yang sudah diganti otomatis 404
+            ->firstOrFail();
 
         if (! $registration->paymentTokenValid()) {
             return view('registration.payment-expired', compact('registration'));
-            // ✅ Benar — token valid tapi sudah lewat expires_at → expired view
         }
 
-        // ✅ Tambahkan: jangan tampilkan payment page jika sudah paid
+        // If already paid, show status page
         if ($registration->status === 'paid') {
             return redirect()->route('registration.status', $registration->uuid);
         }
 
-        try {
-            $snapToken = $this->midtrans->createSnapToken($registration);
-            return view('registration.payment', compact('registration', 'snapToken'));
-        } catch (\Exception $e) {
-            return back()->withErrors([
-                'error' => 'Gagal terhubung ke payment gateway. Silakan coba lagi.',
-            ]);
-        }
-    }
-
-    // ============================================================
-    // MIDTRANS CALLBACKS
-    // ============================================================
-
-    public function success(Request $request)
-    {
-        $orderId      = $request->query('order_id');
-        $registration = Registration::where('midtrans_order_id', $orderId)->first();
-
-        if ($registration?->status === 'paid' && ! $registration->pdf_receipt_path) {
-            try {
-                app(\App\Services\ReceiptPdfService::class)->generate($registration);
-                $registration = $registration->fresh();
-                Log::info('[Success] PDF generated via fallback for ' . $orderId);
-            } catch (\Exception $e) {
-                Log::warning('[Success] PDF fallback failed: ' . $e->getMessage(), [
-                    'order_id' => $orderId,
-                ]);
-            }
-        }
-
-        return view('registration.success', compact('registration'));
-    }
-
-    public function receiptStatus(string $uuid)
-    {
-        $registration = Registration::where('uuid', $uuid)->firstOrFail();
-        return response()->json([
-            'ready'  => ! is_null($registration->pdf_receipt_path),
-            'status' => $registration->status,
-        ]);
-    }
-
-    public function pending(Request $request)
-    {
-        $orderId      = $request->query('order_id');
-        $registration = Registration::where('midtrans_order_id', $orderId)->first();
-        return view('registration.pending', compact('registration'));
-    }
-
-    public function error()
-    {
-        return view('registration.error');
+        // Show payment page with bank transfer instructions
+        return view('registration.payment', compact('registration'));
     }
 
     // ============================================================
@@ -530,7 +476,7 @@ class RegistrationController extends Controller
 
         return response()->download(
             $path,
-            'receipt-' . $registration->midtrans_order_id . '.pdf'
+            'receipt-' . $registration->uuid . '.pdf'
         );
     }
 
@@ -553,6 +499,41 @@ class RegistrationController extends Controller
             'Content-Disposition' => 'inline; filename="' . $filename . '"',
             'Cache-Control'       => 'private, max-age=3600',
         ]);
+    }
+
+    // ============================================================
+    // UPLOAD PAYMENT PROOF
+    // ============================================================
+
+    public function uploadPayment(Request $request, string $uuid)
+    {
+        $registration = Registration::where('uuid', $uuid)->firstOrFail();
+
+        // Validate that registration is approved and pending payment
+        if ($registration->approval_status !== 'approved' || !in_array($registration->status, ['pending', 'failed'])) {
+            return back()->withErrors(['error' => 'Pendaftaran tidak dalam status yang memungkinkan upload bukti pembayaran.']);
+        }
+
+        $request->validate([
+            'payment_proof' => 'required|image|mimes:jpg,jpeg,png,webp|max:5120' // 5MB max
+        ], [
+            'payment_proof.required' => 'Bukti pembayaran wajib diupload.',
+            'payment_proof.image'    => 'File harus berupa gambar.',
+            'payment_proof.mimes'    => 'Format gambar harus JPG, PNG, atau WebP.',
+            'payment_proof.max'      => 'Ukuran file maksimal 5MB.',
+        ]);
+
+        // Store the file
+        $path = $request->file('payment_proof')->store('payment_proofs', 'public');
+
+        // Update registration status
+        $registration->update([
+            'payment_proof' => $path,
+            'status' => 'pending_verification',
+        ]);
+
+        return redirect()->route('registration.status', $uuid)
+            ->with('success', 'Bukti pembayaran berhasil dikirim. Status pembayaran akan diperbarui setelah diverifikasi admin.');
     }
 
     // ============================================================

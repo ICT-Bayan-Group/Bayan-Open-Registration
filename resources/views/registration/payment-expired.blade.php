@@ -23,7 +23,7 @@
     <div class="card-glass rounded-2xl p-6 mb-8 text-left">
         <div class="flex justify-between items-center py-2 border-b border-white/5">
             <span class="text-white/40 text-xs font-semibold uppercase tracking-wide">Order ID</span>
-            <span class="font-mono text-white text-sm">{{ $registration->midtrans_order_id }}</span>
+            <span class="font-mono text-white text-sm">{{ $registration->uuid }}</span>
         </div>
         <div class="flex justify-between items-center py-2">
             <span class="text-white/40 text-xs font-semibold uppercase tracking-wide">Nama Tim</span>
@@ -33,7 +33,7 @@
 
     <p class="text-white/30 text-sm">
         Hubungi panitia dengan menyertakan Order ID di atas.<br>
-        Email: <a href="mailto:panitia@bayanopen.com" class="text-brand-400 hover:underline">panitia@bayanopen.com</a>
+        Email: <a href="mailto:bayan.open@gmail.com" class="text-brand-400 hover:underline">bayan.open@gmail.com</a>
     </p>
 
 </div>

@@ -50,12 +50,11 @@ class Registration extends Model
         'payment_token',
         'payment_token_expires_at',
 
-        // ── Midtrans ──
-        'midtrans_order_id',
-        'midtrans_transaction_id',
-        'payment_type',
-        'payment_time',
-        'fraud_status',
+        // ── Manual Payment Verification ──
+        'payment_proof',
+        'payment_verified_at',
+        'payment_verified_by',
+        'payment_note',
 
         // ── Receipt ──
         'pdf_receipt_path',
@@ -92,6 +91,7 @@ class Registration extends Model
         'revision_requested_at'     => 'datetime',
         'revision_submitted_at'     => 'datetime',
         'revision_count'            => 'integer',
+        'payment_verified_at'       => 'datetime',
     ];
 
     // ── Auto-generate UUID & Order ID ──────────────────────────────
@@ -101,9 +101,6 @@ class Registration extends Model
         static::creating(function (Registration $r) {
             if (empty($r->uuid)) {
                 $r->uuid = (string) Str::uuid();
-            }
-            if (empty($r->midtrans_order_id)) {
-                $r->midtrans_order_id = 'BO2026-' . strtoupper(Str::random(8));
             }
         });
     }
@@ -118,6 +115,11 @@ class Registration extends Model
     public function rejectedBy()
     {
         return $this->belongsTo(User::class, 'rejected_by');
+    }
+
+    public function paymentVerifiedBy()
+    {
+        return $this->belongsTo(User::class, 'payment_verified_by');
     }
 
     // ── Approval Helpers ───────────────────────────────────────────
@@ -296,4 +298,51 @@ class Registration extends Model
     public function scopePendingReview($query) { return $query->where('approval_status', 'pending_review'); }
     public function scopeApproved($query)      { return $query->where('approval_status', 'approved'); }
     public function scopeRejected($query)      { return $query->where('approval_status', 'rejected'); }
+    public function scopePendingVerification($query) { return $query->where('status', 'pending_verification'); }
+    public function scopeFailed($query)        { return $query->where('status', 'failed'); }
+
+    // ── Payment Verification Methods ───────────────────────────────
+
+    /**
+     * Approve payment proof uploaded by user
+     */
+    public function approvePayment(int $adminId, string $note = null): void
+    {
+        $this->update([
+            'status' => 'paid',
+            'payment_verified_at' => now(),
+            'payment_verified_by' => $adminId,
+            'payment_note' => $note,
+        ]);
+    }
+
+    /**
+     * Reject payment proof uploaded by user
+     */
+    public function rejectPayment(int $adminId, string $note = null): void
+    {
+        $this->update([
+            'status' => 'failed',
+            'payment_verified_at' => now(),
+            'payment_verified_by' => $adminId,
+            'payment_note' => $note,
+        ]);
+    }
+
+    /**
+     * Check if payment proof exists
+     */
+    public function hasPaymentProof(): bool
+    {
+        return !empty($this->payment_proof);
+    }
+
+    /**
+     * Get payment proof URL
+     */
+    public function getPaymentProofUrl(): ?string
+    {
+        if (!$this->payment_proof) return null;
+        return asset('storage/' . $this->payment_proof);
+    }
 }

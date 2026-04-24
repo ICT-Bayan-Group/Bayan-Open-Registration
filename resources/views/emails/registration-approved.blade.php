@@ -267,7 +267,7 @@
       </tr>
       <tr>
         <td>Order ID</td>
-        <td><span class="mono">{{ $registration->midtrans_order_id }}</span></td>
+        <td><span class="mono">{{ $registration->uuid }}</span></td>
       </tr>
       <tr>
         <td>Status</td>
