@@ -7,6 +7,7 @@ use App\Mail\RegistrationApproved;
 use App\Mail\RegistrationPaid;
 use App\Mail\RegistrationRejected;
 use App\Models\Registration;
+use App\Services\WhatsAppService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -541,6 +542,9 @@ class RegistrationController extends Controller
             'payment_proof' => $path,
             'status' => 'pending_verification',
         ]);
+
+        // Notify admin WhatsApp that a payment proof has been uploaded.
+        app(WhatsAppService::class)->notifyAdminPaymentUploaded($registration);
 
         return redirect()->route('registration.status', $uuid)
             ->with('success', 'Bukti pembayaran berhasil dikirim. Status pembayaran akan diperbarui setelah diverifikasi admin.');

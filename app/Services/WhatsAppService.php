@@ -52,13 +52,34 @@ class WhatsAppService
         ]);
     }
 
+    public function notifyAdminPaymentUploaded(Registration $registration): void
+    {
+        $admins = [
+            '6285377640809',
+            '628125431744',
+            '6282133212777',
+        ];
+
+        $message = "📥 Pembayaran Baru Masuk\n\n"
+            . "Nama: {$registration->nama}\n"
+            . "Tim: {$registration->tim_pb}\n"
+            . "Kategori: {$registration->kategori_label}\n"
+            . "Order ID: {$registration->uuid}\n\n"
+            . "Mohon segera lakukan verifikasi pembayaran melalui dashboard admin.\n\n"
+            . "Bayan Open 2026 System";
+
+        foreach ($admins as $admin) {
+            $this->sendTextMessage($admin, $message);
+        }
+    }
+
     public function sendPaymentSuccess(Registration $registration): bool
     {
         return $this->sendTemplate($registration, 'payment_success', [
             $registration->nama,
+            $registration->tim_pb,
             $registration->kategori_label,
             $registration->harga_formatted,
-            $registration->uuid,
         ]);
     }
 
@@ -68,6 +89,51 @@ class WhatsAppService
             $registration->nama,
             $registration->paymentLink(),
         ]);
+    }
+
+    protected function sendTextMessage(string $to, string $body): void
+    {
+        if (! $to) {
+            Log::warning('[WhatsApp] Nomor admin tidak valid', ['to' => $to]);
+            return;
+        }
+
+        if (empty($this->appId) || empty($this->secretKey) || empty($this->channelId)) {
+            Log::warning('[WhatsApp] Konfigurasi Qiscus belum lengkap (app_id/secret_key/channel_id).');
+            return;
+        }
+
+        $payload = [
+            'to'   => $to,
+            'type' => 'text',
+            'text' => [
+                'body' => $body,
+            ],
+        ];
+
+        try {
+            $response = Http::timeout(15)
+                ->withHeaders([
+                    'Qiscus-App-Id'     => $this->appId,
+                    'Qiscus-Secret-Key' => $this->secretKey,
+                    'Content-Type'      => 'application/json',
+                ])
+                ->post($this->endpoint(), $payload);
+
+            if (! $response->successful()) {
+                Log::error('[WhatsApp] API error (admin notification)', [
+                    'status' => $response->status(),
+                    'body'   => $response->body(),
+                    'to'     => $to,
+                ]);
+            } else {
+                Log::info('[WhatsApp] Admin notification sent', ['to' => $to]);
+            }
+        } catch (\Throwable $e) {
+            Log::error('[WhatsApp] Exception sending admin notification: ' . $e->getMessage(), [
+                'to' => $to,
+            ]);
+        }
     }
 
     protected function sendTemplate(Registration $registration, string $templateKey, array $params): bool
