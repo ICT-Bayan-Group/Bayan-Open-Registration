@@ -44,10 +44,11 @@ return [
         'channel_id' => env('QISCUS_CHANNEL_ID'),
         'language'   => env('QISCUS_WHATSAPP_LANGUAGE', 'id'),
         'templates'  => [
-            'payment_link'    => env('QISCUS_TEMPLATE_PAYMENT_LINK'),
-            'reminder'        => env('QISCUS_TEMPLATE_REMINDER'),
-            'payment_success' => env('QISCUS_TEMPLATE_PAYMENT_SUCCESS'),
-            'rejected'        => env('QISCUS_TEMPLATE_PAYMENT_REJECTED'),
+            'payment_link'         => env('QISCUS_TEMPLATE_PAYMENT_LINK'),
+            'reminder'             => env('QISCUS_TEMPLATE_REMINDER'),
+            'payment_success'      => env('QISCUS_TEMPLATE_PAYMENT_SUCCESS'),
+            'rejected'             => env('QISCUS_TEMPLATE_PAYMENT_REJECTED'),
+            'admin_notification'   => env('QISCUS_TEMPLATE_ADMIN_NOTIFICATION'),
         ],
     ],
 ];

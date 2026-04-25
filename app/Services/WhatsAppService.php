@@ -60,16 +60,13 @@ class WhatsAppService
             '6282133212777',
         ];
 
-        $message = "📥 Pembayaran Baru Masuk\n\n"
-            . "Nama: {$registration->nama}\n"
-            . "Tim: {$registration->tim_pb}\n"
-            . "Kategori: {$registration->kategori_label}\n"
-            . "Order ID: {$registration->uuid}\n\n"
-            . "Mohon segera lakukan verifikasi pembayaran melalui dashboard admin.\n\n"
-            . "Bayan Open 2026 System";
-
         foreach ($admins as $admin) {
-            $this->sendTextMessage($admin, $message);
+            $this->sendTemplateToNumber($admin, 'admin_notification', [
+                $registration->nama,
+                $registration->tim_pb,
+                $registration->kategori_label,
+                $registration->uuid,
+            ]);
         }
     }
 
@@ -89,6 +86,86 @@ class WhatsAppService
             $registration->nama,
             $registration->paymentLink(),
         ]);
+    }
+
+    public function sendTemplateToNumber(string $phone, string $templateKey, array $params): bool
+    {
+        $to = $this->normalizePhoneNumber($phone);
+
+        if (! $to) {
+            Log::warning('[WhatsApp] Nomor tidak valid', ['phone' => $phone]);
+            return false;
+        }
+
+        if (empty($this->appId) || empty($this->secretKey) || empty($this->channelId)) {
+            Log::warning('[WhatsApp] Konfigurasi Qiscus belum lengkap (app_id/secret_key/channel_id).');
+            return false;
+        }
+
+        $templateName = $this->templates[$templateKey] ?? null;
+        if (! $templateName) {
+            Log::warning('[WhatsApp] Template tidak ditemukan: ' . $templateKey);
+            return false;
+        }
+
+        $bodyParameters = array_map(
+            fn ($value) => ['type' => 'text', 'text' => (string) $value],
+            $params
+        );
+
+        $payload = [
+            'to'   => $to,
+            'type' => 'template',
+            'template' => [
+                'namespace' => '',
+                'name'      => $templateName,
+                'language'  => [
+                    'policy' => 'deterministic',
+                    'code'   => $this->language,
+                ],
+                'components' => [
+                    [
+                        'type'       => 'body',
+                        'parameters' => $bodyParameters,
+                    ],
+                ],
+            ],
+        ];
+
+        try {
+            $response = Http::timeout(15)
+                ->withHeaders([
+                    'Qiscus-App-Id'     => $this->appId,
+                    'Qiscus-Secret-Key' => $this->secretKey,
+                    'Content-Type'      => 'application/json',
+                ])
+                ->post($this->endpoint(), $payload);
+
+            if (! $response->successful()) {
+                Log::error('[WhatsApp] API error', [
+                    'status'   => $response->status(),
+                    'body'     => $response->body(),
+                    'template' => $templateName,
+                    'to'       => $to,
+                ]);
+                return false;
+            }
+
+            Log::info('[WhatsApp] Terkirim', [
+                'to'       => $to,
+                'template' => $templateName,
+                'response' => $response->json(),
+            ]);
+
+            return true;
+
+        } catch (\Throwable $e) {
+            Log::error('[WhatsApp] Exception: ' . $e->getMessage(), [
+                'to'       => $to,
+                'template' => $templateName,
+            ]);
+            return false;
+        }
     }
 
     protected function sendTextMessage(string $to, string $body): void
@@ -138,83 +215,7 @@ class WhatsAppService
 
     protected function sendTemplate(Registration $registration, string $templateKey, array $params): bool
     {
-        $to = $this->normalizePhoneNumber($registration->no_hp);
-
-        if (! $to) {
-            Log::warning('[WhatsApp] Nomor tidak valid', ['no_hp' => $registration->no_hp]);
-            return false;
-        }
-
-        if (empty($this->appId) || empty($this->secretKey) || empty($this->channelId)) {
-            Log::warning('[WhatsApp] Konfigurasi Qiscus belum lengkap (app_id/secret_key/channel_id).');
-            return false;
-        }
-
-        $templateName = $this->templates[$templateKey] ?? null;
-        if (! $templateName) {
-            Log::warning('[WhatsApp] Template tidak ditemukan: ' . $templateKey);
-            return false;
-        }
-
-        // Build components sesuai format Qiscus docs
-        $bodyParameters = array_map(
-            fn ($value) => ['type' => 'text', 'text' => (string) $value],
-            $params
-        );
-
-        $payload = [
-            'to'   => $to,
-            'type' => 'template',
-            'template' => [
-                'namespace' => '',   // kosongkan jika tidak ada, atau isi dari dashboard
-                'name'      => $templateName,
-                'language'  => [
-                    'policy' => 'deterministic',
-                    'code'   => $this->language,
-                ],
-                'components' => [
-                    [
-                        'type'       => 'body',
-                        'parameters' => $bodyParameters,
-                    ],
-                ],
-            ],
-        ];
-
-        try {
-            $response = Http::timeout(15)
-                ->withHeaders([
-                    'Qiscus-App-Id'     => $this->appId,
-                    'Qiscus-Secret-Key' => $this->secretKey,
-                    'Content-Type'      => 'application/json',
-                ])
-                ->post($this->endpoint(), $payload);
-
-            if (! $response->successful()) {
-                Log::error('[WhatsApp] API error', [
-                    'status'   => $response->status(),
-                    'body'     => $response->body(),
-                    'template' => $templateName,
-                    'to'       => $to,
-                ]);
-                return false;
-            }
-
-            Log::info('[WhatsApp] Terkirim', [
-                'to'       => $to,
-                'template' => $templateName,
-                'response' => $response->json(),
-            ]);
-
-            return true;
-
-        } catch (\Throwable $e) {
-            Log::error('[WhatsApp] Exception: ' . $e->getMessage(), [
-                'to'       => $to,
-                'template' => $templateName,
-            ]);
-            return false;
-        }
+        return $this->sendTemplateToNumber($registration->no_hp, $templateKey, $params);
     }
 
     protected function normalizePhoneNumber(string $phone): ?string
