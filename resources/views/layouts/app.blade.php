@@ -330,11 +330,15 @@
                     {{-- pulsing dot kalau di halaman lain --}}
                     @unless(request()->routeIs('livescore'))
                     <span style="display:inline-flex;align-items:center;justify-content:center;
-                                 width:7px;height:7px;border-radius:50%;
                                  background:#ef4444;margin-left:5px;
                                  box-shadow:0 0 0 0 rgba(239,68,68,.4);
                                  animation:liveping 1.8s ease infinite;vertical-align:middle;"></span>
                     @endunless
+                </a>
+                    <a href="{{ route('contact') }}"
+                   class="nav-link transition font-semibold text-sm tracking-wide px-3 py-2 rounded-lg
+                          {{ request()->routeIs('contact') ? 'active' : '' }}">
+                    Kontak
                 </a>
             </div>
 
@@ -378,6 +382,9 @@
                          background:#ef4444;margin-left:6px;vertical-align:middle;
                          animation:liveping 1.8s ease infinite;"></span>
         </a>
+        <a href="{{ route('contact') }}"
+           class="nav-link-mobile {{ request()->routeIs('contact') ? 'active' : '' }}"
+           onclick="closeMobileMenu()">Kontak</a>
     </div>
 
     {{-- Live ping keyframe (global) --}}
@@ -458,6 +465,11 @@
                                 <span style="display:inline-flex;width:6px;height:6px;border-radius:50%;
                                              background:#ef4444;margin-left:2px;
                                              animation:liveping 1.8s ease infinite;"></span>
+                            </a>
+                        </li>
+                        <li>
+                             <a href="{{ route('contact') }}" class="footer-nav-link">
+                                <span class="dot"></span>Kontak
                             </a>
                         </li>
                     </ul>
