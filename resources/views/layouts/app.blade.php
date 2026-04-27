@@ -538,8 +538,8 @@
                                 <span style="color:rgba(0,0,0,.75);font-weight:600;display:block;">
                                     Kontak Panitia
                                 </span>
-                                <a href="https://wa.me/6281253816878" target="_blank" style="color:#f97316;text-decoration:underline;">
-                                    +62 812-5381-6878 (WhatsApp)
+                                <a href="mailto:admin@bayanopen.com" target="_blank" style="color:#f97316;text-decoration:underline;">
+                                    admin@bayanopen.com
                                 </a>
                             </span>
                         </li>

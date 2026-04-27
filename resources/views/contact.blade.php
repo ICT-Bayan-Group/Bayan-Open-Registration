@@ -528,7 +528,7 @@
                 <div class="ct-section-line"></div>
             </div>
 
-            {{-- WhatsApp CTA --}}
+            {{-- WhatsApp CTA 
             <div class="ct-wa-card">
                 <div class="ct-wa-icon">
                     <svg width="22" height="22" fill="#25d366" viewBox="0 0 24 24">
@@ -546,7 +546,7 @@
                     </svg>
                     Chat Sekarang
                 </a>
-            </div>
+            </div>--}}
 
             {{-- Info cards --}}
             <div class="ct-info-card">
@@ -573,6 +573,12 @@
                     <div class="ct-info-label">Kantor Penyelenggara</div>
                     <div class="ct-info-value">PT Bayan Resources Tbk</div>
                     <div class="ct-info-sub">Komplek Balikpapan Baru Blok D4 No. 9–10<br>Jl. MT Haryono, Balikpapan, Kalimantan Timur</div>
+                     <a href="https://www.google.com/maps/place/PT.+BAYAN+RESOURCES/@-1.240484,116.871857,16z/data=!4m6!3m5!1s0x2df146697baa9f95:0x35f9167ed92933ca!8m2!3d-1.240484!4d116.8718565!16s%2Fg%2F11cmhzrmtf?hl=id&entry=ttu&g_ep=EgoyMDI2MDQyMi4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener" class="ct-venue-link">
+                            Buka di Google Maps
+                            <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </a>
                 </div>
             </div>
 
@@ -649,50 +655,7 @@
         {{-- ── RIGHT: MAP & FORM ── --}}
         <div class="ct-map-col">
 
-            {{-- Section label --}}
-            <div class="ct-section-label">
-                <div class="ct-section-label-text">
-                    <span class="ct-section-fire">
-                        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-                            <polygon points="3 11 22 2 13 21 11 13 3 11"/>
-                        </svg>
-                    </span>
-                    Peta Lokasi
-                </div>
-                <div class="ct-section-line"></div>
-            </div>
-
-            {{-- Map card --}}
-            <div class="ct-map-card">
-                <div class="ct-map-head">
-                    <div class="ct-map-head-left">
-                        <span class="ct-live-dot"></span>
-                        <div>
-                            <div class="ct-map-title">PT Bayan Resources Tbk</div>
-                            <div class="ct-map-sub">Komp. Balikpapan Baru Blok D4 No. 9–10, Jl. MT Haryono</div>
-                        </div>
-                    </div>
-                    <a href="https://maps.app.goo.gl/YP4q8jJkVU6uJFqt8"
-                       target="_blank" rel="noopener"
-                       class="ct-map-open-btn">
-                        <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                            <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/>
-                        </svg>
-                        Buka Maps
-                    </a>
-                </div>
-                <iframe
-                    class="ct-map-iframe"
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.1614!2d116.8718565!3d-1.2404840!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2df14669b7aa9f95%3A0x35f816f7d929332ca!2sPT.%20BAYAN%20RESOURCES!5e0!3m2!1sid!2sid!4v1700000000000!5m2!1sid!2sid"
-                    allowfullscreen=""
-                    loading="lazy"
-                    referrerpolicy="no-referrer-when-downgrade"
-                    title="Lokasi PT Bayan Resources Tbk Balikpapan">
-                </iframe>
-            </div>
-
-            {{-- Section label: send message --}}
-            <div class="ct-section-label" style="margin-top:8px;">
+         <div class="ct-section-label" style="margin-top:8px;">
                 <div class="ct-section-label-text">
                     <span class="ct-section-fire">
                         <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
@@ -704,8 +667,8 @@
                 <div class="ct-section-line"></div>
             </div>
 
-            {{-- Contact form --}}
-            <div class="ct-form-card">
+            {{-- Map card --}}
+          <div class="ct-form-card">
                 <div class="ct-form-head">
                     <div class="ct-form-icon">
                         <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -723,10 +686,6 @@
                         <input type="text" class="ct-input" placeholder="Masukkan nama lengkap Anda" id="cfName">
                     </div>
                     <div class="ct-field">
-                        <label>Nomor WhatsApp / Telepon</label>
-                        <input type="tel" class="ct-input" placeholder="+62 8xx-xxxx-xxxx" id="cfPhone">
-                    </div>
-                    <div class="ct-field">
                         <label>Subjek</label>
                         <input type="text" class="ct-input" placeholder="Topik pertanyaan Anda" id="cfSubject">
                     </div>
@@ -742,7 +701,6 @@
                     </button>
                 </div>
             </div>
-
         </div>
     </div>
 
@@ -753,7 +711,6 @@
 <script>
 function submitViaWA() {
     const name    = document.getElementById('cfName').value.trim();
-    const phone   = document.getElementById('cfPhone').value.trim();
     const subject = document.getElementById('cfSubject').value.trim();
     const message = document.getElementById('cfMessage').value.trim();
 
@@ -762,9 +719,9 @@ function submitViaWA() {
         return;
     }
 
-    const text = `Halo Panitia Bayan Open 2026 🏸\n\n*Nama:* ${name}\n${phone ? '*WA/Telp:* '+phone+'\n' : ''}${subject ? '*Subjek:* '+subject+'\n' : ''}\n*Pesan:*\n${message}`;
+    const text = `Halo Panitia Bayan Open 2026 🏸\n\n*Nama:* ${name}\n' : ''}${subject ? '*Subjek:* '+subject+'\n' : ''}\n*Pesan:*\n${message}`;
     const encoded = encodeURIComponent(text);
-    window.open(`https://wa.me/6281253816878?text=${encoded}`, '_blank');
+    window.open(`https://wa.me/6282133212777?text=${encoded}`, '_blank');
 }
 </script>
 @endpush
