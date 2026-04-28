@@ -322,23 +322,12 @@
       </tr>
       <tr>
         <td>Order ID</td>
-        <td><span class="mono">{{ $registration->midtrans_order_id }}</span></td>
+        <td><span class="mono">{{ $registration->uuid }}</span></td>
       </tr>
       <tr>
         <td>Status</td>
         <td>DITERIMA</td>
       </tr>
-    </table>
-
-    <!-- Daftar Pemain -->
-    <div class="section-label">Daftar Pemain</div>
-    <table class="players-table">
-      <tr><td>01</td><td>Ahmad Fauzi Rahmadani</td></tr>
-      <tr><td>02</td><td>Budi Santoso</td></tr>
-      <tr><td>03</td><td>Cahya Putra Wijaya</td></tr>
-      <tr><td>04</td><td>Denny Kurniawan</td></tr>
-      <tr><td>05</td><td>Eko Prasetyo</td></tr>
-      <tr><td>06</td><td>Fajar Nugroho</td></tr>
     </table>
 
     <!-- Total -->
@@ -351,7 +340,7 @@
     <div class="notice">
       <strong>Link pembayaran berlaku selama 24 jam</strong> hingga
       <strong>{{ $registration->payment_token_expires_at?->format('d M Y, H:i') ?? '-' }} WIB</strong>.
-      Segera selesaikan pembayaran sebelum link kedaluwarsa. Jika sudah kedaluwarsa, hubungi panitia di <strong>bayan.open@gmail.com</strong> untuk meminta link baru.
+      Segera selesaikan pembayaran sebelum link kedaluwarsa. Jika sudah kedaluwarsa, hubungi panitia di <strong>admin@bayanopen.com</strong> untuk meminta link baru.
     </div>
 
     <!-- Steps -->
@@ -396,7 +385,7 @@
   <!-- Footer -->
   <div class="footer">
     Bayan Open 2026 &mdash; Official Registration System<br>
-    Pertanyaan? Hubungi kami di bayan.open@gmail.com<br>
+    Pertanyaan? Hubungi kami di admin@bayanopen.com<br>
     Email ini dikirim otomatis, harap tidak membalas.
   </div>
 

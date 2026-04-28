@@ -14,6 +14,7 @@ Route::get('/v1', fn() => view('welcome'))->name('welcome');
 Route::get('/bagan', fn() => view('bagan'))->name('bagan');
 Route::get('/jadwal', fn() => view('jadwal'))->name('jadwal');
 Route::get('/livescore', fn() => view('livescore'))->name('livescore');
+Route::get('/kontak', fn() => view('contact'))->name('contact');
 
 // ── Wilayah cascade ─────────────────────────────────────────────
 Route::prefix('wilayah')->group(function () {
@@ -58,6 +59,11 @@ Route::prefix('daftar')->name('registration.')->group(function () {
     // Submit form
     Route::post('/', [RegistrationController::class, 'store'])->name('store');
 
+    // Upload payment proof
+    Route::post('/upload-payment/{uuid}', [RegistrationController::class, 'uploadPayment'])
+        ->name('upload-payment')
+        ->where('uuid', '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}');
+
     // Status halaman setelah submit
     Route::get('/pending-payment/{uuid}', function ($uuid) {
         $registration = \App\Models\Registration::where('uuid', $uuid)->firstOrFail();
@@ -70,10 +76,7 @@ Route::prefix('daftar')->name('registration.')->group(function () {
         return view('registration.pending-review', compact('registration'));
     })->name('pending-review');
 
-    // Callback & status
-    Route::get('/sukses',        [RegistrationController::class, 'success'])->name('success');
-    Route::get('/pending',       [RegistrationController::class, 'pending'])->name('pending');
-    Route::get('/error',         [RegistrationController::class, 'error'])->name('error');
+    // Status & receipt
     Route::get('/status/{uuid}', [RegistrationController::class, 'status'])->name('status');
     Route::get('/receipt/{uuid}',[RegistrationController::class, 'downloadReceipt'])->name('receipt');
 });

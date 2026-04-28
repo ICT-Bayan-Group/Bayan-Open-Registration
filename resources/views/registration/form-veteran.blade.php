@@ -1204,6 +1204,11 @@ function renderCard(idx, data, usia, valid) {
         } else if (f.key === '__tgl_lahir__') {
             if (!tglNorm) return;
             valHtml = '<span class="ktp-value highlight">' + esc(tglNorm) + '</span>';
+        } else if (f.key === 'jenis_kelamin') {
+            var v = ((data[f.key] || '') + '').trim();
+            if (!v) return;
+            var label = (v === 'L') ? 'LAKI-LAKI' : (v === 'P') ? 'PEREMPUAN' : v;
+            valHtml = '<span class="ktp-value' + (f.hl ? ' highlight' : '') + '">' + esc(label) + '</span>';
         } else {
             var v = ((data[f.key] || '') + '').trim();
             if (!v) return;

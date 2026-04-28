@@ -18,7 +18,7 @@ class RegistrationPending extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: '💳 Selesaikan Pembayaran — Bayan Open 2026 | ' . $this->registration->midtrans_order_id,
+            subject: '💳 Selesaikan Pembayaran — Bayan Open 2026 | ' . $this->registration->uuid,
         );
     }
 

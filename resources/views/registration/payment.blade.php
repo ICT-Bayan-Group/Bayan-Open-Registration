@@ -14,7 +14,7 @@
                 </svg>
             </div>
             <h1 class="font-display text-2xl font-bold mb-2">Selesaikan Pembayaran</h1>
-            <p class="text-white/50 text-sm">Klik tombol di bawah untuk membuka halaman pembayaran</p>
+            <p class="text-white/50 text-sm">Transfer ke rekening berikut dan upload bukti pembayaran</p>
         </div>
 
         <div class="card-glass rounded-2xl p-8">
@@ -35,10 +35,6 @@
                     <span class="text-white/60">Kategori</span>
                     <span class="font-semibold capitalize">{{ $registration->kategori_label }}</span>
                 </div>
-                <div class="flex justify-between text-sm">
-                    <span class="text-white/60">Order ID</span>
-                    <span class="font-mono text-brand-400 text-xs">{{ $registration->midtrans_order_id }}</span>
-                </div>
 
                 <div class="border-t border-white/10 pt-3 mt-3">
                     <div class="flex justify-between">
@@ -48,51 +44,59 @@
                 </div>
             </div>
 
-            {{-- Pay Button --}}
-            <button
-                id="payBtn"
-                onclick="triggerPayment()"
-                class="btn-primary w-full py-4 rounded-xl font-display text-sm font-bold text-white tracking-wide"
-            >
-                BAYAR SEKARANG →
-            </button>
+            {{-- Bank Transfer Info --}}
+            <div class="bg-white/5 p-4 rounded-xl mb-6">
+                <h3 class="text-white font-semibold mb-3">Transfer ke Rekening:</h3>
+
+                <div class="space-y-2 text-sm">
+                    <div class="flex justify-between">
+                        <span class="text-white/60">Bank</span>
+                        <span class="font-semibold text-white">BCA</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-white/60">No Rekening</span>
+                        <span class="font-mono text-brand-400 font-semibold">1234567890</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-white/60">Atas Nama</span>
+                        <span class="font-semibold text-white">PT Contoh Event</span>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Upload Form --}}
+            <form method="POST" action="{{ route('registration.upload-payment', $registration->uuid) }}" enctype="multipart/form-data" class="space-y-4">
+                @csrf
+
+                <div>
+                    <label for="payment_proof" class="block text-sm font-medium text-white/80 mb-2">
+                        Upload Bukti Transfer
+                    </label>
+                    <input
+                        type="file"
+                        id="payment_proof"
+                        name="payment_proof"
+                        required
+                        accept="image/*"
+                        class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-brand-400 focus:border-transparent file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-brand-400 file:text-white hover:file:bg-brand-500"
+                    >
+                    <p class="text-white/50 text-xs mt-1">Format: JPG, PNG, WebP. Maksimal 5MB.</p>
+                </div>
+
+                <button
+                    type="submit"
+                    class="btn-primary w-full py-4 rounded-xl font-display text-sm font-bold text-white tracking-wide"
+                >
+                    KIRIM BUKTI PEMBAYARAN →
+                </button>
+            </form>
 
             <p class="text-white/30 text-xs text-center mt-4">
-                Pembayaran aman via Midtrans. Dukung transfer bank, QRIS, e-wallet, dan lainnya.
+                Bukti pembayaran akan diverifikasi oleh admin dalam 1-2 hari kerja.
             </p>
         </div>
 
     </div>
 </section>
-
-@push('head')
-<script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ config('services.midtrans.client_key') }}"></script>
-@endpush
-
-@push('scripts')
-<script>
-    function triggerPayment() {
-        const btn = document.getElementById('payBtn');
-        btn.textContent = 'Membuka payment...';
-        btn.disabled = true;
-
-        snap.pay('{{ $snapToken }}', {
-            onSuccess: function(result) {
-                window.location.href = "{{ route('registration.success') }}?order_id={{ $registration->midtrans_order_id }}";
-            },
-            onPending: function(result) {
-                window.location.href = "{{ route('registration.pending') }}?order_id={{ $registration->midtrans_order_id }}";
-            },
-            onError: function(result) {
-                window.location.href = "{{ route('registration.error') }}";
-            },
-            onClose: function() {
-                btn.textContent = 'BAYAR SEKARANG →';
-                btn.disabled = false;
-            }
-        });
-    }
-</script>
-@endpush
 
 @endsection
