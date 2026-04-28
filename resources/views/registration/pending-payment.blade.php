@@ -228,7 +228,7 @@
     <div class="tip-box mb-6 anim-4">
         ⚠️ <strong>Email tidak masuk?</strong> Cek folder <strong>Spam / Junk</strong> Anda.
         Jika dalam 5 menit belum ada email, hubungi panitia di
-        <strong>bayan.open@gmail.com</strong> atau WhatsApp panitia dengan menyebutkan
+        <strong>admin@bayanopen.com</strong> atau WhatsApp panitia dengan menyebutkan
         Order ID Anda.
     </div>
 

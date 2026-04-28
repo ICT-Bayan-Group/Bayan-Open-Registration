@@ -13,6 +13,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use App\Services\WhatsAppService;
+use App\Services\ReceiptPdfService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\HtmlString;
 
@@ -639,13 +640,19 @@ class RegistrationResource extends Resource
                     ->visible(fn (Registration $r) => $r->status === 'pending_verification')
                     ->requiresConfirmation()
                     ->modalHeading('Approve Pembayaran?')
-                    ->modalDescription('Pembayaran akan disetujui dan email konfirmasi akan dikirim ke peserta.')
+                    ->modalDescription('Pembayaran akan disetujui, PDF receipt akan digenerate, dan email konfirmasi akan dikirim ke peserta.')
                     ->modalSubmitActionLabel('Approve')
                     ->action(function (Registration $r) {
                         $r->approvePayment(auth()->id());
+                        
+                        // Generate PDF receipt
+                        app(ReceiptPdfService::class)->generate($r);
+                        
+                        // Send email with PDF attachment
                         \Illuminate\Support\Facades\Mail::to($r->email)->send(new \App\Mail\RegistrationPaid($r));
+                        
                         app(WhatsAppService::class)->sendPaymentSuccess($r);
-                        Notification::make()->title('Pembayaran berhasil di-approve')->success()->send();
+                        Notification::make()->title('Pembayaran berhasil di-approve dan email dikirim')->success()->send();
                     }),
 
                 Tables\Actions\Action::make('reject_payment')

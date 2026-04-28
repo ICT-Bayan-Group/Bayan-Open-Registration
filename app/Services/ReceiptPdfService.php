@@ -15,7 +15,7 @@ class ReceiptPdfService
             ->setPaper('a4', 'portrait');
 
         // Simpan ke storage/app/receipts/
-        $filename = 'receipts/receipt-' . $registration->uuid . '.pdf';
+        $filename = 'receipts/' . $registration->uuid . '.pdf';
 
         Storage::disk('local')->put($filename, $pdf->output());
 

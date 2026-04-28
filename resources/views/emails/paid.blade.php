@@ -293,20 +293,13 @@
       <strong>Receipt PDF</strong> terlampir pada email ini. Harap simpan sebagai bukti pendaftaran resmi untuk ditunjukkan saat hari pelaksanaan turnamen.
     </div>
 
-    <!-- CTA -->
-    <div class="cta-wrap">
-      <a href="{{ url('/registration/status/' . $registration->uuid) }}" class="cta-btn">
-        CEK STATUS PENDAFTARAN →
-      </a>
-    </div>
-
   </div>
 
   <!-- Footer -->
   <div class="footer">
     Bayan Open 2026 &mdash; Official Badminton Tournament<br>
     Email ini dikirim otomatis, harap tidak membalas.<br>
-    Pertanyaan? Hubungi kami di bayan.open@gmail.com
+    Pertanyaan? Hubungi kami di admin@bayanopen.com
   </div>
 
 </div>

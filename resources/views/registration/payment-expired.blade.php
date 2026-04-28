@@ -33,7 +33,7 @@
 
     <p class="text-white/30 text-sm">
         Hubungi panitia dengan menyertakan Order ID di atas.<br>
-        Email: <a href="mailto:bayan.open@gmail.com" class="text-brand-400 hover:underline">bayan.open@gmail.com</a>
+        Email: <a href="mailto:admin@bayanopen.com" class="text-brand-400 hover:underline">admin@bayanopen.com</a>
     </p>
 
 </div>

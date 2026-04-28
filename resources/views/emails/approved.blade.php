@@ -340,7 +340,7 @@
     <div class="notice">
       <strong>Link pembayaran berlaku selama 24 jam</strong> hingga
       <strong>{{ $registration->payment_token_expires_at?->format('d M Y, H:i') ?? '-' }} WIB</strong>.
-      Segera selesaikan pembayaran sebelum link kedaluwarsa. Jika sudah kedaluwarsa, hubungi panitia di <strong>bayan.open@gmail.com</strong> untuk meminta link baru.
+      Segera selesaikan pembayaran sebelum link kedaluwarsa. Jika sudah kedaluwarsa, hubungi panitia di <strong>admin@bayanopen.com</strong> untuk meminta link baru.
     </div>
 
     <!-- Steps -->
@@ -385,7 +385,7 @@
   <!-- Footer -->
   <div class="footer">
     Bayan Open 2026 &mdash; Official Registration System<br>
-    Pertanyaan? Hubungi kami di bayan.open@gmail.com<br>
+    Pertanyaan? Hubungi kami di admin@bayanopen.com<br>
     Email ini dikirim otomatis, harap tidak membalas.
   </div>
 
