@@ -450,12 +450,12 @@ class RegistrationController extends Controller
             return view('registration.payment-expired', compact('registration'));
         }
 
-        // If already paid, show status page
-        if ($registration->status === 'paid') {
+        // If already paid or pending verification, show status page
+        if (in_array($registration->status, ['paid', 'pending_verification'])) {
             return redirect()->route('registration.status', $registration->uuid);
         }
 
-        // Show payment page with bank transfer instructions
+        // Show payment page with bank transfer instructions (for pending or failed status)
         return view('registration.payment', compact('registration'));
     }
 

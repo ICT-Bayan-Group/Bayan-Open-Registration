@@ -51,15 +51,15 @@
                 <div class="space-y-2 text-sm">
                     <div class="flex justify-between">
                         <span class="text-white/60">Bank</span>
-                        <span class="font-semibold text-white">BCA</span>
+                        <span class="font-semibold text-white">Bank Mandiri</span>
                     </div>
                     <div class="flex justify-between">
                         <span class="text-white/60">No Rekening</span>
-                        <span class="font-mono text-brand-400 font-semibold">1234567890</span>
+                        <span class="font-mono text-brand-400 font-semibold">1490018978967</span>
                     </div>
                     <div class="flex justify-between">
                         <span class="text-white/60">Atas Nama</span>
-                        <span class="font-semibold text-white">PT Contoh Event</span>
+                        <span class="font-semibold text-white">SWANDHARU, S.KOM</span>
                     </div>
                 </div>
             </div>
@@ -67,6 +67,25 @@
             {{-- Upload Form --}}
             <form method="POST" action="{{ route('registration.upload-payment', $registration->uuid) }}" enctype="multipart/form-data" class="space-y-4">
                 @csrf
+
+                {{-- Error Messages --}}
+                @if ($errors->any())
+                <div class="bg-red-500/10 border border-red-500/30 rounded-xl p-4 mb-4">
+                    <div class="flex gap-3">
+                        <svg class="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                        </svg>
+                        <div>
+                            <h3 class="font-semibold text-red-400 mb-1">Gagal Upload</h3>
+                            <ul class="text-red-300 text-sm space-y-1">
+                                @foreach ($errors->all() as $error)
+                                    <li>• {{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                @endif
 
                 <div>
                     <label for="payment_proof" class="block text-sm font-medium text-white/80 mb-2">
