@@ -49,6 +49,9 @@ return [
             'payment_success'      => env('QISCUS_TEMPLATE_PAYMENT_SUCCESS'),
             'rejected'             => env('QISCUS_TEMPLATE_PAYMENT_REJECTED'),
             'admin_notification'   => env('QISCUS_TEMPLATE_ADMIN_NOTIFICATION'),
+            'beregu_approved'      => env('QISCUS_TEMPLATE_BEREGU_APPROVED'),
+            'beregu_rejected'      => env('QISCUS_TEMPLATE_BEREGU_REJECTED'),
+            'beregu_revision'      => env('QISCUS_TEMPLATE_BEREGU_REVISION'),
         ],
     ],
 ];

@@ -27,8 +27,7 @@ Route::post('/ocr/ktp', [KtpOcrController::class, 'scan'])->name('ocr.ktp');
 
 // ── Payment by token ─────────────────────────────────────────────
 Route::get('/payment/{token}', [RegistrationController::class, 'paymentByToken'])
-    ->name('registration.payment.token')
-    ->where('token', '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}');
+    ->name('registration.payment.token');
 
 // ── Pendaftaran ─────────────────────────────────────────────────
 Route::prefix('daftar')->name('registration.')->group(function () {

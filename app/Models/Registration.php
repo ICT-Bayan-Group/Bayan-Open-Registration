@@ -140,7 +140,7 @@ class Registration extends Model
             'rejected_at'              => null,
             'rejected_by'              => null,
             'rejection_reason'         => null,
-            'payment_token'            => Str::random(64),
+            'payment_token'            => (string) \Illuminate\Support\Str::uuid(), // ← ganti ke UUID
             'payment_token_expires_at' => now()->addDays(3),
         ]);
     }

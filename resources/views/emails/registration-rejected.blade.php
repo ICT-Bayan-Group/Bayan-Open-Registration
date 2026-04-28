@@ -5,101 +5,248 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pendaftaran Ditolak — Bayan Open 2026</title>
 <style>
-  body        { margin:0; padding:0; background:#0a0a0a; font-family:'Segoe UI',Arial,sans-serif; }
-  .wrapper    { max-width:600px; margin:0 auto; padding:32px 16px; }
-  .card       { background:#111827; border-radius:16px; overflow:hidden;
-                border:1px solid rgba(239,68,68,.2); }
-  .header     { background:linear-gradient(135deg,#ef4444,#991b1b);
-                padding:36px 32px; text-align:center; }
-  .header h1  { margin:0; color:#fff; font-size:24px; font-weight:800; }
-  .header p   { margin:8px 0 0; color:rgba(255,255,255,.75); font-size:14px; }
-  .body       { padding:32px; }
-  .badge      { display:inline-block; background:rgba(248,113,113,.1);
-                border:1px solid rgba(248,113,113,.3); color:#f87171;
-                border-radius:99px; padding:4px 14px; font-size:12px;
-                font-weight:700; letter-spacing:.05em; margin-bottom:20px; }
-  .greeting   { color:rgba(255,255,255,.85); font-size:16px; line-height:1.6; margin:0 0 20px; }
-  .info-box   { background:rgba(239,68,68,.05); border:1px solid rgba(239,68,68,.2);
-                border-radius:12px; padding:20px 24px; margin:24px 0; }
-  .info-label { font-size:11px; font-weight:700; text-transform:uppercase;
-                letter-spacing:.06em; color:rgba(255,255,255,.3); margin-bottom:6px; }
-  .info-value { font-size:14px; color:rgba(255,255,255,.8); line-height:1.6; }
-  .reason-box { background:rgba(239,68,68,.08); border:1px solid rgba(239,68,68,.25);
-                border-left:3px solid #ef4444; border-radius:8px;
-                padding:16px 20px; margin:20px 0; }
-  .reason-box p { margin:0; font-size:14px; color:rgba(255,255,255,.75); line-height:1.7; }
-  .retry-box  { background:rgba(249,115,22,.06); border:1px solid rgba(249,115,22,.2);
-                border-radius:12px; padding:20px 24px; margin:24px 0; }
-  .retry-box h3{ margin:0 0 10px; font-size:14px; color:#f97316; }
-  .retry-box p { margin:0; font-size:13px; color:rgba(255,255,255,.55); line-height:1.7; }
-  .footer     { text-align:center; padding:24px 32px; border-top:1px solid rgba(255,255,255,.06); }
-  .footer p   { margin:0; font-size:11px; color:rgba(255,255,255,.2); line-height:1.7; }
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'IBM Plex Sans', sans-serif;
+    background: #f5f5f5;
+    color: #111;
+  }
+
+  .wrapper {
+    max-width: 560px;
+    margin: 40px auto;
+    background: #fff;
+    border: 1px solid #ddd;
+  }
+
+  /* Header */
+  .header {
+    padding: 32px 40px 28px;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .header img {
+    height: 48px;
+    object-fit: contain;
+  }
+  .header-text h1 {
+    font-size: 15px;
+    font-weight: 600;
+    color: #111;
+    letter-spacing: 0.5px;
+  }
+  .header-text p {
+    font-size: 11px;
+    color: #999;
+    margin-top: 2px;
+    letter-spacing: 0.5px;
+  }
+
+  /* Status */
+  .status-bar {
+    padding: 14px 40px;
+    border-bottom: 1px solid #ddd;
+    font-size: 12px;
+    font-weight: 600;
+    color: #111;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  .status-bar::before {
+    content: '● ';
+    color: #cc2200;
+  }
+
+  /* Body */
+  .body {
+    padding: 32px 40px;
+  }
+
+  .greeting {
+    font-size: 15px;
+    font-weight: 600;
+    color: #111;
+    margin-bottom: 10px;
+  }
+
+  .body-text {
+    font-size: 13px;
+    color: #555;
+    line-height: 1.75;
+    margin-bottom: 32px;
+  }
+
+  /* Section label */
+  .section-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #999;
+    margin-bottom: 12px;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  /* Data rows */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 32px;
+  }
+  .data-table tr {
+    border-bottom: 1px solid #eee;
+  }
+  .data-table tr:last-child {
+    border-bottom: none;
+  }
+  .data-table td {
+    padding: 10px 0;
+    font-size: 13px;
+    vertical-align: top;
+  }
+  .data-table td:first-child {
+    color: #999;
+    width: 45%;
+  }
+  .data-table td:last-child {
+    color: #111;
+    font-weight: 500;
+    text-align: right;
+  }
+  .mono {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: #111;
+  }
+
+  /* Rejection reason box */
+  .reason-block {
+    border-left: 3px solid #cc2200;
+    padding: 14px 18px;
+    font-size: 13px;
+    color: #333;
+    line-height: 1.75;
+    margin-bottom: 32px;
+    background: #fdf5f5;
+  }
+  .reason-block .reason-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #cc2200;
+    margin-bottom: 8px;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  .reason-block p {
+    color: #444;
+    font-size: 13px;
+    line-height: 1.75;
+  }
+
+  /* Notice */
+  .notice {
+    border-left: 3px solid #111;
+    padding: 12px 16px;
+    font-size: 12px;
+    color: #555;
+    line-height: 1.7;
+    margin-bottom: 0;
+  }
+  .notice strong {
+    color: #111;
+  }
+
+  /* Footer */
+  .footer {
+    border-top: 1px solid #ddd;
+    padding: 20px 40px;
+    font-size: 11px;
+    color: #aaa;
+    line-height: 1.8;
+    text-align: center;
+    font-family: 'IBM Plex Mono', monospace;
+  }
 </style>
 </head>
 <body>
 <div class="wrapper">
-  <div class="card">
 
-    <div class="header">
-      <h1>🏸 Bayan Open 2026</h1>
-      <p>Pendaftaran Tim Beregu</p>
+  <!-- Header -->
+  <div class="header">
+    <img src="https://res.cloudinary.com/djs5pi7ev/image/upload/q_auto/f_auto/v1775803080/bayanopen-logo_mfcb55.png" alt="Bayan Open 2026">
+    <div class="header-text">
+      <h1>Bayan Open 2026</h1>
+      <p>Official Registration Notification</p>
+    </div>
+  </div>
+
+  <!-- Status -->
+  <div class="status-bar">Pendaftaran Ditolak</div>
+
+  <!-- Body -->
+  <div class="body">
+
+    <p class="greeting">Halo, {{ $registration->nama }}</p>
+    <p class="body-text">
+      Mohon maaf, pendaftaran tim <strong>{{ $registration->tim_pb }}</strong> untuk
+      <strong>Bayan Open 2026</strong> tidak dapat kami terima setelah melalui proses verifikasi.
+      Berikut alasan penolakan dari panitia:
+    </p>
+
+    <!-- Alasan Penolakan -->
+    <div class="reason-block">
+      <div class="reason-label">Alasan Penolakan</div>
+      <p>{{ $registration->rejection_reason ?? 'Tidak ada alasan yang diberikan.' }}</p>
     </div>
 
-    <div class="body">
-      <div class="badge">❌ PENDAFTARAN DITOLAK</div>
+    <!-- Data Tim -->
+    <div class="section-label">Data Tim</div>
+    <table class="data-table">
+      <tr>
+        <td>Nama Ketua</td>
+        <td>{{ $registration->nama }}</td>
+      </tr>
+      <tr>
+        <td>Nama Tim</td>
+        <td>{{ $registration->tim_pb }}</td>
+      </tr>
+      <tr>
+        <td>Kategori</td>
+        <td>{{ $registration->kategori_label }}</td>
+      </tr>
+      <tr>
+        <td>Ditolak Pada</td>
+        <td>{{ $registration->rejected_at?->format('d M Y, H:i') ?? now()->format('d M Y, H:i') }} WIB</td>
+      </tr>
+      <tr>
+        <td>ID Pendaftaran</td>
+        <td><span class="mono">{{ $registration->uuid }}</span></td>
+      </tr>
+    </table>
 
-      <p class="greeting">
-        Halo, <strong style="color:#fff;">{{ $registration->nama }}</strong>.<br>
-        Mohon maaf, pendaftaran tim <strong style="color:#f97316;">{{ $registration->tim_pb }}</strong>
-        untuk Bayan Open 2026 <strong style="color:#f87171;">tidak dapat kami terima</strong>
-        saat ini karena alasan berikut:
-      </p>
-
-      {{-- Alasan penolakan --}}
-      <div class="reason-box">
-        <p>{{ $registration->rejection_reason ?? 'Tidak ada alasan yang diberikan.' }}</p>
-      </div>
-
-      {{-- Info Tim --}}
-      <div class="info-box">
-        <div style="margin-bottom:14px;">
-          <div class="info-label">Nama Tim</div>
-          <div class="info-value">{{ $registration->tim_pb }}</div>
-        </div>
-        <div style="margin-bottom:14px;">
-          <div class="info-label">Order ID</div>
-          <div class="info-value" style="font-family:monospace;">{{ $registration->midtrans_order_id }}</div>
-        </div>
-        <div>
-          <div class="info-label">Ditolak Pada</div>
-          <div class="info-value">{{ $registration->rejected_at?->format('d M Y, H:i') ?? now()->format('d M Y, H:i') }} WIB</div>
-        </div>
-      </div>
-
-      {{-- Langkah selanjutnya --}}
-      <div class="retry-box">
-        <h3>💡 Apa yang bisa dilakukan?</h3>
-        <p>
-          Anda dapat mendaftar ulang dengan memastikan semua anggota tim ber-KTP
-          <strong style="color:#f97316;">Kota Balikpapan</strong> (minimal 6 dari 8 anggota).
-          Pastikan foto KTP jelas dan dapat dibaca sistem OCR kami.
-          Jika ada pertanyaan, balas email ini atau hubungi panitia.
-        </p>
-      </div>
-
-      <p style="color:rgba(255,255,255,.4);font-size:12px;line-height:1.7;margin:16px 0 0;">
-        Email ini dikirim otomatis oleh sistem Bayan Open 2026.
-      </p>
-    </div>
-
-    <div class="footer">
-      <p>
-        © 2026 Bayan Open · Samarinda, Kalimantan Timur<br>
-        Diproses oleh sistem pendaftaran otomatis Bayan Open 2026
-      </p>
+    <!-- Notice -->
+    <div class="notice">
+      Anda dapat <strong>mendaftar ulang</strong> dengan memastikan minimal 6 dari 8 anggota
+      ber-KTP <strong>Kota Balikpapan</strong> dan foto KTP jelas terbaca.
+      Jika ada pertanyaan, hubungi panitia di <strong>admin@bayanopen.com</strong>.
     </div>
 
   </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    Bayan Open 2026 &mdash; Official Badminton Tournament<br>
+    Email ini dikirim otomatis, harap tidak membalas.<br>
+    Pertanyaan? Hubungi kami di admin@bayanopen.com
+  </div>
+
 </div>
 </body>
 </html>
