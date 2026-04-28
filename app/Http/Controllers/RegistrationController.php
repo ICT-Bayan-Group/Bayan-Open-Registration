@@ -560,7 +560,7 @@ class RegistrationController extends Controller
         'KABUPATEN BALIKPAPAN',
     ];
 
-    private const MAX_BEREGU_TEAMS = 0;
+    private const MAX_BEREGU_TEAMS = 32;
 
     private function isCityValid(string $city): bool
     {
