@@ -20,7 +20,7 @@ class RegistrationPaid extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: '✅ Pembayaran Berhasil — Bayan Open 2026 | ' . $this->registration->midtrans_order_id,
+            subject: '✅ Pembayaran Berhasil — Bayan Open 2026 | ' . $this->registration->uuid,
         );
     }
 
@@ -40,7 +40,7 @@ class RegistrationPaid extends Mailable
 
             if (file_exists($path)) {
                 $attachments[] = Attachment::fromPath($path)
-                    ->as('Receipt-' . $this->registration->midtrans_order_id . '.pdf')
+                    ->as('Receipt-' . $this->registration->uuid . '.pdf')
                     ->withMime('application/pdf');
             }
         }

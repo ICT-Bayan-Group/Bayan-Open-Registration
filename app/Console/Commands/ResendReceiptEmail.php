@@ -38,13 +38,13 @@ class ResendReceiptEmail extends Command
         $orderId = $this->argument('order_id');
 
         if (!$orderId) {
-            $orderId = $this->ask('Masukkan Order ID (contoh: BO2026-ABCD1234)');
+            $orderId = $this->ask('Masukkan UUID Pendaftaran');
         }
 
-        $registration = Registration::where('midtrans_order_id', $orderId)->first();
+        $registration = Registration::where('uuid', $orderId)->first();
 
         if (!$registration) {
-            $this->error("Registrasi dengan Order ID '{$orderId}' tidak ditemukan.");
+            $this->error("Registrasi dengan UUID '{$orderId}' tidak ditemukan.");
             return 1;
         }
 
@@ -62,7 +62,7 @@ class ResendReceiptEmail extends Command
 
     private function processOne(Registration $registration, ReceiptPdfService $pdfService): void
     {
-        $this->line("→ Memproses: {$registration->midtrans_order_id} ({$registration->nama})");
+        $this->line("→ Memproses: {$registration->uuid} ({$registration->nama})");
 
         // Generate PDF
         try {

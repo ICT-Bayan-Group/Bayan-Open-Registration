@@ -16,6 +16,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use App\Services\WhatsAppService;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\HtmlString;
 
@@ -76,8 +77,8 @@ class VerifikasiBeregResource extends Resource
         return $infolist->schema([
 
             Infolists\Components\Section::make('Status Pendaftaran')->schema([
-                Infolists\Components\TextEntry::make('midtrans_order_id')
-                    ->label('Order ID')->copyable()->fontFamily('mono')->weight('bold'),
+Infolists\Components\TextEntry::make('uuid')
+                        ->label('ID Pendaftaran')->copyable()->fontFamily('mono')->weight('bold'),
 
                 Infolists\Components\TextEntry::make('approval_status')
                     ->label('Status Approval')
@@ -186,8 +187,8 @@ class VerifikasiBeregResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('midtrans_order_id')
-                    ->label('Order ID')->searchable()->copyable()->fontFamily('mono')->size('sm'),
+                Tables\Columns\TextColumn::make('uuid')
+                    ->label('ID')->searchable()->copyable()->fontFamily('mono')->size('sm'),
 
                 Tables\Columns\TextColumn::make('tim_pb')
                     ->label('Nama Tim')->searchable()->weight('bold'),
@@ -294,9 +295,11 @@ class VerifikasiBeregResource extends Resource
                         $r->approve(auth()->id());
                         Mail::to($r->email)->send(new RegistrationApproved($r));
 
+                        app(WhatsAppService::class)->sendPaymentLink($r);
+
                         Notification::make()
                             ->title('✅ ' . $r->tim_pb . ' diapprove!')
-                            ->body('Link pembayaran dikirim ke ' . $r->email)
+                            ->body('Link pembayaran dikirim ke email dan WhatsApp jika tersedia.')
                             ->success()
                             ->send();
                     }),
@@ -404,9 +407,11 @@ class VerifikasiBeregResource extends Resource
                         $r->reject(auth()->id(), $data['rejection_reason']);
                         Mail::to($r->email)->send(new RegistrationRejected($r));
 
+                        app(WhatsAppService::class)->sendPaymentRejected($r);
+
                         Notification::make()
                             ->title('❌ ' . $r->tim_pb . ' ditolak final')
-                            ->body('Email notifikasi dikirim ke ' . $r->email)
+                            ->body('Email dan WhatsApp notifikasi dikirim jika tersedia.')
                             ->danger()
                             ->send();
                     }),
@@ -445,6 +450,7 @@ class VerifikasiBeregResource extends Resource
                     ->action(function (Registration $r) {
                         $r->update(['payment_token_expires_at' => now()->addDays(3)]);
                         Mail::to($r->email)->send(new RegistrationApproved($r));
+                        app(WhatsAppService::class)->sendPaymentLink($r);
 
                         Notification::make()
                             ->title('Link pembayaran dikirim ulang')
