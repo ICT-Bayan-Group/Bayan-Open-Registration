@@ -318,7 +318,7 @@ class RegistrationController extends Controller
 
         // ── 10. Generate payment token ─────────────────────────────
         $paymentToken          = Str::uuid()->toString();
-        $paymentTokenExpiresAt = $isBeregu ? null : now()->addHours(24);
+        $paymentTokenExpiresAt = now()->addHours(24); // Konsisten untuk semua kategori
 
         // ── 11. Buat record Registration ───────────────────────────
         $registration = Registration::create([

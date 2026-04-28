@@ -295,7 +295,7 @@ Infolists\Components\TextEntry::make('uuid')
                         $r->approve(auth()->id());
                         Mail::to($r->email)->send(new RegistrationApproved($r));
 
-                        app(WhatsAppService::class)->sendPaymentLink($r);
+                        app(WhatsAppService::class)->sendBereguApproved($r);
 
                         Notification::make()
                             ->title('✅ ' . $r->tim_pb . ' diapprove!')
@@ -366,6 +366,8 @@ Infolists\Components\TextEntry::make('uuid')
                         $r->requestRevision(auth()->id(), $notes);
                         Mail::to($r->email)->send(new RegistrationRevisionRequired($r));
 
+                        app(WhatsAppService::class)->sendBereguRevision($r);
+
                         Notification::make()
                             ->title('✏ Permintaan revisi dikirim ke ' . $r->tim_pb)
                             ->body('Link perbaikan aktif 7 hari. Email dikirim ke ' . $r->email)
@@ -407,7 +409,7 @@ Infolists\Components\TextEntry::make('uuid')
                         $r->reject(auth()->id(), $data['rejection_reason']);
                         Mail::to($r->email)->send(new RegistrationRejected($r));
 
-                        app(WhatsAppService::class)->sendPaymentRejected($r);
+                        app(WhatsAppService::class)->sendBereguRejected($r);
 
                         Notification::make()
                             ->title('❌ ' . $r->tim_pb . ' ditolak final')
