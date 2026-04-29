@@ -15,16 +15,40 @@ use Filament\Tables\Table;
 use App\Services\WhatsAppService;
 use App\Services\ReceiptPdfService;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\HtmlString;
 
 class RegistrationResource extends Resource
 {
-    protected static ?string $model           = Registration::class;
-    protected static ?string $navigationIcon  = 'heroicon-o-user-group';
-    protected static ?string $navigationLabel = 'Peserta';
-    protected static ?string $modelLabel      = 'Peserta';
+    protected static ?string $model            = Registration::class;
+    protected static ?string $navigationIcon   = 'heroicon-o-user-group';
+    protected static ?string $navigationLabel  = 'Peserta';
+    protected static ?string $modelLabel       = 'Peserta';
     protected static ?string $pluralModelLabel = 'Data Peserta';
-    protected static ?int    $navigationSort  = 1;
+    protected static ?int    $navigationSort   = 1;
+
+    // ============================================================
+    // PASSWORD GATE — hash dari "Okedeh.12345!"
+    // Jalankan: php artisan tinker => bcrypt('Okedeh.12345!')
+    // Tempel hasilnya di bawah ini
+    // ============================================================
+
+    private static string $ACTION_PASSWORD_HASH = '$2y$12$31Y9w.yl1C/h/tWdRC.8GuE0hUAvsy3pZPBEUOAHEodSpi4tYw6.6';
+
+    private static function verifyActionPassword(string $input): bool
+    {
+        return Hash::check($input, self::$ACTION_PASSWORD_HASH);
+    }
+
+    private static function passwordField(): Forms\Components\TextInput
+    {
+        return Forms\Components\TextInput::make('action_password')
+            ->label('🔐 Password Admin')
+            ->password()
+            ->required()
+            ->autocomplete('new-password')
+            ->helperText('Masukkan password khusus untuk melanjutkan aksi ini');
+    }
 
     // ============================================================
     // FORM (Create / Edit)
@@ -91,11 +115,11 @@ class RegistrationResource extends Resource
                     Forms\Components\Select::make('status')
                         ->label('Status Pembayaran')
                         ->options([
-                            'pending' => 'Pending',
+                            'pending'              => 'Pending',
                             'pending_verification' => 'Menunggu Verifikasi',
-                            'paid' => 'Paid',
-                            'failed' => 'Failed',
-                            'expired' => 'Expired',
+                            'paid'                 => 'Paid',
+                            'failed'               => 'Failed',
+                            'expired'              => 'Expired',
                         ])->required(),
 
                     Forms\Components\FileUpload::make('payment_proof')
@@ -130,7 +154,6 @@ class RegistrationResource extends Resource
     {
         return $infolist->schema([
 
-            // ── Ringkasan ────────────────────────────────────────
             Infolists\Components\Section::make('Ringkasan Pendaftaran')
                 ->schema([
                     Infolists\Components\TextEntry::make('uuid')
@@ -156,20 +179,20 @@ class RegistrationResource extends Resource
                         ->label('Status')
                         ->badge()
                         ->color(fn ($state) => match ($state) {
-                            'paid' => 'success',
+                            'paid'                 => 'success',
                             'pending_verification' => 'warning',
-                            'pending' => 'warning',
-                            'failed' => 'danger',
-                            'expired' => 'gray',
-                            default => 'gray',
+                            'pending'              => 'warning',
+                            'failed'               => 'danger',
+                            'expired'              => 'gray',
+                            default                => 'gray',
                         })
                         ->formatStateUsing(fn ($state) => match ($state) {
                             'pending_verification' => 'Menunggu Verifikasi',
-                            'pending' => 'Belum Bayar',
-                            'paid' => 'Sudah Bayar',
-                            'failed' => 'Pembayaran Ditolak',
-                            'expired' => 'Kadaluarsa',
-                            default => strtoupper($state),
+                            'pending'              => 'Belum Bayar',
+                            'paid'                 => 'Sudah Bayar',
+                            'failed'               => 'Pembayaran Ditolak',
+                            'expired'              => 'Kadaluarsa',
+                            default                => strtoupper($state),
                         }),
 
                     Infolists\Components\TextEntry::make('harga')
@@ -187,7 +210,6 @@ class RegistrationResource extends Resource
                         ->placeholder('-'),
                 ])->columns(3),
 
-            // ── Data Tim ─────────────────────────────────────────
             Infolists\Components\Section::make('Data Tim & Kontak')
                 ->schema([
                     Infolists\Components\TextEntry::make('nama')
@@ -204,7 +226,6 @@ class RegistrationResource extends Resource
                         ->label('Kota / Kabupaten'),
                 ])->columns(2)->collapsible(),
 
-            // ── Data Pelatih ─────────────────────────────────────
             Infolists\Components\Section::make('Data Pelatih')
                 ->schema([
                     Infolists\Components\TextEntry::make('nama_pelatih')
@@ -213,7 +234,6 @@ class RegistrationResource extends Resource
                         ->label('No. HP Pelatih')->placeholder('—'),
                 ])->columns(2)->collapsible(),
 
-            // ── Ringkasan Veteran (hanya muncul jika veteran) ────
             Infolists\Components\Section::make('Verifikasi Usia Veteran')
                 ->schema([
                     Infolists\Components\TextEntry::make('veteran_summary_html')
@@ -224,8 +244,7 @@ class RegistrationResource extends Resource
                 ])
                 ->visible(fn (Registration $r) => $r->kategori === 'ganda-veteran-putra'),
 
-            // ── Data Pemain & KTP ─────────────────────────────────
-            Infolists\Components\Section::make('Data Pemain & KTP')
+            Infolists\Components\Section::make('Data Pemain & Dokumen')
                 ->schema([
                     Infolists\Components\TextEntry::make('ktp_html')
                         ->label('')->html()->columnSpanFull()
@@ -234,243 +253,6 @@ class RegistrationResource extends Resource
                         )),
                 ]),
         ]);
-    }
-
-    // ============================================================
-    // VETERAN SUMMARY HTML
-    // ============================================================
-
-    private static function buildVeteranSummaryHtml(Registration $record): string
-    {
-        $usia   = $record->usia_pemain ?? [];
-        $pemain = $record->pemain     ?? [];
-
-        $u0    = isset($usia[0]) ? (int) $usia[0] : null;
-        $u1    = isset($usia[1]) ? (int) $usia[1] : null;
-        $total = ($u0 !== null && $u1 !== null) ? ($u0 + $u1) : null;
-
-        $v0       = $u0 !== null && $u0 >= 45;
-        $v1       = $u1 !== null && $u1 >= 45;
-        $totalOk  = $total !== null && $total >= 95;
-        $allValid = $v0 && $v1 && $totalOk;
-
-        $nama0 = htmlspecialchars($pemain[0] ?? 'Pemain 1');
-        $nama1 = htmlspecialchars($pemain[1] ?? 'Pemain 2');
-
-        $borderColor = $allValid ? '#86efac' : '#fca5a5';
-        $bgColor     = $allValid ? '#f0fdf4'  : '#fef2f2';
-        $titleColor  = $allValid ? '#15803d'  : '#dc2626';
-        $titleText   = $allValid
-            ? '✓ Kedua pemain memenuhi syarat veteran'
-            : '✗ Terdapat pelanggaran syarat veteran';
-
-        $rowHtml = function ($nama, $usia, $valid) {
-            $warna = $valid ? '#15803d' : '#dc2626';
-            $icon  = $valid ? '✓' : '✗';
-            $keterangan = $usia !== null
-                ? ($valid
-                    ? $usia . ' tahun — Memenuhi syarat (≥ 45 thn)'
-                    : $usia . ' tahun — Tidak memenuhi syarat (min. 45 thn)')
-                : 'Data usia tidak tersedia';
-
-            return '
-            <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #e5e7eb;">
-                <div style="display:flex;align-items:center;gap:8px;">
-                    <span style="font-size:12px;font-weight:700;color:' . $warna . ';">' . $icon . '</span>
-                    <span style="font-size:12px;color:#374151;">' . $nama . '</span>
-                </div>
-                <span style="font-size:12px;font-weight:700;color:' . $warna . ';">' . $keterangan . '</span>
-            </div>';
-        };
-
-        $totalColor = $totalOk ? '#15803d' : '#dc2626';
-        $totalIcon  = $totalOk ? '✓' : '✗';
-        $totalText  = $total !== null
-            ? ($totalOk
-                ? $total . ' tahun — Memenuhi syarat (≥ 95 thn)'
-                : $total . ' tahun — Tidak memenuhi syarat (min. 95 thn)')
-            : 'Data tidak lengkap';
-
-        $html = '
-        <div style="background:' . $bgColor . ';border:1px solid ' . $borderColor . ';border-radius:12px;padding:16px;">
-
-            <p style="font-size:12px;font-weight:700;margin-bottom:12px;color:' . $titleColor . ';">'
-                . $titleText . '
-            </p>
-
-            ' . $rowHtml($nama0, $u0, $v0) . '
-            ' . $rowHtml($nama1, $u1, $v1) . '
-
-            <div style="display:flex;align-items:center;justify-content:space-between;padding-top:12px;margin-top:4px;">
-                <span style="font-size:12px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;">Total Usia 2 Pemain</span>
-                <span style="font-size:14px;font-weight:800;color:' . $totalColor . ';">
-                    ' . $totalIcon . ' ' . $totalText . '
-                </span>
-            </div>
-        </div>';
-
-        return $html;
-    }
-
-    // ============================================================
-    // KTP PER PEMAIN HTML
-    // ============================================================
-
-    private static function buildKtpHtml(Registration $record): string
-    {
-        $pemain    = $record->pemain     ?? [];
-        $nik       = $record->nik        ?? [];
-        $tglLahir  = $record->tgl_lahir  ?? [];
-        $usia      = $record->usia_pemain ?? [];
-        $ktpFiles  = $record->ktp_files  ?? [];
-        $ktpData   = $record->ktp_data   ?? [];
-        $isVeteran = $record->kategori === 'ganda-veteran-putra';
-
-        if (empty($pemain)) {
-            return '<p style="color:#6b7280;font-size:14px;">Belum ada data pemain.</p>';
-        }
-
-        $html = '<div style="display:grid;grid-template-columns:1fr;gap:24px;">';
-
-        foreach ($pemain as $i => $nama) {
-            $nilNik   = htmlspecialchars($nik[$i]      ?? '—');
-            $nilTgl   = htmlspecialchars($tglLahir[$i] ?? '—');
-            $nilUsia  = isset($usia[$i]) ? (int) $usia[$i] : null;
-            $namaHtml = htmlspecialchars($nama);
-
-            // ── Baris usia ──
-            $usiaHtml = '';
-            if ($nilUsia !== null) {
-                if ($isVeteran) {
-                    $validPerPemain = $nilUsia >= 45;
-                    $warna  = $validPerPemain ? '#15803d' : '#dc2626';
-                    $icon   = $validPerPemain ? '✓ ' : '✗ ';
-                    $label  = $icon . $nilUsia . ' tahun per 24 Ags 2026 — '
-                            . ($validPerPemain ? 'Memenuhi syarat (≥ 45 thn)' : 'Tidak memenuhi syarat (min. 45 thn)');
-                } else {
-                    $warna = '#374151';
-                    $label = $nilUsia . ' tahun';
-                }
-
-                $usiaHtml = '
-                <div style="display:flex;gap:12px;padding:6px 0;border-bottom:1px solid #e5e7eb;">
-                    <span style="font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;min-width:90px;">Usia</span>
-                    <span style="font-size:12px;font-weight:700;color:' . $warna . ';">'
-                        . htmlspecialchars($label) .
-                    '</span>
-                </div>';
-            }
-
-            // ── Foto KTP ──
-            $fotoHtml = '';
-            $filePath = $ktpFiles[$i] ?? null;
-
-            if ($filePath) {
-                $ktpUrl = route('admin.ktp.serve', [
-                    'uuid'     => $record->uuid,
-                    'filename' => basename($filePath),
-                ]);
-                $fotoHtml = '
-                <div>
-                    <p style="font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">📷 Foto KTP</p>
-                    <a href="' . $ktpUrl . '" target="_blank" style="display:block;">
-                        <img src="' . $ktpUrl . '"
-                             alt="KTP Pemain ' . ($i + 1) . '"
-                             style="max-height:192px;width:100%;border-radius:8px;border:1px solid #d1d5db;
-                                    object-fit:contain;cursor:pointer;background:#f9fafb;transition:opacity 0.2s;"
-                             onerror="this.outerHTML=\'<p style=\\\'color:#dc2626;font-size:12px;margin-top:8px;\\\'>File tidak dapat dimuat.</p>\'">
-                    </a>
-                    <p style="font-size:11px;color:#6b7280;margin-top:4px;">'
-                        . htmlspecialchars(basename($filePath))
-                        . ' · <a href="' . $ktpUrl . '" target="_blank"
-                               style="color:#2563eb;text-decoration:none;">Buka fullsize</a>
-                    </p>
-                </div>';
-            } else {
-                $fotoHtml = '<p style="font-size:12px;color:#6b7280;font-style:italic;margin-top:8px;">File KTP tidak ditemukan.</p>';
-            }
-
-            // ── Data tambahan dari ktp_data ──
-            $rawData   = $ktpData[$i] ?? [];
-            $extraHtml = '';
-            $extraFields = [
-                'kelurahan'         => 'Kel/Desa',
-                'kecamatan'         => 'Kecamatan',
-                'agama'             => 'Agama',
-                'pekerjaan'         => 'Pekerjaan',
-                'status_perkawinan' => 'Status Kawin',
-                'golongan_darah'    => 'Gol. Darah',
-            ];
-            foreach ($extraFields as $key => $label) {
-                $val = (string) ($rawData[$key] ?? '');
-                if ($val === '') continue;
-                $extraHtml .= '
-                <div style="display:flex;gap:12px;padding:4px 0;border-bottom:1px solid #f3f4f6;">
-                    <span style="font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;min-width:100px;">'
-                        . htmlspecialchars($label) . '</span>
-                    <span style="font-size:12px;color:#374151;">'
-                        . htmlspecialchars($val) . '</span>
-                </div>';
-            }
-
-            // ── Warna border kartu ──
-            $cardBorderColor = '#d1d5db';
-            $headerBgColor   = '#f9fafb';
-            if ($isVeteran && $nilUsia !== null) {
-                if ($nilUsia >= 45) {
-                    $cardBorderColor = '#86efac';
-                    $headerBgColor   = '#f0fdf4';
-                } else {
-                    $cardBorderColor = '#fca5a5';
-                    $headerBgColor   = '#fef2f2';
-                }
-            }
-
-            $html .= '
-            <div style="border-radius:12px;border:1px solid ' . $cardBorderColor . ';overflow:hidden;background:#ffffff;">
-
-                <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid '
-                    . $cardBorderColor . ';background:' . $headerBgColor . ';">
-                    <div style="width:28px;height:28px;border-radius:50%;background:#e0e7ff;display:flex;
-                                align-items:center;justify-content:center;font-size:12px;font-weight:700;
-                                color:#4338ca;border:1px solid #c7d2fe;">'
-                        . ($i + 1) .
-                    '</div>
-                    <span style="font-weight:600;font-size:14px;color:#111827;">' . $namaHtml . '</span>
-                </div>
-
-                <div style="padding:16px;display:grid;grid-template-columns:1fr 1fr;gap:24px;">
-
-                    <div>
-                        <p style="font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">📋 Data KTP</p>
-
-                        <div style="display:flex;gap:12px;padding:6px 0;border-bottom:1px solid #e5e7eb;">
-                            <span style="font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;min-width:90px;">NIK</span>
-                            <span style="font-size:12px;color:#111827;font-family:monospace;font-weight:700;">' . $nilNik . '</span>
-                        </div>
-                        <div style="display:flex;gap:12px;padding:6px 0;border-bottom:1px solid #e5e7eb;">
-                            <span style="font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;min-width:90px;">Nama</span>
-                            <span style="font-size:12px;color:#111827;font-weight:600;">' . $namaHtml . '</span>
-                        </div>
-                        <div style="display:flex;gap:12px;padding:6px 0;border-bottom:1px solid #e5e7eb;">
-                            <span style="font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;min-width:90px;">Tgl Lahir</span>
-                            <span style="font-size:12px;color:#374151;">' . $nilTgl . '</span>
-                        </div>
-                        ' . $usiaHtml . '
-
-                        ' . ($extraHtml
-                            ? '<div style="margin-top:12px;padding-top:8px;border-top:1px solid #e5e7eb;">' . $extraHtml . '</div>'
-                            : '') . '
-                    </div>
-
-                    <div>' . $fotoHtml . '</div>
-
-                </div>
-            </div>';
-        }
-
-        $html .= '</div>';
-        return $html;
     }
 
     // ============================================================
@@ -530,21 +312,30 @@ class RegistrationResource extends Resource
                     ])
                     ->formatStateUsing(fn ($state) => match ($state) {
                         'pending_verification' => 'Verifikasi',
-                        'pending' => 'Pending',
-                        'paid' => 'Paid',
-                        'failed' => 'Failed',
-                        'expired' => 'Expired',
-                        default => strtoupper($state),
+                        'pending'              => 'Pending',
+                        'paid'                 => 'Paid',
+                        'failed'               => 'Failed',
+                        'expired'              => 'Expired',
+                        default                => strtoupper($state),
                     }),
 
-                Tables\Columns\IconColumn::make('ktp_scanned')
-                    ->label('KTP Scan')->boolean()
-                    ->trueIcon('heroicon-o-document-check')
-                    ->falseIcon('heroicon-o-document-minus')
-                    ->trueColor('success')->falseColor('gray')
-                    ->state(fn (Registration $r) => ! empty(array_filter($r->nik ?? [])))
-                    ->tooltip(fn (Registration $r) => ! empty(array_filter($r->nik ?? []))
-                        ? 'Data KTP ter-scan OCR' : 'Belum di-scan'),
+                Tables\Columns\TextColumn::make('doc_type_summary')
+                    ->label('Dokumen')
+                    ->state(function (Registration $r): string {
+                        $types  = $r->ktp_type ?? [];
+                        $ktp    = count(array_filter($types, fn ($t) => $t !== 'paspor'));
+                        $paspor = count(array_filter($types, fn ($t) => $t === 'paspor'));
+                        $parts  = [];
+                        if ($ktp)    $parts[] = $ktp . ' KTP';
+                        if ($paspor) $parts[] = $paspor . ' Paspor';
+                        return implode(' + ', $parts) ?: '-';
+                    })
+                    ->badge()
+                    ->color(function (Registration $r): string {
+                        $types  = $r->ktp_type ?? [];
+                        $paspor = count(array_filter($types, fn ($t) => $t === 'paspor'));
+                        return $paspor > 0 ? 'warning' : 'success';
+                    }),
 
                 Tables\Columns\IconColumn::make('veteran_valid')
                     ->label('Syarat Veteran')
@@ -552,7 +343,6 @@ class RegistrationResource extends Resource
                     ->trueIcon('heroicon-o-check-badge')
                     ->falseIcon('heroicon-o-x-circle')
                     ->trueColor('success')->falseColor('danger')
-                    ->visible(fn () => true)
                     ->state(function (Registration $r) {
                         if ($r->kategori !== 'ganda-veteran-putra') return null;
                         $usia = $r->usia_pemain ?? [];
@@ -581,9 +371,11 @@ class RegistrationResource extends Resource
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
                     ->options([
-                        'pending' => 'Pending',                        'pending_verification' => 'Menunggu Verifikasi',                        'paid'    => 'Paid',
-                        'failed'  => 'Failed',
-                        'expired' => 'Expired',
+                        'pending'              => 'Pending',
+                        'pending_verification' => 'Menunggu Verifikasi',
+                        'paid'                 => 'Paid',
+                        'failed'               => 'Failed',
+                        'expired'              => 'Expired',
                     ]),
 
                 Tables\Filters\SelectFilter::make('kategori')
@@ -595,10 +387,16 @@ class RegistrationResource extends Resource
                         'beregu'              => 'Beregu',
                     ]),
 
-                Tables\Filters\Filter::make('ktp_scanned')
-                    ->label('Sudah Scan KTP')
+                Tables\Filters\Filter::make('has_paspor')
+                    ->label('Ada Peserta Paspor')
                     ->query(fn (Builder $q) =>
-                        $q->whereNotNull('nik')->whereRaw('JSON_LENGTH(nik) > 0')
+                        $q->whereRaw('JSON_SEARCH(ktp_type, "one", "paspor") IS NOT NULL')
+                    ),
+
+                Tables\Filters\Filter::make('ktp_only')
+                    ->label('Semua KTP')
+                    ->query(fn (Builder $q) =>
+                        $q->whereRaw('JSON_SEARCH(ktp_type, "one", "paspor") IS NULL')
                     ),
 
                 Tables\Filters\Filter::make('veteran_tidak_lolos')
@@ -623,109 +421,205 @@ class RegistrationResource extends Resource
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
 
+                // ── Lihat Bukti Pembayaran ───────────────────────
                 Tables\Actions\Action::make('view_payment_proof')
                     ->label('Lihat Bukti')
                     ->icon('heroicon-o-photo')
                     ->color('info')
                     ->visible(fn (Registration $r) => $r->hasPaymentProof())
-                    ->modalHeading(fn (Registration $r) => 'Bukti Pembayaran — ' . $r->nama)
-                    ->modalContent(fn (Registration $r) => view('filament.modals.payment-proof', compact('r')))
-                    ->modalSubmitAction(false)
-                    ->modalCancelActionLabel('Tutup'),
+                    ->form([
+                        self::passwordField(),
+                    ])
+                    ->modalHeading(fn (Registration $r) => 'Lihat Bukti Pembayaran — ' . $r->nama)
+                    ->modalSubmitActionLabel('🔓 Verifikasi & Buka')
+                    ->modalWidth('md')
+                    ->action(function (Registration $r, array $data, Tables\Actions\Action $action) {
+                        if (! self::verifyActionPassword($data['action_password'] ?? '')) {
+                            Notification::make()
+                                ->title('Password salah')
+                                ->body('Anda tidak memiliki akses untuk melakukan aksi ini.')
+                                ->danger()
+                                ->send();
+                            $action->halt();
+                            return;
+                        }
 
+                        // Password benar — tampilkan modal bukti via second modal
+                        Notification::make()
+                            ->title('Akses diberikan')
+                            ->body('Membuka bukti pembayaran...')
+                            ->success()
+                            ->send();
+
+                        // Redirect ke halaman view record dengan bukti terbuka
+                        // atau tampilkan notifikasi dengan URL gambar
+                        $proofUrl = asset('storage/' . $r->payment_proof);
+
+                        Notification::make()
+                            ->title('Bukti Pembayaran — ' . $r->nama)
+                            ->body('Klik tombol di bawah untuk membuka gambar bukti pembayaran.')
+                            ->actions([
+                                \Filament\Notifications\Actions\Action::make('open')
+                                    ->label('Buka Bukti Pembayaran')
+                                    ->url($proofUrl)
+                                    ->openUrlInNewTab()
+                                    ->button(),
+                            ])
+                            ->persistent()
+                            ->success()
+                            ->send();
+                    }),
+
+                // ── Approve Pembayaran ───────────────────────────
                 Tables\Actions\Action::make('approve_payment')
                     ->label('Approve')
                     ->icon('heroicon-o-check-circle')
                     ->color('success')
                     ->visible(fn (Registration $r) => $r->status === 'pending_verification')
-                    ->requiresConfirmation()
-                    ->modalHeading('Approve Pembayaran?')
-                    ->modalDescription('Pembayaran akan disetujui, PDF receipt akan digenerate, dan email konfirmasi akan dikirim ke peserta.')
-                    ->modalSubmitActionLabel('Approve')
-                    ->action(function (Registration $r) {
+                    ->form([
+                        Forms\Components\Placeholder::make('info')
+                            ->label('')
+                            ->content(fn (Registration $r) => new HtmlString(
+                                '<div style="padding:12px 14px;border-radius:10px;background:#f0fdf4;border:1px solid #86efac;margin-bottom:4px;">'
+                                . '<p style="font-size:13px;font-weight:600;color:#15803d;margin:0 0 4px;">Konfirmasi Approve Pembayaran</p>'
+                                . '<p style="font-size:12px;color:#166534;margin:0;">PDF receipt akan digenerate dan email konfirmasi dikirim ke peserta setelah approve.</p>'
+                                . '</div>'
+                            )),
+                        self::passwordField(),
+                    ])
+                    ->modalHeading(fn (Registration $r) => 'Approve Pembayaran — ' . $r->nama)
+                    ->modalSubmitActionLabel('✓ Approve Sekarang')
+                    ->modalWidth('md')
+                    ->action(function (Registration $r, array $data, Tables\Actions\Action $action) {
+                        if (! self::verifyActionPassword($data['action_password'] ?? '')) {
+                            Notification::make()
+                                ->title('Password salah')
+                                ->body('Anda tidak memiliki akses untuk melakukan aksi ini.')
+                                ->danger()
+                                ->send();
+                            $action->halt();
+                            return;
+                        }
+
                         $r->approvePayment(auth()->id());
-                        
-                        // Generate PDF receipt
                         app(ReceiptPdfService::class)->generate($r);
-                        
-                        // Send email with PDF attachment
-                        \Illuminate\Support\Facades\Mail::to($r->email)->send(new \App\Mail\RegistrationPaid($r));
-                        
+                        \Illuminate\Support\Facades\Mail::to($r->email)
+                            ->send(new \App\Mail\RegistrationPaid($r));
                         app(WhatsAppService::class)->sendPaymentSuccess($r);
-                        Notification::make()->title('Pembayaran berhasil di-approve dan email dikirim')->success()->send();
+
+                        Notification::make()
+                            ->title('Pembayaran berhasil di-approve')
+                            ->body('Email konfirmasi telah dikirim ke ' . $r->email)
+                            ->success()
+                            ->send();
                     }),
 
+                // ── Reject Pembayaran ────────────────────────────
                 Tables\Actions\Action::make('reject_payment')
                     ->label('Reject')
                     ->icon('heroicon-o-x-circle')
                     ->color('danger')
                     ->visible(fn (Registration $r) => $r->status === 'pending_verification')
-                    ->requiresConfirmation()
-                    ->modalHeading('Tolak Pembayaran?')
-                    ->modalDescription('Pembayaran akan ditolak. Peserta dapat upload ulang bukti pembayaran.')
-                    ->modalSubmitActionLabel('Tolak')
                     ->form([
+                        Forms\Components\Placeholder::make('info')
+                            ->label('')
+                            ->content(new HtmlString(
+                                '<div style="padding:12px 14px;border-radius:10px;background:#fef2f2;border:1px solid #fca5a5;margin-bottom:4px;">'
+                                . '<p style="font-size:13px;font-weight:600;color:#dc2626;margin:0 0 4px;">Konfirmasi Penolakan Pembayaran</p>'
+                                . '<p style="font-size:12px;color:#991b1b;margin:0;">Peserta dapat upload ulang bukti pembayaran setelah ditolak.</p>'
+                                . '</div>'
+                            )),
+                        self::passwordField(),
                         Forms\Components\Textarea::make('note')
                             ->label('Alasan Penolakan')
                             ->required()
-                            ->maxLength(500),
+                            ->maxLength(500)
+                            ->placeholder('Contoh: Bukti pembayaran tidak jelas / nominal tidak sesuai')
+                            ->helperText('Alasan ini akan dikirim ke peserta via email'),
                     ])
-                    ->action(function (Registration $r, array $data) {
+                    ->modalHeading(fn (Registration $r) => 'Tolak Pembayaran — ' . $r->nama)
+                    ->modalSubmitActionLabel('✗ Tolak Pembayaran')
+                    ->modalWidth('md')
+                    ->action(function (Registration $r, array $data, Tables\Actions\Action $action) {
+                        if (! self::verifyActionPassword($data['action_password'] ?? '')) {
+                            Notification::make()
+                                ->title('Password salah')
+                                ->body('Anda tidak memiliki akses untuk melakukan aksi ini.')
+                                ->danger()
+                                ->send();
+                            $action->halt();
+                            return;
+                        }
+
                         $r->rejectPayment(auth()->id(), $data['note']);
-                        \Illuminate\Support\Facades\Mail::to($r->email)->send(new \App\Mail\RegistrationRejected($r));
+                        \Illuminate\Support\Facades\Mail::to($r->email)
+                            ->send(new \App\Mail\RegistrationRejected($r));
                         app(WhatsAppService::class)->sendPaymentRejected($r);
-                        Notification::make()->title('Pembayaran berhasil di-reject')->success()->send();
+
+                        Notification::make()
+                            ->title('Pembayaran berhasil di-reject')
+                            ->body('Email notifikasi telah dikirim ke ' . $r->email)
+                            ->success()
+                            ->send();
                     }),
 
+                // ── Lihat Dokumen KTP/Paspor ─────────────────────
                 Tables\Actions\Action::make('lihat_ktp')
-                    ->label('Lihat KTP')
+                    ->label('Lihat Dok.')
                     ->icon('heroicon-o-identification')
                     ->color('info')
-                    ->visible(fn (Registration $r) => ! empty($r->ktp_files))
-                    ->modalHeading(fn (Registration $r) => 'Foto KTP — ' . $r->nama)
+                    ->visible(fn (Registration $r) => ! empty($r->ktp_files) || ! empty($r->paspor_files) || ! empty($r->paspor_number))
+                    ->modalHeading(fn (Registration $r) => 'Dokumen Peserta — ' . $r->nama)
                     ->modalContent(fn (Registration $r): HtmlString => new HtmlString(
                         self::buildKtpModalHtml($r)
                     ))
                     ->modalSubmitAction(false)
                     ->modalCancelActionLabel('Tutup'),
 
+                // ── Download PDF Receipt ─────────────────────────
                 Tables\Actions\Action::make('download_receipt')
-                    ->label('PDF')->icon('heroicon-o-document-arrow-down')->color('gray')
+                    ->label('PDF')
+                    ->icon('heroicon-o-document-arrow-down')
+                    ->color('gray')
                     ->visible(fn (Registration $r) => $r->status === 'paid' && $r->pdf_receipt_path)
                     ->url(fn (Registration $r) => route('registration.receipt', $r->uuid))
                     ->openUrlInNewTab(),
 
-            Tables\Actions\Action::make('resend_payment_email')
-                ->label('Resend Link Bayar')
-                ->icon('heroicon-o-paper-airplane')
-                ->color('warning')
-                ->visible(fn (Registration $r) => in_array($r->status, ['pending', 'expired']))
-                ->requiresConfirmation()
-                ->modalHeading('Kirim Ulang Link Pembayaran?')
-                ->modalDescription(fn (Registration $r) =>
-                    'Link pembayaran baru akan dibuat dan dikirim ke ' . $r->email . '. Link lama akan otomatis tidak berlaku.'
-                )
-                ->action(function (Registration $r) {
-                    $r->regeneratePaymentToken(24); // token baru, link lama mati
+                // ── Resend Link Pembayaran ───────────────────────
+                Tables\Actions\Action::make('resend_payment_email')
+                    ->label('Resend Link Bayar')
+                    ->icon('heroicon-o-paper-airplane')
+                    ->color('warning')
+                    ->visible(fn (Registration $r) => in_array($r->status, ['pending', 'expired']))
+                    ->requiresConfirmation()
+                    ->modalHeading('Kirim Ulang Link Pembayaran?')
+                    ->modalDescription(fn (Registration $r) =>
+                        'Link pembayaran baru akan dibuat dan dikirim ke ' . $r->email . '. Link lama akan otomatis tidak berlaku.'
+                    )
+                    ->action(function (Registration $r) {
+                        $r->regeneratePaymentToken(24);
+                        \Illuminate\Support\Facades\Mail::to($r->email)
+                            ->send(new \App\Mail\RegistrationPending($r->fresh()));
+                        app(WhatsAppService::class)->sendPaymentLink($r->fresh());
+                        Notification::make()
+                            ->title('Link pembayaran baru dikirim ke ' . $r->email)
+                            ->success()
+                            ->send();
+                    }),
 
-                    \Illuminate\Support\Facades\Mail::to($r->email)
-                        ->send(new \App\Mail\RegistrationPending($r->fresh()));
-
-                    app(WhatsAppService::class)->sendPaymentLink($r->fresh());
-
-                    Notification::make()
-                        ->title('Link pembayaran baru dikirim ke ' . $r->email)
-                        ->success()
-                        ->send();
-                }),
+                // ── Resend Email Paid ────────────────────────────
                 Tables\Actions\Action::make('resend_email')
                     ->label('Resend Email')
-                    ->icon('heroicon-o-envelope')->color('info')
+                    ->icon('heroicon-o-envelope')
+                    ->color('info')
                     ->visible(fn (Registration $r) => $r->status === 'paid' && ! empty($r->email))
                     ->action(function (Registration $r) {
                         \Illuminate\Support\Facades\Mail::to($r->email)
                             ->send(new \App\Mail\RegistrationPaid($r));
-                        Notification::make()->title('Email berhasil dikirim ulang')->success()->send();
+                        Notification::make()
+                            ->title('Email berhasil dikirim ulang')
+                            ->success()
+                            ->send();
                     }),
             ])
             ->bulkActions([
@@ -737,40 +631,297 @@ class RegistrationResource extends Resource
             ->poll('30s');
     }
 
-    // ── Modal foto KTP ────────────────────────────────────────────
+    // ============================================================
+    // VETERAN SUMMARY HTML
+    // ============================================================
+
+    private static function buildVeteranSummaryHtml(Registration $record): string
+    {
+        $usia   = $record->usia_pemain ?? [];
+        $pemain = $record->pemain     ?? [];
+
+        $u0    = isset($usia[0]) ? (int) $usia[0] : null;
+        $u1    = isset($usia[1]) ? (int) $usia[1] : null;
+        $total = ($u0 !== null && $u1 !== null) ? ($u0 + $u1) : null;
+
+        $v0      = $u0 !== null && $u0 >= 45;
+        $v1      = $u1 !== null && $u1 >= 45;
+        $totalOk = $total !== null && $total >= 95;
+        $allValid = $v0 && $v1 && $totalOk;
+
+        $nama0 = htmlspecialchars($pemain[0] ?? 'Pemain 1');
+        $nama1 = htmlspecialchars($pemain[1] ?? 'Pemain 2');
+
+        $borderColor = $allValid ? '#86efac' : '#fca5a5';
+        $bgColor     = $allValid ? '#f0fdf4'  : '#fef2f2';
+        $titleColor  = $allValid ? '#15803d'  : '#dc2626';
+        $titleText   = $allValid
+            ? '✓ Kedua pemain memenuhi syarat veteran'
+            : '✗ Terdapat pelanggaran syarat veteran';
+
+        $rowHtml = function ($nama, $usia, $valid) {
+            $warna = $valid ? '#15803d' : '#dc2626';
+            $icon  = $valid ? '✓' : '✗';
+            $keterangan = $usia !== null
+                ? ($valid
+                    ? $usia . ' tahun — Memenuhi syarat (≥ 45 thn)'
+                    : $usia . ' tahun — Tidak memenuhi syarat (min. 45 thn)')
+                : 'Data usia tidak tersedia';
+
+            return '
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #e5e7eb;">
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <span style="font-size:12px;font-weight:700;color:' . $warna . ';">' . $icon . '</span>
+                    <span style="font-size:12px;color:#374151;">' . $nama . '</span>
+                </div>
+                <span style="font-size:12px;font-weight:700;color:' . $warna . ';">' . $keterangan . '</span>
+            </div>';
+        };
+
+        $totalColor = $totalOk ? '#15803d' : '#dc2626';
+        $totalIcon  = $totalOk ? '✓' : '✗';
+        $totalText  = $total !== null
+            ? ($totalOk
+                ? $total . ' tahun — Memenuhi syarat (≥ 95 thn)'
+                : $total . ' tahun — Tidak memenuhi syarat (min. 95 thn)')
+            : 'Data tidak lengkap';
+
+        return '
+        <div style="background:' . $bgColor . ';border:1px solid ' . $borderColor . ';border-radius:12px;padding:16px;">
+            <p style="font-size:12px;font-weight:700;margin-bottom:12px;color:' . $titleColor . ';">' . $titleText . '</p>
+            ' . $rowHtml($nama0, $u0, $v0) . '
+            ' . $rowHtml($nama1, $u1, $v1) . '
+            <div style="display:flex;align-items:center;justify-content:space-between;padding-top:12px;margin-top:4px;">
+                <span style="font-size:12px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;">Total Usia 2 Pemain</span>
+                <span style="font-size:14px;font-weight:800;color:' . $totalColor . ';">
+                    ' . $totalIcon . ' ' . $totalText . '
+                </span>
+            </div>
+        </div>';
+    }
+
+    // ============================================================
+    // KTP / PASPOR HTML
+    // ============================================================
+
+    private static function buildKtpHtml(Registration $record): string
+    {
+        $pemain      = $record->pemain        ?? [];
+        $nik         = $record->nik           ?? [];
+        $pasporNum   = $record->paspor_number ?? [];
+        $ktpType     = $record->ktp_type      ?? [];
+        $tglLahir    = $record->tgl_lahir     ?? [];
+        $usia        = $record->usia_pemain   ?? [];
+        $ktpFiles    = $record->ktp_files     ?? [];
+        $pasporFiles = $record->paspor_files  ?? [];
+        $ktpData     = $record->ktp_data      ?? [];
+        $isVeteran   = $record->kategori === 'ganda-veteran-putra';
+
+        if (empty($pemain)) {
+            return '<p style="color:#6b7280;font-size:14px;">Belum ada data pemain.</p>';
+        }
+
+        $html = '<div style="display:grid;grid-template-columns:1fr;gap:24px;">';
+
+        foreach ($pemain as $i => $nama) {
+            $docType  = $ktpType[$i] ?? 'ktp';
+            $isPaspor = $docType === 'paspor';
+
+            $namaHtml = htmlspecialchars($nama);
+            $nilTgl   = htmlspecialchars($tglLahir[$i] ?? '—');
+            $nilUsia  = isset($usia[$i]) ? (int) $usia[$i] : null;
+
+            $docBadge = $isPaspor
+                ? '<span style="display:inline-flex;align-items:center;gap:4px;padding:2px 10px;border-radius:99px;font-size:10px;font-weight:700;background:#ede9fe;color:#6d28d9;border:1px solid #c4b5fd;">🛂 PASPOR</span>'
+                : '<span style="display:inline-flex;align-items:center;gap:4px;padding:2px 10px;border-radius:99px;font-size:10px;font-weight:700;background:#fff7ed;color:#c2410c;border:1px solid #fed7aa;">🪪 KTP</span>';
+
+            $usiaHtml = '';
+            if ($nilUsia !== null) {
+                if ($isVeteran) {
+                    $validPerPemain = $nilUsia >= 45;
+                    $warna = $validPerPemain ? '#15803d' : '#dc2626';
+                    $label = ($validPerPemain ? '✓ ' : '✗ ') . $nilUsia
+                           . ' tahun — ' . ($validPerPemain ? 'Memenuhi syarat (≥ 45 thn)' : 'Tidak memenuhi syarat (min. 45 thn)');
+                } else {
+                    $warna = '#374151';
+                    $label = $nilUsia . ' tahun';
+                }
+                $usiaHtml = self::infoRow('Usia', $label, $warna, 'bold');
+            }
+
+            $docRows = $isPaspor
+                ? self::infoRow('No. Paspor', htmlspecialchars($pasporNum[$i] ?? '—'), '#111827', 'bold', 'monospace')
+                : self::infoRow('NIK', htmlspecialchars($nik[$i] ?? '—'), '#111827', 'bold', 'monospace');
+
+            // Foto
+            $fotoHtml = '';
+            if ($isPaspor) {
+                $filePath = self::getFilePathForIndex($pasporFiles, $i);
+                if ($filePath) {
+                    $url = route('admin.paspor.serve', ['uuid' => $record->uuid, 'filename' => basename($filePath)]);
+                    $fotoHtml = '
+                    <div>
+                        <p style="font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">📷 Foto Paspor</p>
+                        <a href="' . $url . '" target="_blank" style="display:block;">
+                            <img src="' . $url . '" alt="Paspor Pemain ' . ($i + 1) . '"
+                                 style="max-height:192px;width:100%;border-radius:8px;border:1px solid #d1d5db;object-fit:contain;cursor:pointer;background:#f9fafb;"
+                                 onerror="this.outerHTML=\'<p style=\\\'color:#dc2626;font-size:12px;margin-top:8px;\\\'>File tidak dapat dimuat.</p>\'">
+                        </a>
+                        <p style="font-size:11px;color:#6b7280;margin-top:4px;">' . htmlspecialchars(basename($filePath)) . ' · <a href="' . $url . '" target="_blank" style="color:#2563eb;text-decoration:none;">Buka fullsize</a></p>
+                    </div>';
+                } else {
+                    $fotoHtml = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;border-radius:8px;border:1.5px dashed #c4b5fd;background:#faf5ff;text-align:center;"><span style="font-size:28px;margin-bottom:8px;">🛂</span><p style="font-size:12px;font-weight:700;color:#6d28d9;margin:0;">Foto Paspor</p><p style="font-size:11px;color:#8b5cf6;margin:4px 0 0;">File tidak ditemukan</p></div>';
+                }
+            } else {
+                $filePath = self::getFilePathForIndex($ktpFiles, $i);
+                if ($filePath) {
+                    $url = route('admin.ktp.serve', ['uuid' => $record->uuid, 'filename' => basename($filePath)]);
+                    $fotoHtml = '
+                    <div>
+                        <p style="font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">📷 Foto KTP</p>
+                        <a href="' . $url . '" target="_blank" style="display:block;">
+                            <img src="' . $url . '" alt="KTP Pemain ' . ($i + 1) . '"
+                                 style="max-height:192px;width:100%;border-radius:8px;border:1px solid #d1d5db;object-fit:contain;cursor:pointer;background:#f9fafb;"
+                                 onerror="this.outerHTML=\'<p style=\\\'color:#dc2626;font-size:12px;margin-top:8px;\\\'>File tidak dapat dimuat.</p>\'">
+                        </a>
+                        <p style="font-size:11px;color:#6b7280;margin-top:4px;">' . htmlspecialchars(basename($filePath)) . ' · <a href="' . $url . '" target="_blank" style="color:#2563eb;text-decoration:none;">Buka fullsize</a></p>
+                    </div>';
+                } else {
+                    $fotoHtml = '<p style="font-size:12px;color:#6b7280;font-style:italic;">File KTP tidak ditemukan.</p>';
+                }
+            }
+
+            // Extra fields dari ktp_data
+            $extraHtml = '';
+            if (! $isPaspor) {
+                $rawData     = $ktpData[$i] ?? [];
+                $extraFields = ['kelurahan' => 'Kel/Desa', 'kecamatan' => 'Kecamatan', 'agama' => 'Agama', 'pekerjaan' => 'Pekerjaan', 'status_perkawinan' => 'Status Kawin', 'golongan_darah' => 'Gol. Darah'];
+                foreach ($extraFields as $key => $label) {
+                    $val = (string) ($rawData[$key] ?? '');
+                    if ($val === '') continue;
+                    $extraHtml .= self::infoRow($label, $val);
+                }
+                if ($extraHtml) {
+                    $extraHtml = '<div style="margin-top:12px;padding-top:8px;border-top:1px solid #e5e7eb;">' . $extraHtml . '</div>';
+                }
+            }
+
+            // Gender
+            $rawData      = $ktpData[$i] ?? [];
+            $jenisKelamin = $rawData['jenis_kelamin'] ?? null;
+            $genderHtml   = '';
+            if ($jenisKelamin) {
+                $genderLabel = $jenisKelamin === 'L' ? '♂ Laki-laki' : ($jenisKelamin === 'P' ? '♀ Perempuan' : htmlspecialchars($jenisKelamin));
+                $genderColor = $jenisKelamin === 'L' ? '#1d4ed8' : '#be185d';
+                $genderHtml  = self::infoRow('Kelamin', $genderLabel, $genderColor, 'bold');
+            }
+
+            // Border warna kartu
+            if ($isPaspor) {
+                $cardBorderColor = '#c4b5fd'; $headerBgColor = '#f5f3ff'; $badgeBg = '#ede9fe';
+            } elseif ($isVeteran && $nilUsia !== null) {
+                $cardBorderColor = $nilUsia >= 45 ? '#86efac' : '#fca5a5';
+                $headerBgColor   = $nilUsia >= 45 ? '#f0fdf4'  : '#fef2f2';
+                $badgeBg         = $nilUsia >= 45 ? '#dcfce7'  : '#fee2e2';
+            } else {
+                $cardBorderColor = '#d1d5db'; $headerBgColor = '#f9fafb'; $badgeBg = '#f3f4f6';
+            }
+
+            $html .= '
+            <div style="border-radius:12px;border:1px solid ' . $cardBorderColor . ';overflow:hidden;background:#ffffff;">
+                <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid ' . $cardBorderColor . ';background:' . $headerBgColor . ';">
+                    <div style="width:28px;height:28px;border-radius:50%;background:' . $badgeBg . ';display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#374151;border:1px solid ' . $cardBorderColor . ';">' . ($i + 1) . '</div>
+                    <span style="font-weight:600;font-size:14px;color:#111827;">' . $namaHtml . '</span>
+                    ' . $docBadge . '
+                </div>
+                <div style="padding:16px;display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+                    <div>
+                        <p style="font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">' . ($isPaspor ? '📋 Data Paspor' : '📋 Data KTP') . '</p>
+                        ' . $docRows . '
+                        ' . self::infoRow('Nama', $namaHtml, '#111827', 'semibold') . '
+                        ' . self::infoRow('Tgl Lahir', $nilTgl) . '
+                        ' . $usiaHtml . '
+                        ' . $genderHtml . '
+                        ' . $extraHtml . '
+                    </div>
+                    <div>' . $fotoHtml . '</div>
+                </div>
+            </div>';
+        }
+
+        $html .= '</div>';
+        return $html;
+    }
+
+    private static function infoRow(
+        string $label,
+        string $value,
+        string $color      = '#374151',
+        string $weight     = 'normal',
+        string $fontFamily = 'inherit'
+    ): string {
+        return '
+        <div style="display:flex;gap:12px;padding:6px 0;border-bottom:1px solid #e5e7eb;">
+            <span style="font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;min-width:90px;flex-shrink:0;">' . htmlspecialchars($label) . '</span>
+            <span style="font-size:12px;color:' . $color . ';font-weight:' . $weight . ';font-family:' . $fontFamily . ';">' . $value . '</span>
+        </div>';
+    }
+
+    private static function getFilePathForIndex(array $files, int $index): ?string
+    {
+        if (isset($files[$index])) return $files[$index];
+        if (count($files) === 1) { $first = reset($files); return $first !== false ? $first : null; }
+        return null;
+    }
 
     private static function buildKtpModalHtml(Registration $record): string
     {
-        $ktpFiles = $record->ktp_files ?? [];
-        $pemain   = $record->pemain   ?? [];
+        $ktpFiles    = $record->ktp_files     ?? [];
+        $pasporFiles = $record->paspor_files  ?? [];
+        $pemain      = $record->pemain        ?? [];
+        $ktpType     = $record->ktp_type      ?? [];
+        $pasporNum   = $record->paspor_number ?? [];
 
-        if (empty($ktpFiles)) {
-            return '<p style="color:#6b7280;font-size:14px;padding:16px;">Tidak ada file KTP.</p>';
+        if (empty($ktpFiles) && empty($pasporFiles) && empty(array_filter($pasporNum ?? []))) {
+            return '<p style="color:#6b7280;font-size:14px;padding:16px;">Tidak ada dokumen.</p>';
         }
 
         $html = '<div style="display:flex;flex-direction:column;gap:24px;padding:8px;">';
-        foreach ($ktpFiles as $i => $path) {
-            $nama   = htmlspecialchars($pemain[$i] ?? 'Pemain ' . ($i + 1));
-            $ktpUrl = route('admin.ktp.serve', [
-                'uuid'     => $record->uuid,
-                'filename' => basename($path),
-            ]);
-            $html .= '
-            <div>
-                <p style="font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">
-                    Pemain ' . ($i + 1) . ' — ' . $nama . '
-                </p>
-                <a href="' . $ktpUrl . '" target="_blank">
-                    <img src="' . $ktpUrl . '" alt="KTP ' . $nama . '"
-                         style="width:100%;max-height:256px;object-fit:contain;border-radius:8px;
-                                border:1px solid #d1d5db;background:#f9fafb;cursor:pointer;transition:opacity 0.2s;"
-                         onerror="this.outerHTML=\'<p style=\\\'color:#dc2626;font-size:12px;\\\'>Gambar tidak dapat dimuat.</p>\'">
-                </a>
-                <p style="font-size:11px;color:#6b7280;margin-top:4px;">'
-                    . htmlspecialchars(basename($path))
-                    . ' · Klik untuk buka fullsize</p>
-            </div>';
+
+        foreach ($pemain as $i => $nama) {
+            $docType  = $ktpType[$i] ?? 'ktp';
+            $isPaspor = $docType === 'paspor';
+            $namaHtml = htmlspecialchars($nama);
+
+            $html .= '<div><p style="font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">Pemain ' . ($i + 1) . ' — ' . $namaHtml
+                . ($isPaspor
+                    ? ' <span style="margin-left:6px;padding:1px 8px;border-radius:99px;font-size:10px;background:#ede9fe;color:#6d28d9;border:1px solid #c4b5fd;">🛂 Paspor</span>'
+                    : ' <span style="margin-left:6px;padding:1px 8px;border-radius:99px;font-size:10px;background:#fff7ed;color:#c2410c;border:1px solid #fed7aa;">🪪 KTP</span>')
+                . '</p>';
+
+            if ($isPaspor) {
+                $noPass = htmlspecialchars($pasporNum[$i] ?? '—');
+                $html  .= '<div style="padding:16px;border-radius:8px;border:1.5px dashed #c4b5fd;background:#faf5ff;text-align:center;"><p style="font-size:11px;color:#8b5cf6;margin:0 0 4px;">Nomor Paspor</p><p style="font-size:18px;font-weight:800;color:#6d28d9;font-family:monospace;margin:0;">' . $noPass . '</p></div>';
+                $pasporPath = self::getFilePathForIndex($pasporFiles, $i);
+                if ($pasporPath) {
+                    $url   = route('admin.paspor.serve', ['uuid' => $record->uuid, 'filename' => basename($pasporPath)]);
+                    $html .= '<a href="' . $url . '" target="_blank" style="margin-top:12px;display:block;"><img src="' . $url . '" alt="Paspor ' . $namaHtml . '" style="width:100%;max-height:256px;object-fit:contain;border-radius:8px;border:1px solid #d1d5db;background:#f9fafb;cursor:pointer;" onerror="this.outerHTML=\'<p style=\\\'color:#dc2626;font-size:12px;\\\'>Gambar tidak dapat dimuat.</p>\'"></a><p style="font-size:11px;color:#6b7280;margin-top:4px;">' . htmlspecialchars(basename($pasporPath)) . ' · Klik untuk buka fullsize</p>';
+                } else {
+                    $html .= '<p style="font-size:12px;color:#6b7280;font-style:italic;margin-top:8px;">File paspor tidak ditemukan.</p>';
+                }
+            } else {
+                $path = self::getFilePathForIndex($ktpFiles, $i);
+                if ($path) {
+                    $url   = route('admin.ktp.serve', ['uuid' => $record->uuid, 'filename' => basename($path)]);
+                    $html .= '<a href="' . $url . '" target="_blank"><img src="' . $url . '" alt="KTP ' . $namaHtml . '" style="width:100%;max-height:256px;object-fit:contain;border-radius:8px;border:1px solid #d1d5db;background:#f9fafb;cursor:pointer;" onerror="this.outerHTML=\'<p style=\\\'color:#dc2626;font-size:12px;\\\'>Gambar tidak dapat dimuat.</p>\'"></a><p style="font-size:11px;color:#6b7280;margin-top:4px;">' . htmlspecialchars(basename($path)) . ' · Klik untuk buka fullsize</p>';
+                } else {
+                    $html .= '<p style="font-size:12px;color:#6b7280;font-style:italic;">File KTP tidak ditemukan.</p>';
+                }
+            }
+
+            $html .= '</div>';
         }
+
         $html .= '</div>';
         return $html;
     }
@@ -785,7 +936,7 @@ class RegistrationResource extends Resource
     {
         return [
             'index'  => Pages\ListRegistrations::route('/'),
-         'create' => Pages\CreateRegistration::route('/create'),
+            'create' => Pages\CreateRegistration::route('/create'),
             'view'   => Pages\ViewRegistration::route('/{record}'),
             'edit'   => Pages\EditRegistration::route('/{record}/edit'),
         ];
@@ -800,7 +951,8 @@ class RegistrationResource extends Resource
     {
         return 'warning';
     }
-public static function getWidgets(): array
+
+    public static function getWidgets(): array
     {
         return [
             \App\Filament\Resources\RegistrationResource\Widgets\RegistrationStatsOverview::class,
