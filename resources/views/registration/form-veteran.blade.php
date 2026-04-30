@@ -43,6 +43,86 @@
 .form-section:nth-child(4)    { animation-delay: .24s; }
 .form-section:nth-child(5)    { animation-delay: .30s; }
 
+/* ── Doc Type Toggle ─────────────────────────────────────── */
+.doc-type-toggle {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 4px; border-radius: 12px;
+    background: rgba(234,179,8,.06); border: 1px solid rgba(234,179,8,.18);
+    margin-bottom: 16px;
+}
+.doc-type-btn {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 14px; border-radius: 9px; border: none;
+    font-size: 11px; font-weight: 700; cursor: pointer;
+    transition: background .2s, color .2s, box-shadow .2s;
+    letter-spacing: .03em;
+}
+.doc-type-btn.active-ktp {
+    background: rgba(234,179,8,.9); color: #000;
+    box-shadow: 0 2px 10px rgba(234,179,8,.3);
+}
+.doc-type-btn.active-paspor {
+    background: rgba(180,83,9,.88); color: #fff;
+    box-shadow: 0 2px 10px rgba(180,83,9,.28);
+}
+.doc-type-btn.inactive {
+    background: transparent; color: rgba(80,60,10,.55);
+}
+.doc-type-btn.inactive:hover {
+    color: rgba(234,179,8,.85); background: rgba(234,179,8,.08);
+}
+
+/* ── Paspor Form ─────────────────────────────────────────── */
+.paspor-form {
+    border-radius: 14px; border: 1.5px solid rgba(234,179,8,.20);
+    background: rgba(255,251,235,.92); padding: 16px; margin-bottom: 4px;
+}
+.paspor-form .paspor-title {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .08em; color: rgba(120,80,0,.75); margin-bottom: 12px;
+    display: flex; align-items: center; gap: 6px;
+}
+.paspor-input {
+    width: 100%; background: rgba(255,255,255,.9) !important;
+    border: 1.5px solid rgba(234,179,8,.35) !important;
+    border-radius: 10px !important; color: #1a1a1a !important;
+    font-size: 13px !important; padding: 10px 14px !important;
+    transition: border-color .2s, box-shadow .2s; outline: none;
+}
+.paspor-input:focus {
+    border-color: rgba(180,83,9,.7) !important;
+    box-shadow: 0 0 0 3px rgba(234,179,8,.14) !important;
+}
+.paspor-input::placeholder { color: rgba(0,0,0,.3) !important; }
+.paspor-input.has-error {
+    border-color: rgba(239,68,68,.55) !important;
+    box-shadow: 0 0 0 2px rgba(239,68,68,.1) !important;
+}
+.paspor-select { appearance: none; cursor: pointer; }
+.paspor-field-label {
+    display: block; font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .06em;
+    color: rgba(120,80,0,.6); margin-bottom: 5px;
+}
+.paspor-usia-display {
+    font-size: 11px; font-weight: 700; padding: 6px 10px;
+    border-radius: 8px; display: inline-block; margin-top: 4px;
+}
+.paspor-usia-display.has-value {
+    background: rgba(16,185,129,.08); border: 1px solid rgba(16,185,129,.25); color: #34d399;
+}
+.paspor-usia-display.no-value {
+    background: transparent; border: 1px solid rgba(255,255,255,.08);
+    color: rgba(255,255,255,.25); font-style: italic; font-weight: 400;
+}
+
+/* ── Paspor badge ──────────────────────────────────────────── */
+.paspor-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 2px 8px; border-radius: 99px; font-size: 11px; font-weight: 700;
+    background: rgba(234,179,8,.10); border: 1px solid rgba(234,179,8,.35); color: #b45309;
+}
+
 /* ── Age badge ─────────────────────────────────────────────── */
 .age-badge {
     display: inline-flex; align-items: center; gap: 5px;
@@ -71,7 +151,10 @@
     border-color: rgba(239,68,68,.42);
     background: rgba(20,4,4,.78);
 }
-/* FIX: has-field-error state untuk highlight card yang belum lengkap */
+.pemain-ocr-card.paspor-mode {
+    border-color: rgba(234,179,8,.30);
+    background: rgba(20,14,2,.80);
+}
 .pemain-ocr-card.has-field-error {
     border-color: rgba(239,68,68,.5) !important;
     box-shadow: 0 0 0 2px rgba(239,68,68,.1) !important;
@@ -326,7 +409,7 @@ select.input-field:disabled        { opacity: .4 !important; cursor: not-allowed
             <ul class="text-white/40 text-xs space-y-1 leading-relaxed list-none">
                 <li>&#9654; Setiap pemain <strong class="text-white/60">wajib berusia &ge; 45 tahun</strong></li>
                 <li>&#9654; <strong class="text-white/60">Total usia</strong> kedua pemain <strong class="text-white/60">wajib &ge; 95 tahun</strong></li>
-                <li>&#9654; Verifikasi otomatis via scan KTP</li>
+                <li>&#9654; Verifikasi otomatis via scan KTP atau input manual Paspor</li>
             </ul>
         </div>
 
@@ -457,144 +540,262 @@ select.input-field:disabled        { opacity: .4 !important; cursor: not-allowed
         </div>
     </div>
 
-    {{-- ══════════ SECTION 3 — SCAN KTP & VERIFIKASI USIA ═════════ --}}
+    {{-- ══════════ SECTION 3 — DOKUMEN & VERIFIKASI USIA ══════════ --}}
     <div class="rounded-2xl p-8 mb-6 form-section"
          style="background:rgba(234,179,8,.035);border:1.5px solid rgba(234,179,8,.16);">
 
         <h2 class="font-display text-sm font-bold mb-1 flex items-center gap-2">
             <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-black"
                   style="background:rgba(234,179,8,.9);color:#000;">3</span>
-            Scan KTP &amp; Verifikasi Usia
+            Dokumen &amp; Verifikasi Usia
         </h2>
         <p class="text-white/30 text-xs mb-1 ml-9">
-            Upload foto KTP lalu klik <strong class="text-yellow-400/75">SCAN KTP</strong> — verifikasi usia otomatis.
+            Pilih <strong class="text-yellow-400/80">KTP</strong> untuk scan otomatis, atau
+            <strong class="text-yellow-400/80">Paspor</strong> untuk input manual.
         </p>
         <p class="text-white/18 text-xs mb-7 ml-9">
-            Data KTP dikunci setelah scan. Jika ada kesalahan, reset dan scan ulang.
+            Data KTP dikunci setelah scan. Paspor diisi manual. Verifikasi usia otomatis.
         </p>
 
+        {{-- ─── PEMAIN 0 ─── --}}
         @foreach([0,1] as $idx)
         <div id="ocr_card_{{ $idx }}" class="pemain-ocr-card {{ $idx === 1 ? 'mt-5' : '' }}">
-            <div class="flex items-center justify-between mb-5">
+
+            {{-- Header --}}
+            <div class="flex items-center justify-between mb-4">
                 <div class="flex items-center gap-3">
                     <div class="w-8 h-8 rounded-full flex items-center justify-center"
                          style="background:rgba(234,179,8,.14);border:1px solid rgba(234,179,8,.3);">
                         <span class="text-yellow-400 text-xs font-black">{{ $idx + 1 }}</span>
                     </div>
                     <span class="text-white/80 text-sm font-bold">Pemain {{ $idx + 1 }}</span>
+                    <span id="paspor_badge_{{ $idx }}" class="paspor-badge" style="display:none;">🛂 Paspor</span>
                 </div>
-                <div id="age_badge_{{ $idx }}" class="age-badge pending">Belum scan</div>
+                <div id="age_badge_{{ $idx }}" class="age-badge pending">Belum diisi</div>
             </div>
 
-            <div class="mb-4">
-                <label class="block text-white/45 text-xs font-semibold uppercase tracking-wide mb-2">
-                    Foto KTP <span class="text-brand-400">*</span>
-                    <span class="text-white/22 font-normal normal-case">
-                        &mdash; JPG · PNG · HEIC · WebP &middot; Maks 10MB
-                    </span>
-                </label>
-
-                {{-- Dropzone --}}
-                <div id="ktpDropzone_{{ $idx }}"
-                    onclick="VET.showSheet({{ $idx }})"
-                    class="border-2 border-dashed rounded-xl p-4 text-center cursor-pointer transition-all"
-                    style="border-color:rgba(234,179,8,.22);background:rgba(234,179,8,.018);"
-                    ondragover="event.preventDefault();this.style.borderColor='rgba(234,179,8,.6)'"
-                    ondragleave="this.style.borderColor='rgba(234,179,8,.22)'"
-                    ondrop="VET.drop(event,{{ $idx }})">
-
-                    {{-- Preview --}}
-                    <div id="ktpPreview_{{ $idx }}" class="hidden">
-                        <div class="relative inline-block mb-2">
-                            <img id="ktpPreviewImg_{{ $idx }}" src="" alt=""
-                                 class="max-h-32 mx-auto rounded-lg object-contain"
-                                 style="box-shadow:0 4px 20px rgba(0,0,0,.55);">
-                            <button type="button" onclick="VET.resetSlot(event,{{ $idx }})"
-                                    class="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center transition">
-                                <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"/>
-                                </svg>
-                            </button>
-                        </div>
-                        <p class="text-white/28 text-xs">Ketuk untuk ganti foto</p>
-                    </div>
-
-                    {{-- Default placeholder --}}
-                    <div id="ktpDefault_{{ $idx }}" class="flex flex-col items-center py-3">
-                        <div class="w-11 h-11 rounded-xl bg-yellow-500/10 flex items-center justify-center mb-3">
-                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
-                                 stroke="rgba(250,204,21,.55)" stroke-width="1.5">
-                                <rect x="3" y="5" width="18" height="14" rx="2"/>
-                                <path d="M7 9h10M7 13h6"/>
-                            </svg>
-                        </div>
-                        <p class="text-white/50 text-sm font-medium">Ketuk untuk upload KTP</p>
-                        <p class="text-white/22 text-xs mt-0.5">Kamera · Galeri · File Manager &middot; Maks 10MB</p>
-                    </div>
-                </div>
-
-                {{-- 3 hidden file inputs --}}
-                <input type="file" id="ktpCamera_{{ $idx }}"
-                       accept="image/*" capture="environment" class="hidden"
-                       onchange="VET.fileSelect(this,{{ $idx }})">
-                <input type="file" id="ktpFoto_{{ $idx }}"
-                       accept="image/*" class="hidden" name="ktp_files[]"
-                       onchange="VET.fileSelect(this,{{ $idx }})">
-                <input type="file" id="ktpFile_{{ $idx }}"
-                       accept="image/*,.heic,.heif" class="hidden"
-                       onchange="VET.fileSelect(this,{{ $idx }})">
-
-                {{-- Scan button --}}
-                <button type="button" id="scanBtn_{{ $idx }}" onclick="VET.scan({{ $idx }})"
-                    class="hidden mt-3 w-full py-2.5 rounded-xl font-display text-xs font-bold text-white tracking-wider flex items-center justify-center gap-2"
-                    style="background:linear-gradient(135deg,#eab308,#b45309);box-shadow:0 4px 16px rgba(234,179,8,.22);">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/>
-                    </svg>
-                    SCAN KTP &amp; VERIFIKASI USIA
-                </button>
-
-                {{-- Scan loading --}}
-                <div id="scanLoading_{{ $idx }}" class="hidden mt-3 text-center py-2">
-                    <p class="text-yellow-400 text-xs font-semibold mb-1">Membaca KTP dengan AI...</p>
-                    <div class="scan-loading-bar"><div class="scan-loading-bar-inner"></div></div>
-                </div>
+            {{-- Doc Type Toggle --}}
+            <div class="doc-type-toggle">
+                <button type="button" id="togKtp_{{ $idx }}"
+                        onclick="VET.setDocType({{ $idx }},'ktp')"
+                        class="doc-type-btn active-ktp">🪪 KTP</button>
+                <button type="button" id="togPas_{{ $idx }}"
+                        onclick="VET.setDocType({{ $idx }},'paspor')"
+                        class="doc-type-btn inactive">🛂 Paspor</button>
             </div>
+            <input type="hidden" id="docType_{{ $idx }}" name="ktp_type[{{ $idx }}]" value="ktp">
 
-            {{-- KTP data card (read-only setelah scan) --}}
-            <div id="ktpDataCard_{{ $idx }}" class="ktp-data-card">
-                <p class="text-xs font-bold text-white/35 uppercase tracking-widest mb-3 flex items-center gap-2">
-                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="3" y="5" width="18" height="14" rx="2"/>
-                        <path d="M7 9h10M7 13h6"/>
+            {{-- ── PASPOR FORM ── --}}
+            <div id="pasporForm_{{ $idx }}" class="paspor-form hidden">
+                <p class="paspor-title">
+                    <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                        <path d="M3 5a2 2 0 012-2h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5z"/>
+                        <path d="M9 9h6M9 13h6M9 17h4"/>
                     </svg>
-                    Data KTP Terbaca
+                    Data Paspor — isi manual
                 </p>
-                <div id="ktpDataRows_{{ $idx }}"></div>
+                <div class="space-y-3">
+
+                    {{-- Upload Foto Paspor --}}
+                    <div>
+                        <label class="paspor-field-label">Foto Paspor <span style="color:#eab308">*</span></label>
+                        <div id="pasporDropzone_{{ $idx }}"
+                             onclick="VET.showUploadChoicePaspor({{ $idx }})"
+                             class="border-2 border-dashed rounded-xl p-4 text-center cursor-pointer transition-all"
+                             style="border-color:rgba(234,179,8,.22);background:rgba(234,179,8,.018);"
+                             ondragover="event.preventDefault();this.style.borderColor='rgba(234,179,8,.6)'"
+                             ondragleave="this.style.borderColor='rgba(234,179,8,.22)'"
+                             ondrop="VET.dropPaspor(event,{{ $idx }})">
+                            <div id="pasporPreview_{{ $idx }}" class="hidden">
+                                <div class="relative inline-block mb-2">
+                                    <img id="pasporPreviewImg_{{ $idx }}" src="" alt=""
+                                         class="max-h-32 mx-auto rounded-lg object-contain"
+                                         style="box-shadow:0 4px 20px rgba(0,0,0,.55);">
+                                    <button type="button" onclick="VET.resetPaspor(event,{{ $idx }})"
+                                            class="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center transition">
+                                        <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <p class="text-white/28 text-xs">Ketuk untuk ganti foto</p>
+                            </div>
+                            <div id="pasporDefault_{{ $idx }}" class="flex flex-col items-center py-3">
+                                <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-3"
+                                     style="background:rgba(234,179,8,.1);">
+                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+                                         stroke="rgba(234,179,8,.55)" stroke-width="1.5">
+                                        <rect x="3" y="5" width="18" height="14" rx="2"/>
+                                        <path d="M7 9h10M7 13h6"/>
+                                    </svg>
+                                </div>
+                                <p class="text-white/45 text-sm font-medium">Upload Foto Paspor</p>
+                                <p class="text-white/22 text-xs mt-1">JPG · PNG · HEIC · WebP &middot; Maks 10MB</p>
+                            </div>
+                            <input type="file" id="pasporDropInput_{{ $idx }}"
+                                   accept=".jpg,.jpeg,.png,.heic,.webp" class="hidden">
+                        </div>
+                        <p class="field-error-msg" id="pas_err_paspor_file_{{ $idx }}"></p>
+                    </div>
+
+                    {{-- Nama --}}
+                    <div>
+                        <label class="paspor-field-label">Nama Lengkap <span style="color:#eab308">*</span></label>
+                        <input type="text" id="pas_nama_{{ $idx }}"
+                               placeholder="Nama sesuai paspor" class="paspor-input"
+                               oninput="VET.syncPaspor({{ $idx }},'nama')">
+                        <input type="hidden" name="pemain[{{ $idx }}]" id="pas_hid_nama_{{ $idx }}">
+                        <p class="field-error-msg" id="pas_err_nama_{{ $idx }}"></p>
+                    </div>
+
+                    {{-- Nomor Paspor --}}
+                    <div>
+                        <label class="paspor-field-label">Nomor Paspor <span style="color:#eab308">*</span></label>
+                        <input type="text" id="pas_paspor_{{ $idx }}"
+                               placeholder="Contoh: A1234567" class="paspor-input"
+                               oninput="VET.syncPaspor({{ $idx }},'paspor_number')">
+                        <input type="hidden" name="paspor_number[{{ $idx }}]" id="pas_hid_paspor_{{ $idx }}">
+                        <p class="field-error-msg" id="pas_err_paspor_{{ $idx }}"></p>
+                    </div>
+
+                    {{-- Tanggal Lahir --}}
+                    <div>
+                        <label class="paspor-field-label">Tanggal Lahir <span style="color:#eab308">*</span></label>
+                        <input type="text" id="pas_tgl_{{ $idx }}"
+                               placeholder="DD-MM-YYYY" class="paspor-input"
+                               oninput="VET.syncPaspor({{ $idx }},'tgl_lahir')">
+                        <input type="hidden" name="tgl_lahir[{{ $idx }}]" id="pas_hid_tgl_{{ $idx }}">
+                        <div id="pas_usia_disp_{{ $idx }}" class="paspor-usia-display no-value">— isi tgl lahir dulu</div>
+                        <p class="field-error-msg" id="pas_err_tgl_{{ $idx }}"></p>
+                    </div>
+
+                    {{-- Jenis Kelamin --}}
+                    <div>
+                        <label class="paspor-field-label">Jenis Kelamin <span style="color:#eab308">*</span></label>
+                        <div class="paspor-input bg-slate-100 text-slate-900 cursor-not-allowed" style="pointer-events:none;">Laki-laki</div>
+                        <input type="hidden" name="jenis_kelamin[{{ $idx }}]" id="pas_hid_jenis_kelamin_{{ $idx }}" value="L">
+                        <p class="field-error-msg" id="pas_err_jenis_kelamin_{{ $idx }}"></p>
+                    </div>
+
+                    {{-- NIK placeholder (kosong untuk paspor) --}}
+                    <input type="hidden" name="nik[{{ $idx }}]" id="pas_hid_nik_{{ $idx }}" value="">
+
+                </div>
             </div>
 
-            <p id="tgl_info_{{ $idx }}" class="hidden text-xs mt-2 font-medium"></p>
+            {{-- ── KTP AREA ── --}}
+            <div id="ktpArea_{{ $idx }}">
+                <div class="mb-4">
+                    <label class="block text-white/45 text-xs font-semibold uppercase tracking-wide mb-2">
+                        Foto KTP <span class="text-brand-400">*</span>
+                        <span class="text-white/22 font-normal normal-case">
+                            &mdash; JPG · PNG · HEIC · WebP &middot; Maks 10MB
+                        </span>
+                    </label>
 
-            {{-- Hidden fields — selalu ada di DOM sejak render Blade --}}
-            <input type="hidden" name="pemain[]"      id="pemain_{{ $idx }}"      value="">
-            <input type="hidden" name="nik[]"         id="nik_{{ $idx }}"         value="">
-            <input type="hidden" name="tgl_lahir[]"   id="tgl_lahir_{{ $idx }}"   value="">
-            <input type="hidden" name="usia_valid[]"  id="usia_valid_{{ $idx }}"  value="0">
-            <input type="hidden" name="usia_hitung[]" id="usia_hitung_{{ $idx }}" value="">
+                    <div id="ktpDropzone_{{ $idx }}"
+                        onclick="VET.showSheet({{ $idx }})"
+                        class="border-2 border-dashed rounded-xl p-4 text-center cursor-pointer transition-all"
+                        style="border-color:rgba(234,179,8,.22);background:rgba(234,179,8,.018);"
+                        ondragover="event.preventDefault();this.style.borderColor='rgba(234,179,8,.6)'"
+                        ondragleave="this.style.borderColor='rgba(234,179,8,.22)'"
+                        ondrop="VET.drop(event,{{ $idx }})">
+
+                        <div id="ktpPreview_{{ $idx }}" class="hidden">
+                            <div class="relative inline-block mb-2">
+                                <img id="ktpPreviewImg_{{ $idx }}" src="" alt=""
+                                     class="max-h-32 mx-auto rounded-lg object-contain"
+                                     style="box-shadow:0 4px 20px rgba(0,0,0,.55);">
+                                <button type="button" onclick="VET.resetSlot(event,{{ $idx }})"
+                                        class="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center transition">
+                                    <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"/>
+                                    </svg>
+                                </button>
+                            </div>
+                            <p class="text-white/28 text-xs">Ketuk untuk ganti foto</p>
+                        </div>
+
+                        <div id="ktpDefault_{{ $idx }}" class="flex flex-col items-center py-3">
+                            <div class="w-11 h-11 rounded-xl bg-yellow-500/10 flex items-center justify-center mb-3">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+                                     stroke="rgba(250,204,21,.55)" stroke-width="1.5">
+                                    <rect x="3" y="5" width="18" height="14" rx="2"/>
+                                    <path d="M7 9h10M7 13h6"/>
+                                </svg>
+                            </div>
+                            <p class="text-white/50 text-sm font-medium">Ketuk untuk upload KTP</p>
+                            <p class="text-white/22 text-xs mt-0.5">Kamera · Galeri · File Manager &middot; Maks 10MB</p>
+                        </div>
+                    </div>
+
+                    {{-- File inputs KTP --}}
+                    <input type="file" id="ktpCamera_{{ $idx }}"
+                           accept="image/*" capture="environment" class="hidden"
+                           onchange="VET.fileSelect(this,{{ $idx }})">
+                    <input type="file" id="ktpFoto_{{ $idx }}"
+                           accept="image/*" class="hidden" name="ktp_files[]"
+                           onchange="VET.fileSelect(this,{{ $idx }})">
+                    <input type="file" id="ktpFile_{{ $idx }}"
+                           accept="image/*,.heic,.heif" class="hidden"
+                           onchange="VET.fileSelect(this,{{ $idx }})">
+
+                    {{-- File inputs Paspor --}}
+                    <input type="file" id="pasporCamera_{{ $idx }}"
+                           accept="image/*" capture="environment" class="hidden"
+                           onchange="VET.fileSelectPaspor(this,{{ $idx }})">
+                    <input type="file" id="pasporFoto_{{ $idx }}"
+                           accept="image/*" class="hidden" name="paspor_files[]"
+                           onchange="VET.fileSelectPaspor(this,{{ $idx }})">
+                    <input type="file" id="pasporFile_{{ $idx }}"
+                           accept="image/*,.heic,.heif" class="hidden"
+                           onchange="VET.fileSelectPaspor(this,{{ $idx }})">
+
+                    <button type="button" id="scanBtn_{{ $idx }}" onclick="VET.scan({{ $idx }})"
+                        class="hidden mt-3 w-full py-2.5 rounded-xl font-display text-xs font-bold text-white tracking-wider flex items-center justify-center gap-2"
+                        style="background:linear-gradient(135deg,#eab308,#b45309);box-shadow:0 4px 16px rgba(234,179,8,.22);">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/>
+                        </svg>
+                        SCAN KTP &amp; VERIFIKASI USIA
+                    </button>
+
+                    <div id="scanLoading_{{ $idx }}" class="hidden mt-3 text-center py-2">
+                        <p class="text-yellow-400 text-xs font-semibold mb-1">Membaca KTP dengan AI...</p>
+                        <div class="scan-loading-bar"><div class="scan-loading-bar-inner"></div></div>
+                    </div>
+                </div>
+
+                <div id="ktpDataCard_{{ $idx }}" class="ktp-data-card">
+                    <p class="text-xs font-bold text-white/35 uppercase tracking-widest mb-3 flex items-center gap-2">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="5" width="18" height="14" rx="2"/>
+                            <path d="M7 9h10M7 13h6"/>
+                        </svg>
+                        Data KTP Terbaca
+                    </p>
+                    <div id="ktpDataRows_{{ $idx }}"></div>
+                </div>
+
+                <p id="tgl_info_{{ $idx }}" class="hidden text-xs mt-2 font-medium"></p>
+            </div>
+
+            {{-- Hidden fields usia (untuk KTP flow) --}}
+            <input type="hidden" name="usia_valid[{{ $idx }}]"  id="usia_valid_{{ $idx }}"  value="0">
+            <input type="hidden" name="usia_hitung[{{ $idx }}]" id="usia_hitung_{{ $idx }}" value="">
         </div>
         @endforeach
 
         <div id="totalUsiaBox" class="total-usia-box">
             <div class="flex items-center justify-between">
-                <span class="text-xs font-semibold text-white/45">Total Usia 2 Pemain</span>
+                <span class="text-xs font-semibold text-black/45">Total Usia 2 Pemain</span>
                 <span id="totalUsiaValue" class="text-sm font-bold text-white/40">—</span>
             </div>
         </div>
 
         <div id="veteranSummary" class="veteran-summary">
-            <div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
-                 id="summaryIcon"></div>
+            <div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" id="summaryIcon"></div>
             <div>
                 <p id="summaryTitle"  class="text-xs font-bold"></p>
                 <p id="summaryDetail" class="text-xs mt-0.5 opacity-60"></p>
@@ -630,7 +831,7 @@ select.input-field:disabled        { opacity: .4 !important; cursor: not-allowed
     </button>
 
     <div id="submitWarning" class="submit-warning">
-        &#9888; Harap scan KTP kedua pemain terlebih dahulu untuk verifikasi usia.
+        &#9888; Harap lengkapi data kedua pemain terlebih dahulu untuk verifikasi usia.
     </div>
 
     <p class="text-white/25 text-xs text-center mt-4">
@@ -648,7 +849,7 @@ select.input-field:disabled        { opacity: .4 !important; cursor: not-allowed
     <div class="submit-progress-bar"><div class="submit-progress-inner"></div></div>
 </div>
 
-{{-- ── UPLOAD BOTTOM SHEET ─────────────────────────────────────── --}}
+{{-- ── UPLOAD BOTTOM SHEET (KTP) ───────────────────────────────── --}}
 <div id="uploadSheetBackdrop" class="upload-sheet-backdrop" onclick="_SHEET.close()"></div>
 <div id="uploadSheet" class="upload-sheet" role="dialog" aria-modal="true">
     <div class="upload-sheet-handle"></div>
@@ -676,6 +877,48 @@ select.input-field:disabled        { opacity: .4 !important; cursor: not-allowed
             <span>Upload<br>Foto</span>
         </button>
         <button type="button" class="upload-opt-btn opt-file" onclick="_SHEET.pick('file')">
+            <div class="upload-opt-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+                     stroke="#fde68a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                    <line x1="12" y1="18" x2="12" y2="12"/>
+                    <line x1="9" y1="15" x2="15" y2="15"/>
+                </svg>
+            </div>
+            <span>Upload<br>File</span>
+        </button>
+    </div>
+    <button type="button" class="upload-sheet-cancel" onclick="_SHEET.close()">Batal</button>
+</div>
+
+{{-- ── UPLOAD BOTTOM SHEET (PASPOR) ───────────────────────────── --}}
+<div id="uploadSheetPaspor" class="upload-sheet" role="dialog" aria-modal="true">
+    <div class="upload-sheet-handle"></div>
+    <p class="upload-sheet-title">Pilih Sumber Paspor</p>
+    <div class="upload-sheet-options">
+        <button type="button" class="upload-opt-btn opt-camera" onclick="_SHEET.pickPaspor('camera')">
+            <div class="upload-opt-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+                     stroke="#eab308" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
+                    <circle cx="12" cy="13" r="4"/>
+                </svg>
+            </div>
+            <span>Foto<br>Kamera</span>
+        </button>
+        <button type="button" class="upload-opt-btn opt-foto" onclick="_SHEET.pickPaspor('foto')">
+            <div class="upload-opt-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+                     stroke="#facc15" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2"/>
+                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                    <polyline points="21 15 16 10 5 21"/>
+                </svg>
+            </div>
+            <span>Upload<br>Foto</span>
+        </button>
+        <button type="button" class="upload-opt-btn opt-file" onclick="_SHEET.pickPaspor('file')">
             <div class="upload-opt-icon">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
                      stroke="#fde68a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -756,17 +999,27 @@ document.addEventListener('DOMContentLoaded', loadProvinsi);
 
 <script>
 /* ================================================================
-   _SHEET — Upload Bottom Sheet
+   _SHEET — Upload Bottom Sheet (KTP + Paspor)
 ================================================================ */
 window._SHEET = (function () {
 'use strict';
-var _activeIdx = null, _isAnimating = false;
+var _activeIdx = null, _isAnimating = false, _activeSheet = null;
 
 function open(idx) {
     if (_isAnimating) return;
-    _activeIdx = idx;
+    _activeIdx = idx; _activeSheet = 'uploadSheet';
     var bd = document.getElementById('uploadSheetBackdrop');
     var sh = document.getElementById('uploadSheet');
+    if (!bd || !sh) return;
+    bd.classList.remove('hiding'); sh.classList.remove('hiding');
+    bd.classList.add('show');     sh.classList.add('show');
+    document.body.style.overflow = 'hidden';
+}
+function openPaspor(idx) {
+    if (_isAnimating) return;
+    _activeIdx = idx; _activeSheet = 'uploadSheetPaspor';
+    var bd = document.getElementById('uploadSheetBackdrop');
+    var sh = document.getElementById('uploadSheetPaspor');
     if (!bd || !sh) return;
     bd.classList.remove('hiding'); sh.classList.remove('hiding');
     bd.classList.add('show');     sh.classList.add('show');
@@ -775,51 +1028,50 @@ function open(idx) {
 function close() {
     if (_isAnimating) return;
     var bd = document.getElementById('uploadSheetBackdrop');
-    var sh = document.getElementById('uploadSheet');
+    var sh = document.getElementById(_activeSheet || 'uploadSheet');
     if (!bd || !sh) return;
     _isAnimating = true;
     bd.classList.add('hiding'); sh.classList.add('hiding');
     setTimeout(function () {
-        bd.classList.remove('show','hiding');
-        sh.classList.remove('show','hiding');
+        bd.classList.remove('show', 'hiding');
+        sh.classList.remove('show', 'hiding');
         document.body.style.overflow = '';
-        _isAnimating = false;
+        _activeSheet = null; _isAnimating = false;
     }, 210);
 }
 function pick(type) {
     var idx = _activeIdx; close();
     setTimeout(function () {
-        var map = { camera:'ktpCamera_', foto:'ktpFoto_', file:'ktpFile_' };
-        var el  = document.getElementById((map[type] || 'ktpFoto_') + idx);
+        var map = { camera: 'ktpCamera_', foto: 'ktpFoto_', file: 'ktpFile_' };
+        var el = document.getElementById((map[type] || 'ktpFoto_') + idx);
         if (el) el.click();
     }, 230);
 }
-
+function pickPaspor(type) {
+    var idx = _activeIdx; close();
+    setTimeout(function () {
+        var map = { camera: 'pasporCamera_', foto: 'pasporFoto_', file: 'pasporFile_' };
+        var el = document.getElementById((map[type] || 'pasporFoto_') + idx);
+        if (el) el.click();
+    }, 230);
+}
 var _ty0 = 0;
 document.addEventListener('touchstart', function (e) {
     if (document.getElementById('uploadSheet').classList.contains('show'))
         _ty0 = e.touches[0].clientY;
-}, { passive:true });
+}, { passive: true });
 document.addEventListener('touchend', function (e) {
     if (!document.getElementById('uploadSheet').classList.contains('show')) return;
     if (e.changedTouches[0].clientY - _ty0 > 70) close();
-}, { passive:true });
+}, { passive: true });
 document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
-
-return { open:open, close:close, pick:pick };
+return { open: open, openPaspor: openPaspor, close: close, pick: pick, pickPaspor: pickPaspor };
 })();
 </script>
 
 <script>
 /* ================================================================
-   VET — Veteran OCR + AJAX Submit
-   FIX LIST:
-   1. ktpFiles object di-expose via window.VET.ktpFiles (getter)
-      → buildFormData tidak lagi crash "slotState is not defined"
-   2. scanStatus di-expose via window.VET.scanStatus
-   3. Client validation tampilkan error banner + highlight card merah
-   4. Redirect ke pending-payment (bukan langsung ke Midtrans)
-   5. Validasi form dasar (nama, email, dll) sebelum cek KTP
+   VET — Veteran OCR + Paspor + AJAX Submit
 ================================================================ */
 (function () {
 'use strict';
@@ -827,88 +1079,15 @@ return { open:open, close:close, pick:pick };
 var MIN_AGE_EACH  = 45;
 var MIN_AGE_TOTAL = 95;
 
-/* ── State — expose via VET getter ────────────────────────── */
-var ktpFiles   = { 0: null, 1: null };   /* file hasil konversi JPEG */
-var scanStatus = [false, false];          /* sudah scan + valid tgl lahir */
-var usiaArr    = [null, null];
+/* ── State ───────────────────────────────────────────────────── */
+var ktpFiles    = { 0: null, 1: null };
+var pasporFiles = { 0: null, 1: null };
+var scanStatus  = [false, false];
+var usiaArr     = [null, null];
+/* docType: 'ktp' | 'paspor' */
+var docTypes    = { 0: 'ktp', 1: 'ktp' };
 
-/* ── Konversi HEIC/besar → JPEG via Canvas ─────────────────── */
-function convertToJpeg(file, callback) {
-    var MAX_SIZE_KB  = 300;          // target ≤ 300KB untuk OCR
-    var MAX_PIXEL    = 1600;         // max dimensi terpanjang
-    var QUALITY_STEP = 0.10;         // step turun kualitas
-    var MIN_QUALITY  = 0.35;         // batas bawah kualitas
-
-    var reader = new FileReader();
-    reader.onload = function (e) {
-        var dataUrl = e.target.result;
-        var img     = new Image();
-
-        img.onload = function () {
-            /* ── Scale down ── */
-            var w = img.naturalWidth;
-            var h = img.naturalHeight;
-            if (w > MAX_PIXEL || h > MAX_PIXEL) {
-                if (w > h) { h = Math.round(h * MAX_PIXEL / w); w = MAX_PIXEL; }
-                else        { w = Math.round(w * MAX_PIXEL / h); h = MAX_PIXEL; }
-            }
-
-            var canvas = document.createElement('canvas');
-            canvas.width  = w;
-            canvas.height = h;
-            var ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0, w, h);
-
-            /* ── Compress iteratif sampai ukuran OK ── */
-            function tryCompress(quality) {
-                canvas.toBlob(function (blob) {
-                    if (!blob) { callback(file, dataUrl); return; }
-
-                    var sizeKB = blob.size / 1024;
-
-                    /* Kalau masih terlalu besar dan bisa diturunkan lagi */
-                    if (sizeKB > MAX_SIZE_KB && quality - QUALITY_STEP >= MIN_QUALITY) {
-                        tryCompress(parseFloat((quality - QUALITY_STEP).toFixed(2)));
-                        return;
-                    }
-
-                    /* Kalau masih terlalu besar → scale down lagi 50% */
-                    if (sizeKB > MAX_SIZE_KB) {
-                        w = Math.round(w * 0.7);
-                        h = Math.round(h * 0.7);
-                        canvas.width  = w;
-                        canvas.height = h;
-                        ctx.drawImage(img, 0, 0, w, h);
-                        tryCompress(0.55);
-                        return;
-                    }
-
-                    var converted  = new File(
-                        [blob],
-                        file.name.replace(/\.[^.]+$/, '') + '.jpg',
-                        { type: 'image/jpeg', lastModified: Date.now() }
-                    );
-                    var previewUrl = URL.createObjectURL(blob);
-                    console.log('[KTP] Compressed: ' + Math.round(sizeKB) + 'KB, quality=' + quality + ', ' + w + 'x' + h + 'px');
-                    callback(converted, previewUrl);
-
-                }, 'image/jpeg', quality);
-            }
-
-            tryCompress(0.82);
-        };
-
-        img.onerror = function () {
-            showToast('Format foto tidak didukung browser ini. Coba konversi ke JPG dulu.', 'warn');
-            callback(null, null);
-        };
-        img.src = dataUrl;
-    };
-    reader.onerror = function () { showToast('Gagal membaca file foto.', 'error'); callback(null, null); };
-    reader.readAsDataURL(file);
-}
-
-/* ── Hitung usia dari string tanggal ───────────────────────── */
+/* ── Hitung usia dari string tanggal (per 2026) ──────────────── */
 function hitungUsia(str) {
     if (!str) return null;
     var tgl = null;
@@ -918,16 +1097,199 @@ function hitungUsia(str) {
     else if (m2) tgl = new Date(+m2[1], +m2[2]-1, +m2[3]);
     else         tgl = new Date(str);
     if (!tgl || isNaN(tgl.getTime())) return null;
-    var usia = new Date().getFullYear() - tgl.getFullYear();
+    var usia = 2026 - tgl.getFullYear();
     if (usia < 0 || usia > 120) return null;
-    return { usia: usia, tgl: tgl };
+    return usia;
 }
 
-/* ── File select / drop ─────────────────────────────────────── */
+/* ── Convert gambar → JPEG ───────────────────────────────────── */
+function convertToJpeg(file, callback) {
+    var MAX_SIZE_KB=300, MAX_PIXEL=1600, QUALITY_STEP=0.10, MIN_QUALITY=0.35;
+    var reader = new FileReader();
+    reader.onload = function (e) {
+        var img = new Image();
+        img.onload = function () {
+            var w=img.naturalWidth, h=img.naturalHeight;
+            if (w>MAX_PIXEL||h>MAX_PIXEL) {
+                if (w>h) { h=Math.round(h*MAX_PIXEL/w); w=MAX_PIXEL; }
+                else      { w=Math.round(w*MAX_PIXEL/h); h=MAX_PIXEL; }
+            }
+            var canvas=document.createElement('canvas');
+            canvas.width=w; canvas.height=h;
+            var ctx=canvas.getContext('2d');
+            ctx.drawImage(img,0,0,w,h);
+            function tryCompress(quality) {
+                canvas.toBlob(function (blob) {
+                    if (!blob) { callback(file, e.target.result); return; }
+                    var sizeKB=blob.size/1024;
+                    if (sizeKB>MAX_SIZE_KB && quality-QUALITY_STEP>=MIN_QUALITY) { tryCompress(parseFloat((quality-QUALITY_STEP).toFixed(2))); return; }
+                    if (sizeKB>MAX_SIZE_KB) { w=Math.round(w*0.7); h=Math.round(h*0.7); canvas.width=w; canvas.height=h; ctx.drawImage(img,0,0,w,h); tryCompress(0.55); return; }
+                    var converted=new File([blob],file.name.replace(/\.[^.]+$/,'')+'.jpg',{type:'image/jpeg',lastModified:Date.now()});
+                    callback(converted, URL.createObjectURL(blob));
+                }, 'image/jpeg', quality);
+            }
+            tryCompress(0.82);
+        };
+        img.onerror = function () { showToast('Format foto tidak didukung.','warn'); callback(null,null); };
+        img.src = e.target.result;
+    };
+    reader.onerror = function () { showToast('Gagal membaca file.','error'); callback(null,null); };
+    reader.readAsDataURL(file);
+}
+
+/* ── Toggle doc type ─────────────────────────────────────────── */
+function setDocType(idx, type) {
+    docTypes[idx] = type;
+    var togKtp    = document.getElementById('togKtp_'     + idx);
+    var togPas    = document.getElementById('togPas_'     + idx);
+    var pasForm   = document.getElementById('pasporForm_' + idx);
+    var ktpArea   = document.getElementById('ktpArea_'    + idx);
+    var ocrCard   = document.getElementById('ocr_card_'   + idx);
+    var pasBadge  = document.getElementById('paspor_badge_' + idx);
+    var docHid    = document.getElementById('docType_'    + idx);
+
+    if (docHid) docHid.value = type;
+
+    if (type === 'paspor') {
+        if (togKtp) togKtp.className = 'doc-type-btn inactive';
+        if (togPas) togPas.className = 'doc-type-btn active-paspor';
+        if (pasForm) pasForm.classList.remove('hidden');
+        if (ktpArea) ktpArea.classList.add('hidden');
+        if (ocrCard) { ocrCard.classList.add('paspor-mode'); ocrCard.classList.remove('scanned','invalid-age','has-field-error'); }
+        if (pasBadge) pasBadge.style.display = 'inline-flex';
+        /* Reset KTP state */
+        resetKtpState(idx);
+        /* Paspor: usia dari input manual — kalkulasi saat syncPaspor */
+        scanStatus[idx] = false;
+        /* Update age badge dari paspor tgl jika sudah ada */
+        var tglEl = document.getElementById('pas_hid_tgl_' + idx);
+        if (tglEl && tglEl.value) updateAgeBadgeFromTgl(idx, tglEl.value);
+        else updateAgeBadge(idx, null);
+    } else {
+        if (togKtp) togKtp.className = 'doc-type-btn active-ktp';
+        if (togPas) togPas.className = 'doc-type-btn inactive';
+        if (pasForm) pasForm.classList.add('hidden');
+        if (ktpArea) ktpArea.classList.remove('hidden');
+        if (ocrCard) ocrCard.classList.remove('paspor-mode');
+        if (pasBadge) pasBadge.style.display = 'none';
+        /* Reset paspor hidden inputs */
+        clearPasporHidden(idx);
+        scanStatus[idx] = false;
+        usiaArr[idx]    = null;
+        updateAgeBadge(idx, null);
+        clearSummary();
+    }
+}
+
+function resetKtpState(idx) {
+    ktpFiles[idx] = null;
+    ['ktpCamera_','ktpFoto_','ktpFile_'].forEach(function (p) {
+        var el = document.getElementById(p + idx); if (el) el.value = '';
+    });
+    toggleEl('ktpPreview_'  + idx, false);
+    toggleEl('ktpDefault_'  + idx, true);
+    toggleEl('scanBtn_'     + idx, false);
+    toggleEl('scanLoading_' + idx, false);
+    resetCardUI(idx);
+}
+
+function clearPasporHidden(idx) {
+    ['pas_hid_nama_','pas_hid_paspor_','pas_hid_tgl_','pas_hid_jenis_kelamin_','pas_hid_nik_'].forEach(function (pfx) {
+        var el = document.getElementById(pfx + idx); if (el) {
+            if (pfx === 'pas_hid_jenis_kelamin_') el.value = 'L';
+            else el.value = '';
+        }
+    });
+    ['pas_nama_','pas_paspor_','pas_tgl_'].forEach(function (pfx) {
+        var el = document.getElementById(pfx + idx); if (el) el.value = '';
+    });
+    var ud = document.getElementById('pas_usia_disp_' + idx);
+    if (ud) { ud.className = 'paspor-usia-display no-value'; ud.textContent = '— isi tgl lahir dulu'; }
+}
+
+/* ── Sync paspor field → hidden + update usia ───────────────── */
+function syncPaspor(idx, field) {
+    var srcMap = { 'nama': 'pas_nama_', 'paspor_number': 'pas_paspor_', 'tgl_lahir': 'pas_tgl_' };
+    var hidMap = { 'nama': 'pas_hid_nama_', 'paspor_number': 'pas_hid_paspor_', 'tgl_lahir': 'pas_hid_tgl_' };
+    var srcEl = document.getElementById((srcMap[field] || '') + idx);
+    var hidEl = document.getElementById((hidMap[field] || '') + idx);
+    if (srcEl && hidEl) hidEl.value = srcEl.value;
+
+    if (field === 'tgl_lahir') {
+        var tglVal = srcEl ? srcEl.value.trim() : '';
+        /* Update paspor usia display */
+        var ud = document.getElementById('pas_usia_disp_' + idx);
+        var usia = hitungUsia(tglVal);
+        if (ud) {
+            if (usia !== null) { ud.className = 'paspor-usia-display has-value'; ud.textContent = usia + ' tahun (per tahun 2026)'; }
+            else               { ud.className = 'paspor-usia-display no-value';  ud.textContent = '— isi tgl lahir dulu'; }
+        }
+        /* Update age badge & hidden usia */
+        updateAgeBadgeFromTgl(idx, tglVal);
+        updateSummary();
+    }
+}
+
+function updateAgeBadgeFromTgl(idx, tglStr) {
+    var usia  = hitungUsia(tglStr);
+    var valid = usia !== null && usia >= MIN_AGE_EACH;
+    var badge = document.getElementById('age_badge_' + idx);
+    var hidV  = document.getElementById('usia_valid_'  + idx);
+    var hidA  = document.getElementById('usia_hitung_' + idx);
+
+    usiaArr[idx] = usia;
+    if (hidV) hidV.value = valid ? '1' : '0';
+    if (hidA) hidA.value = usia !== null ? usia : '';
+
+    if (usia === null) {
+        setBadge(badge, 'pending', 'Belum diisi');
+    } else if (valid) {
+        setBadge(badge, 'valid', '✓ ' + usia + ' thn — Memenuhi syarat');
+    } else {
+        setBadge(badge, 'invalid', '✗ ' + usia + ' thn — Min. 45 tahun');
+        var ocrCard = document.getElementById('ocr_card_' + idx);
+        if (ocrCard) ocrCard.classList.add('invalid-age');
+    }
+}
+
+/* ── Paspor file upload ──────────────────────────────────────── */
+function showUploadChoicePaspor(idx) { _SHEET.openPaspor(idx); }
+
+function fileSelectPaspor(input, idx) {
+    if (input.files && input.files[0]) processFilePaspor(input.files[0], idx);
+}
+function dropPaspor(e, idx) {
+    e.preventDefault();
+    var dz = document.getElementById('pasporDropzone_' + idx);
+    if (dz) dz.style.borderColor = 'rgba(234,179,8,.22)';
+    var file = e.dataTransfer && e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) processFilePaspor(file, idx);
+}
+function processFilePaspor(file, idx) {
+    if (file.size > 10*1024*1024) { showToast('File terlalu besar. Maks 10MB.','error'); return; }
+    convertToJpeg(file, function (converted, previewUrl) {
+        if (!converted) return;
+        pasporFiles[idx] = converted;
+        var imgEl = document.getElementById('pasporPreviewImg_' + idx);
+        if (imgEl) imgEl.src = previewUrl;
+        toggleEl('pasporPreview_' + idx, true);
+        toggleEl('pasporDefault_' + idx, false);
+    });
+}
+function resetPaspor(e, idx) {
+    e.stopPropagation();
+    pasporFiles[idx] = null;
+    ['pasporCamera_','pasporFoto_','pasporFile_','pasporDropInput_'].forEach(function (p) {
+        var el = document.getElementById(p + idx); if (el) el.value = '';
+    });
+    toggleEl('pasporPreview_' + idx, false);
+    toggleEl('pasporDefault_' + idx, true);
+}
+
+/* ── KTP file upload ─────────────────────────────────────────── */
 function fileSelect(input, idx) {
     if (input.files && input.files[0]) processFile(input.files[0], idx);
 }
-
 function drop(e, idx) {
     e.preventDefault();
     var dz = document.getElementById('ktpDropzone_' + idx);
@@ -935,54 +1297,37 @@ function drop(e, idx) {
     var file = e.dataTransfer && e.dataTransfer.files[0];
     if (file && file.type.startsWith('image/')) processFile(file, idx);
 }
-
 function processFile(file, idx) {
-    if (file.size > 10 * 1024 * 1024) {
-        showToast('File terlalu besar. Maks 10MB.', 'error');
-        return;
-    }
+    if (file.size > 10*1024*1024) { showToast('File terlalu besar. Maks 10MB.','error'); return; }
     convertToJpeg(file, function (converted, previewUrl) {
         if (!converted) return;
         ktpFiles[idx]   = converted;
         scanStatus[idx] = false;
         usiaArr[idx]    = null;
-
         var imgEl = document.getElementById('ktpPreviewImg_' + idx);
         if (imgEl) imgEl.src = previewUrl;
-
-        toggleEl('ktpPreview_'  + idx, true);
-        toggleEl('ktpDefault_'  + idx, false);
-        toggleEl('scanBtn_'     + idx, true);
+        toggleEl('ktpPreview_' + idx, true);
+        toggleEl('ktpDefault_' + idx, false);
+        toggleEl('scanBtn_'    + idx, true);
         resetCardUI(idx);
-
-        /* Hapus highlight error jika sebelumnya ada */
         var card = document.getElementById('ocr_card_' + idx);
         if (card) card.classList.remove('has-field-error');
     });
 }
-
 function resetSlot(e, idx) {
     e.stopPropagation();
     ktpFiles[idx]   = null;
     scanStatus[idx] = false;
     usiaArr[idx]    = null;
-
     ['ktpCamera_','ktpFoto_','ktpFile_'].forEach(function (p) {
-        var el = document.getElementById(p + idx);
-        if (el) el.value = '';
+        var el = document.getElementById(p + idx); if (el) el.value = '';
     });
-
     toggleEl('ktpPreview_'  + idx, false);
     toggleEl('ktpDefault_'  + idx, true);
     toggleEl('scanBtn_'     + idx, false);
     toggleEl('scanLoading_' + idx, false);
-
-    setHid('pemain_'     + idx, '');
-    setHid('nik_'        + idx, '');
-    setHid('tgl_lahir_'  + idx, '');
-    setHid('usia_valid_' + idx, '0');
-    setHid('usia_hitung_'+ idx, '');
-
+    setHid('usia_valid_'  + idx, '0');
+    setHid('usia_hitung_' + idx, '');
     resetCardUI(idx);
     updateAgeBadge(idx, null);
     clearSummary();
@@ -999,13 +1344,10 @@ function resetCardUI(idx) {
     if (infoEl)  { infoEl.textContent = ''; infoEl.classList.add('hidden'); }
 }
 
-/* ── SCAN OCR ─────────────────────────────────────────────── */
+/* ── SCAN OCR (KTP) ──────────────────────────────────────────── */
 function scan(idx) {
     var fileToScan = ktpFiles[idx];
-    if (!fileToScan) {
-        showToast('Upload foto KTP dulu sebelum scan.', 'warn');
-        return;
-    }
+    if (!fileToScan) { showToast('Upload foto KTP dulu sebelum scan.','warn'); return; }
 
     toggleEl('scanBtn_'     + idx, false);
     toggleEl('scanLoading_' + idx, true);
@@ -1038,19 +1380,19 @@ function scan(idx) {
             return;
         }
 
-        setHid('pemain_'   + idx, data.nama  || '');
-        setHid('nik_'      + idx, data.nik   || '');
-        setHid('tgl_lahir_'+ idx, tglLahir);
+        setHid('pemain[' + idx + ']', data.nama || '');
+        setHid('nik['    + idx + ']', data.nik  || '');
+        setHid('tgl_lahir[' + idx + ']', tglLahir);
+
         updateAgeBadge(idx, tglLahir);
 
-        var usia  = parseInt(document.getElementById('usia_hitung_' + idx).value, 10) || 0;
-        var valid = document.getElementById('usia_valid_' + idx).value === '1';
+        var usia  = parseInt((document.getElementById('usia_hitung_' + idx) || {}).value || 0, 10);
+        var valid = (document.getElementById('usia_valid_' + idx) || {}).value === '1';
 
         scanStatus[idx] = true;
         toggleEl('scanBtn_' + idx, false);
         renderCard(idx, data, usia, valid);
 
-        /* Hapus highlight error setelah scan berhasil */
         var card = document.getElementById('ocr_card_' + idx);
         if (card) card.classList.remove('has-field-error');
 
@@ -1059,6 +1401,7 @@ function scan(idx) {
         } else {
             showToast('⚠ Pemain ' + (idx+1) + ' — ' + usia + ' thn · TIDAK memenuhi syarat (min. 45 thn).', 'warn');
         }
+        updateSummary();
     })
     .catch(function () {
         toggleEl('scanLoading_' + idx, false);
@@ -1067,13 +1410,13 @@ function scan(idx) {
     });
 }
 
-/* ── Age badge + summary ────────────────────────────────────── */
+/* ── Age badge ───────────────────────────────────────────────── */
 function updateAgeBadge(idx, tglStr) {
-    var badge   = document.getElementById('age_badge_'   + idx);
-    var ocrCard = document.getElementById('ocr_card_'    + idx);
-    var hidV    = document.getElementById('usia_valid_'  + idx);
-    var hidAge  = document.getElementById('usia_hitung_' + idx);
-    var infoEl  = document.getElementById('tgl_info_'   + idx);
+    var badge  = document.getElementById('age_badge_'   + idx);
+    var hidV   = document.getElementById('usia_valid_'  + idx);
+    var hidAge = document.getElementById('usia_hitung_' + idx);
+    var ocrCard= document.getElementById('ocr_card_'    + idx);
+    var infoEl = document.getElementById('tgl_info_'   + idx);
 
     if (!tglStr) {
         setBadge(badge, 'pending', 'Belum scan');
@@ -1082,18 +1425,14 @@ function updateAgeBadge(idx, tglStr) {
         usiaArr[idx] = null;
         return;
     }
-    var result = hitungUsia(tglStr);
-    if (!result) {
+    var usia  = hitungUsia(tglStr);
+    if (!usia) {
         setBadge(badge, 'invalid', 'Tgl lahir tidak valid');
         if (hidV) hidV.value = '0';
         usiaArr[idx] = null;
         return;
     }
-
-    var usia  = result.usia;
     var valid = usia >= MIN_AGE_EACH;
-    var fmt   = result.tgl.toLocaleDateString('id-ID', { day:'numeric', month:'long', year:'numeric' });
-
     if (hidV)   hidV.value   = valid ? '1' : '0';
     if (hidAge) hidAge.value = usia;
     usiaArr[idx] = usia;
@@ -1105,13 +1444,11 @@ function updateAgeBadge(idx, tglStr) {
         setBadge(badge, 'invalid', '✗ ' + usia + ' thn — Min. 45 tahun');
         if (ocrCard) { ocrCard.classList.add('invalid-age'); ocrCard.classList.remove('scanned'); }
     }
-
     if (infoEl) {
-        infoEl.textContent = 'Lahir: ' + fmt + ' · ' + usia + ' tahun';
+        infoEl.textContent = usia + ' tahun (per 2026)';
         infoEl.className   = 'text-xs mt-2 font-medium ' + (valid ? 'text-emerald-400' : 'text-red-400');
         infoEl.classList.remove('hidden');
     }
-    updateSummary();
 }
 
 function setBadge(el, state, text) {
@@ -1121,21 +1458,32 @@ function setBadge(el, state, text) {
 }
 
 function updateSummary() {
-    if (!scanStatus[0] || !scanStatus[1]) return;
-    var v0 = document.getElementById('usia_valid_0').value === '1';
-    var v1 = document.getElementById('usia_valid_1').value === '1';
-    var u0 = usiaArr[0] || 0, u1 = usiaArr[1] || 0;
-    var total = u0 + u1, totalOk = total >= MIN_AGE_TOTAL;
+    var bothReady =
+        (scanStatus[0] || docTypes[0] === 'paspor') &&
+        (scanStatus[1] || docTypes[1] === 'paspor');
+
+    /* Cek usia valid dari hidden inputs */
+    var v0 = (document.getElementById('usia_valid_0') || {}).value === '1';
+    var v1 = (document.getElementById('usia_valid_1') || {}).value === '1';
+    var u0 = parseInt(((document.getElementById('usia_hitung_0') || {}).value || 0), 10);
+    var u1 = parseInt(((document.getElementById('usia_hitung_1') || {}).value || 0), 10);
+
+    if (!u0 && !u1) return;
+
+    var total   = u0 + u1;
+    var totalOk = total >= MIN_AGE_TOTAL;
 
     var tBox = document.getElementById('totalUsiaBox');
     var tVal  = document.getElementById('totalUsiaValue');
-    if (tBox && tVal) {
+    if (tBox && tVal && (u0 || u1)) {
         tBox.className = 'total-usia-box show ' + (totalOk ? 'ok' : 'bad');
         tVal.innerHTML = total + ' tahun '
             + (totalOk
                 ? '<span style="color:#34d399">✓ memenuhi</span>'
                 : '<span style="color:#f87171">✗ kurang ' + (MIN_AGE_TOTAL - total) + ' thn</span>');
     }
+
+    if (!bothReady) return;
 
     var summary = document.getElementById('veteranSummary');
     var icon    = document.getElementById('summaryIcon');
@@ -1146,23 +1494,17 @@ function updateSummary() {
 
     if (allOk) {
         summary.className = 'veteran-summary show ok';
-        if (icon) icon.innerHTML =
-            '<svg width="16" height="16" viewBox="0 0 20 20" fill="#34d399">'
-            + '<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>'
-            + '</svg>';
+        if (icon) icon.innerHTML = '<svg width="16" height="16" viewBox="0 0 20 20" fill="#34d399"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>';
         if (title)  { title.className  = 'text-xs font-bold text-emerald-400'; title.textContent  = 'Kedua pemain memenuhi syarat veteran!'; }
         if (detail) { detail.className = 'text-xs mt-0.5 text-emerald-400/55'; detail.textContent = 'Usia individual ≥ 45 thn · Total usia ' + total + ' thn ≥ 95 thn'; }
         if (warning) warning.style.display = 'none';
     } else {
         summary.className = 'veteran-summary show bad';
-        if (icon) icon.innerHTML =
-            '<svg width="16" height="16" viewBox="0 0 20 20" fill="#f87171">'
-            + '<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>'
-            + '</svg>';
+        if (icon) icon.innerHTML = '<svg width="16" height="16" viewBox="0 0 20 20" fill="#f87171"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>';
         if (title) { title.className = 'text-xs font-bold text-red-400'; title.textContent = 'Syarat usia belum terpenuhi'; }
         var msg = !v0 && !v1 ? 'Kedua pemain tidak memenuhi syarat usia (min. 45 tahun).'
-                : !v0   ? 'Pemain 1 tidak memenuhi syarat usia (min. 45 tahun).'
-                : !v1   ? 'Pemain 2 tidak memenuhi syarat usia (min. 45 tahun).'
+                : !v0        ? 'Pemain 1 tidak memenuhi syarat usia (min. 45 tahun).'
+                : !v1        ? 'Pemain 2 tidak memenuhi syarat usia (min. 45 tahun).'
                 : 'Total usia ' + total + ' tahun, kurang ' + (MIN_AGE_TOTAL - total) + ' tahun dari minimum.';
         if (detail) { detail.className = 'text-xs mt-0.5 text-red-400/55'; detail.textContent = msg; }
         if (warning) { warning.style.display = 'block'; warning.textContent = '⚠ ' + msg; }
@@ -1184,21 +1526,19 @@ function renderCard(idx, data, usia, valid) {
     var rows = document.getElementById('ktpDataRows_' + idx);
     if (!card || !rows) return;
     rows.innerHTML = '';
-
     var tglNorm = (data.tanggal_lahir || data.tgl_lahir || '').trim();
     var fields  = [
-        { label:'NIK',        key:'nik',          hl:true  },
-        { label:'Nama',       key:'nama',          hl:true  },
-        { label:'Tgl Lahir',  key:'__tgl_lahir__', hl:true  },
-        { label:'Usia',       key:'__usia__',      hl:false },
-        { label:'Jenis Kel.', key:'jenis_kelamin', hl:false },
+        { label:'NIK',        key:'nik',           hl:true  },
+        { label:'Nama',       key:'nama',           hl:true  },
+        { label:'Tgl Lahir',  key:'__tgl_lahir__',  hl:true  },
+        { label:'Usia',       key:'__usia__',        hl:false },
+        { label:'Jenis Kel.', key:'jenis_kelamin',  hl:false },
     ];
-
     fields.forEach(function (f) {
         var valHtml = '';
         if (f.key === '__usia__') {
             var warna = valid ? '#34d399' : '#f87171';
-            valHtml = '<span style="color:' + warna + ';font-weight:700;font-size:12px;">'
+            valHtml = '<span style="color:'+warna+';font-weight:700;font-size:12px;">'
                 + (valid ? '✓' : '✗') + ' ' + usia + ' tahun — '
                 + (valid ? 'Memenuhi syarat' : 'Tidak memenuhi syarat') + '</span>';
         } else if (f.key === '__tgl_lahir__') {
@@ -1216,42 +1556,29 @@ function renderCard(idx, data, usia, valid) {
         }
         rows.innerHTML += '<div class="ktp-row"><span class="ktp-label">' + f.label + '</span>' + valHtml + '</div>';
     });
-
-    rows.innerHTML +=
-        '<div class="ktp-locked-note">'
-        + '<svg class="w-3 h-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">'
-        + '<path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>'
-        + '</svg>Data dikunci. Reset &amp; scan ulang jika ada kesalahan.</div>';
-
+    rows.innerHTML += '<div class="ktp-locked-note"><svg class="w-3 h-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/></svg>Data dikunci. Reset &amp; scan ulang jika ada kesalahan.</div>';
     card.className = 'ktp-data-card show ' + (valid ? 'valid-card' : 'invalid-card');
 }
 
 /* ── Helpers ─────────────────────────────────────────────────── */
 function toggleEl(id, show) {
-    var el = document.getElementById(id);
-    if (!el) return;
-    if (show) el.classList.remove('hidden');
-    else      el.classList.add('hidden');
+    var el = document.getElementById(id); if (!el) return;
+    if (show) el.classList.remove('hidden'); else el.classList.add('hidden');
 }
-function setHid(id, val) {
-    var el = document.getElementById(id);
+function setHid(nameOrId, val) {
+    /* Coba by id dulu, fallback by name */
+    var el = document.getElementById(nameOrId);
+    if (!el) el = document.querySelector('[name="' + nameOrId + '"]');
     if (el) el.value = val;
 }
 function esc(s) {
-    return String(s)
-        .replace(/&/g,'&amp;').replace(/</g,'&lt;')
-        .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-/* ── Toast ───────────────────────────────────────────────────── */
 var _tt = null;
 function showToast(msg, type) {
     var el = document.getElementById('_vetToast');
-    if (!el) {
-        el = document.createElement('div');
-        el.id = '_vetToast';
-        document.body.appendChild(el);
-    }
+    if (!el) { el = document.createElement('div'); el.id = '_vetToast'; document.body.appendChild(el); }
     var styles = {
         success: 'background:rgba(6,30,18,.97);border:1px solid rgba(16,185,129,.38);color:#34d399;',
         warn:    'background:rgba(30,22,4,.97);border:1px solid rgba(234,179,8,.38);color:#fbbf24;',
@@ -1267,50 +1594,33 @@ function showToast(msg, type) {
     );
     el.textContent = msg;
     if (_tt) clearTimeout(_tt);
-    _tt = setTimeout(function () {
-        el.style.opacity   = '0';
-        el.style.transform = 'translateY(-8px)';
-    }, 5500);
+    _tt = setTimeout(function () { el.style.opacity = '0'; el.style.transform = 'translateY(-8px)'; }, 5500);
 }
 
-/* ── AJAX Submit helpers ─────────────────────────────────────── */
+/* ── AJAX helpers ────────────────────────────────────────────── */
 function clearAllErrors() {
-    document.querySelectorAll('.field-error-msg').forEach(function (e) {
-        e.textContent = ''; e.classList.remove('show');
-    });
-    document.querySelectorAll('.input-field.field-error').forEach(function (e) {
-        e.classList.remove('field-error');
-    });
-    document.querySelectorAll('.pemain-ocr-card.has-field-error').forEach(function (e) {
-        e.classList.remove('has-field-error');
-    });
+    document.querySelectorAll('.field-error-msg').forEach(function (e) { e.textContent = ''; e.classList.remove('show'); });
+    document.querySelectorAll('.input-field.field-error').forEach(function (e) { e.classList.remove('field-error'); });
+    document.querySelectorAll('.pemain-ocr-card.has-field-error').forEach(function (e) { e.classList.remove('has-field-error'); });
     var banner = document.getElementById('ajaxErrorBanner');
     if (banner) banner.classList.remove('show');
 }
-
 function showErrorBanner(errors) {
     var banner = document.getElementById('ajaxErrorBanner');
     var list   = document.getElementById('ajaxErrorList');
     if (!banner || !list) return;
     list.innerHTML = '';
-    errors.forEach(function (m) {
-        var li = document.createElement('li');
-        li.textContent = m;
-        list.appendChild(li);
-    });
+    errors.forEach(function (m) { var li = document.createElement('li'); li.textContent = m; list.appendChild(li); });
     banner.classList.add('show');
     banner.scrollIntoView({ behavior:'smooth', block:'start' });
 }
-
 function setFieldError(field, msg) {
-    /* Cari err_* element */
     var key = field.replace(/[\[\]\.]/g,'_').replace(/__+/g,'_').replace(/_$/,'');
     var el  = document.getElementById('err_' + key) || document.getElementById('err_' + field);
     if (el) { el.textContent = msg; el.classList.add('show'); }
     var inp = document.getElementById('field_' + field);
     if (inp) inp.classList.add('field-error');
 }
-
 function setSubmitLoading(loading, msg) {
     var btn     = document.getElementById('submitBtn');
     var btnText = document.getElementById('submitBtnText');
@@ -1331,172 +1641,173 @@ function setSubmitLoading(loading, msg) {
     }
 }
 
-/* ── FIX: Expose ktpFiles & scanStatus via getter ──────────── */
+/* ── Expose public API ───────────────────────────────────────── */
 window.VET = {
-    fileSelect: fileSelect,
-    drop:       drop,
-    resetSlot:  resetSlot,
-    scan:       scan,
-    showSheet:  function (idx) { _SHEET.open(idx); },
-    get ktpFiles()   { return ktpFiles;   },
-    get scanStatus() { return scanStatus; },
+    fileSelect:            fileSelect,
+    fileSelectPaspor:      fileSelectPaspor,
+    drop:                  drop,
+    dropPaspor:            dropPaspor,
+    resetSlot:             resetSlot,
+    resetPaspor:           resetPaspor,
+    scan:                  scan,
+    showSheet:             function (idx) { _SHEET.open(idx); },
+    showUploadChoicePaspor:showUploadChoicePaspor,
+    setDocType:            setDocType,
+    syncPaspor:            syncPaspor,
+    get ktpFiles()    { return ktpFiles;    },
+    get pasporFiles() { return pasporFiles; },
+    get scanStatus()  { return scanStatus;  },
+    get docTypes()    { return docTypes;    },
 };
 
-/* ── DOMContentLoaded — AJAX submit ─────────────────────────── */
+/* ── DOMContentLoaded — submit handler ───────────────────────── */
 document.addEventListener('DOMContentLoaded', function () {
     var form = document.getElementById('regForm');
     if (!form) return;
 
     form.addEventListener('submit', async function (e) {
         e.preventDefault();
-
-        /* 1. Bersihkan semua error */
         clearAllErrors();
 
         var clientErrors = [];
 
-        /* 2. FIX: Validasi field form dasar (nama, email, dll) */
-        var fieldChecks = [
-            { id: 'field_nama',    name: 'nama',     label: 'Nama Ketua Tim' },
-            { id: 'field_tim_pb',  name: 'tim_pb',   label: 'Nama Tim / PB' },
-            { id: 'field_email',   name: 'email',    label: 'Email' },
-            { id: 'field_no_hp',   name: 'no_hp',    label: 'Nomor HP' },
-        ];
-        fieldChecks.forEach(function (f) {
-            var el = document.getElementById(f.id);
+        /* Validasi field dasar */
+        [['field_nama','nama','Nama Ketua Tim'],['field_tim_pb','tim_pb','Nama Tim'],
+         ['field_email','email','Email'],['field_no_hp','no_hp','Nomor HP']].forEach(function (f) {
+            var el = document.getElementById(f[0]);
             if (el && !el.value.trim()) {
-                clientErrors.push(f.label + ' wajib diisi');
+                clientErrors.push(f[2] + ' wajib diisi');
                 el.classList.add('field-error');
-                var errEl = document.getElementById('err_' + f.name);
-                if (errEl) { errEl.textContent = f.label + ' wajib diisi'; errEl.classList.add('show'); }
+                var err = document.getElementById('err_' + f[1]);
+                if (err) { err.textContent = f[2] + ' wajib diisi'; err.classList.add('show'); }
             }
         });
         var selProv = document.getElementById('selectProvinsi');
         var selKota = document.getElementById('selectKota');
-        if (selProv && !selProv.value) {
-            clientErrors.push('Provinsi wajib dipilih');
-            selProv.classList.add('field-error');
-        }
-        if (selKota && !selKota.value) {
-            clientErrors.push('Kota / Kabupaten wajib dipilih');
-            selKota.classList.add('field-error');
-        }
+        if (selProv && !selProv.value) { clientErrors.push('Provinsi wajib dipilih'); selProv.classList.add('field-error'); }
+        if (selKota && !selKota.value) { clientErrors.push('Kota / Kabupaten wajib dipilih'); selKota.classList.add('field-error'); }
 
-        /* 3. FIX: Validasi KTP kedua pemain dengan UI feedback */
+        /* Validasi per pemain */
         [0, 1].forEach(function (idx) {
-            var noNum = idx + 1;
-            var card  = document.getElementById('ocr_card_' + idx);
+            var noNum   = idx + 1;
+            var card    = document.getElementById('ocr_card_' + idx);
+            var docType = docTypes[idx];
 
-            /* Cek file sudah diupload */
-            var hasFile = (ktpFiles[idx] !== null && ktpFiles[idx] !== undefined);
-            if (!hasFile) {
-                /* Fallback: cek input DOM */
-                ['ktpCamera_','ktpFoto_','ktpFile_'].forEach(function (pfx) {
-                    var inp = document.getElementById(pfx + idx);
-                    if (inp && inp.files && inp.files[0]) hasFile = true;
+            if (docType === 'paspor') {
+                var hasFile = pasporFiles[idx] !== null;
+                if (!hasFile) {
+                    ['pasporCamera_','pasporFoto_','pasporFile_'].forEach(function (p) {
+                        var inp = document.getElementById(p + idx);
+                        if (inp && inp.files && inp.files[0]) hasFile = true;
+                    });
+                }
+                if (!hasFile) {
+                    clientErrors.push('Pemain ' + noNum + ': Foto paspor wajib diupload');
+                    if (card) card.classList.add('has-field-error');
+                }
+                [['pas_hid_nama_','Nama'],['pas_hid_paspor_','Nomor Paspor'],['pas_hid_tgl_','Tanggal Lahir']].forEach(function (fc) {
+                    var el = document.getElementById(fc[0] + idx);
+                    if (!el || !el.value.trim()) {
+                        clientErrors.push('Pemain ' + noNum + ': ' + fc[1] + ' wajib diisi (Paspor)');
+                        if (card) card.classList.add('has-field-error');
+                    }
                 });
-            }
-            if (!hasFile) {
-                clientErrors.push('Pemain ' + noNum + ': File KTP wajib diupload');
-                if (card) card.classList.add('has-field-error');
-                return;
-            }
-
-            /* Cek sudah scan */
-            if (!scanStatus[idx]) {
-                clientErrors.push('Pemain ' + noNum + ': KTP belum di-scan — klik tombol SCAN KTP');
-                if (card) card.classList.add('has-field-error');
-                return;
-            }
-
-            /* Cek usia valid */
-            var hidV = document.getElementById('usia_valid_' + idx);
-            if (!hidV || hidV.value !== '1') {
-                var usia = document.getElementById('usia_hitung_' + idx);
-                var usiaVal = usia ? usia.value : '?';
-                clientErrors.push('Pemain ' + noNum + ': Usia ' + usiaVal + ' tahun tidak memenuhi syarat (min. 45 tahun)');
-                if (card) card.classList.add('has-field-error');
+                /* Validasi usia paspor */
+                var tglEl = document.getElementById('pas_hid_tgl_' + idx);
+                if (tglEl && tglEl.value.trim()) {
+                    var usia = hitungUsia(tglEl.value.trim());
+                    if (usia === null) {
+                        clientErrors.push('Pemain ' + noNum + ': Format tanggal lahir tidak valid');
+                        if (card) card.classList.add('has-field-error');
+                    } else if (usia < MIN_AGE_EACH) {
+                        clientErrors.push('Pemain ' + noNum + ': Usia ' + usia + ' tahun tidak memenuhi syarat (min. 45 tahun)');
+                        if (card) card.classList.add('has-field-error');
+                    }
+                }
+            } else {
+                /* KTP */
+                var hasFile = ktpFiles[idx] !== null;
+                if (!hasFile) {
+                    ['ktpCamera_','ktpFoto_','ktpFile_'].forEach(function (p) {
+                        var inp = document.getElementById(p + idx);
+                        if (inp && inp.files && inp.files[0]) hasFile = true;
+                    });
+                }
+                if (!hasFile) {
+                    clientErrors.push('Pemain ' + noNum + ': File KTP wajib diupload');
+                    if (card) card.classList.add('has-field-error');
+                    return;
+                }
+                if (!scanStatus[idx]) {
+                    clientErrors.push('Pemain ' + noNum + ': KTP belum di-scan — klik tombol SCAN KTP');
+                    if (card) card.classList.add('has-field-error');
+                    return;
+                }
+                var hidV = document.getElementById('usia_valid_' + idx);
+                if (!hidV || hidV.value !== '1') {
+                    var usia = (document.getElementById('usia_hitung_' + idx) || {}).value || '?';
+                    clientErrors.push('Pemain ' + noNum + ': Usia ' + usia + ' tahun tidak memenuhi syarat (min. 45 tahun)');
+                    if (card) card.classList.add('has-field-error');
+                }
             }
         });
 
-        /* 4. Validasi total usia (hanya jika kedua sudah scan) */
-        if (scanStatus[0] && scanStatus[1]) {
-            var v0    = document.getElementById('usia_valid_0').value === '1';
-            var v1    = document.getElementById('usia_valid_1').value === '1';
-            var u0    = parseInt(document.getElementById('usia_hitung_0').value, 10) || 0;
-            var u1    = parseInt(document.getElementById('usia_hitung_1').value, 10) || 0;
-            var total = u0 + u1;
-            if (v0 && v1 && total < MIN_AGE_TOTAL) {
-                clientErrors.push(
-                    'Total usia kedua pemain ' + total + ' tahun — minimum 95 tahun '
-                    + '(kurang ' + (MIN_AGE_TOTAL - total) + ' tahun)'
-                );
-            }
+        /* Validasi total usia */
+        var u0    = parseInt(((document.getElementById('usia_hitung_0') || {}).value || 0), 10);
+        var u1    = parseInt(((document.getElementById('usia_hitung_1') || {}).value || 0), 10);
+        var total = u0 + u1;
+        if (u0 && u1 && total < MIN_AGE_TOTAL) {
+            clientErrors.push('Total usia kedua pemain ' + total + ' tahun — minimum 95 tahun (kurang ' + (MIN_AGE_TOTAL - total) + ' tahun)');
         }
 
-        /* 5. Tampilkan error banner jika ada */
         if (clientErrors.length > 0) {
             showErrorBanner(clientErrors);
-            /* Scroll ke card pertama yang error */
             var firstErrCard = document.querySelector('.pemain-ocr-card.has-field-error');
-            if (firstErrCard) {
-                firstErrCard.scrollIntoView({ behavior:'smooth', block:'center' });
-            } else {
-                var banner = document.getElementById('ajaxErrorBanner');
-                if (banner) banner.scrollIntoView({ behavior:'smooth', block:'start' });
-            }
+            if (firstErrCard) firstErrCard.scrollIntoView({ behavior:'smooth', block:'center' });
+            else (document.getElementById('ajaxErrorBanner') || {}).scrollIntoView && document.getElementById('ajaxErrorBanner').scrollIntoView({ behavior:'smooth', block:'start' });
             return;
         }
 
-        /* 6. Build FormData */
+        /* Build FormData */
         var fd = new FormData();
         form.querySelectorAll('input:not([type="file"]), select, textarea').forEach(function (inp) {
             if (!inp.name) return;
             fd.append(inp.name, inp.value);
         });
-
-        /* FIX: tambahkan file dari ktpFiles object (bukan dari input DOM) */
         [0, 1].forEach(function (idx) {
-            var f = ktpFiles[idx];
-            if (f) fd.append('ktp_files[]', f, f.name || ('ktp-pemain-' + (idx+1) + '.jpg'));
+            if (docTypes[idx] === 'ktp') {
+                var f = ktpFiles[idx];
+                if (!f) { ['ktpCamera_','ktpFoto_','ktpFile_'].some(function(p){ var inp=document.getElementById(p+idx); if(inp&&inp.files&&inp.files[0]){f=inp.files[0];return true;} }); }
+                if (f) fd.append('ktp_files[' + idx + ']', f, f.name || ('ktp-pemain-' + (idx+1) + '.jpg'));
+            } else {
+                var f = pasporFiles[idx];
+                if (!f) { ['pasporCamera_','pasporFoto_','pasporFile_'].some(function(p){ var inp=document.getElementById(p+idx); if(inp&&inp.files&&inp.files[0]){f=inp.files[0];return true;} }); }
+                if (f) fd.append('paspor_files[' + idx + ']', f, f.name || ('paspor-pemain-' + (idx+1) + '.jpg'));
+            }
         });
 
-        /* 7. Loading */
         setSubmitLoading(true, 'Mengirim data pendaftaran...');
-
         var csrf = (document.querySelector('meta[name="csrf-token"]') || {}).content || '';
 
         try {
             var response = await fetch("{{ route('registration.store') }}", {
                 method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN':     csrf,
-                    'Accept':           'application/json',
-                    'X-Requested-With': 'XMLHttpRequest',
-                },
+                headers: { 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
                 body: fd,
             });
-
             var data = await response.json();
 
             if (response.status === 422) {
                 setSubmitLoading(false);
                 var allMessages = [];
                 Object.keys(data.errors || {}).forEach(function (field) {
-                    var msgs = Array.isArray(data.errors[field])
-                        ? data.errors[field]
-                        : [data.errors[field]];
+                    var msgs = Array.isArray(data.errors[field]) ? data.errors[field] : [data.errors[field]];
                     allMessages = allMessages.concat(msgs);
                     setFieldError(field.replace(/\.\d+$/, ''), msgs[0]);
-
-                    /* Highlight ocr card jika error terkait pemain */
-                    var m = field.match(/\.\d+$/);
-                    if (m && /^(pemain|nik|tgl_lahir|ktp_files|usia_hitung|usia_valid)/.test(field)) {
-                        var cardIdx = field.match(/\.(\d+)$/);
-                        if (cardIdx) {
-                            var cardEl = document.getElementById('ocr_card_' + cardIdx[1]);
-                            if (cardEl) cardEl.classList.add('has-field-error');
-                        }
+                    var m = field.match(/\.(\d+)$/);
+                    if (m && /^(pemain|nik|tgl_lahir|ktp_files|paspor_files|usia_hitung|usia_valid|paspor_number)/.test(field)) {
+                        var cardEl = document.getElementById('ocr_card_' + m[1]);
+                        if (cardEl) cardEl.classList.add('has-field-error');
                     }
                 });
                 showErrorBanner(allMessages);
@@ -1509,17 +1820,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
-            /* Sukses — FIX: redirect ke pending-payment, bukan langsung Midtrans */
             var ovText = document.getElementById('submitOverlayText');
             if (ovText) ovText.textContent = 'Pendaftaran berhasil! Mengarahkan ke halaman konfirmasi...';
-
-            if (data.redirect) {
-                window.location.href = data.redirect;
-            } else if (data.uuid) {
-                window.location.href = '/daftar/pending-payment/' + data.uuid;
-            } else {
-                window.location.href = '/';
-            }
+            if (data.redirect)       window.location.href = data.redirect;
+            else if (data.uuid)      window.location.href = '/daftar/pending-payment/' + data.uuid;
+            else if (data.payment_url) window.location.href = data.payment_url;
+            else                     window.location.href = '/';
 
         } catch (err) {
             setSubmitLoading(false);
@@ -1529,7 +1835,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-})(); /* end VET IIFE */
+})();
 </script>
 @endpush
 

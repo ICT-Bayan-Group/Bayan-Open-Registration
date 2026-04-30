@@ -628,38 +628,36 @@
                     class="input-field w-full px-4 py-3 rounded-xl text-sm" required>
                 <p class="field-error-msg" id="err_no_hp"></p>
             </div>
-            <div>
-                <label class="field-label">Provinsi <span class="text-brand-400">*</span></label>
-                <div class="relative">
-                    <select id="selectProvinsi" name="provinsi"
-                        onchange="WILAYAH.onProvinsiChange(this)"
-                        class="input-field w-full px-4 py-3 rounded-xl text-sm appearance-none" required>
-                        <option value="" style="color:#b4b2a9;">-- Pilih Provinsi --</option>
-                    </select>
-                    <div id="loadingProvinsi" class="hidden absolute right-10 top-1/2 -translate-y-1/2 pointer-events-none">
-                        <svg class="animate-spin w-4 h-4" style="color:#f97316;" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
-                        </svg>
-                    </div>
+           <div>
+                <label class="field-label">Provinsi</label>
+                <div class="input-field w-full px-4 py-3 rounded-xl text-sm flex items-center gap-2"
+                    style="background:#f5f4f0;border-color:rgba(0,0,0,0.08);cursor:not-allowed;">
+                    <svg width="13" height="13" viewBox="0 0 20 20" fill="#10b981" style="flex-shrink:0;">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                    </svg>
+                    <span style="color:#444441;font-weight:600;">Kalimantan Timur</span>
+                    <span style="margin-left:auto;font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;
+                                background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.25);color:#059669;">
+                        Terkunci
+                    </span>
                 </div>
-                <p class="field-error-msg" id="err_provinsi"></p>
+                <input type="hidden" name="provinsi" value="Kalimantan Timur">
             </div>
+
             <div>
-                <label class="field-label">Kota / Kabupaten <span class="text-brand-400">*</span></label>
-                <div class="relative">
-                    <select id="selectKota" name="kota" disabled
-                        class="input-field w-full px-4 py-3 rounded-xl text-sm appearance-none" required>
-                        <option value="">-- Pilih Provinsi dulu --</option>
-                    </select>
-                    <div id="loadingKota" class="hidden absolute right-10 top-1/2 -translate-y-1/2 pointer-events-none">
-                        <svg class="animate-spin w-4 h-4" style="color:#f97316;" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
-                        </svg>
-                    </div>
+                <label class="field-label">Kota / Kabupaten</label>
+                <div class="input-field w-full px-4 py-3 rounded-xl text-sm flex items-center gap-2"
+                    style="background:#f5f4f0;border-color:rgba(0,0,0,0.08);cursor:not-allowed;">
+                    <svg width="13" height="13" viewBox="0 0 20 20" fill="#10b981" style="flex-shrink:0;">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                    </svg>
+                    <span style="color:#444441;font-weight:600;">Kota Balikpapan</span>
+                    <span style="margin-left:auto;font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;
+                                background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.25);color:#059669;">
+                        Terkunci
+                    </span>
                 </div>
-                <p class="field-error-msg" id="err_kota"></p>
+                <input type="hidden" name="kota" value="Kota Balikpapan">
             </div>
         </div>
     </div>
@@ -885,36 +883,63 @@ document.addEventListener('DOMContentLoaded', function () {
 
 <script>
 /* ================================================================
-   WILAYAH
+   WILAYAH — dengan auto-select Kalimantan Timur & Balikpapan
 ================================================================ */
 (function () {
 'use strict';
+
+var AUTO_PROVINSI = 'KALIMANTAN TIMUR';
+var AUTO_KOTA     = 'KOTA BALIKPAPAN'; // sesuaikan dengan value dari API
+
 async function loadProvinsi() {
-    var sel = document.getElementById('selectProvinsi');
+    var sel  = document.getElementById('selectProvinsi');
     var spin = document.getElementById('loadingProvinsi');
     if (!sel) return;
     spin && spin.classList.remove('hidden');
     try {
         var data = await (await fetch('/wilayah/provinces')).json();
         data.forEach(function (p) {
-            var opt = new Option(p.name||p.nama, p.name||p.nama);
+            var opt      = new Option(p.name || p.nama, p.name || p.nama);
             opt.dataset.code = p.id;
             sel.appendChild(opt);
         });
+
+        // ── Auto-select Kalimantan Timur ──────────────────────────
+        var found = null;
+        for (var i = 0; i < sel.options.length; i++) {
+            var txt = (sel.options[i].text || '').toUpperCase();
+            if (txt.indexOf(AUTO_PROVINSI) !== -1) {
+                sel.options[i].selected = true;
+                found = sel.options[i];
+                break;
+            }
+        }
+        if (found) {
+            var code = found.dataset.code || '';
+            if (code) await loadKota(code, AUTO_KOTA);
+        }
+
     } catch (e) {
         sel.innerHTML = '<option value="">Gagal memuat — refresh</option>';
     } finally {
         spin && spin.classList.add('hidden');
     }
 }
+
 async function onProvinsiChange(sel) {
-    var opt = sel.options[sel.selectedIndex], code = opt ? (opt.dataset.code||'') : '';
-    var ks = document.getElementById('selectKota');
-    if (ks) { ks.innerHTML = '<option value="">-- Pilih Kabupaten/Kota --</option>'; ks.disabled = true; }
+    var opt  = sel.options[sel.selectedIndex];
+    var code = opt ? (opt.dataset.code || '') : '';
+    var ks   = document.getElementById('selectKota');
+    if (ks) {
+        ks.innerHTML = '<option value="">-- Pilih Kabupaten/Kota --</option>';
+        ks.disabled  = true;
+    }
     if (code) await loadKota(code);
 }
+
 async function loadKota(provId, selectedName) {
-    var sel = document.getElementById('selectKota'), spin = document.getElementById('loadingKota');
+    var sel  = document.getElementById('selectKota');
+    var spin = document.getElementById('loadingKota');
     if (!sel) return;
     sel.disabled = true;
     sel.innerHTML = '<option value="">Memuat...</option>';
@@ -923,19 +948,23 @@ async function loadKota(provId, selectedName) {
         var data = await (await fetch('/wilayah/regencies/' + encodeURIComponent(provId))).json();
         sel.innerHTML = '<option value="">-- Pilih Kabupaten/Kota --</option>';
         data.forEach(function (k) {
-            var l = k.name||k.nama;
-            var opt = new Option(l,l);
-            if (selectedName && l.toUpperCase()===selectedName.toUpperCase()) opt.selected=true;
+            var l   = k.name || k.nama;
+            var opt = new Option(l, l);
+            // ── Auto-select Balikpapan jika selectedName cocok ────
+            if (selectedName && l.toUpperCase().indexOf(selectedName.toUpperCase()) !== -1) {
+                opt.selected = true;
+            }
             sel.appendChild(opt);
         });
         sel.disabled = false;
     } catch (e) {
         sel.innerHTML = '<option value="">Gagal memuat</option>';
-        sel.disabled = false;
+        sel.disabled  = false;
     } finally {
         spin && spin.classList.add('hidden');
     }
 }
+
 window.WILAYAH = { onProvinsiChange: onProvinsiChange };
 document.addEventListener('DOMContentLoaded', loadProvinsi);
 })();

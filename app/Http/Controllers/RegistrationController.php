@@ -76,7 +76,8 @@ class RegistrationController extends Controller
 
         $kategori = $request->input('kategori');
         $isBeregu = ($kategori === 'beregu');
-        // ── 0. Cek kuota beregu (max 32 tim paid) ─────────────────────
+
+        // ── 0. Cek kuota beregu (max 32 tim paid) ─────────────────
         if ($isBeregu) {
             $filled = $this->getBeregPaidCount();
             if ($filled >= self::MAX_BEREGU_TEAMS) {
@@ -93,8 +94,6 @@ class RegistrationController extends Controller
         }
 
         // ── 1. Validasi dasar ──────────────────────────────────────
-        // Jika validasi gagal dan request AJAX → Laravel otomatis return 422 JSON
-        // Jika bukan AJAX → redirect back dengan errors (fallback)
         $validated = $request->validate([
             'nama'          => 'required|string|max:100',
             'tim_pb'        => 'required|string|max:100',
@@ -135,9 +134,7 @@ class RegistrationController extends Controller
         if (count($pemainDiisi) < $minPemain) {
             $errorMsg = "Kategori {$kategori} membutuhkan minimal {$minPemain} pemain.";
             if ($isAjax) {
-                return response()->json([
-                    'errors' => ['pemain' => [$errorMsg]],
-                ], 422);
+                return response()->json(['errors' => ['pemain' => [$errorMsg]]], 422);
             }
             return back()->withInput()->withErrors(['pemain' => $errorMsg]);
         }
@@ -145,9 +142,7 @@ class RegistrationController extends Controller
         if (count($pemainDiisi) > $maxPemain) {
             $errorMsg = "Kategori {$kategori} maksimal {$maxPemain} pemain.";
             if ($isAjax) {
-                return response()->json([
-                    'errors' => ['pemain' => [$errorMsg]],
-                ], 422);
+                return response()->json(['errors' => ['pemain' => [$errorMsg]]], 422);
             }
             return back()->withInput()->withErrors(['pemain' => $errorMsg]);
         }
@@ -155,9 +150,27 @@ class RegistrationController extends Controller
         $validated['pemain'] = $pemainDiisi;
         $jumlahPemain        = count($pemainDiisi);
 
-        // ── 3. Ambil data KTP dari form ────────────────────────────
+        // ── 3. Ambil ktp_type per pemain ──────────────────────────
+        $ktpTypeArr = array_pad(
+            array_slice($request->input('ktp_type', []), 0, $jumlahPemain),
+            $jumlahPemain,
+            'ktp'
+        );
+        // Pastikan nilainya hanya 'ktp' atau 'paspor'
+        $ktpTypeArr = array_map(
+            fn ($t) => in_array($t, ['ktp', 'paspor']) ? $t : 'ktp',
+            $ktpTypeArr
+        );
+
+        // ── 4. Ambil data identitas dari form ──────────────────────
         $nikArr = array_pad(
             array_slice($request->input('nik', []), 0, $jumlahPemain),
+            $jumlahPemain,
+            null
+        );
+
+        $pasporNumberArr = array_pad(
+            array_slice($request->input('paspor_number', []), 0, $jumlahPemain),
             $jumlahPemain,
             null
         );
@@ -174,7 +187,7 @@ class RegistrationController extends Controller
             null
         );
 
-        // ── 4. Hitung usia backend ─────────────────────────────────
+        // ── 5. Hitung usia backend ─────────────────────────────────
         $usiaArr = array_map(function ($tgl) {
             if (! $tgl) return null;
             try {
@@ -189,88 +202,164 @@ class RegistrationController extends Controller
             }
         }, $tglLahirArr);
 
-        // ── 5. Validasi upload KTP ─────────────────────────────────
-        $ktpValidation = $request->validate([
-            'ktp_files'   => 'required|array|min:' . $jumlahPemain,
-            'ktp_files.*' => 'required|file|mimes:jpg,jpeg,png,webp,heic,heif|max:10240',
-        ], [
-            'ktp_files.required'   => 'File KTP wajib diupload untuk semua pemain.',
-            'ktp_files.min'        => 'Upload KTP untuk semua pemain yang didaftarkan.',
-            'ktp_files.*.required' => 'Semua file KTP wajib diisi.',
-            'ktp_files.*.mimes'    => 'File KTP harus berformat JPG, PNG, WebP, atau HEIC.',
-            'ktp_files.*.max'      => 'Ukuran file KTP maksimal 10MB.',
-        ]);
+        // ── 6. Validasi dokumen per pemain ─────────────────────────
+        $ktpFilesInput = $request->file('ktp_files', []);
+        $pasporFilesInput = $request->file('paspor_files', []);
 
-        // ── 5b. Validasi jenis kelamin per kategori ────────────────
+        foreach ($pemainDiisi as $i => $namaPemain) {
+            $docType = $ktpTypeArr[$i] ?? 'ktp';
+            $noNum   = $i + 1;
+
+            if ($docType === 'ktp') {
+                // KTP: wajib upload file
+                if (empty($ktpFilesInput[$i])) {
+                    $errorMsg = "File KTP Pemain {$noNum} ({$namaPemain}) wajib diupload.";
+                    if ($isAjax) return response()->json(['errors' => ["ktp_files.{$i}" => [$errorMsg]]], 422);
+                    return back()->withInput()->withErrors(['ktp_files' => $errorMsg]);
+                }
+                // Validasi file
+                $file = $ktpFilesInput[$i];
+                if (! $file->isValid()) {
+                    $errorMsg = "File KTP Pemain {$noNum} tidak valid.";
+                    if ($isAjax) return response()->json(['errors' => ["ktp_files.{$i}" => [$errorMsg]]], 422);
+                    return back()->withInput()->withErrors(['ktp_files' => $errorMsg]);
+                }
+                if (! in_array($file->getMimeType(), ['image/jpeg','image/jpg','image/png','image/webp','image/heic'])) {
+                    $errorMsg = "File KTP Pemain {$noNum} harus berformat JPG, PNG, WebP, atau HEIC.";
+                    if ($isAjax) return response()->json(['errors' => ["ktp_files.{$i}" => [$errorMsg]]], 422);
+                    return back()->withInput()->withErrors(['ktp_files' => $errorMsg]);
+                }
+                if ($file->getSize() > 10 * 1024 * 1024) {
+                    $errorMsg = "File KTP Pemain {$noNum} maksimal 10MB.";
+                    if ($isAjax) return response()->json(['errors' => ["ktp_files.{$i}" => [$errorMsg]]], 422);
+                    return back()->withInput()->withErrors(['ktp_files' => $errorMsg]);
+                }
+
+            } elseif ($docType === 'paspor') {
+                // Paspor: wajib upload file
+                if (empty($pasporFilesInput[$i])) {
+                    $errorMsg = "File Paspor Pemain {$noNum} ({$namaPemain}) wajib diupload.";
+                    if ($isAjax) return response()->json(['errors' => ["paspor_files.{$i}" => [$errorMsg]]], 422);
+                    return back()->withInput()->withErrors(['paspor_files' => $errorMsg]);
+                }
+                // Validasi file paspor
+                $file = $pasporFilesInput[$i];
+                if (! $file->isValid()) {
+                    $errorMsg = "File Paspor Pemain {$noNum} tidak valid.";
+                    if ($isAjax) return response()->json(['errors' => ["paspor_files.{$i}" => [$errorMsg]]], 422);
+                    return back()->withInput()->withErrors(['paspor_files' => $errorMsg]);
+                }
+                if (! in_array($file->getMimeType(), ['image/jpeg','image/jpg','image/png','image/webp','image/heic'])) {
+                    $errorMsg = "File Paspor Pemain {$noNum} harus berformat JPG, PNG, WebP, atau HEIC.";
+                    if ($isAjax) return response()->json(['errors' => ["paspor_files.{$i}" => [$errorMsg]]], 422);
+                    return back()->withInput()->withErrors(['paspor_files' => $errorMsg]);
+                }
+                if ($file->getSize() > 10 * 1024 * 1024) {
+                    $errorMsg = "File Paspor Pemain {$noNum} maksimal 10MB.";
+                    if ($isAjax) return response()->json(['errors' => ["paspor_files.{$i}" => [$errorMsg]]], 422);
+                    return back()->withInput()->withErrors(['paspor_files' => $errorMsg]);
+                }
+                // Paspor: wajib nomor paspor
+                if (empty(trim($pasporNumberArr[$i] ?? ''))) {
+                    $errorMsg = "Nomor paspor Pemain {$noNum} ({$namaPemain}) wajib diisi.";
+                    if ($isAjax) return response()->json(['errors' => ["paspor_number.{$i}" => [$errorMsg]]], 422);
+                    return back()->withInput()->withErrors(['paspor_number' => $errorMsg]);
+                }
+                // Paspor: wajib nama
+                if (empty(trim($pemainDiisi[$i] ?? ''))) {
+                    $errorMsg = "Nama Pemain {$noNum} wajib diisi untuk paspor.";
+                    if ($isAjax) return response()->json(['errors' => ["pemain.{$i}" => [$errorMsg]]], 422);
+                    return back()->withInput()->withErrors(['pemain' => $errorMsg]);
+                }
+                // Paspor: wajib tanggal lahir
+                if (empty(trim($tglLahirArr[$i] ?? ''))) {
+                    $errorMsg = "Tanggal lahir Pemain {$noNum} wajib diisi untuk paspor.";
+                    if ($isAjax) return response()->json(['errors' => ["tgl_lahir.{$i}" => [$errorMsg]]], 422);
+                    return back()->withInput()->withErrors(['tgl_lahir' => $errorMsg]);
+                }
+                // Paspor: wajib jenis kelamin
+                if (empty(trim($jenisKelaminArr[$i] ?? ''))) {
+                    $errorMsg = "Jenis kelamin Pemain {$noNum} wajib dipilih untuk paspor.";
+                    if ($isAjax) return response()->json(['errors' => ["jenis_kelamin.{$i}" => [$errorMsg]]], 422);
+                    return back()->withInput()->withErrors(['jenis_kelamin' => $errorMsg]);
+                }
+            }
+        }
+
+        // ── 7. Validasi jenis kelamin per kategori ─────────────────
+        // Hanya untuk pemain KTP (paspor input manual, sudah divalidasi gender di client)
         if (in_array($kategori, ['ganda-dewasa-putra', 'ganda-dewasa-putri'], true)) {
             $genderYangDiharuskan = ($kategori === 'ganda-dewasa-putra') ? 'L' : 'P';
             $labelGender          = ($kategori === 'ganda-dewasa-putra') ? 'Laki-laki' : 'Perempuan';
             $labelGenderSalah     = ($kategori === 'ganda-dewasa-putra') ? 'Perempuan' : 'Laki-laki';
 
             foreach ($pemainDiisi as $i => $namaPemain) {
+                $docType      = $ktpTypeArr[$i] ?? 'ktp';
                 $genderPemain = strtoupper(trim($jenisKelaminArr[$i] ?? ''));
 
                 if (empty($genderPemain)) {
                     $errorMsg = sprintf(
-                        'Pemain %d (%s): Jenis kelamin tidak terdeteksi dari KTP. '
-                        . 'Pastikan scan KTP berhasil sebelum submit.',
+                        'Pemain %d (%s): Jenis kelamin tidak terdeteksi. Pastikan scan KTP atau pilih jenis kelamin untuk paspor.',
                         $i + 1, $namaPemain
                     );
-                    if ($isAjax) {
-                        return response()->json([
-                            'errors' => ['jenis_kelamin.' . $i => [$errorMsg]],
-                        ], 422);
-                    }
+                    if ($isAjax) return response()->json(['errors' => ["jenis_kelamin.{$i}" => [$errorMsg]]], 422);
                     return back()->withInput()->withErrors(['jenis_kelamin' => $errorMsg]);
                 }
 
                 if ($genderPemain !== $genderYangDiharuskan) {
                     $errorMsg = sprintf(
-                        'Pemain %d (%s) terdeteksi sebagai %s. '
-                        . 'Kategori %s hanya untuk pemain %s.',
+                        'Pemain %d (%s) terdeteksi sebagai %s. Kategori %s hanya untuk pemain %s.',
                         $i + 1, $namaPemain, $labelGenderSalah, $kategori, $labelGender
                     );
-                    if ($isAjax) {
-                        return response()->json([
-                            'errors' => ['jenis_kelamin.' . $i => [$errorMsg]],
-                        ], 422);
-                    }
+                    if ($isAjax) return response()->json(['errors' => ["jenis_kelamin.{$i}" => [$errorMsg]]], 422);
                     return back()->withInput()->withErrors(['jenis_kelamin' => $errorMsg]);
                 }
             }
         }
 
-        // ── 6. Validasi kota KTP untuk beregu ─────────────────────
+        // ── 8. Validasi kota KTP untuk beregu ─────────────────────
+        // Hanya pemain KTP yang bisa divalidasi kota; paspor dihitung tidak valid kota
         $kotaArr      = $request->input('kota_ktp', []);
         $cityValidArr = [];
         $validCount   = 0;
 
         if ($isBeregu) {
             foreach ($pemainDiisi as $i => $nama) {
-                $kotaRaw = strtoupper(trim($kotaArr[$i] ?? ''));
-                $isValid = $this->isCityValid($kotaRaw);
-                if ($isValid) $validCount++;
-                $cityValidArr[] = [
-                    'index'    => $i + 1,
-                    'nama'     => $nama,
-                    'city_raw' => $kotaRaw,
-                    'valid'    => $isValid,
-                ];
+                $docType = $ktpTypeArr[$i] ?? 'ktp';
+                if ($docType === 'paspor') {
+                    // Pemegang paspor tidak bisa dihitung sebagai KTP Balikpapan
+                    $cityValidArr[] = [
+                        'index'    => $i + 1,
+                        'nama'     => $nama,
+                        'city_raw' => 'PASPOR',
+                        'valid'    => false,
+                        'doc_type' => 'paspor',
+                    ];
+                } else {
+                    $kotaRaw = strtoupper(trim($kotaArr[$i] ?? ''));
+                    $isValid = $this->isCityValid($kotaRaw);
+                    if ($isValid) $validCount++;
+                    $cityValidArr[] = [
+                        'index'    => $i + 1,
+                        'nama'     => $nama,
+                        'city_raw' => $kotaRaw,
+                        'valid'    => $isValid,
+                        'doc_type' => 'ktp',
+                    ];
+                }
             }
 
             if ($validCount < 6) {
                 $errorMsg = "Minimal 6 anggota harus ber-KTP Kota Balikpapan. "
                           . "Saat ini hanya {$validCount} anggota yang valid.";
                 if ($isAjax) {
-                    return response()->json([
-                        'errors' => ['pemain' => [$errorMsg]],
-                    ], 422);
+                    return response()->json(['errors' => ['pemain' => [$errorMsg]]], 422);
                 }
                 return back()->withInput()->withErrors(['pemain' => $errorMsg]);
             }
         }
 
-        // ── 7. Validasi khusus Ganda Veteran Putra ─────────────────
+        // ── 9. Validasi khusus Ganda Veteran Putra ─────────────────
         if ($kategori === 'ganda-veteran-putra') {
             $request->validate([
                 'usia_valid'    => 'required|array|size:2',
@@ -278,8 +367,8 @@ class RegistrationController extends Controller
                 'usia_hitung'   => 'required|array|size:2',
                 'usia_hitung.*' => 'required|integer|min:45',
             ], [
-                'usia_valid.required'  => 'Verifikasi usia wajib dilakukan via scan KTP.',
-                'usia_valid.size'      => 'Kedua pemain harus di-scan KTP-nya.',
+                'usia_valid.required'  => 'Verifikasi usia wajib dilakukan via scan KTP atau input manual paspor.',
+                'usia_valid.size'      => 'Kedua pemain harus diverifikasi usianya.',
                 'usia_valid.*.in'      => 'Kedua pemain harus memenuhi syarat veteran (min. 45 tahun).',
                 'usia_hitung.required' => 'Data usia pemain tidak ditemukan.',
                 'usia_hitung.*.min'    => 'Setiap pemain minimal berusia 45 tahun.',
@@ -307,20 +396,20 @@ class RegistrationController extends Controller
             }
         }
 
-        // ── 8. Harga ───────────────────────────────────────────────
+        // ── 10. Harga ──────────────────────────────────────────────
         $harga = match ($kategori) {
             'beregu' => 1000000,
             default  => 400000,
         };
 
-        // ── 9. Tentukan approval status ────────────────────────────
+        // ── 11. Tentukan approval status ───────────────────────────
         $approvalStatus = $isBeregu ? 'pending_review' : 'approved';
 
-        // ── 10. Generate payment token ─────────────────────────────
+        // ── 12. Generate payment token ─────────────────────────────
         $paymentToken          = Str::uuid()->toString();
-        $paymentTokenExpiresAt = now()->addHours(24); // Konsisten untuk semua kategori
+        $paymentTokenExpiresAt = now()->addHours(24);
 
-        // ── 11. Buat record Registration ───────────────────────────
+        // ── 13. Buat record Registration ───────────────────────────
         $registration = Registration::create([
             'nama'                     => $validated['nama'],
             'tim_pb'                   => $validated['tim_pb'],
@@ -334,8 +423,9 @@ class RegistrationController extends Controller
             'nik'                      => $nikArr,
             'tgl_lahir'                => $tglLahirArr,
             'usia_pemain'              => $usiaArr,
-            'jenis_kelamin_pemain'     => $jenisKelaminArr,
             'ktp_city_valid'           => $isBeregu ? $cityValidArr : null,
+            'ktp_type'                 => $ktpTypeArr,
+            'paspor_number'            => $pasporNumberArr,
             'kategori'                 => $kategori,
             'harga'                    => $harga,
             'status'                   => 'pending',
@@ -345,47 +435,101 @@ class RegistrationController extends Controller
             'tgl_lahir_pemain'         => $kategori === 'ganda-veteran-putra' ? $tglLahirArr : null,
         ]);
 
-        // ── 12. Upload file KTP ────────────────────────────────────
-        $ktpPaths   = [];
-        $ktpRawData = [];
+        // ── 14. Upload file KTP/Paspor ─────────────────────────────
+        $ktpPaths     = [];
+        $pasporPaths  = [];
+        $ktpRawData   = [];
 
-        foreach ($request->file('ktp_files') as $i => $file) {
-            $namaFile = sprintf(
-                'pemain-%d-%s.%s',
-                $i + 1,
-                $registration->uuid,
-                $file->getClientOriginalExtension()
-            );
+        foreach ($pemainDiisi as $i => $namaPemain) {
+            $docType = $ktpTypeArr[$i] ?? 'ktp';
 
-            $path = $file->storeAs(
-                "ktp/{$registration->uuid}",
-                $namaFile,
-                'private'
-            );
+            if ($docType === 'paspor') {
+                // Paspor: upload file dan simpan data manual
+                $file = $pasporFilesInput[$i] ?? null;
+                if ($file && $file->isValid()) {
+                    $namaFile = sprintf(
+                        'paspor-pemain-%d-%s.%s',
+                        $i + 1,
+                        $registration->uuid,
+                        $file->getClientOriginalExtension()
+                    );
 
-            $ktpPaths[] = $path;
+                    $path = $file->storeAs(
+                        "paspor/{$registration->uuid}",
+                        $namaFile,
+                        'private'
+                    );
 
-            $ktpRawData[] = [
-                'index'         => $i + 1,
-                'nama'          => $pemainDiisi[$i]              ?? null,
-                'nik'           => $nikArr[$i]                   ?? null,
-                'tgl_lahir'     => $tglLahirArr[$i]              ?? null,
-                'usia'          => $usiaArr[$i]                  ?? null,
-                'jenis_kelamin' => $jenisKelaminArr[$i]          ?? null,
-                'kota'          => $cityValidArr[$i]['city_raw'] ?? null,
-                'file_path'     => $path,
-                'file_name'     => $namaFile,
-            ];
+                    $pasporPaths[$i] = $path;
+                } else {
+                    $pasporPaths[$i] = null;
+                }
+
+                $ktpPaths[$i]   = null;
+                $ktpRawData[$i] = [
+                    'index'         => $i + 1,
+                    'nama'          => $namaPemain,
+                    'doc_type'      => 'paspor',
+                    'nik'           => null,
+                    'paspor_number' => $pasporNumberArr[$i] ?? null,
+                    'tgl_lahir'     => $tglLahirArr[$i]     ?? null,
+                    'usia'          => $usiaArr[$i]          ?? null,
+                    'jenis_kelamin' => $jenisKelaminArr[$i]  ?? null,
+                    'kota'          => null,
+                    'file_path'     => $pasporPaths[$i],
+                    'file_name'     => $pasporPaths[$i] ? basename($pasporPaths[$i]) : null,
+                ];
+            } else {
+                // KTP: upload file
+                $file = $ktpFilesInput[$i] ?? null;
+                if ($file && $file->isValid()) {
+                    $namaFile = sprintf(
+                        'pemain-%d-%s.%s',
+                        $i + 1,
+                        $registration->uuid,
+                        $file->getClientOriginalExtension()
+                    );
+
+                    $path = $file->storeAs(
+                        "ktp/{$registration->uuid}",
+                        $namaFile,
+                        'private'
+                    );
+
+                    $ktpPaths[$i]   = $path;
+                    $ktpRawData[$i] = [
+                        'index'         => $i + 1,
+                        'nama'          => $namaPemain,
+                        'doc_type'      => 'ktp',
+                        'nik'           => $nikArr[$i]                   ?? null,
+                        'paspor_number' => null,
+                        'tgl_lahir'     => $tglLahirArr[$i]              ?? null,
+                        'usia'          => $usiaArr[$i]                  ?? null,
+                        'jenis_kelamin' => $jenisKelaminArr[$i]          ?? null,
+                        'kota'          => $cityValidArr[$i]['city_raw'] ?? null,
+                        'file_path'     => $path,
+                        'file_name'     => $namaFile,
+                    ];
+                } else {
+                    $ktpPaths[$i]   = null;
+                    $ktpRawData[$i] = [
+                        'index'    => $i + 1,
+                        'nama'     => $namaPemain,
+                        'doc_type' => 'ktp',
+                    ];
+                }
+            }
         }
 
         $registration->update([
-            'ktp_files' => $ktpPaths,
-            'ktp_data'  => $ktpRawData,
+            'ktp_files'    => $ktpPaths,
+            'paspor_files' => $pasporPaths,
+            'ktp_data'     => $ktpRawData,
         ]);
 
-        // ── 13. Routing berdasarkan kategori ───────────────────────
+        // ── 15. Routing berdasarkan kategori ───────────────────────
 
-        // Beregu: pending review (tidak langsung bayar)
+        // Beregu: pending review
         if ($isBeregu) {
             $pendingUrl = route('registration.pending-review', $registration->uuid);
 
@@ -420,7 +564,6 @@ class RegistrationController extends Controller
             ]);
         }
 
-        // SESUDAH — selalu ke pending-payment dulu (halaman "cek email"):
         $pendingPaymentUrl = route('registration.pending-payment', $registration->uuid);
 
         if ($isAjax) {
@@ -450,12 +593,10 @@ class RegistrationController extends Controller
             return view('registration.payment-expired', compact('registration'));
         }
 
-        // If already paid or pending verification, show status page
         if (in_array($registration->status, ['paid', 'pending_verification'])) {
             return redirect()->route('registration.status', $registration->uuid);
         }
 
-        // Show payment page with bank transfer instructions (for pending or failed status)
         return view('registration.payment', compact('registration'));
     }
 
@@ -513,6 +654,27 @@ class RegistrationController extends Controller
     }
 
     // ============================================================
+    // SERVE FOTO PASPOR (admin only, protected)
+    // ============================================================
+
+    public function servePaspor(string $uuid, string $filename)
+    {
+        abort_unless(auth('web')->check(), 403);
+
+        $path = storage_path("app/private/paspor/{$uuid}/{$filename}");
+
+        if (! file_exists($path)) {
+            abort(404, 'File Paspor tidak ditemukan.');
+        }
+
+        return response()->file($path, [
+            'Content-Type'        => mime_content_type($path),
+            'Content-Disposition' => 'inline; filename="' . $filename . '"',
+            'Cache-Control'       => 'private, max-age=3600',
+        ]);
+    }
+
+    // ============================================================
     // UPLOAD PAYMENT PROOF
     // ============================================================
 
@@ -520,13 +682,12 @@ class RegistrationController extends Controller
     {
         $registration = Registration::where('uuid', $uuid)->firstOrFail();
 
-        // Validate that registration is approved and pending payment
         if ($registration->approval_status !== 'approved' || !in_array($registration->status, ['pending', 'failed'])) {
             return back()->withErrors(['error' => 'Pendaftaran tidak dalam status yang memungkinkan upload bukti pembayaran.']);
         }
 
         $request->validate([
-            'payment_proof' => 'required|image|mimes:jpg,jpeg,png,webp|max:5120' // 5MB max
+            'payment_proof' => 'required|image|mimes:jpg,jpeg,png,webp|max:5120'
         ], [
             'payment_proof.required' => 'Bukti pembayaran wajib diupload.',
             'payment_proof.image'    => 'File harus berupa gambar.',
@@ -534,16 +695,13 @@ class RegistrationController extends Controller
             'payment_proof.max'      => 'Ukuran file maksimal 5MB.',
         ]);
 
-        // Store the file
         $path = $request->file('payment_proof')->store('payment_proofs', 'public');
 
-        // Update registration status
         $registration->update([
             'payment_proof' => $path,
-            'status' => 'pending_verification',
+            'status'        => 'pending_verification',
         ]);
 
-        // Notify admin WhatsApp that a payment proof has been uploaded.
         app(WhatsAppService::class)->notifyAdminPaymentUploaded($registration);
 
         return redirect()->route('registration.status', $uuid)
@@ -576,6 +734,7 @@ class RegistrationController extends Controller
 
         return false;
     }
+
     private function getBeregPaidCount(): int
     {
         return Registration::where('kategori', 'beregu')
