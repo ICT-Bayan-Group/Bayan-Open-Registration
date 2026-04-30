@@ -1799,7 +1799,7 @@ body {
             @foreach([
                 ['1','Pilih Kategori','Pilih jalur dan kategori turnamen yang ingin diikuti.'],
                 ['2','Isi Data','Isi data tim, kontak, dan upload scan KTP pemain.'],
-                ['3','Bayar','Lakukan pembayaran via transfer, QRIS, atau metode tersedia.'],
+                ['3','Bayar','Lakukan pembayaran via transfer, dan unggah bukti pembayaran di form pendaftaran.'],
                 ['4','Bertanding!','Konfirmasi diterima — sampai jumpa di lapangan!'],
             ] as $s)
             <div class="step-card reveal">

@@ -167,7 +167,7 @@
 .jp-date-strip-wrap.scrolled .jp-date-tab:hover .jp-dtab-num { color: var(--ink); }
 .jp-date-strip-wrap.scrolled .jp-date-tab.active { background: rgba(249,115,22,0.06); }
 .jp-date-strip-wrap.scrolled .jp-date-tab.active .jp-dtab-day { color: var(--fire); }
-.jp-date-strip-wrap.scrolled .jp-date-tab.active .jp-dtab-num { color: var(--ink); }
+.jp-date-strip-wrap.scrolled .jp-date-tab.active .jp-dtab-num { color: var(--fire); }
 .jp-date-strip-wrap.scrolled .jp-date-tab.active .jp-dtab-mon { color: var(--ink-45); }
 .jp-date-strip-wrap.scrolled .jp-tab-sep { background: var(--ink-12); }
 
@@ -208,14 +208,14 @@
 .jp-dtab-num {
     font-family: var(--font-display);
     font-size: 19px; font-weight: 800;
-    color: rgba(255,255,255,0.4); line-height: 1; transition: color .2s;
+    color: rgba(255,255,255,0.85); line-height: 1; transition: color .2s;
 }
 .jp-dtab-mon {
     font-size: 9.5px; color: rgba(255,255,255,0.28);
     font-weight: 500; transition: color .2s;
 }
 .jp-date-tab.active .jp-dtab-day { color: var(--fire); }
-.jp-date-tab.active .jp-dtab-num { color: #fff; }
+.jp-date-tab.active .jp-dtab-num { color: var(--fire); } /* ← ini yang diubah */
 .jp-date-tab.active .jp-dtab-mon { color: rgba(255,255,255,0.5); }
 .jp-date-tab:hover .jp-dtab-num  { color: rgba(255,255,255,0.8); }
 
@@ -446,7 +446,7 @@
     {{-- ══ DATE TABS ══ --}}
     <div class="jp-date-strip-wrap">
         <div class="jp-date-strip" id="dateTabs">
-            <div style="padding:18px 20px;color:rgba(255,255,255,0.25);font-size:12px;font-family:var(--font-display);">
+            <div style="padding:18px 20px;color:rgba(255, 255, 255, 0.25);font-size:12px;font-family:var(--font-display);">
                 Memuat…
             </div>
         </div>

@@ -10,7 +10,6 @@
 <style>
 /* ═══════════════════════════════════════════════════
    LIVE SCORE PAGE — BAYAN OPEN 2026
-   Dark fire theme · Real-time score cards
 ═══════════════════════════════════════════════════ */
 :root {
     --fire:       #f97316;
@@ -145,22 +144,63 @@
 }
 
 /* ════════════════════════════════════════
-   FILTER BAR (sticky, dark)
+   FILTER STRIP (sticky — dark → light on scroll)
 ════════════════════════════════════════ */
 .ls-filter-strip-wrap {
     background: var(--night);
     border-bottom: 1px solid rgba(255,255,255,0.07);
     position: sticky;
     top: 64px; z-index: 40;
+    transition: background 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
 }
 @media (min-width:640px)  { .ls-filter-strip-wrap { top: 80px; } }
 @media (min-width:1024px) { .ls-filter-strip-wrap { top: 96px; } }
+
+/* ── Scrolled: light mode ── */
+.ls-filter-strip-wrap.scrolled {
+    background: var(--white);
+    border-bottom-color: var(--ink-12);
+    box-shadow: 0 4px 20px rgba(26,16,7,0.08);
+}
+.ls-filter-strip-wrap.scrolled .ls-sel-wrap label {
+    color: var(--ink-25);
+}
+.ls-filter-strip-wrap.scrolled .ls-sel {
+    background: var(--paper);
+    border-color: var(--ink-12);
+    color: var(--ink-70);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='rgba(26,16,7,0.4)' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 12px 12px;  /* ← TAMBAHKAN INI */
+}
+.ls-filter-strip-wrap.scrolled .ls-sel:focus,
+.ls-filter-strip-wrap.scrolled .ls-sel:hover {
+    border-color: rgba(249,115,22,0.5);
+    background-color: rgba(249,115,22,0.04);
+}
+.ls-filter-strip-wrap.scrolled .ls-count-badge {
+    background: var(--paper);
+    border-color: var(--ink-12);
+}
+.ls-filter-strip-wrap.scrolled .ls-count-num {
+    color: var(--fire);
+}
+.ls-filter-strip-wrap.scrolled .ls-count-lbl {
+    color: var(--ink-45);
+}
+.ls-filter-strip-wrap.scrolled .ls-refresh-dot {
+    box-shadow: 0 0 8px var(--fire);
+}
+.ls-filter-strip-wrap.scrolled .ls-refresh-text {
+    color: var(--ink-25);
+}
 
 .ls-filter-strip {
     max-width: 1120px; margin: 0 auto;
     padding: 13px 24px;
     display: flex; align-items: center; gap: 10px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
 }
 
 /* selects */
@@ -171,6 +211,7 @@
     font-size: 8px; font-weight: 700;
     letter-spacing: .14em; text-transform: uppercase;
     color: rgba(255,255,255,0.3);
+    transition: color 0.35s ease;
 }
 .ls-sel {
     padding: 7px 28px 7px 10px;
@@ -183,7 +224,8 @@
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='rgba(255,255,255,0.4)' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 8px center;
-    transition: border-color .2s, background-color .2s;
+    background-size: 12px 12px;  /* ← TAMBAHKAN INI juga di rule default */
+    transition: border-color .2s, background-color .2s, color .35s ease;
     min-width: 140px;
 }
 .ls-sel:focus, .ls-sel:hover {
@@ -194,7 +236,7 @@
 
 /* refresh info */
 .ls-refresh-info {
-    margin-left: auto; flex-shrink: 0;
+     flex-shrink: 0;
     display: flex; align-items: center; gap: 6px;
 }
 .ls-refresh-dot {
@@ -206,6 +248,7 @@
     font-size: 8.5px; font-weight: 700;
     letter-spacing: .12em; text-transform: uppercase;
     color: rgba(255,255,255,0.3);
+    transition: color 0.35s ease;
 }
 .ls-count-badge {
     display: flex; align-items: center; gap: 5px;
@@ -213,6 +256,8 @@
     border: 1px solid rgba(255,255,255,0.08);
     border-radius: var(--r-xs);
     padding: 5px 10px;
+    margin-left: auto; /* ← PINDAHKAN ke sini */
+    transition: background 0.35s ease, border-color 0.35s ease;
 }
 .ls-count-num {
     font-family: var(--font-display); font-size: 13px; font-weight: 800;
@@ -222,6 +267,7 @@
     font-family: var(--font-display); font-size: 8px; font-weight: 700;
     letter-spacing: .1em; text-transform: uppercase;
     color: rgba(255,255,255,0.25);
+    transition: color 0.35s ease;
 }
 
 /* ════════════════════════════════════════
@@ -259,7 +305,6 @@
 }
 .ls-card:hover::before { opacity: 1; }
 
-/* selesai = green accent */
 .ls-card.selesai::before { background: linear-gradient(to bottom, var(--success), #059669); opacity:.6; }
 .ls-card.selesai:hover   { border-color: rgba(16,185,129,0.3); box-shadow: 0 16px 48px rgba(16,185,129,0.08), 0 2px 8px rgba(26,16,7,0.05); }
 
@@ -337,7 +382,7 @@
     letter-spacing: .18em; text-transform: uppercase; color: var(--fire); opacity: .7;
 }
 
-/* set scores inline */
+/* set scores */
 .ls-sets {
     margin-top: 12px; padding-top: 10px;
     border-top: 1px dashed var(--ink-12);
@@ -355,10 +400,8 @@
     border: 1px solid var(--ink-12);
 }
 
-/* card footer: winner */
-.ls-card-foot {
-    padding: 10px 20px 14px;
-}
+/* card footer */
+.ls-card-foot { padding: 10px 20px 14px; }
 .ls-winner-banner {
     display: flex; align-items: center; gap: 8px;
     background: linear-gradient(135deg, var(--success-bg), rgba(16,185,129,0.06));
@@ -376,7 +419,6 @@
     font-size: 13px; font-weight: 700; color: var(--success); line-height: 1.3;
 }
 
-/* waiting state */
 .ls-waiting {
     display: inline-flex; align-items: center; gap: 6px;
     font-family: var(--font-display); font-size: 9px; font-weight: 700;
@@ -483,8 +525,8 @@
         </div>
     </div>
 
-    {{-- ══ FILTER STRIP (dark) ══ --}}
-    <div class="ls-filter-strip-wrap">
+    {{-- ══ FILTER STRIP ══ --}}
+    <div class="ls-filter-strip-wrap" id="filterStripWrap">
         <div class="ls-filter-strip">
             <div class="ls-sel-group">
                 <div class="ls-sel-wrap">
@@ -521,7 +563,6 @@
 
     {{-- ══ SCHEDULE BODY ══ --}}
     <div class="ls-main" id="lsMain">
-        {{-- Skeleton --}}
         <div id="loadingSkeleton">
             <div style="height:18px;width:200px;border-radius:8px;margin-bottom:20px;" class="skel"></div>
             <div class="ls-skel-grid">
@@ -545,22 +586,37 @@
 <script>
 /* ═══════════════════════════════════════
    LIVE SCORE JS — Bayan Open 2026
-   API: result.bayanopen.com
 ═══════════════════════════════════════ */
 let masterData = [];
 
-const HARI        = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
-const BULAN       = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Ags','Sep','Okt','Nov','Des'];
+const HARI          = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
 const BULAN_PANJANG = ['Januari','Februari','Maret','April','Mei','Juni',
                        'Juli','Agustus','September','Oktober','November','Desember'];
 
 function parseDate(str) { const [y,m,d]=str.split('-').map(Number); return new Date(y,m-1,d); }
 function fmtLong(s) { const d=parseDate(s); return `${HARI[d.getDay()]}, ${d.getDate()} ${BULAN_PANJANG[d.getMonth()]} ${d.getFullYear()}`; }
 
-// ── INIT ─────────────────────────────
+/* ── SCROLL TRANSITION ────────────────────── */
+(function () {
+    const strip = document.getElementById('filterStripWrap');
+    if (!strip) return;
+
+    function onScroll() {
+        const heroHeight = document.querySelector('.ls-hero')?.offsetHeight ?? 400;
+        if (window.scrollY > heroHeight - 120) {
+            strip.classList.add('scrolled');
+        } else {
+            strip.classList.remove('scrolled');
+        }
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+})();
+
+/* ── INIT ─────────────────────────────────── */
 async function init() {
     await fetchData(true);
-    // Auto-refresh every 30 seconds
     setInterval(() => fetchData(false), 30000);
 }
 
@@ -595,7 +651,7 @@ async function fetchData(isFirst = false) {
     }
 }
 
-// ── FILTER POPULATION ────────────────
+/* ── FILTER POPULATION ────────────────────── */
 function populateFilters() {
     const selTgl = document.getElementById('filterTanggal');
     const selKat = document.getElementById('filterKategori');
@@ -612,7 +668,7 @@ function populateFilters() {
 
 function applyFilter() { renderScore(); }
 
-// ── STATS ────────────────────────────
+/* ── STATS ────────────────────────────────── */
 function updateStats() {
     const total   = masterData.length;
     const selesai = masterData.filter(m => (m.status_label||'').toUpperCase() === 'SELESAI').length;
@@ -628,7 +684,7 @@ function updateStats() {
         `Diperbarui ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
 }
 
-// ── RENDER ───────────────────────────
+/* ── RENDER ───────────────────────────────── */
 function renderScore() {
     const valTgl = document.getElementById('filterTanggal').value;
     const valKat = document.getElementById('filterKategori').value;
@@ -670,8 +726,8 @@ function renderScore() {
 
     let html = '';
     Object.keys(byDate).sort().forEach(date => {
-        const byJam = byDate[date];
-        const totalDate = Object.values(byJam).flat().length;
+        const byJam      = byDate[date];
+        const totalDate  = Object.values(byJam).flat().length;
         html += `<div class="ls-date-section">
             <div class="ls-date-label">
                 <div class="ls-date-label-text">
@@ -705,11 +761,10 @@ function renderScore() {
     content.innerHTML = html;
 }
 
-// ── BUILD CARD ───────────────────────
+/* ── BUILD CARD ───────────────────────────── */
 function buildCard(m) {
     const isSelesai = (m.status_label||'').toUpperCase() === 'SELESAI';
 
-    // Kategori badge class
     const kat = (m.kategori||'').toLowerCase();
     let kc = 'kdef';
     if      (kat.includes('ganda putra') && !kat.includes('veteran')) kc='kgp';
@@ -718,18 +773,17 @@ function buildCard(m) {
     else if (kat.includes('veteran putri')) kc='kvpi';
     else if (kat.includes('beregu'))        kc='kber';
 
-    // Parse partai → player1 vs player2
     const partai  = m.partai || '—';
     const vsSplit = partai.split(' vs ');
-    let p1Html = vsSplit[0] || '—';
-    let p2Html = vsSplit[1] || '';
+    const p1Raw   = vsSplit[0] || '—';
+    const p2Raw   = vsSplit[1] || '—';
 
-    // Move (PB) into separate line
     const formatPlayer = (txt) => txt.replace(/\s*\(([^)]+)\)/g,
         '<span class="ls-player-pb">($1)</span>');
 
-    // Parse skor → sets
-    const skor = (m.skor || '').toString().trim();
+    const skor    = (m.skor || '').toString().trim();
+    const winner  = m.winner || '';
+
     let setsHtml = '';
     if (skor && skor !== '-') {
         const sets = skor.split(/\s+/);
@@ -738,20 +792,6 @@ function buildCard(m) {
             <span class="ls-set-label">Set</span>
             ${sets.map(s => `<span class="ls-set-chip">${s}</span>`).join('')}
         </div>`;
-    }
-
-    // Detect winner from skor for score highlight
-    // winner name from m.winner
-    const winner = m.winner || '';
-
-    // Determine which player won for score color
-    const p1IsWinner = winner && p1Html.toLowerCase().includes(winner.split('/')[0]?.trim().toLowerCase());
-
-    // Score display
-    let scoreDisplay = '';
-    if (skor && skor !== '-') {
-        // Try to extract final set totals
-        scoreDisplay = skor;
     }
 
     const courtLabel = m.venue ? `${m.venue} · Lap ${m.court}` : `Lap ${m.court}`;
@@ -772,10 +812,7 @@ function buildCard(m) {
 
         <div class="ls-card-body">
             <div class="ls-player-row">
-                <div class="ls-player-info">${formatPlayer(p1Html)}</div>
-                ${isSelesai ? `<span class="ls-player-score ${!isSelesai || p1IsWinner ? 'winner' : ''}">
-                    ${skor ? skor.split(/\s+/).length > 0 ? '&nbsp;' : '' : ''}
-                </span>` : ''}
+                <div class="ls-player-info">${formatPlayer(p1Raw)}</div>
             </div>
 
             <div class="ls-vs-divider">
@@ -785,7 +822,7 @@ function buildCard(m) {
             </div>
 
             <div class="ls-player-row">
-                <div class="ls-player-info">${formatPlayer(p2Html || '—')}</div>
+                <div class="ls-player-info">${formatPlayer(p2Raw)}</div>
             </div>
 
             ${setsHtml}
@@ -809,7 +846,7 @@ function buildCard(m) {
     </div>`;
 }
 
-// ── BOOT ─────────────────────────────
+/* ── BOOT ─────────────────────────────────── */
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
 else init();
 </script>
