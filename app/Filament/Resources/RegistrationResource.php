@@ -27,12 +27,6 @@ class RegistrationResource extends Resource
     protected static ?string $pluralModelLabel = 'Data Peserta';
     protected static ?int    $navigationSort   = 1;
 
-    // ============================================================
-    // PASSWORD GATE — hash dari "Okedeh.12345!"
-    // Jalankan: php artisan tinker => bcrypt('Okedeh.12345!')
-    // Tempel hasilnya di bawah ini
-    // ============================================================
-
     private static string $ACTION_PASSWORD_HASH = '$2y$12$31Y9w.yl1C/h/tWdRC.8GuE0hUAvsy3pZPBEUOAHEodSpi4tYw6.6';
 
     private static function verifyActionPassword(string $input): bool
@@ -427,48 +421,12 @@ class RegistrationResource extends Resource
                     ->icon('heroicon-o-photo')
                     ->color('info')
                     ->visible(fn (Registration $r) => $r->hasPaymentProof())
-                    ->form([
-                        self::passwordField(),
-                    ])
-                    ->modalHeading(fn (Registration $r) => 'Lihat Bukti Pembayaran — ' . $r->nama)
-                    ->modalSubmitActionLabel('🔓 Verifikasi & Buka')
-                    ->modalWidth('md')
-                    ->action(function (Registration $r, array $data, Tables\Actions\Action $action) {
-                        if (! self::verifyActionPassword($data['action_password'] ?? '')) {
-                            Notification::make()
-                                ->title('Password salah')
-                                ->body('Anda tidak memiliki akses untuk melakukan aksi ini.')
-                                ->danger()
-                                ->send();
-                            $action->halt();
-                            return;
-                        }
-
-                        // Password benar — tampilkan modal bukti via second modal
-                        Notification::make()
-                            ->title('Akses diberikan')
-                            ->body('Membuka bukti pembayaran...')
-                            ->success()
-                            ->send();
-
-                        // Redirect ke halaman view record dengan bukti terbuka
-                        // atau tampilkan notifikasi dengan URL gambar
-                        $proofUrl = asset('storage/' . $r->payment_proof);
-
-                        Notification::make()
-                            ->title('Bukti Pembayaran — ' . $r->nama)
-                            ->body('Klik tombol di bawah untuk membuka gambar bukti pembayaran.')
-                            ->actions([
-                                \Filament\Notifications\Actions\Action::make('open')
-                                    ->label('Buka Bukti Pembayaran')
-                                    ->url($proofUrl)
-                                    ->openUrlInNewTab()
-                                    ->button(),
-                            ])
-                            ->persistent()
-                            ->success()
-                            ->send();
-                    }),
+                    ->modalHeading(fn (Registration $r) => 'Bukti Pembayaran — ' . $r->nama)
+                    ->modalContent(fn (Registration $r): HtmlString => new HtmlString(
+                        self::buildPaymentProofModalHtml($r)
+                    ))
+                    ->modalSubmitAction(false)
+                    ->modalCancelActionLabel('Tutup'),
 
                 // ── Approve Pembayaran ───────────────────────────
                 Tables\Actions\Action::make('approve_payment')
@@ -629,6 +587,32 @@ class RegistrationResource extends Resource
             ])
             ->striped()
             ->poll('30s');
+    }
+
+    // ============================================================
+    // PAYMENT PROOF HTML
+    // ============================================================
+
+    private static function buildPaymentProofModalHtml(Registration $record): string
+    {
+        if (! $record->payment_proof) {
+            return '<p style="color:#6b7280;font-size:14px;padding:16px;text-align:center;">Bukti pembayaran tidak tersedia.</p>';
+        }
+
+        $url      = asset('storage/' . $record->payment_proof);
+        $filename = htmlspecialchars(basename($record->payment_proof));
+        $nama     = htmlspecialchars($record->nama);
+
+        return '
+        <div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:8px;">
+            <img
+                src="' . $url . '"
+                alt="Bukti Pembayaran ' . $nama . '"
+                style="width:100%;max-height:540px;object-fit:contain;border-radius:10px;border:1px solid #d1d5db;background:#f9fafb;"
+                onerror="this.outerHTML=\'<div style=\\\'text-align:center;padding:32px;\\\'><p style=\\\'color:#dc2626;font-size:13px;\\\'>❌ Gambar tidak dapat dimuat.</p></div>\'"
+            >
+            <p style="font-size:11px;color:#9ca3af;margin:0;">' . $filename . '</p>
+        </div>';
     }
 
     // ============================================================
