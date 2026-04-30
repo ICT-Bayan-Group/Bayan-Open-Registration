@@ -295,7 +295,7 @@ Infolists\Components\TextEntry::make('uuid')
                         $r->approve(auth()->id());
                         Mail::to($r->email)->send(new RegistrationApproved($r));
 
-                        app(WhatsAppService::class)->sendPaymentLink($r);
+                        app(WhatsAppService::class)->sendBereguApproved($r);
 
                         Notification::make()
                             ->title('✅ ' . $r->tim_pb . ' diapprove!')
@@ -366,6 +366,8 @@ Infolists\Components\TextEntry::make('uuid')
                         $r->requestRevision(auth()->id(), $notes);
                         Mail::to($r->email)->send(new RegistrationRevisionRequired($r));
 
+                        app(WhatsAppService::class)->sendBereguRevision($r);
+
                         Notification::make()
                             ->title('✏ Permintaan revisi dikirim ke ' . $r->tim_pb)
                             ->body('Link perbaikan aktif 7 hari. Email dikirim ke ' . $r->email)
@@ -407,7 +409,7 @@ Infolists\Components\TextEntry::make('uuid')
                         $r->reject(auth()->id(), $data['rejection_reason']);
                         Mail::to($r->email)->send(new RegistrationRejected($r));
 
-                        app(WhatsAppService::class)->sendPaymentRejected($r);
+                        app(WhatsAppService::class)->sendBereguRejected($r);
 
                         Notification::make()
                             ->title('❌ ' . $r->tim_pb . ' ditolak final')
@@ -462,8 +464,8 @@ Infolists\Components\TextEntry::make('uuid')
                     ->label('Foto KTP')
                     ->icon('heroicon-o-identification')
                     ->color('gray')
-                    ->visible(fn (Registration $r) => ! empty($r->ktp_files))
-                    ->modalHeading(fn (Registration $r) => 'Foto KTP — ' . $r->tim_pb)
+                    ->visible(fn (Registration $r) => ! empty($r->ktp_files) || ! empty($r->paspor_files))
+                    ->modalHeading(fn (Registration $r) => 'Dokumen Identitas — ' . $r->tim_pb)
                     ->modalContent(fn (Registration $r): HtmlString => new HtmlString(
                         self::buildKtpModal($r)
                     ))
@@ -553,12 +555,14 @@ Infolists\Components\TextEntry::make('uuid')
 
     private static function buildKtpDetail(Registration $record): string
     {
-        $pemain    = $record->pemain         ?? [];
-        $nik       = $record->nik            ?? [];
-        $tglLahir  = $record->tgl_lahir      ?? [];
-        $usia      = $record->usia_pemain    ?? [];
-        $ktpFiles  = $record->ktp_files      ?? [];
-        $cityValid = $record->ktp_city_valid ?? [];
+        $pemain      = $record->pemain         ?? [];
+        $nik         = $record->nik            ?? [];
+        $tglLahir    = $record->tgl_lahir      ?? [];
+        $usia        = $record->usia_pemain    ?? [];
+        $ktpFiles    = $record->ktp_files      ?? [];
+        $pasporFiles = $record->paspor_files   ?? [];
+        $cityValid   = $record->ktp_city_valid ?? [];
+        $ktpType     = $record->ktp_type       ?? [];
 
         if (empty($pemain)) {
             return '<p style="color:#6b7280;font-size:14px;">Belum ada data pemain.</p>';
@@ -567,6 +571,9 @@ Infolists\Components\TextEntry::make('uuid')
         $html = '<div style="display:flex;flex-direction:column;gap:16px;">';
 
         foreach ($pemain as $i => $nama) {
+            $docType  = $ktpType[$i] ?? 'ktp';
+            $isPaspor = $docType === 'paspor';
+
             $cv      = $cityValid[$i] ?? null;
             $ok      = $cv['valid']    ?? false;
             $kotaRaw = htmlspecialchars($cv['city_raw'] ?? '—');
@@ -578,19 +585,39 @@ Infolists\Components\TextEntry::make('uuid')
             $badgeTc  = $ok ? '#15803d'  : '#b91c1c';
             $cityLbl  = $ok ? '✓ Balikpapan' : ('✗ ' . ($kotaRaw ?: 'Kota tidak terbaca'));
 
+            $docBadge = $isPaspor
+                ? '<span style="color:#8b5cf6;font-size:11px;font-weight:700;background:#f3e8ff;border:1px solid #c4b5fd;border-radius:99px;padding:4px 12px;">🛂 Paspor</span>'
+                : '<span style="color:#f97316;font-size:11px;font-weight:700;background:#fed7aa;border:1px solid #fdba74;border-radius:99px;padding:4px 12px;">🪪 KTP</span>';
+
             $fotoHtml = '';
-            $filePath = $ktpFiles[$i] ?? null;
-            if ($filePath) {
-                $url = route('admin.ktp.serve', ['uuid' => $record->uuid, 'filename' => basename($filePath)]);
-                $fotoHtml = '<a href="' . $url . '" target="_blank">'
-                    . '<img src="' . $url . '" alt="KTP"'
-                    . ' style="width:100%;max-height:180px;object-fit:contain;border-radius:8px;'
-                    . 'border:1px solid #e5e7eb;background:#f9fafb;cursor:pointer;">'
-                    . '</a>';
+            if ($isPaspor) {
+                $filePath = $pasporFiles[$i] ?? null;
+                if ($filePath) {
+                    $url = route('admin.paspor.serve', ['uuid' => $record->uuid, 'filename' => basename($filePath)]);
+                    $fotoHtml = '<a href="' . $url . '" target="_blank">'
+                        . '<img src="' . $url . '" alt="Paspor"'
+                        . ' style="width:100%;max-height:180px;object-fit:contain;border-radius:8px;'
+                        . 'border:1px solid #e5e7eb;background:#f9fafb;cursor:pointer;">'
+                        . '</a>';
+                } else {
+                    $fotoHtml = '<div style="height:100px;display:flex;align-items:center;justify-content:center;'
+                        . 'border:1px dashed #d1d5db;border-radius:8px;background:#f9fafb;">'
+                        . '<p style="color:#9ca3af;font-size:12px;font-style:italic;">🛂 Foto paspor tidak tersedia</p></div>';
+                }
             } else {
-                $fotoHtml = '<div style="height:100px;display:flex;align-items:center;justify-content:center;'
-                    . 'border:1px dashed #d1d5db;border-radius:8px;background:#f9fafb;">'
-                    . '<p style="color:#9ca3af;font-size:12px;font-style:italic;">Foto tidak tersedia</p></div>';
+                $filePath = $ktpFiles[$i] ?? null;
+                if ($filePath) {
+                    $url = route('admin.ktp.serve', ['uuid' => $record->uuid, 'filename' => basename($filePath)]);
+                    $fotoHtml = '<a href="' . $url . '" target="_blank">'
+                        . '<img src="' . $url . '" alt="KTP"'
+                        . ' style="width:100%;max-height:180px;object-fit:contain;border-radius:8px;'
+                        . 'border:1px solid #e5e7eb;background:#f9fafb;cursor:pointer;">'
+                        . '</a>';
+                } else {
+                    $fotoHtml = '<div style="height:100px;display:flex;align-items:center;justify-content:center;'
+                        . 'border:1px dashed #d1d5db;border-radius:8px;background:#f9fafb;">'
+                        . '<p style="color:#9ca3af;font-size:12px;font-style:italic;">🪪 Foto KTP tidak tersedia</p></div>';
+                }
             }
 
             $html .= '<div style="border:1.5px solid ' . $borderC . ';border-radius:12px;overflow:hidden;background:#fff;">'
@@ -602,9 +629,12 @@ Infolists\Components\TextEntry::make('uuid')
                 . ($i + 1) . '</div>'
                 . '<span style="font-weight:700;font-size:14px;color:#111827;">' . htmlspecialchars($nama) . '</span>'
                 . '</div>'
-                . '<span style="font-size:11px;font-weight:700;color:' . $badgeTc . ';'
+                . '<div style="display:flex;gap:8px;">'
+                . $docBadge
+                . (!$isPaspor ? '<span style="font-size:11px;font-weight:700;color:' . $badgeTc . ';'
                 . 'background:' . $badgeBg . ';border:1px solid ' . $badgeBr . ';'
-                . 'border-radius:99px;padding:4px 12px;">' . $cityLbl . '</span>'
+                . 'border-radius:99px;padding:4px 12px;">' . $cityLbl . '</span>' : '')
+                . '</div>'
                 . '</div>'
                 . '<div style="padding:16px;display:grid;grid-template-columns:1fr 1fr;gap:16px;background:#fff;">'
                 . '<div style="display:flex;flex-direction:column;gap:4px;">'
@@ -612,7 +642,7 @@ Infolists\Components\TextEntry::make('uuid')
                 . self::ktpRow('Nama',      htmlspecialchars($nama))
                 . self::ktpRow('Tgl Lahir', htmlspecialchars($tglLahir[$i] ?? '—'))
                 . self::ktpRow('Usia',      isset($usia[$i]) ? $usia[$i] . ' tahun' : '—')
-                . self::ktpRow('Kota KTP',  $cityLbl, false, $badgeTc)
+                . (!$isPaspor ? self::ktpRow('Kota KTP',  $cityLbl, false, $badgeTc) : '')
                 . '</div>'
                 . '<div>' . $fotoHtml . '</div>'
                 . '</div>'
@@ -635,34 +665,72 @@ Infolists\Components\TextEntry::make('uuid')
 
     private static function buildKtpModal(Registration $record): string
     {
-        $ktpFiles = $record->ktp_files ?? [];
-        $pemain   = $record->pemain   ?? [];
+        $ktpFiles    = $record->ktp_files    ?? [];
+        $pasporFiles = $record->paspor_files ?? [];
+        $pemain      = $record->pemain       ?? [];
+        $ktpType     = $record->ktp_type     ?? [];
 
-        if (empty($ktpFiles)) {
-            return '<p style="color:#9ca3af;padding:16px;">Tidak ada file KTP.</p>';
+        if (empty($ktpFiles) && empty($pasporFiles)) {
+            return '<p style="color:#9ca3af;padding:16px;">Tidak ada file dokumen.</p>';
         }
 
         $html = '<div style="display:flex;flex-direction:column;gap:20px;padding:8px;">';
-        foreach ($ktpFiles as $i => $path) {
-            $nama  = htmlspecialchars($pemain[$i] ?? 'Pemain ' . ($i + 1));
-            $url   = route('admin.ktp.serve', ['uuid' => $record->uuid, 'filename' => basename($path)]);
-            $cv    = ($record->ktp_city_valid ?? [])[$i] ?? null;
-            $ok    = $cv['valid'] ?? false;
-            $badge = $ok
-                ? '<span style="color:#34d399;font-size:11px;font-weight:700;">✓ Balikpapan</span>'
-                : '<span style="color:#f87171;font-size:11px;font-weight:700;">✗ Bukan Balikpapan</span>';
+
+        foreach ($pemain as $i => $nama) {
+            $docType  = $ktpType[$i] ?? 'ktp';
+            $isPaspor = $docType === 'paspor';
+            $namaHtml = htmlspecialchars($nama);
+
+            $docBadge = $isPaspor
+                ? '<span style="color:#8b5cf6;font-size:11px;font-weight:700;">🛂 Paspor</span>'
+                : '<span style="color:#f97316;font-size:11px;font-weight:700;">🪪 KTP</span>';
 
             $html .= '<div>'
                 . '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">'
-                . '<p style="font-size:11px;font-weight:700;color:#9ca3af;text-transform:uppercase;margin:0;">Pemain ' . ($i + 1) . ' — ' . $nama . '</p>'
-                . $badge
-                . '</div>'
-                . '<a href="' . $url . '" target="_blank">'
-                . '<img src="' . $url . '" alt="KTP ' . $nama . '"'
-                . ' style="width:100%;max-height:240px;object-fit:contain;border-radius:8px;border:1px solid #374151;background:#0d1117;cursor:pointer;">'
-                . '</a>'
+                . '<p style="font-size:11px;font-weight:700;color:#9ca3af;text-transform:uppercase;margin:0;">Pemain ' . ($i + 1) . ' — ' . $namaHtml . '</p>'
+                . $docBadge
                 . '</div>';
+
+            if ($isPaspor) {
+                $path = $pasporFiles[$i] ?? null;
+                if ($path) {
+                    $url = route('admin.paspor.serve', ['uuid' => $record->uuid, 'filename' => basename($path)]);
+                    $html .= '<a href="' . $url . '" target="_blank">'
+                        . '<img src="' . $url . '" alt="Paspor ' . $namaHtml . '"'
+                        . ' style="width:100%;max-height:240px;object-fit:contain;border-radius:8px;border:1px solid #374151;background:#0d1117;cursor:pointer;">'
+                        . '</a>';
+                } else {
+                    $html .= '<div style="padding:40px;text-align:center;border-radius:8px;border:2px dashed #6b7280;background:#1f2937;">'
+                        . '<span style="font-size:24px;">🛂</span>'
+                        . '<p style="color:#9ca3af;font-size:12px;margin:8px 0 0;">File paspor tidak ditemukan</p>'
+                        . '</div>';
+                }
+            } else {
+                $path = $ktpFiles[$i] ?? null;
+                if ($path) {
+                    $url   = route('admin.ktp.serve', ['uuid' => $record->uuid, 'filename' => basename($path)]);
+                    $cv    = ($record->ktp_city_valid ?? [])[$i] ?? null;
+                    $ok    = $cv['valid'] ?? false;
+                    $badge = $ok
+                        ? '<span style="color:#34d399;font-size:11px;font-weight:700;">✓ Balikpapan</span>'
+                        : '<span style="color:#f87171;font-size:11px;font-weight:700;">✗ Bukan Balikpapan</span>';
+
+                    $html .= '<div style="margin-bottom:8px;text-align:right;">' . $badge . '</div>'
+                        . '<a href="' . $url . '" target="_blank">'
+                        . '<img src="' . $url . '" alt="KTP ' . $namaHtml . '"'
+                        . ' style="width:100%;max-height:240px;object-fit:contain;border-radius:8px;border:1px solid #374151;background:#0d1117;cursor:pointer;">'
+                        . '</a>';
+                } else {
+                    $html .= '<div style="padding:40px;text-align:center;border-radius:8px;border:2px dashed #6b7280;background:#1f2937;">'
+                        . '<span style="font-size:24px;">🪪</span>'
+                        . '<p style="color:#9ca3af;font-size:12px;margin:8px 0 0;">File KTP tidak ditemukan</p>'
+                        . '</div>';
+                }
+            }
+
+            $html .= '</div>';
         }
+
         $html .= '</div>';
         return $html;
     }

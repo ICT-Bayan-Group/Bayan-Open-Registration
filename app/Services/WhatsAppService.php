@@ -88,6 +88,43 @@ class WhatsAppService
         ]);
     }
 
+    public function sendBereguApproved(Registration $registration): bool
+    {
+        $paymentLink = $registration->paymentLink();
+        $expiresAt   = optional($registration->payment_token_expires_at)
+                        ->format('d M Y, H:i') ?? 'Tidak ada batas waktu';
+
+        return $this->sendTemplate($registration, 'beregu_approved', [
+            $registration->nama,
+            $registration->tim_pb,
+            $registration->kategori_label,
+            $registration->harga_formatted,
+            $paymentLink,
+            $expiresAt,
+        ]);
+    }
+
+    public function sendBereguRejected(Registration $registration): bool
+    {
+        return $this->sendTemplate($registration, 'beregu_rejected', [
+            $registration->nama,
+            $registration->tim_pb,
+            $registration->kategori_label,
+        ]);
+    }
+
+    public function sendBereguRevision(Registration $registration): bool
+    {
+        $revisionLink = route('registration.revisi', $registration->revision_token);
+
+        return $this->sendTemplate($registration, 'beregu_revision', [
+            $registration->nama,
+            $registration->tim_pb,
+            $registration->revision_notes ?? 'Silakan periksa data pendaftaran Anda.',
+            $revisionLink,
+        ]);
+    }
+
     public function sendTemplateToNumber(string $phone, string $templateKey, array $params): bool
     {
         $to = $this->normalizePhoneNumber($phone);

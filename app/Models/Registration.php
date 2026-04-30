@@ -32,8 +32,13 @@ class Registration extends Model
         'nik',
         'tgl_lahir',
         'ktp_files',
+        'paspor_files',
         'ktp_data',
         'ktp_city_valid',   // hasil validasi kota per pemain
+
+        // ── Tipe Dokumen & Paspor ──
+        'ktp_type',         // array: ["ktp","paspor",...] per pemain
+        'paspor_number',    // array: [null,"A1234567",...] per pemain
 
         // ── Kategori & Pembayaran ──
         'kategori',
@@ -79,8 +84,11 @@ class Registration extends Model
         'nik'              => 'array',
         'tgl_lahir'        => 'array',
         'ktp_files'        => 'array',
+        'paspor_files'     => 'array',
         'ktp_data'         => 'array',
         'ktp_city_valid'   => 'array',
+        'ktp_type'         => 'array',
+        'paspor_number'    => 'array',
         'tgl_lahir_pemain' => 'array',
         'usia_pemain'      => 'array',
 
@@ -98,7 +106,7 @@ class Registration extends Model
         'whatsapp_reminder_sent'    => 'boolean',
     ];
 
-    // ── Auto-generate UUID & Order ID ──────────────────────────────
+    // ── Auto-generate UUID ─────────────────────────────────────────
 
     protected static function booted(): void
     {
@@ -140,15 +148,15 @@ class Registration extends Model
             'rejected_at'              => null,
             'rejected_by'              => null,
             'rejection_reason'         => null,
-            'payment_token'            => Str::random(64),
+            'payment_token'            => (string) \Illuminate\Support\Str::uuid(),
             'payment_token_expires_at' => now()->addDays(3),
         ]);
     }
 
     public function requestRevision(int $adminId, string $notes): void
     {
-        $token = bin2hex(random_bytes(32)); // 64 char hex token
-    
+        $token = bin2hex(random_bytes(32));
+
         $this->update([
             'approval_status'           => 'revision_required',
             'revision_token'            => $token,
@@ -162,27 +170,28 @@ class Registration extends Model
     }
 
     public function submitRevision(array $data): void
-        {
-            $this->update(array_merge($data, [
-                'approval_status'        => 'pending_review',
-                'revision_token'         => null,
-                'revision_token_expires_at' => null,
-                'revision_submitted_at'  => now(),
-            ]));
-        }
+    {
+        $this->update(array_merge($data, [
+            'approval_status'           => 'pending_review',
+            'revision_token'            => null,
+            'revision_token_expires_at' => null,
+            'revision_submitted_at'     => now(),
+        ]));
+    }
 
     public function isRevisionTokenValid(string $token): bool
-        {
-            return $this->revision_token === $token
-                && $this->revision_token_expires_at
-                && $this->revision_token_expires_at->isFuture()
-                && $this->approval_status === 'revision_required';
-        }
+    {
+        return $this->revision_token === $token
+            && $this->revision_token_expires_at
+            && $this->revision_token_expires_at->isFuture()
+            && $this->approval_status === 'revision_required';
+    }
+
     public function revisionRequestedBy(): \Illuminate\Database\Eloquent\Relations\BelongsTo
-        {
-            return $this->belongsTo(\App\Models\User::class, 'revision_requested_by');
-        }
-        
+    {
+        return $this->belongsTo(\App\Models\User::class, 'revision_requested_by');
+    }
+
     /**
      * Reject pendaftaran.
      */
@@ -220,15 +229,14 @@ class Registration extends Model
     }
 
     /**
-     * Generate ulang payment token baru (link lama otomatis mati).
-     * Dipakai saat admin resend link pembayaran ke peserta pending/expired.
+     * Generate ulang payment token baru.
      */
     public function regeneratePaymentToken(int $expiresInHours = 24): void
     {
         $this->update([
-            'payment_token' => (string) Str::uuid(),
+            'payment_token'            => (string) Str::uuid(),
             'payment_token_expires_at' => now()->addHours($expiresInHours),
-            'status'                   => 'pending', // reset expired → pending
+            'status'                   => 'pending',
         ]);
     }
 
@@ -280,80 +288,83 @@ class Registration extends Model
 
     public function getKtpPerPemainAttribute(): array
     {
-        $pemain    = $this->pemain     ?? [];
-        $nik       = $this->nik        ?? [];
-        $tglLahir  = $this->tgl_lahir  ?? [];
-        $usia      = $this->usia_pemain ?? [];
-        $ktpFiles  = $this->ktp_files  ?? [];
-        $ktpData   = $this->ktp_data   ?? [];
-        $cityValid = $this->ktp_city_valid ?? [];
+        $pemain      = $this->pemain        ?? [];
+        $nik         = $this->nik           ?? [];
+        $tglLahir    = $this->tgl_lahir     ?? [];
+        $usia        = $this->usia_pemain   ?? [];
+        $ktpFiles    = $this->ktp_files     ?? [];
+        $pasporFiles = $this->paspor_files  ?? [];
+        $ktpData     = $this->ktp_data      ?? [];
+        $cityValid   = $this->ktp_city_valid ?? [];
+        $ktpType     = $this->ktp_type      ?? [];
+        $pasporNum   = $this->paspor_number ?? [];
 
         $result = [];
         foreach ($pemain as $i => $nama) {
+            $docType = $ktpType[$i] ?? 'ktp';
             $result[] = [
-                'index'      => $i + 1,
-                'nama'       => $nama,
-                'nik'        => $nik[$i]       ?? null,
-                'tgl_lahir'  => $tglLahir[$i]  ?? null,
-                'usia'       => $usia[$i]       ?? null,
-                'ktp_file'   => $ktpFiles[$i]   ?? null,
-                'ktp_raw'    => $ktpData[$i]    ?? [],
-                'city_valid' => $cityValid[$i]  ?? null,
+                'index'          => $i + 1,
+                'nama'           => $nama,
+                'doc_type'       => $docType,
+                'nik'            => $docType === 'ktp'    ? ($nik[$i]       ?? null) : null,
+                'paspor_number'  => $docType === 'paspor' ? ($pasporNum[$i] ?? null) : null,
+                'tgl_lahir'      => $tglLahir[$i]  ?? null,
+                'usia'           => $usia[$i]       ?? null,
+                'ktp_file'       => $docType === 'ktp'    ? ($ktpFiles[$i]   ?? null) : null,
+                'paspor_file'    => $docType === 'paspor' ? ($pasporFiles[$i] ?? null) : null,
+                'ktp_raw'        => $ktpData[$i]    ?? [],
+                'city_valid'     => $cityValid[$i]  ?? null,
             ];
         }
         return $result;
     }
 
+    // ── Helper: apakah pemain index ke-$i pakai paspor? ────────────
+
+    public function isPaspor(int $index): bool
+    {
+        $types = $this->ktp_type ?? [];
+        return ($types[$index] ?? 'ktp') === 'paspor';
+    }
+
     // ── Scopes ─────────────────────────────────────────────────────
 
-    public function scopePaid($query)          { return $query->where('status', 'paid'); }
-    public function scopePending($query)       { return $query->where('status', 'pending'); }
-    public function scopeKategori($q, $k)      { return $q->where('kategori', $k); }
-    public function scopePendingReview($query) { return $query->where('approval_status', 'pending_review'); }
-    public function scopeApproved($query)      { return $query->where('approval_status', 'approved'); }
-    public function scopeRejected($query)      { return $query->where('approval_status', 'rejected'); }
-    public function scopePendingVerification($query) { return $query->where('status', 'pending_verification'); }
-    public function scopeFailed($query)        { return $query->where('status', 'failed'); }
+    public function scopePaid($query)               { return $query->where('status', 'paid'); }
+    public function scopePending($query)            { return $query->where('status', 'pending'); }
+    public function scopeKategori($q, $k)           { return $q->where('kategori', $k); }
+    public function scopePendingReview($query)      { return $query->where('approval_status', 'pending_review'); }
+    public function scopeApproved($query)           { return $query->where('approval_status', 'approved'); }
+    public function scopeRejected($query)           { return $query->where('approval_status', 'rejected'); }
+    public function scopePendingVerification($query){ return $query->where('status', 'pending_verification'); }
+    public function scopeFailed($query)             { return $query->where('status', 'failed'); }
 
     // ── Payment Verification Methods ───────────────────────────────
 
-    /**
-     * Approve payment proof uploaded by user
-     */
     public function approvePayment(int $adminId, string $note = null): void
     {
         $this->update([
-            'status' => 'paid',
+            'status'              => 'paid',
             'payment_verified_at' => now(),
             'payment_verified_by' => $adminId,
-            'payment_note' => $note,
+            'payment_note'        => $note,
         ]);
     }
 
-    /**
-     * Reject payment proof uploaded by user
-     */
     public function rejectPayment(int $adminId, string $note = null): void
     {
         $this->update([
-            'status' => 'failed',
+            'status'              => 'failed',
             'payment_verified_at' => now(),
             'payment_verified_by' => $adminId,
-            'payment_note' => $note,
+            'payment_note'        => $note,
         ]);
     }
 
-    /**
-     * Check if payment proof exists
-     */
     public function hasPaymentProof(): bool
     {
         return !empty($this->payment_proof);
     }
 
-    /**
-     * Get payment proof URL
-     */
     public function getPaymentProofUrl(): ?string
     {
         if (!$this->payment_proof) return null;

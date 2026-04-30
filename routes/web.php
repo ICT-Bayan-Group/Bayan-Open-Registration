@@ -27,8 +27,7 @@ Route::post('/ocr/ktp', [KtpOcrController::class, 'scan'])->name('ocr.ktp');
 
 // ── Payment by token ─────────────────────────────────────────────
 Route::get('/payment/{token}', [RegistrationController::class, 'paymentByToken'])
-    ->name('registration.payment.token')
-    ->where('token', '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}');
+    ->name('registration.payment.token');
 
 // ── Pendaftaran ─────────────────────────────────────────────────
 Route::prefix('daftar')->name('registration.')->group(function () {
@@ -91,3 +90,50 @@ Route::middleware('auth:web')
     ->get('/admin/ktp/{uuid}/{filename}', [RegistrationController::class, 'serveKtp'])
     ->name('admin.ktp.serve')
     ->where('filename', '[^/]+');
+
+// ── Serve foto Paspor (admin only) ─────────────────────────────
+Route::middleware('auth:web')
+    ->get('/admin/paspor/{uuid}/{filename}', [RegistrationController::class, 'servePaspor'])
+    ->name('admin.paspor.serve')
+    ->where('filename', '[^/]+');
+
+// ── Admin Action Password Verification ─────────────────────────
+Route::middleware('auth:web')->group(function () {
+
+    Route::post('/admin/verify-action-password', function (\Illuminate\Http\Request $request) {
+        $input = $request->input('password', '');
+
+        // Hash dari "Okedeh.12345!" — tidak pernah keluar ke frontend
+        $hash  = '$2y$12$YOUR_BCRYPT_HASH_HERE';
+        $valid = \Illuminate\Support\Facades\Hash::check($input, $hash);
+
+        if (! $valid) {
+            return response()->json(['ok' => false], 403);
+        }
+
+        // Signed token berlaku 5 menit
+        $token = encrypt(now()->timestamp . '|admin_action_verified');
+
+        return response()->json(['ok' => true, 'token' => $token]);
+    })->name('admin.verify-action-password');
+
+    Route::post('/admin/validate-action-token', function (\Illuminate\Http\Request $request) {
+        try {
+            $payload   = decrypt($request->input('token', ''));
+            [$ts, $sig] = explode('|', $payload, 2);
+
+            $expired = (now()->timestamp - (int) $ts) > 300; // 5 menit
+            $valid   = $sig === 'admin_action_verified';
+
+            if ($expired || ! $valid) {
+                return response()->json(['ok' => false, 'reason' => 'expired'], 403);
+            }
+
+            return response()->json(['ok' => true]);
+
+        } catch (\Throwable) {
+            return response()->json(['ok' => false, 'reason' => 'invalid'], 403);
+        }
+    })->name('admin.validate-action-token');
+
+});
