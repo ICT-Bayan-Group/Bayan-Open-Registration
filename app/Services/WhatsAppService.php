@@ -2,6 +2,10 @@
 
 namespace App\Services;
 
+use App\Filament\Resources\BeregResource;
+use App\Filament\Resources\GandaDewasaPutraResource;
+use App\Filament\Resources\GandaDewasaPutriResource;
+use App\Filament\Resources\GandaVeteranPutraResource;
 use App\Models\Registration;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -60,12 +64,25 @@ class WhatsAppService
             '6282133212777',
         ];
 
+        $resourceClass = match ($registration->kategori) {
+            'ganda-dewasa-putra'  => GandaDewasaPutraResource::class,
+            'ganda-dewasa-putri'  => GandaDewasaPutriResource::class,
+            'ganda-veteran-putra' => GandaVeteranPutraResource::class,
+            'beregu'              => BeregResource::class,
+            default               => null,
+        };
+
+        $adminDashboardLink = $resourceClass
+            ? $resourceClass::getUrl('view', ['record' => $registration->getKey()])
+            : route('filament.admin.pages.dashboard');
+
         foreach ($admins as $admin) {
             $this->sendTemplateToNumber($admin, 'admin_notification', [
                 $registration->nama,
                 $registration->tim_pb,
                 $registration->kategori_label,
                 $registration->uuid,
+                $adminDashboardLink,
             ]);
         }
     }
