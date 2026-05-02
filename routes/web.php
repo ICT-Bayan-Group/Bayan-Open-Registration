@@ -9,7 +9,15 @@ use Illuminate\Support\Facades\Route;
 // ── Auth ────────────────────────────────────────────────────────
 Route::get('/login', fn() => redirect()->route('filament.admin.auth.login'))->name('login');
 // ── Home ────────────────────────────────────────────────────────
-Route::get('/', fn() => view('home'))->name('home');
+Route::get('/', function () {
+    $launch = \Carbon\Carbon::create(2026, 5, 4, 0, 0, 0, 'Asia/Makassar');
+    
+    if (now('Asia/Makassar')->lt($launch)) {
+        return view('welcome'); // coming soon (file ke-1)
+    }
+    
+    return view('home'); // website utama (file ke-2)
+})->name('home');
 Route::get('/v1', fn() => view('welcome'))->name('welcome');
 Route::get('/bagan', fn() => view('bagan'))->name('bagan');
 Route::get('/jadwal', fn() => view('jadwal'))->name('jadwal');
