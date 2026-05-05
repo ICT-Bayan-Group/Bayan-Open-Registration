@@ -370,6 +370,9 @@
         <a href="{{ route('home') }}"
            class="nav-link-mobile {{ request()->routeIs('home') ? 'active' : '' }}"
            onclick="closeMobileMenu()">Home</a>
+        <a href="{{ route('dokumen') }}"
+           class="nav-link-mobile {{ request()->routeIs('dokumen') ? 'active' : '' }}"
+              onclick="closeMobileMenu()">Dokumen</a>
 
         <a href="{{ route('bagan') }}"
            class="nav-link-mobile {{ request()->routeIs('bagan') ? 'active' : '' }}"
