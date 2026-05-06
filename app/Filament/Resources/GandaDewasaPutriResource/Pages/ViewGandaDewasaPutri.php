@@ -80,7 +80,7 @@ class ViewGandaDewasaPutri extends ViewRecord
                         ->success()
                         ->send();
 
-                    return redirect()->refresh();
+                   return redirect()->to(request()->header('referer') ?? url()->current());
                 }),
 
             // ── Reject Pembayaran ────────────────────────────
@@ -137,7 +137,7 @@ class ViewGandaDewasaPutri extends ViewRecord
                         ->success()
                         ->send();
 
-                    return redirect()->refresh();
+                  return redirect()->to(request()->header('referer') ?? url()->current());
                 }),
         ];
     }

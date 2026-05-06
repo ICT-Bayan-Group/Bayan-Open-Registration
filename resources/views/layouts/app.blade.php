@@ -103,7 +103,7 @@
             display: none;
             position: fixed;
             inset: 0;
-            z-index: 40;
+            z-index: 200;
             background: rgba(248,246,242,0.97);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
@@ -313,6 +313,11 @@
                           {{ request()->routeIs('home') ? 'active' : '' }}">
                     Beranda
                 </a>
+                    <a href="{{ route('dokumen') }}"
+                    class="nav-link transition font-semibold text-sm tracking-wide px-3 py-2 rounded-lg
+                            {{ request()->routeIs('dokumen') ? 'active' : '' }}">       
+                    Dokumen
+                </a>
                 <a href="{{ route('bagan') }}"
                    class="nav-link transition font-semibold text-sm tracking-wide px-3 py-2 rounded-lg
                           {{ request()->routeIs('bagan') ? 'active' : '' }}">
@@ -365,6 +370,9 @@
         <a href="{{ route('home') }}"
            class="nav-link-mobile {{ request()->routeIs('home') ? 'active' : '' }}"
            onclick="closeMobileMenu()">Home</a>
+        <a href="{{ route('dokumen') }}"
+           class="nav-link-mobile {{ request()->routeIs('dokumen') ? 'active' : '' }}"
+              onclick="closeMobileMenu()">Dokumen</a>
 
         <a href="{{ route('bagan') }}"
            class="nav-link-mobile {{ request()->routeIs('bagan') ? 'active' : '' }}"
@@ -446,6 +454,11 @@
                         <li>
                             <a href="{{ route('home') }}" class="footer-nav-link ">
                                 <span class="dot"></span>Beranda
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('dokumen') }}" class="footer-nav-link">
+                                <span class="dot"></span>Dokumen
                             </a>
                         </li>
                         <li>
