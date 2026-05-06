@@ -103,7 +103,7 @@
             display: none;
             position: fixed;
             inset: 0;
-            z-index: 40;
+            z-index: 200;
             background: rgba(248,246,242,0.97);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
