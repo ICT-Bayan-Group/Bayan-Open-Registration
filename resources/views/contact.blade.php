@@ -719,7 +719,7 @@ function submitViaWA() {
         return;
     }
 
-    const text = `Halo Panitia Bayan Open 2026 🏸\n\n*Nama:* ${name}${subject ? '\n*Subjek:* ' + subject : ''}\n\n*Pesan:*\n${message}`;
+    const text = `Halo Panitia Bayan Open 2026 \n\n*Nama:* ${name}${subject ? '\n*Subjek:* ' + subject : ''}\n\n*Pesan:*\n${message}`;
     const encoded = encodeURIComponent(text);
     window.open(`https://wa.me/6281253816878?text=${encoded}`, '_blank');
 }
