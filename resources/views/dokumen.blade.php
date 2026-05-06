@@ -102,7 +102,7 @@
     margin-bottom: 8px;
 }
 .dk-hero-sub {
-    font-size: 13.5px; color: var(--ash);
+    font-size: 13.5px; color: var(--white);
     line-height: 1.65; max-width: 520px;
 }
 
@@ -362,7 +362,7 @@
     color: rgba(255,255,255,0.85); margin-bottom: 4px;
 }
 .dk-banner-sub {
-    font-size: 12px; color: rgba(255,255,255,0.38); line-height: 1.6;
+    font-size: 12px; color: rgb(255, 255, 255); line-height: 1.6; font-weight: 300;
 }
 .dk-banner-badge {
     display: inline-flex; align-items: center; gap: 6px;
