@@ -318,6 +318,7 @@
                             {{ request()->routeIs('dokumen') ? 'active' : '' }}">       
                     Dokumen
                 </a>
+           <!--
                 <a href="{{ route('bagan') }}"
                    class="nav-link transition font-semibold text-sm tracking-wide px-3 py-2 rounded-lg
                           {{ request()->routeIs('bagan') ? 'active' : '' }}">
@@ -339,7 +340,7 @@
                                  box-shadow:0 0 0 0 rgba(239,68,68,.4);
                                  animation:liveping 1.8s ease infinite;vertical-align:middle;"></span>
                     @endunless
-                </a>
+                </a> -->
                     <a href="{{ route('contact') }}"
                    class="nav-link transition font-semibold text-sm tracking-wide px-3 py-2 rounded-lg
                           {{ request()->routeIs('contact') ? 'active' : '' }}">
@@ -373,7 +374,7 @@
         <a href="{{ route('dokumen') }}"
            class="nav-link-mobile {{ request()->routeIs('dokumen') ? 'active' : '' }}"
               onclick="closeMobileMenu()">Dokumen</a>
-
+ <!--
         <a href="{{ route('bagan') }}"
            class="nav-link-mobile {{ request()->routeIs('bagan') ? 'active' : '' }}"
            onclick="closeMobileMenu()">Bagan</a>
@@ -389,7 +390,7 @@
             <span style="display:inline-flex;width:7px;height:7px;border-radius:50%;
                          background:#ef4444;margin-left:6px;vertical-align:middle;
                          animation:liveping 1.8s ease infinite;"></span>
-        </a>
+        </a>-->
         <a href="{{ route('contact') }}"
            class="nav-link-mobile {{ request()->routeIs('contact') ? 'active' : '' }}"
            onclick="closeMobileMenu()">Kontak</a>
@@ -461,6 +462,7 @@
                                 <span class="dot"></span>Dokumen
                             </a>
                         </li>
+                         <!--
                         <li>
                             <a href="{{ route('bagan') }}" class="footer-nav-link">
                                 <span class="dot"></span>Bagan
@@ -479,7 +481,7 @@
                                              background:#ef4444;margin-left:2px;
                                              animation:liveping 1.8s ease infinite;"></span>
                             </a>
-                        </li>
+                        </li>-->
                         <li>
                              <a href="{{ route('contact') }}" class="footer-nav-link">
                                 <span class="dot"></span>Kontak
