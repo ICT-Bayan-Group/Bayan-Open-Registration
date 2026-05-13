@@ -134,10 +134,16 @@ class WhatsAppService
     {
         $revisionLink = route('registration.revisi', $registration->revision_token);
 
+        // Bersihkan newline & tab dari revision_notes sebelum dikirim ke WA
+        $notes = $registration->revision_notes ?? 'Silakan periksa data pendaftaran Anda.';
+        $notes = str_replace(["\r\n", "\r", "\n", "\t"], ' ', $notes);
+        $notes = preg_replace('/  +/', ' ', $notes); // hapus spasi berlebih (>4)
+        $notes = trim($notes);
+
         return $this->sendTemplate($registration, 'beregu_revision', [
             $registration->nama,
             $registration->tim_pb,
-            $registration->revision_notes ?? 'Silakan periksa data pendaftaran Anda.',
+            $notes,
             $revisionLink,
         ]);
     }
