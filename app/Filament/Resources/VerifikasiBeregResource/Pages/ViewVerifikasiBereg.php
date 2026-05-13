@@ -7,6 +7,7 @@ use App\Mail\RegistrationApproved;
 use App\Mail\RegistrationRejected;
 use App\Mail\RegistrationRevisionRequired;
 use App\Models\Registration;
+use App\Services\WhatsAppService;
 use Filament\Actions;
 use Filament\Forms;
 use Filament\Notifications\Notification;
@@ -39,10 +40,11 @@ class ViewVerifikasiBereg extends ViewRecord
                 ->action(function () {
                     $this->record->approve(auth()->id());
                     Mail::to($this->record->email)->send(new RegistrationApproved($this->record));
+                    app(WhatsAppService::class)->sendBereguApproved($this->record);
  
                     Notification::make()
                         ->title('✅ Tim "' . $this->record->tim_pb . '" diapprove!')
-                        ->body('Link pembayaran dikirim ke ' . $this->record->email)
+                        ->body('Link pembayaran dikirim ke ' . $this->record->email . ' dan WhatsApp.')
                         ->success()
                         ->send();
  
@@ -73,10 +75,10 @@ class ViewVerifikasiBereg extends ViewRecord
                         ->label('Poin yang Perlu Diperbaiki')
                         ->helperText('Centang masalah yang ditemukan untuk membantu peserta')
                         ->options([
-                                'ktp_buram'      => 'Foto KTP buram / tidak terbaca',
-                                'detected_seeded' => 'Ditemukan permain seeded A didalam regu',
-                                'ktp_under' => 'Umur KTP kurang dari 2 tahun',
-                                'ktp_expired'    => 'KTP sudah kadaluarsa',
+                            'ktp_buram'       => 'Foto KTP buram / tidak terbaca',
+                            'detected_seeded' => 'Ditemukan permain seeded A didalam regu',
+                            'ktp_under'       => 'Umur KTP kurang dari 2 tahun',
+                            'ktp_expired'     => 'KTP sudah kadaluarsa',
                         ])
                         ->columns(2),
 
@@ -97,10 +99,10 @@ class ViewVerifikasiBereg extends ViewRecord
                     $notes = $data['revision_notes'];
                     if (!empty($data['checklist'])) {
                         $labels = [
-                                'ktp_buram'      => 'Foto KTP buram / tidak terbaca',
-                                'detected_seeded' => 'Ditemukan permain seeded A didalam regu',
-                                'ktp_under' => 'Umur KTP kurang dari 2 tahun',
-                                'ktp_expired'    => 'KTP sudah kadaluarsa',
+                            'ktp_buram'       => 'Foto KTP buram / tidak terbaca',
+                            'detected_seeded' => 'Ditemukan permain seeded A didalam regu',
+                            'ktp_under'       => 'Umur KTP kurang dari 2 tahun',
+                            'ktp_expired'     => 'KTP sudah kadaluarsa',
                         ];
                         $items = array_map(fn ($k) => '• ' . ($labels[$k] ?? $k), $data['checklist']);
                         $notes = "Poin yang perlu diperbaiki:\n" . implode("\n", $items) . "\n\nCatatan admin:\n" . $notes;
@@ -108,10 +110,11 @@ class ViewVerifikasiBereg extends ViewRecord
 
                     $this->record->requestRevision(auth()->id(), $notes);
                     Mail::to($this->record->email)->send(new RegistrationRevisionRequired($this->record));
+                    app(WhatsAppService::class)->sendBereguRevision($this->record);
  
                     Notification::make()
                         ->title('✏ Permintaan revisi dikirim!')
-                        ->body('Link aktif 7 hari. Email dikirim ke ' . $this->record->email)
+                        ->body('Link aktif 7 hari. Email dan WhatsApp dikirim ke ' . $this->record->email)
                         ->warning()
                         ->send();
  
@@ -140,17 +143,18 @@ class ViewVerifikasiBereg extends ViewRecord
                 ->action(function (array $data) {
                     $this->record->reject(auth()->id(), $data['rejection_reason']);
                     Mail::to($this->record->email)->send(new RegistrationRejected($this->record));
+                    app(WhatsAppService::class)->sendBereguRejected($this->record);
  
                     Notification::make()
                         ->title('❌ Pendaftaran "' . $this->record->tim_pb . '" ditolak final')
-                        ->body('Notifikasi dikirim ke ' . $this->record->email)
+                        ->body('Notifikasi email dan WhatsApp dikirim ke ' . $this->record->email)
                         ->danger()
                         ->send();
  
                     $this->refreshFormData(['approval_status', 'rejected_at', 'rejection_reason']);
                 }),
  
-            // ── RESEND ───────────────────────────────────────────
+            // ── RESEND LINK BAYAR ─────────────────────────────────
             Actions\Action::make('resend')
                 ->label('Kirim Ulang Link Bayar')
                 ->icon('heroicon-o-envelope')
@@ -162,10 +166,13 @@ class ViewVerifikasiBereg extends ViewRecord
                 ->action(function () {
                     $this->record->update(['payment_token_expires_at' => now()->addDays(3)]);
                     Mail::to($this->record->email)->send(new RegistrationApproved($this->record));
+                    app(WhatsAppService::class)->sendPaymentLink($this->record);
  
                     Notification::make()
                         ->title('Link pembayaran dikirim ulang')
-                        ->success()->send();
+                        ->body('Email dan WhatsApp dikirim ke ' . $this->record->email)
+                        ->success()
+                        ->send();
                 }),
  
             Actions\EditAction::make()->label('Edit Data'),
