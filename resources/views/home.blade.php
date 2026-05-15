@@ -901,55 +901,16 @@ body {
 /* ═══════════════════════════════════════
    PERFORMANCE PATCHES
 ═══════════════════════════════════════ */
-
-/* Isolasi repaint hero agar tidak menyeret section lain */
-.hero {
-    contain: layout paint;
-    transform: translateZ(0);
-}
-
-/* Video: paksa GPU layer, cegah layout shift */
-.hero-video {
-    will-change: transform;
-    contain: strict;
-    transform: translateZ(0);
-}
-
-/* Kurangi blur dari 32px → 16px — ini yang paling berat */
-.glass-card {
-    backdrop-filter: blur(16px) saturate(1.3);
-    -webkit-backdrop-filter: blur(16px) saturate(1.3);
-    will-change: transform;
-    contain: layout paint;
-}
-
-/* Orb: hanya GPU transform, tidak ada layout trigger */
-.hero-orb {
-    will-change: transform;
-    contain: layout paint;
-}
-
-/* Gallery juga sering jadi bottleneck */
-.gallery-section {
-    contain: layout paint;
-}
-.gallery-bg-video {
-    will-change: transform;
-    contain: strict;
-    transform: translateZ(0);
-}
-
-/* Kurangi overlay menjadi 2 layer saja — hapus hero-grain & hero-vignette dari CSS */
+.hero { contain: layout paint; transform: translateZ(0); }
+.hero-video { will-change: transform; contain: strict; transform: translateZ(0); }
+.glass-card { backdrop-filter: blur(16px) saturate(1.3); -webkit-backdrop-filter: blur(16px) saturate(1.3); will-change: transform; contain: layout paint; }
+.hero-orb { will-change: transform; contain: layout paint; }
+.gallery-section { contain: layout paint; }
+.gallery-bg-video { will-change: transform; contain: strict; transform: translateZ(0); }
 .hero-overlay {
     position: absolute; inset: 0; z-index: 1;
-    /* Merge 2 gradient + ambient jadi satu layer */
-    background:
-        linear-gradient(to bottom, rgba(13,9,6,0.60) 0%, rgba(13,9,6,0.30) 50%, rgba(13,9,6,0.80) 100%);
-    /* Grain via CSS — tidak perlu elemen DOM tambahan */
-    image-rendering: auto;
+    background: linear-gradient(to bottom, rgba(13,9,6,0.60) 0%, rgba(13,9,6,0.30) 50%, rgba(13,9,6,0.80) 100%);
 }
-
-/* Grain: ganti jadi pseudo-element di hero, bukan elemen terpisah */
 .hero::after {
     content: '';
     position: absolute; inset: 0; z-index: 3;
@@ -957,19 +918,12 @@ body {
     pointer-events: none;
     will-change: auto;
 }
-
-/* Prefer reduced motion — matikan semua animasi sekaligus */
 @media (prefers-reduced-motion: reduce) {
-    .hero-orb,
-    .eyebrow-dot,
-    .scroll-wheel,
-    .gallery-track,
-    .glass-card,
-    .hero-logo { animation: none !important; transition: none !important; }
+    .hero-orb, .eyebrow-dot, .scroll-wheel, .gallery-track, .glass-card, .hero-logo { animation: none !important; transition: none !important; }
 }
 
 /* ═══════════════════════════════════════
-   MODAL
+   MODAL BASE
 ═══════════════════════════════════════ */
 @keyframes fadeInOverlay  { from { opacity: 0; } to { opacity: 1; } }
 @keyframes fadeOutOverlay { from { opacity: 1; } to { opacity: 0; } }
@@ -1011,7 +965,6 @@ body {
     letter-spacing: 0.12em; text-transform: uppercase; color: var(--orange-dk);
 }
 
-/* Jalur grid: 2 kolom default */
 .jalur-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 .jalur-card {
     display: block; text-decoration: none; border-radius: 16px; padding: 26px 16px;
@@ -1090,192 +1043,83 @@ body {
 }
 
 /* ═══════════════════════════════════════
-   RESPONSIVE — TABLET (max 1024px)
+   RESPONSIVE — TABLET
 ═══════════════════════════════════════ */
 @media (max-width: 1024px) {
-    .about-grid {
-        grid-template-columns: 1fr;
-        gap: 40px;
-    }
-    .about-stat-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    .guest-grid {
-        max-width: 600px;
-    }
+    .about-grid { grid-template-columns: 1fr; gap: 40px; }
+    .about-stat-grid { grid-template-columns: repeat(2, 1fr); }
+    .guest-grid { max-width: 600px; }
 }
 
 /* ═══════════════════════════════════════
-   RESPONSIVE — MOBILE (max 768px)
+   RESPONSIVE — MOBILE
 ═══════════════════════════════════════ */
 @media (max-width: 768px) {
-    .guest-grid {
-        grid-template-columns: 1fr;
-        max-width: 440px;
-    }
+    .guest-grid { grid-template-columns: 1fr; max-width: 440px; }
     .guest-photo-wrap { height: 260px; }
 }
 
 /* ═══════════════════════════════════════
-   RESPONSIVE — SMALL MOBILE (max 640px)
+   RESPONSIVE — SMALL MOBILE
 ═══════════════════════════════════════ */
 @media (max-width: 640px) {
-    /* Hero */
     .glass-card          { padding: 36px 28px 32px; border-radius: 28px; }
     .hero-logo           { height: 88px; }
     .hero-headline       { font-size: 13px; }
     .cta-row             { gap: 8px; }
-    .btn-fire,
-    .btn-glass-outline   { padding: 12px 22px; font-size: 10px; }
-
-    /* CTA Banner */
+    .btn-fire, .btn-glass-outline { padding: 12px 22px; font-size: 10px; }
     .cta-banner { padding: 44px 24px 40px; }
-
-    /* Section */
     .section { padding: 64px 20px; }
-
-    /* Steps */
     .steps-grid { grid-template-columns: 1fr 1fr; }
-
-    /* ── Kategori grid: 2 kolom ── */
-    .kategori-grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-    }
-    .kat-card {
-        padding: 18px 14px 16px;
-        border-radius: 20px;
-    }
-    .kat-icon {
-        width: 40px;
-        height: 40px;
-        border-radius: 11px;
-        margin-bottom: 12px;
-    }
-    .kat-icon svg {
-        width: 18px;
-        height: 18px;
-    }
-    .kat-name {
-        font-size: 13px;
-        margin-bottom: 5px;
-        line-height: 1.35;
-    }
-    .kat-desc {
-        font-size: 11px;
-        line-height: 1.5;
-        margin-bottom: 14px;
-    }
+    .kategori-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .kat-card { padding: 18px 14px 16px; border-radius: 20px; }
+    .kat-icon { width: 40px; height: 40px; border-radius: 11px; margin-bottom: 12px; }
+    .kat-icon svg { width: 18px; height: 18px; }
+    .kat-name { font-size: 13px; margin-bottom: 5px; line-height: 1.35; }
+    .kat-desc { font-size: 11px; line-height: 1.5; margin-bottom: 14px; }
     .kat-price { font-size: 15px; }
     .kat-per   { font-size: 9px; margin-top: 3px; }
-    /* Sembunyikan arrow — tidak ada hover di mobile */
     .kat-cta   { display: none; }
-
-    /* Tab switcher: full width */
-    .kat-tab-switcher {
-        width: 100%;
-        justify-content: stretch;
-    }
-    .kat-tab-btn {
-        flex: 1;
-        padding: 10px 8px;
-        font-size: 9.5px;
-    }
-
-    /* ── Modal: jalur 1 kolom horizontal ── */
-    .jalur-grid {
-        grid-template-columns: 1fr;
-        gap: 10px;
-    }
-    .jalur-card {
-        padding: 16px 18px;
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        gap: 16px;
-        text-align: left;
-        border-radius: 14px;
-    }
-    .jalur-icon {
-        width: 44px;
-        height: 44px;
-        border-radius: 12px;
-        flex-shrink: 0;
-        margin: 0;
-    }
-    .jalur-title {
-        font-size: 13px;
-        margin: 0 0 2px;
-        line-height: 1.3;
-    }
-    .jalur-sub-indigo,
-    .jalur-sub-orange {
-        font-size: 11px;
-        margin: 0 0 8px;
-    }
-
-    /* Modal padding */
+    .kat-tab-switcher { width: 100%; justify-content: stretch; }
+    .kat-tab-btn { flex: 1; padding: 10px 8px; font-size: 9.5px; }
+    .jalur-grid { grid-template-columns: 1fr; gap: 10px; }
+    .jalur-card { padding: 16px 18px; display: flex; flex-direction: row; align-items: center; gap: 16px; text-align: left; border-radius: 14px; }
+    .jalur-icon { width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0; margin: 0; }
+    .jalur-title { font-size: 13px; margin: 0 0 2px; line-height: 1.3; }
+    .jalur-sub-indigo, .jalur-sub-orange { font-size: 11px; margin: 0 0 8px; }
     #modal1 .mo-card > div { padding: 24px 20px 20px !important; }
     #modal2 .mo-card > div { padding: 20px 16px 18px !important; }
-    #modal1 .mo-card,
-    #modal2 .mo-card,
-    #modalSirnas .mo-card {
-        border-radius: 20px;
-        margin: 0 4px;
-    }
-
-    /* Modal info grid: 1 kolom */
+    #modal1 .mo-card, #modal2 .mo-card, #modalSirnas .mo-card { border-radius: 20px; margin: 0 4px; }
     .mo-info-grid { grid-template-columns: 1fr; }
-
-    /* sub-card (modal 2 — pilih kategori open) */
-    .sub-card {
-        padding: 14px 14px;
-        gap: 12px;
-        border-radius: 14px;
-    }
-    .sub-icon {
-        width: 44px;
-        height: 44px;
-        border-radius: 12px;
-        flex-shrink: 0;
-    }
+    .sub-card { padding: 14px 14px; gap: 12px; border-radius: 14px; }
+    .sub-icon { width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0; }
     .sub-name { font-size: 14px; margin-bottom: 2px; }
     .sub-desc { font-size: 12px; line-height: 1.4; }
-    .sub-price,
-    .sub-price-indigo { font-size: 12px; }
-
-    /* Sirnas modal */
+    .sub-price, .sub-price-indigo { font-size: 12px; }
     #modalSirnas .mo-card > div { padding: 24px 16px 20px !important; }
     .sirnas-modal-list { max-height: 58vh; }
     .sub-card.sc-indigo { padding: 14px 12px; gap: 10px; }
+    /* Fraud modal mobile */
+    #modalFraud .mo-card { border-radius: 20px; margin: 0 4px; }
+    #modalFraud .mo-card > div:first-of-type { padding: 24px 20px 0 !important; }
+    #modalFraud .mo-card > div:last-of-type  { padding: 14px 20px 24px !important; }
 }
 
-/* ═══════════════════════════════════════
-   RESPONSIVE — EXTRA SMALL (max 480px)
-═══════════════════════════════════════ */
 @media (max-width: 480px) {
     .about-stat-grid  { grid-template-columns: repeat(2, 1fr); gap: 10px; }
     .guest-body       { padding: 20px 20px 24px; }
     .guest-name       { font-size: 18px; }
     .guest-photo-wrap { height: 220px; }
     .about-grid       { gap: 32px; }
-
     .kat-name  { font-size: 12.5px; }
     .kat-price { font-size: 14px; }
-    .kat-desc  { display: none; } /* terlalu sempit, sembunyikan deskripsi */
+    .kat-desc  { display: none; }
 }
 
-/* ═══════════════════════════════════════
-   RESPONSIVE — MINI (max 360px)
-═══════════════════════════════════════ */
 @media (max-width: 360px) {
     .about-stat-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
     .guest-footer    { flex-direction: column; align-items: flex-start; }
-
-    .kategori-grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 8px;
-    }
+    .kategori-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
     .kat-card  { padding: 14px 10px 14px; }
     .kat-name  { font-size: 11px; }
     .kat-price { font-size: 13px; }
@@ -1288,49 +1132,35 @@ body {
 @section('content')
 
 {{-- ══════════════════════════════════════════
-     HERO — GLASS CARD
+     HERO
 ══════════════════════════════════════════ --}}
 <section class="hero">
-<!-- Tambah poster & decoding untuk cegah layout shift -->
-        <video class="hero-video"
-            src="https://res.cloudinary.com/djs5pi7ev/video/upload/q_auto/f_auto/v1776060629/202604131402_v5lt3b.mp4"
-            autoplay muted loop playsinline
-            preload="metadata"
-            decoding="async"
-            poster="https://res.cloudinary.com/djs5pi7ev/image/upload/q_30,f_webp,w_1280/v1769500972/202601271004_aepgij.jpg">
-        </video>
+    <video class="hero-video"
+        src="https://res.cloudinary.com/djs5pi7ev/video/upload/q_auto/f_auto/v1776060629/202604131402_v5lt3b.mp4"
+        autoplay muted loop playsinline
+        preload="metadata"
+        decoding="async"
+        poster="https://res.cloudinary.com/djs5pi7ev/image/upload/q_30,f_webp,w_1280/v1769500972/202601271004_aepgij.jpg">
+    </video>
     <div class="hero-overlay"></div>
     <div class="hero-vignette"></div>
     <div class="hero-grain"></div>
-
-    {{-- Ambient floating orbs --}}
     <div class="hero-orb hero-orb-1"></div>
     <div class="hero-orb hero-orb-2"></div>
     <div class="hero-orb hero-orb-3"></div>
 
     <div class="hero-content">
-        {{-- ── GLASS CARD ── --}}
         <div class="glass-card">
-
-            {{-- Eyebrow badge --}}
             <div class="eyebrow" id="h-badge">
-                <div class="eyebrow-dot-wrap">
-                    <div class="eyebrow-dot"></div>
-                </div>
+                <div class="eyebrow-dot-wrap"><div class="eyebrow-dot"></div></div>
                 <span class="eyebrow-text">Pendaftaran Resmi Dibuka</span>
             </div>
-
-            {{-- Logo --}}
             <img src="https://res.cloudinary.com/djs5pi7ev/image/upload/q_auto/f_auto/v1775803080/bayanopen-logo_mfcb55.png"
                  alt="Bayan Open 2026" class="hero-logo" id="h-logo">
-
-            {{-- Tagline --}}
             <p class="hero-headline" id="h-tag">
                 Turnamen bulutangkis bergengsi dan Sirkuit Nasional.<br>
                 Daftar sekarang dan buktikan kemampuanmu.
             </p>
-
-            {{-- CTA Buttons --}}
             <div class="cta-row" id="h-cta">
                 <button type="button" onclick="bukaModalDaftar()" class="btn-fire">
                     Daftar Sekarang
@@ -1341,11 +1171,7 @@ body {
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 9l-7 7-7-7"/></svg>
                 </a>
             </div>
-
-            {{-- Divider --}}
             <div class="glass-divider" id="h-div"></div>
-
-            {{-- Stats strip --}}
             <div class="stats-row" id="h-stats">
                 <div class="stat-cell">
                     <span class="stat-val">4</span>
@@ -1360,12 +1186,9 @@ body {
                     <span class="stat-lbl">Edisi</span>
                 </div>
             </div>
-
         </div>
-        {{-- ── /GLASS CARD ── --}}
     </div>
 
-    {{-- Scroll cue --}}
     <div class="scroll-cue" id="h-scroll">
         <div class="scroll-mouse"><div class="scroll-wheel"></div></div>
         <span class="scroll-label">Scroll</span>
@@ -1373,13 +1196,11 @@ body {
 </section>
 
 {{-- ══════════════════════════════════════════
-     SECTION ABOUT 
+     ABOUT
 ══════════════════════════════════════════ --}}
 <section class="section" style="background: var(--paper-2); padding-top: 88px; padding-bottom: 80px;">
     <div class="section-inner">
         <div class="about-grid">
- 
-            {{-- Teks kiri --}}
             <div>
                 <span class="sec-tag reveal">Tentang Turnamen</span>
                 <h2 class="sec-title reveal">Mengenal<br><em style="font-style:normal;color:var(--fire);">Bayan Open</em></h2>
@@ -1392,30 +1213,13 @@ body {
                 <p style="font-size:13.5px; line-height:1.8; color:var(--ink-60); margin-top:12px;" class="reveal">
                     Pada edisi 2026 ini, Bayan Open hadir lebih besar dengan jalur <strong>Sirkuit Nasional C (PBSI)</strong> di samping kategori Open, menjadikannya platform resmi bagi atlet muda untuk meraih poin nasional.
                 </p>
- 
-                {{-- Pills 
-                <div class="about-pills reveal">
-                    @foreach([
-                        ['Edisi 2026', '#f97316'],
-                        ['Balikpapan, Kaltim', '#3b82f6'],
-                        ['Sirkuit Nasional C', '#14b8a6'],
-                        ['Open Kategori', '#e11d48'],
-                    ] as $pill)
-                    <span class="about-pill">
-                        <span class="about-pill-dot" style="background:{{ $pill[1] }};"></span>
-                        {{ $pill[0] }}
-                    </span>
-                    @endforeach
-                </div> --}}
             </div>
- 
-            {{-- Stat cards kanan --}}
             <div class="about-stat-grid reveal">
                 @foreach([
-                    ['4',   'Tahun Digelar',   'Konsisten hadir sejak 2023',         '#f97316', '#f97316'],
-                    ['22',   'Total Kategori',   '4 Open + 18 Sirkuit Nasional C',     '#2563eb', '#3b82f6'],
-                    ['1200+', 'Peserta',          'Dari seluruh Kalimantan & Indonesia', '#e11d48', '#f43f5e'],
-                    ['PBSI', 'Resmi Sirnas',    'Terdaftar di si.pbsi.id',            '#0d9488', '#14b8a6'],
+                    ['4',    'Tahun Digelar',  'Konsisten hadir sejak 2023',          '#f97316', '#f97316'],
+                    ['22',   'Total Kategori', '4 Open + 18 Sirkuit Nasional C',      '#2563eb', '#3b82f6'],
+                    ['1200+','Peserta',        'Dari seluruh Kalimantan & Indonesia',  '#e11d48', '#f43f5e'],
+                    ['PBSI', 'Resmi Sirnas',   'Terdaftar di si.pbsi.id',             '#0d9488', '#14b8a6'],
                 ] as $stat)
                 <div style="background:#fff;border:1px solid var(--ink-12);border-radius:20px;padding:28px 22px;position:relative;overflow:hidden;transition:all 0.3s ease;"
                      onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 20px 48px rgba(0,0,0,0.08)'"
@@ -1427,7 +1231,6 @@ body {
                 </div>
                 @endforeach
             </div>
- 
         </div>
     </div>
 </section>
@@ -1443,27 +1246,15 @@ body {
             <p class="sec-sub reveal">Pilih jalur dan kategori yang sesuai. Tersedia jalur Open dan Sirkuit Nasional C.</p>
 
             <div class="kat-tab-switcher reveal" role="tablist" aria-label="Pilih jalur turnamen">
-                <button
-                    type="button"
-                    id="tab-open"
-                    class="kat-tab-btn tab-open active"
-                    role="tab"
-                    aria-selected="true"
-                    aria-controls="panel-open"
-                    onclick="switchTab('open')">
-                    Open
-                    <span class="kat-tab-badge">4</span>
+                <button type="button" id="tab-open" class="kat-tab-btn tab-open active"
+                        role="tab" aria-selected="true" aria-controls="panel-open"
+                        onclick="switchTab('open')">
+                    Open <span class="kat-tab-badge">4</span>
                 </button>
-                <button
-                    type="button"
-                    id="tab-sirnas"
-                    class="kat-tab-btn tab-sirnas"
-                    role="tab"
-                    aria-selected="false"
-                    aria-controls="panel-sirnas"
-                    onclick="switchTab('sirnas')">
-                    Sirkuit Nasional C
-                    <span class="kat-tab-badge">18</span>
+                <button type="button" id="tab-sirnas" class="kat-tab-btn tab-sirnas"
+                        role="tab" aria-selected="false" aria-controls="panel-sirnas"
+                        onclick="switchTab('sirnas')">
+                    Sirkuit Nasional C <span class="kat-tab-badge">18</span>
                 </button>
             </div>
         </div>
@@ -1488,7 +1279,6 @@ body {
                         <div class="kat-cta"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
                     </div>
                 </a>
-
                 <a href="{{ route('registration.ganda-dewasa-putri') }}" class="kat-card c-rose reveal">
                     <div class="kat-icon">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f43f5e" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -1506,7 +1296,6 @@ body {
                         <div class="kat-cta"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f43f5e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
                     </div>
                 </a>
-
                 <a href="{{ route('registration.ganda-veteran-putra') }}" class="kat-card c-amber reveal">
                     <div class="kat-icon">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -1523,7 +1312,6 @@ body {
                         <div class="kat-cta"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
                     </div>
                 </a>
-
                 <a href="{{ route('registration.beregu') }}" class="kat-card c-teal reveal">
                     <div class="kat-icon">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#14b8a6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -1546,7 +1334,6 @@ body {
 
         {{-- Panel: Sirkuit Nasional C --}}
         <div id="panel-sirnas" class="kat-panel" role="tabpanel" aria-labelledby="tab-sirnas">
-
             <div class="sirnas-note reveal">
                 <div class="sirnas-note-icon">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4338ca" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1628,108 +1415,6 @@ body {
         </div>
     </div>
 </section>
-
-{{-- ══════════════════════════════════════════
-     GUEST STAR — LIGHT VERSION
-══════════════════════════════════════════ --}}
-<!--<section style="background:var(--paper);padding:88px 24px 96px;position:relative;overflow:hidden;">
-    <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent 0%,#f97316 30%,#fbbf24 50%,#f97316 70%,transparent 100%);"></div>
-    <div style="position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 70% 50% at 20% 60%,rgba(249,115,22,0.04) 0%,transparent 70%),radial-gradient(ellipse 60% 40% at 80% 30%,rgba(251,191,36,0.04) 0%,transparent 70%);"></div>
- 
-    <div class="section-inner" style="position:relative;z-index:1;">
-
-        <div style="text-align:center;margin-bottom:56px;">
-            <span class="sec-tag reveal">Bintang Tamu Spesial</span>
-            <h2 class="sec-title reveal">Guest Star <em style="font-style:normal;color:var(--fire);">Bayan Open</em> 2026</h2>
-            <p class="sec-sub reveal" style="margin:14px auto 0;max-width:420px;">
-                Dua legenda bulutangkis Indonesia hadir langsung di arena bersama para peserta dan penonton.
-            </p>
-        </div>
-        <div class="guest-grid">
- 
-            @foreach([
-                [
-                    'name'     => 'Hendra Setiawan',
-                    'nickname' => '"The Wall"',
-                    'initial'  => 'HS',
-                    'photo'    => 'https://redaktur.tvrinews.com/storage/images/1080x840/415c5c3b-9728-4574-b0e2-f6dde9bc2196.jpeg',
-                    'bio'      => 'Salah satu ganda putra terbaik sepanjang masa. Dikenal lewat teknik net sempurna, gerakan elegan, dan mentalitas juara yang tak tertandingi di kancah internasional.',
-                    'achv'     => [
-                        'Juara Dunia BWF 2007 & 2013',
-                        'Medali Emas Olimpiade 2004 & 2016',
-                        'Ikon generasi emas badminton Indonesia',
-                    ],
-                    'role' => 'Ganda Putra · Legenda BWF',
-                    'id'   => 'hs',
-                ],
-                [
-                    'name'     => 'Marcus Fernaldi Gideon',
-                    'nickname' => '"The Minion"',
-                    'initial'  => 'MG',
-                    'photo'    => 'https://jurnalbogor.com/wp-content/uploads/2024/03/Marcus-Fernaldi-Gideon.jpg',
-                    'bio'      => 'Bagian dari duo legendaris "The Minions" bersama Kevin Sanjaya. Marcus membawa era baru dominasi ganda putra dengan kecepatan reflek luar biasa dan smash yang mematikan.',
-                    'achv'     => [
-                        'Juara Dunia BWF 2019',
-                        'All England Champion 2017 & 2018',
-                        'Peraih Medali Thomas Cup & Sudirman Cup',
-                    ],
-                    'role' => 'Ganda Putra · "The Minions"',
-                    'id'   => 'mg',
-                ],
-            ] as $guest)
- 
-            <div class="guest-card reveal">
- 
-                <div class="guest-photo-wrap">
-                    <img src="{{ $guest['photo'] }}"
-                         alt="{{ $guest['name'] }}"
-                         id="photo-{{ $guest['id'] }}"
-                         onerror="this.style.display='none';document.getElementById('ph-{{ $guest['id'] }}').style.display='flex'">
-                    <div id="ph-{{ $guest['id'] }}" class="guest-photo-fallback">
-                        {{ $guest['initial'] }}
-                    </div>
-                    <div class="guest-photo-gradient"></div>
-                </div>
- 
-                <div class="guest-body">
-                    <h3 class="guest-name">{{ $guest['name'] }}</h3>
-                    <p class="guest-nickname">{{ $guest['nickname'] }}</p>
- 
-                    <div class="guest-divider"></div>
- 
-                    <p class="guest-bio">{{ $guest['bio'] }}</p>
-
-                    <div class="guest-achv-list">
-                        @foreach($guest['achv'] as $a)
-                        <div class="guest-achv-item">
-                            <div class="guest-achv-icon">
-                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                            </div>
-                            {{ $a }}
-                        </div>
-                        @endforeach
-                    </div>
-                    <div class="guest-footer">
-                        <div class="guest-country">
-                            <div class="guest-flag">🇮🇩</div>
-                            <div>
-                                <div class="guest-country-name">Indonesia</div>
-                                <div class="guest-country-role">{{ $guest['role'] }}</div>
-                            </div>
-                        </div>
-                        <div class="guest-pill">
-                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#c2410c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
-                            Ganda Putra
-                        </div>
-                    </div>
- 
-                </div>
-            </div>
-            @endforeach
- 
-        </div>
-    </div>
-</section>-->
 
 {{-- ══════════════════════════════════════════
      GALERI
@@ -1833,25 +1518,104 @@ body {
 @endsection
 
 {{-- ══════════════════════════════════════════
-     MODAL 1 — PILIH JALUR
+     SEMUA MODAL
 ══════════════════════════════════════════ --}}
 @push('modals')
+
+{{-- ══════════════════════════════════════════
+     MODAL FRAUD DISCLAIMER — MUNCUL OTOMATIS
+══════════════════════════════════════════ --}}
+<div id="modalFraud" class="mo-overlay" style="display:none;">
+    <div id="modalFraudCard" class="mo-card" style="width:100%;max-width:560px;">
+
+        {{-- Stripe oranye atas --}}
+        <div style="height:4px;background:linear-gradient(90deg,#f97316,#fbbf24,#f97316);flex-shrink:0;"></div>
+
+        <div style="padding:28px 32px 0;">
+
+            {{-- Logo --}}
+            <div style="margin-bottom:18px;">
+                <img src="https://res.cloudinary.com/djs5pi7ev/image/upload/q_auto/f_auto/v1775803080/bayanopen-logo_mfcb55.png"
+                     alt="Bayan Open 2026"
+                     style="height:44px;width:auto;object-fit:contain;display:block;">
+            </div>
+
+            {{-- Judul --}}
+            <p style="font-family:var(--font-display);font-size:16px;font-weight:800;color:#c2410c;margin:0 0 4px;letter-spacing:-0.01em;">
+                Peringatan Penipuan &amp; Disclaimer Resmi
+            </p>
+
+            {{-- Scroll Box --}}
+            <div id="fraudScroll"
+                 style="height:248px;overflow-y:auto;font-size:13px;line-height:1.75;color:var(--ink-60);padding-right:8px;scroll-behavior:smooth;">
+
+                <p style="margin:0 0 12px;">
+                    Harap berhati-hati. Terdapat pihak-pihak tidak bertanggung jawab yang <strong style="color:var(--ink);">mengatasnamakan Bayan Open</strong> untuk melakukan penipuan dalam berbagai bentuk termasuk menawarkan pendaftaran fiktif, meminta transfer uang ke rekening pribadi, atau menyebarkan informasi palsu atas nama turnamen ini.
+                </p>
+
+                {{-- Blok saluran resmi --}}
+                <div style="background:#fff7ed;border-left:3px solid #f97316;border-radius:0 10px 10px 0;padding:12px 16px;margin:0 0 14px;">
+                    <p style="font-family:var(--font-display);font-size:10px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:#c2410c;margin:0 0 10px;">
+                        Informasi Resmi Bayan Open Hanya Dari:
+                    </p>
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:7px;">
+                        <div>
+                            <p style="font-size:11px;font-weight:700;color:var(--ink);margin:0;">Website Resmi</p>
+                            <p style="font-size:13px;font-weight:800;color:#c2410c;margin:0;">bayanopen.com</p>
+                        </div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <div>
+                            <p style="font-size:11px;font-weight:700;color:var(--ink);margin:0;">Instagram Resmi</p>
+                            <p style="font-size:13px;font-weight:800;color:#c2410c;margin:0;">@bayan_open</p>
+                        </div>
+                    </div>
+                </div>
+
+                <p style="margin:0 0 12px;">
+                    Informasi dari sumber lain termasuk akun media sosial tidak resmi, grup WhatsApp tidak dikenal, pesan pribadi (DM/chat), maupun website lain yang mengklaim sebagai Bayan Open <strong style="color:var(--ink);">tidak dapat dijamin kebenarannya dan bukan tanggung jawab panitia.</strong>
+                </p>
+
+            </div>
+
+
+        </div>
+
+        {{-- Footer --}}
+        <div style="padding:16px 32px 26px;display:flex;flex-direction:column;gap:10px;margin-top:4px;">
+            <button id="fraudConfirmBtn"
+                    onclick="fraudConfirm()"
+                    style="width:100%;padding:14px 24px;border-radius:13px;border:none;
+                        font-family:var(--font-display);font-size:11px;font-weight:800;
+                        letter-spacing:0.1em;text-transform:uppercase;
+                        color:#fff;
+                        background:linear-gradient(135deg,#f97316,#c2410c);
+                        cursor:pointer;
+                        box-shadow:0 8px 24px rgba(249,115,22,0.35);
+                        transition:all 0.3s cubic-bezier(0.22,1,0.36,1);">
+                ✓ &nbsp; OK, Saya Mengerti & Waspada
+            </button>
+        </div>
+
+    </div>
+</div>
+
+{{-- ══════════════════════════════════════════
+     MODAL 1 — PILIH JALUR
+══════════════════════════════════════════ --}}
 <div id="modal1" class="mo-overlay" style="display:none;">
     <div id="modal1Card" class="mo-card" style="width:100%;max-width:560px;">
         <div style="padding:36px 32px 30px;">
-
             <div style="display:flex;justify-content:center;margin-bottom:22px;">
                 <div class="mo-badge">
                     <span class="mo-badge-dot"></span>
                     <span class="mo-badge-text">Bayan Open 2026</span>
                 </div>
             </div>
-
             <div style="text-align:center;margin-bottom:26px;">
                 <h2 style="font-family:var(--font-display);font-size:24px;font-weight:800;color:var(--m-ink);margin:0 0 8px;letter-spacing:-0.02em;line-height:1.2;">Pilih Jalur Pendaftaran</h2>
                 <p style="color:var(--m-ink-60);font-size:13px;margin:0;">Silakan pilih jalur turnamen yang ingin Anda ikuti</p>
             </div>
-
             <div class="jalur-grid" style="margin-bottom:22px;">
                 <button type="button" onclick="bukaModalSirnas()" class="jalur-card jc-indigo" style="font-family:inherit;width:100%;">
                     <div class="jalur-shimmer"></div>
@@ -1866,7 +1630,6 @@ body {
                         <span class="jalur-badge-pill-text">18 KATEGORI</span>
                     </div>
                 </button>
-
                 <button type="button" onclick="bukaModal2()" class="jalur-card jc-orange">
                     <div class="jalur-shimmer"></div>
                     <div class="jalur-icon">
@@ -1879,12 +1642,8 @@ body {
                         <span class="mo-badge-dot" style="width:5px;height:5px;"></span>
                         <span class="jalur-badge-pill-text">DAFTAR SEKARANG</span>
                     </div>
-                    <div class="jc-ext" style="bottom:11px;right:11px;top:auto;">
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(0,0,0,0.4)" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
-                    </div>
                 </button>
             </div>
-
             <div class="mo-info-row" style="margin-bottom:12px;">
                 <div class="mo-divider-line"></div>
                 <span class="mo-divider-label">Info</span>
@@ -1900,7 +1659,6 @@ body {
                     <p class="mo-info-desc">Pendaftaran mandiri, pilih kategori sesuai kelas</p>
                 </div>
             </div>
-
             <button type="button" onclick="tutupModalDaftar()" style="width:100%;margin-top:16px;padding:10px;border:1px solid var(--m-ink-12);border-radius:10px;background:transparent;color:var(--m-ink-60);font-size:12px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background='transparent'">
                 Tutup
             </button>
@@ -1915,7 +1673,6 @@ body {
     <div id="modalSirnasCard" class="mo-card" style="width:100%;max-width:780px;">
         <div class="mo-top-line-indigo"></div>
         <div style="padding:44px 44px 40px;">
-
             <div style="display:flex;align-items:center;gap:18px;margin-bottom:32px;">
                 <button type="button" onclick="tutupModalSirnas()" class="mo2-back mo2-back-indigo" style="width:48px;height:48px;flex-shrink:0;">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(26,18,9,0.6)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
@@ -1925,7 +1682,6 @@ body {
                     <p style="color:var(--m-ink-60);font-size:15px;margin:0;">Pilih kategori — semua daftar via <span style="color:#4338ca;font-weight:700;">si.pbsi.id</span></p>
                 </div>
             </div>
-
             <div class="sirnas-modal-list">
                 @php
                 $sicon_single = '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="rgba(99,102,241,1)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a6 6 0 0112 0v2"/></svg>';
@@ -1963,7 +1719,6 @@ body {
                     ],
                 ];
                 @endphp
-
                 @foreach($modal_groups as $gname => $grows)
                 <p class="sirnas-group-label" style="padding:{{ $loop->first ? '0' : '12px' }} 4px 6px;font-size:11px;">{{ $gname }}</p>
                 @foreach($grows as $row)
@@ -1986,12 +1741,11 @@ body {
 </div>
 
 {{-- ══════════════════════════════════════════
-     MODAL 2 — PILIH KATEGORI (OPEN)
+     MODAL 2 — PILIH KATEGORI OPEN
 ══════════════════════════════════════════ --}}
 <div id="modal2" class="mo-overlay" style="display:none;">
     <div id="modal2Card" class="mo-card" style="width:100%;max-width:520px;">
         <div style="padding:30px 26px 26px;">
-
             <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
                 <button type="button" onclick="tutupModal2()" class="mo2-back">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(26,18,9,0.6)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
@@ -2001,11 +1755,10 @@ body {
                     <p style="color:var(--m-ink-60);font-size:12px;margin:0;">Pilih kelas pertandingan yang akan Anda ikuti</p>
                 </div>
             </div>
-
             <div style="display:flex;flex-direction:column;gap:8px;">
                 <button type="button" class="sub-card sc-blue" onclick="pilihKategori('ganda-dewasa-putra')">
                     <div class="sub-icon" style="background:#f5f5f5;border:1px solid rgba(0,0,0,0.06);">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(26,18,9,0.45)"stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(26,18,9,0.45)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
                     </div>
                     <div style="flex:1;min-width:0;">
                         <p class="sub-name">Ganda Dewasa Putra</p>
@@ -2014,10 +1767,9 @@ body {
                     <span class="sub-price">Rp 400.000</span>
                     <svg class="sc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(26,18,9,0.6)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
                 </button>
-
                 <button type="button" class="sub-card sc-pink" onclick="pilihKategori('ganda-dewasa-putri')">
                     <div class="sub-icon" style="background:rgba(236,72,153,0.1);border:1px solid rgba(236,72,153,0.2);">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(26,18,9,0.45)"stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(26,18,9,0.45)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
                     </div>
                     <div style="flex:1;min-width:0;">
                         <p class="sub-name">Ganda Dewasa Putri</p>
@@ -2026,7 +1778,6 @@ body {
                     <span class="sub-price">Rp 400.000</span>
                     <svg class="sc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(26,18,9,0.6)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
                 </button>
-
                 <button type="button" class="sub-card sc-yellow" onclick="pilihKategori('ganda-veteran-putra')">
                     <div class="sub-icon" style="background:rgba(234,179,8,0.1);border:1px solid rgba(234,179,8,0.2);">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(26,18,9,0.45)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
@@ -2038,7 +1789,6 @@ body {
                     <span class="sub-price">Rp 400.000</span>
                     <svg class="sc-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(26,18,9,0.6)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
                 </button>
-
                 <button type="button" class="sub-card sc-green" onclick="pilihKategori('beregu')">
                     <div class="sub-icon" style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);">
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="rgba(16,185,129,1)"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"/></svg>
@@ -2054,72 +1804,51 @@ body {
         </div>
     </div>
 </div>
+
 {{-- ══════════════════════════════════════════
-     MODAL DISCLAIMER — PERNYATAAN KESIAPAN
+     MODAL DISCLAIMER PESERTA
 ══════════════════════════════════════════ --}}
 <div id="modalDisclaimer" class="mo-overlay" style="display:none;">
     <div id="modalDisclaimerCard" class="mo-card" style="width:100%;max-width:520px;">
-
-        {{-- Top stripe oranye --}}
         <div style="height:4px;background:linear-gradient(90deg,#f97316,#fbbf24,#f97316);"></div>
-
         <div style="padding:28px 28px 0;">
-
-            {{-- Header --}}
             <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;">
-                     <img
-                    src="https://res.cloudinary.com/djs5pi7ev/image/upload/q_auto/f_auto/v1775803080/bayanopen-logo_mfcb55.png"
-                    alt="Bayan Open 2026"
-                    class="h-10 sm:h-12 lg:h-16 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
-                >
+                <img src="https://res.cloudinary.com/djs5pi7ev/image/upload/q_auto/f_auto/v1775803080/bayanopen-logo_mfcb55.png"
+                     alt="Bayan Open 2026"
+                     class="h-10 sm:h-12 lg:h-16 w-auto object-contain transition-transform duration-300 group-hover:scale-105">
                 <div>
                     <p style="font-family:var(--font-display);font-size:17px;font-weight:800;color:var(--m-ink);letter-spacing:-0.02em;line-height:1.2;margin:0;">Pernyataan Kesiapan Peserta</p>
                     <p style="font-size:12px;color:var(--m-ink-35);margin:2px 0 0;">Bayan Open 2026 — Balikpapan, Kalimantan Timur</p>
                 </div>
             </div>
-
-            {{-- Scroll Box --}}
             <div id="disclaimerScroll"
                  style="height:220px;overflow-y:auto;border:1px solid var(--m-ink-12);border-radius:14px;padding:16px 18px;background:var(--cream);font-size:12.5px;line-height:1.75;color:var(--m-ink-60);position:relative;scroll-behavior:smooth;">
-
                 <p style="font-weight:800;font-size:13px;color:var(--m-ink);margin-bottom:10px;">SURAT PERNYATAAN PESERTA TURNAMEN</p>
                 <p>Saya yang bertanda tangan di bawah ini, dengan penuh kesadaran dan tanpa paksaan dari pihak manapun, menyatakan hal-hal sebagai berikut:</p>
-
                 <p style="margin-top:12px;font-weight:700;color:var(--m-ink);">1. Kondisi Kesehatan</p>
-                <p>Saya menyatakan bahwa saya dalam kondisi <strong>sehat walafiat</strong>, baik secara jasmani maupun rohani, dan tidak memiliki penyakit atau kondisi medis yang dapat membahayakan diri saya sendiri atau orang lain selama mengikuti pertandingan. Saya telah berkonsultasi dengan tenaga medis apabila diperlukan sebelum mendaftar.</p>
-
+                <p>Saya menyatakan bahwa saya dalam kondisi <strong>sehat walafiat</strong>, baik secara jasmani maupun rohani, dan tidak memiliki penyakit atau kondisi medis yang dapat membahayakan diri saya sendiri atau orang lain selama mengikuti pertandingan.</p>
                 <p style="margin-top:12px;font-weight:700;color:var(--m-ink);">2. Kesiapan Bertanding</p>
-                <p>Saya menyatakan bahwa saya <strong>siap secara fisik dan mental</strong> untuk mengikuti Bayan Open 2026. Saya memahami bahwa turnamen ini bersifat kompetitif dan membutuhkan kesiapan fisik yang optimal. Segala risiko cedera yang timbul akibat kondisi fisik saya sendiri menjadi tanggung jawab saya sepenuhnya.</p>
-
+                <p>Saya menyatakan bahwa saya <strong>siap secara fisik dan mental</strong> untuk mengikuti Bayan Open 2026. Segala risiko cedera yang timbul akibat kondisi fisik saya sendiri menjadi tanggung jawab saya sepenuhnya.</p>
                 <p style="margin-top:12px;font-weight:700;color:var(--m-ink);">3. Keabsahan Data</p>
                 <p>Seluruh data dan dokumen yang saya lampirkan dalam formulir pendaftaran ini adalah <strong>benar, sah, dan dapat dipertanggungjawabkan</strong>. Apabila ditemukan ketidaksesuaian data, panitia berhak mendiskualifikasi saya tanpa pengembalian biaya pendaftaran.</p>
-
                 <p style="margin-top:12px;font-weight:700;color:var(--m-ink);">4. Kepatuhan Peraturan</p>
                 <p>Saya berjanji untuk mematuhi seluruh <strong>peraturan pertandingan</strong> yang ditetapkan oleh panitia Bayan Open 2026 dan peraturan PBSI yang berlaku. Saya akan menjunjung tinggi sportivitas, fairplay, dan menghormati sesama peserta, official, serta penonton.</p>
-
                 <p style="margin-top:12px;font-weight:700;color:var(--m-ink);">5. Penggunaan Foto &amp; Dokumentasi</p>
                 <p>Saya memberikan izin kepada panitia untuk menggunakan foto dan video saya yang diambil selama kegiatan berlangsung untuk keperluan <strong>publikasi dan dokumentasi resmi</strong> Bayan Open 2026.</p>
-
                 <p style="margin-top:12px;font-weight:700;color:var(--m-ink);">6. Keputusan Panitia</p>
                 <p style="margin-bottom:8px;">Saya memahami bahwa <strong>keputusan panitia bersifat final</strong> dan tidak dapat diganggu gugat dalam hal penjadwalan, penempatan lapangan, maupun hasil pertandingan yang bersifat administratif.</p>
-
-                {{-- Scroll hint --}}
                 <div id="disclaimerScrollHint" style="position:sticky;bottom:0;left:0;right:0;height:40px;background:linear-gradient(transparent,var(--cream) 70%);display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px;pointer-events:none;transition:opacity 0.3s;">
                     <span style="display:flex;align-items:center;gap:5px;font-family:var(--font-display);font-size:10px;font-weight:700;color:rgba(249,115,22,0.8);letter-spacing:0.08em;text-transform:uppercase;">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="animation:wheel-anim 1.2s ease infinite;"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
                     </span>
                 </div>
             </div>
-
-            {{-- Progress bar --}}
             <div style="margin-top:8px;display:flex;align-items:center;gap:10px;">
                 <div style="flex:1;height:4px;background:var(--m-ink-12);border-radius:99px;overflow:hidden;">
                     <div id="disclaimerProgress" style="height:100%;width:0%;background:linear-gradient(90deg,#f97316,#fbbf24);border-radius:99px;transition:width 0.15s ease;"></div>
                 </div>
                 <span id="disclaimerProgressLabel" style="font-family:var(--font-display);font-size:10px;font-weight:700;color:var(--m-ink-35);white-space:nowrap;min-width:60px;text-align:right;">0% dibaca</span>
             </div>
-
-            {{-- Checkbox --}}
             <div id="disclaimerCheckRow"
                  onclick="toggleDisclaimerCheck()"
                  style="display:flex;align-items:flex-start;gap:12px;background:rgba(249,115,22,0.06);border:1.5px solid rgba(249,115,22,0.18);border-radius:14px;padding:14px 16px;margin-top:14px;transition:all 0.25s;opacity:0.4;pointer-events:none;cursor:default;">
@@ -2131,8 +1860,6 @@ body {
                 </p>
             </div>
         </div>
-
-        {{-- Footer --}}
         <div style="padding:16px 28px 24px;display:flex;flex-direction:column;gap:10px;">
             <button id="disclaimerConfirmBtn"
                     onclick="disclaimerConfirm()"
@@ -2146,6 +1873,7 @@ body {
         </div>
     </div>
 </div>
+
 @endpush
 
 @push('scripts')
@@ -2153,23 +1881,23 @@ body {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 
 <script>
-// ── Route map ───────────────────────────────────────────────
-const kategoriRoutes = {
+// ── Route map ────────────────────────────────────────────────
+var kategoriRoutes = {
     'ganda-dewasa-putra'  : '{{ route("registration.ganda-dewasa-putra") }}',
     'ganda-dewasa-putri'  : '{{ route("registration.ganda-dewasa-putri") }}',
     'ganda-veteran-putra' : '{{ route("registration.ganda-veteran-putra") }}',
     'beregu'              : '{{ route("registration.beregu") }}',
 };
 
-// ── Tab Switcher ────────────────────────────────────────────
+// ── Tab Switcher ─────────────────────────────────────────────
 function switchTab(tab) {
-    document.querySelectorAll('.kat-panel').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.kat-tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.kat-panel').forEach(function(p) { p.classList.remove('active'); });
+    document.querySelectorAll('.kat-tab-btn').forEach(function(b) { b.classList.remove('active'); });
     document.getElementById('panel-' + tab).classList.add('active');
     document.getElementById('tab-' + tab).classList.add('active');
 }
 
-// ── Modal helpers ───────────────────────────────────────────
+// ── Modal Helpers ────────────────────────────────────────────
 function animCard(card, inOut) {
     card.style.animation = 'none';
     void card.offsetWidth;
@@ -2184,43 +1912,43 @@ function bukaModalDaftar() {
 }
 
 function showModal1() {
-    const m1 = document.getElementById('modal1');
-    const m1c = document.getElementById('modal1Card');
+    var m1 = document.getElementById('modal1');
+    var m1c = document.getElementById('modal1Card');
     m1.style.display = 'flex';
     m1.classList.add('anim-in');
     animCard(m1c, 'in');
-    setTimeout(() => m1.classList.remove('anim-in'), 400);
-    m1.onclick = (e) => { if (e.target === m1) tutupModalDaftar(); };
+    setTimeout(function() { m1.classList.remove('anim-in'); }, 400);
+    m1.onclick = function(e) { if (e.target === m1) tutupModalDaftar(); };
 }
 
 function showModal2() {
-    const m2 = document.getElementById('modal2');
-    const m2c = document.getElementById('modal2Card');
+    var m2 = document.getElementById('modal2');
+    var m2c = document.getElementById('modal2Card');
     m2.style.display = 'flex';
     m2.classList.add('anim-in');
     animCard(m2c, 'in');
-    setTimeout(() => m2.classList.remove('anim-in'), 400);
-    m2.onclick = (e) => { if (e.target === m2) tutupModalDaftar(); };
+    setTimeout(function() { m2.classList.remove('anim-in'); }, 400);
+    m2.onclick = function(e) { if (e.target === m2) tutupModalDaftar(); };
 }
 
 function showModalSirnas() {
-    const ms = document.getElementById('modalSirnas');
-    const msc = document.getElementById('modalSirnasCard');
+    var ms = document.getElementById('modalSirnas');
+    var msc = document.getElementById('modalSirnasCard');
     ms.style.display = 'flex';
     ms.classList.add('anim-in');
     animCard(msc, 'in');
-    setTimeout(() => ms.classList.remove('anim-in'), 400);
-    ms.onclick = (e) => { if (e.target === ms) tutupModalDaftar(); };
+    setTimeout(function() { ms.classList.remove('anim-in'); }, 400);
+    ms.onclick = function(e) { if (e.target === ms) tutupModalDaftar(); };
 }
 
 function tutupModalDaftar() {
-    ['modal1','modal2','modalSirnas'].forEach(id => {
-        const mo = document.getElementById(id);
+    ['modal1','modal2','modalSirnas'].forEach(function(id) {
+        var mo = document.getElementById(id);
         if (mo && mo.style.display !== 'none') {
-            const card = mo.querySelector('.mo-card');
+            var card = mo.querySelector('.mo-card');
             mo.classList.add('anim-out');
             animCard(card, 'out');
-            setTimeout(() => {
+            setTimeout(function() {
                 mo.style.display = 'none';
                 mo.classList.remove('anim-out');
             }, 220);
@@ -2230,64 +1958,55 @@ function tutupModalDaftar() {
 }
 
 function bukaModal2() {
-    const m1 = document.getElementById('modal1');
-    const m1c = document.getElementById('modal1Card');
+    var m1 = document.getElementById('modal1');
+    var m1c = document.getElementById('modal1Card');
     m1.classList.add('anim-out');
     animCard(m1c, 'out');
-    setTimeout(() => { m1.style.display = 'none'; m1.classList.remove('anim-out'); showModal2(); }, 200);
+    setTimeout(function() { m1.style.display = 'none'; m1.classList.remove('anim-out'); showModal2(); }, 200);
 }
 
 function tutupModal2() {
-    const m2 = document.getElementById('modal2');
-    const m2c = document.getElementById('modal2Card');
+    var m2 = document.getElementById('modal2');
+    var m2c = document.getElementById('modal2Card');
     m2.classList.add('anim-out');
     animCard(m2c, 'out');
-    setTimeout(() => { m2.style.display = 'none'; m2.classList.remove('anim-out'); showModal1(); }, 200);
+    setTimeout(function() { m2.style.display = 'none'; m2.classList.remove('anim-out'); showModal1(); }, 200);
 }
 
 function bukaModalSirnas() {
-    const m1 = document.getElementById('modal1');
-    const m1c = document.getElementById('modal1Card');
+    var m1 = document.getElementById('modal1');
+    var m1c = document.getElementById('modal1Card');
     m1.classList.add('anim-out');
     animCard(m1c, 'out');
-    setTimeout(() => { m1.style.display = 'none'; m1.classList.remove('anim-out'); showModalSirnas(); }, 200);
+    setTimeout(function() { m1.style.display = 'none'; m1.classList.remove('anim-out'); showModalSirnas(); }, 200);
 }
 
 function tutupModalSirnas() {
-    const ms = document.getElementById('modalSirnas');
-    const msc = document.getElementById('modalSirnasCard');
+    var ms = document.getElementById('modalSirnas');
+    var msc = document.getElementById('modalSirnasCard');
     ms.classList.add('anim-out');
     animCard(msc, 'out');
-    setTimeout(() => { ms.style.display = 'none'; ms.classList.remove('anim-out'); showModal1(); }, 200);
+    setTimeout(function() { ms.style.display = 'none'; ms.classList.remove('anim-out'); showModal1(); }, 200);
 }
 
-function pilihKategori(k) {
-    const m2 = document.getElementById('modal2');
-    const m2c = document.getElementById('modal2Card');
-    m2.classList.add('anim-out');
-    animCard(m2c, 'out');
-    setTimeout(() => { window.location.href = kategoriRoutes[k]; }, 220);
-}
-
-document.addEventListener('keydown', (e) => {
+document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') tutupModalDaftar();
 });
 
-// ── GSAP + Marquee ──────────────────────────────────────────
+// ── GSAP + Marquee ───────────────────────────────────────────
 var t1 = document.getElementById('track1');
 var t2 = document.getElementById('track2');
 if (t1) t1.classList.add('is-marquee-left');
 if (t2) t2.classList.add('is-marquee-right');
 
-/* CSS fallback marquee (before GSAP loads) */
 var styleEl = document.createElement('style');
-styleEl.textContent = `
-    @keyframes marquee-left  { from{transform:translateX(0)} to{transform:translateX(-50%)} }
-    @keyframes marquee-right { from{transform:translateX(-50%)} to{transform:translateX(0)} }
-    .is-marquee-left  { animation: marquee-left  38s linear infinite; }
-    .is-marquee-right { animation: marquee-right 46s linear infinite; }
-    .gallery-track:hover { animation-play-state: paused; }
-`;
+styleEl.textContent = [
+    '@keyframes marquee-left  { from{transform:translateX(0)} to{transform:translateX(-50%)} }',
+    '@keyframes marquee-right { from{transform:translateX(-50%)} to{transform:translateX(0)} }',
+    '.is-marquee-left  { animation: marquee-left  38s linear infinite; }',
+    '.is-marquee-right { animation: marquee-right 46s linear infinite; }',
+    '.gallery-track:hover { animation-play-state: paused; }'
+].join('');
 document.head.appendChild(styleEl);
 
 function initGSAP() {
@@ -2296,51 +2015,40 @@ function initGSAP() {
     }
     gsap.registerPlugin(ScrollTrigger);
 
-    // Scroll reveal
-    document.querySelectorAll('.reveal').forEach(el => {
+    document.querySelectorAll('.reveal').forEach(function(el) {
         var rect = el.getBoundingClientRect();
         if (rect.top < window.innerHeight) return;
         gsap.set(el, { opacity: 0, y: 28 });
         ScrollTrigger.create({
             trigger: el, start: 'top 88%', once: true,
-            onEnter: () => gsap.to(el, { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' })
+            onEnter: function() { gsap.to(el, { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }); }
         });
     });
 
-    // GSAP marquee (override CSS)
     if (t1 && t2) {
         t1.classList.remove('is-marquee-left');
         t2.classList.remove('is-marquee-right');
         t1.style.transform = ''; t2.style.transform = '';
-
         var tw1 = gsap.fromTo(t1, { x: 0 }, { x: -t1.scrollWidth/2, duration: 38, ease: 'none', repeat: -1 });
         var tw2 = gsap.fromTo(t2, { x: -t2.scrollWidth/2 }, { x: 0, duration: 46, ease: 'none', repeat: -1 });
-
         var paused = false;
-        [t1, t2].forEach(track => {
-            track.addEventListener('mouseenter', () => { if (!paused) { tw1.pause(); tw2.pause(); paused = true; } });
-            track.addEventListener('mouseleave', () => { if (paused)  { tw1.resume(); tw2.resume(); paused = false; } });
+        [t1, t2].forEach(function(track) {
+            track.addEventListener('mouseenter', function() { if (!paused) { tw1.pause(); tw2.pause(); paused = true; } });
+            track.addEventListener('mouseleave', function() { if (paused)  { tw1.resume(); tw2.resume(); paused = false; } });
         });
     }
 
-    // Parallax mouse on hero orbs
-    var orbs = document.querySelectorAll('.hero-orb');
-    // Parallax dengan RAF throttle + reduced motion check
-    var rafId = null;
     var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
     if (!prefersReduced) {
         var orbs = document.querySelectorAll('.hero-orb');
-        var mx = 0, my = 0;
-
+        var mx = 0, my = 0, rafId = null;
         document.addEventListener('mousemove', function(e) {
             mx = (e.clientX / window.innerWidth  - 0.5);
             my = (e.clientY / window.innerHeight - 0.5);
-
-            if (rafId) return; // throttle: skip jika frame belum selesai
+            if (rafId) return;
             rafId = requestAnimationFrame(function() {
                 orbs.forEach(function(orb, i) {
-                    var f = (i + 1) * 12; // turunkan dari 18 → 12
+                    var f = (i + 1) * 12;
                     orb.style.transform = 'translate(' + (mx*f) + 'px,' + (my*f) + 'px)';
                 });
                 rafId = null;
@@ -2350,9 +2058,10 @@ function initGSAP() {
 }
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initGSAP);
-// Pause orb animations ketika hero keluar viewport
+else initGSAP();
+
 if ('IntersectionObserver' in window) {
-    var heroEl = document.querySelector('.hero');
+    var heroEl   = document.querySelector('.hero');
     var heroOrbs = document.querySelectorAll('.hero-orb');
     var orbObserver = new IntersectionObserver(function(entries) {
         entries.forEach(function(entry) {
@@ -2363,15 +2072,78 @@ if ('IntersectionObserver' in window) {
     }, { threshold: 0 });
     if (heroEl) orbObserver.observe(heroEl);
 }
-else initGSAP();
-// ── Disclaimer Modal ────────────────────────────────────────
-var disclaimerScrollDone  = false;
-var disclaimerChecked     = false;
-var pendingKategoriRoute  = null;
+
+// ════════════════════════════════════════════════════════════
+// FRAUD DISCLAIMER MODAL 
+// ════════════════════════════════════════════════════════════
+(function() {
+
+    function bukaFraudModal() {
+        document.body.style.overflow = 'hidden';
+
+        var mf  = document.getElementById('modalFraud');
+        var mfc = document.getElementById('modalFraudCard');
+
+        mf.style.display = 'flex';
+        mf.classList.add('anim-in');
+        animCard(mfc, 'in');
+
+        setTimeout(function() {
+            mf.classList.remove('anim-in');
+        }, 400);
+
+        // ✅ langsung aktifkan button (no logic)
+        activateFraudBtn();
+    }
+
+    function activateFraudBtn() {
+        var btn = document.getElementById('fraudConfirmBtn');
+
+        btn.disabled = false;
+        btn.style.background = 'linear-gradient(135deg, #f97316, #c2410c)';
+        btn.style.color      = '#fff';
+        btn.style.cursor     = 'pointer';
+        btn.style.boxShadow  = '0 8px 24px rgba(249,115,22,0.38)';
+    }
+
+    window.fraudConfirm = function() {
+        // ✅ langsung allow (no validation)
+        sessionStorage.setItem('bayanopen_fraud_ok', '1');
+
+        var mf  = document.getElementById('modalFraud');
+        var mfc = document.getElementById('modalFraudCard');
+
+        mf.classList.add('anim-out');
+        animCard(mfc, 'out');
+
+        setTimeout(function() {
+            mf.style.display = 'none';
+            mf.classList.remove('anim-out');
+            document.body.style.overflow = '';
+        }, 220);
+    };
+
+    // ✅ Auto show (once per session)
+    if (!sessionStorage.getItem('bayanopen_fraud_ok')) {
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', bukaFraudModal);
+        } else {
+            bukaFraudModal();
+        }
+    }
+
+})();
+
+// ════════════════════════════════════════════════════════════
+// DISCLAIMER PESERTA — Muncul sebelum redirect ke form
+// ════════════════════════════════════════════════════════════
+var disclaimerScrollDone = false;
+var disclaimerChecked    = false;
+var pendingKategoriRoute = null;
 
 function pilihKategori(k) {
     pendingKategoriRoute = kategoriRoutes[k];
-    var m2 = document.getElementById('modal2');
+    var m2  = document.getElementById('modal2');
     var m2c = document.getElementById('modal2Card');
     m2.classList.add('anim-out');
     animCard(m2c, 'out');
@@ -2386,7 +2158,6 @@ function bukaDisclaimerModal() {
     disclaimerScrollDone = false;
     disclaimerChecked    = false;
     resetDisclaimer();
-
     var md  = document.getElementById('modalDisclaimer');
     var mdc = document.getElementById('modalDisclaimerCard');
     md.style.display = 'flex';
@@ -2394,7 +2165,6 @@ function bukaDisclaimerModal() {
     animCard(mdc, 'in');
     setTimeout(function() { md.classList.remove('anim-in'); }, 400);
     md.onclick = function(e) { if (e.target === md) tutupDisclaimerModal(); };
-
     document.getElementById('disclaimerScroll').scrollTop = 0;
     document.getElementById('disclaimerScroll').addEventListener('scroll', onDisclaimerScroll);
 }
@@ -2404,49 +2174,41 @@ function resetDisclaimer() {
     document.getElementById('disclaimerProgressLabel').textContent = '0% dibaca';
     document.getElementById('disclaimerProgressLabel').style.color = 'var(--m-ink-35)';
     document.getElementById('disclaimerScrollHint').style.opacity  = '1';
-
-    var checkRow = document.getElementById('disclaimerCheckRow');
-    checkRow.style.opacity       = '0.4';
-    checkRow.style.pointerEvents = 'none';
-    checkRow.style.cursor        = 'default';
-    checkRow.style.borderColor   = 'rgba(249,115,22,0.18)';
-    checkRow.style.background    = 'rgba(249,115,22,0.06)';
-
-    document.getElementById('disclaimerCheckBox').style.background   = '#fff';
-    document.getElementById('disclaimerCheckBox').style.borderColor  = 'rgba(249,115,22,0.4)';
-    document.getElementById('disclaimerTick').style.display          = 'none';
-
-    var btn  = document.getElementById('disclaimerConfirmBtn');
-    btn.disabled = true;
-    btn.style.background  = 'rgba(26,16,7,0.12)';
-    btn.style.color       = 'rgba(255,255,255,0.4)';
-    btn.style.cursor      = 'not-allowed';
-    btn.style.boxShadow   = 'none';
-    btn.style.transform   = '';
+    var cr = document.getElementById('disclaimerCheckRow');
+    cr.style.opacity       = '0.4';
+    cr.style.pointerEvents = 'none';
+    cr.style.cursor        = 'default';
+    cr.style.borderColor   = 'rgba(249,115,22,0.18)';
+    cr.style.background    = 'rgba(249,115,22,0.06)';
+    document.getElementById('disclaimerCheckBox').style.background  = '#fff';
+    document.getElementById('disclaimerCheckBox').style.borderColor = 'rgba(249,115,22,0.4)';
+    document.getElementById('disclaimerTick').style.display         = 'none';
+    var btn = document.getElementById('disclaimerConfirmBtn');
+    btn.disabled         = true;
+    btn.style.background = 'rgba(26,16,7,0.12)';
+    btn.style.color      = 'rgba(255,255,255,0.4)';
+    btn.style.cursor     = 'not-allowed';
+    btn.style.boxShadow  = 'none';
 }
 
 function onDisclaimerScroll() {
     var box   = document.getElementById('disclaimerScroll');
     var total = box.scrollHeight - box.clientHeight;
     var pct   = total > 0 ? Math.min(100, Math.round((box.scrollTop / total) * 100)) : 100;
-
     document.getElementById('disclaimerProgress').style.width = pct + '%';
-
-    var label = document.getElementById('disclaimerProgressLabel');
+    var lbl = document.getElementById('disclaimerProgressLabel');
     if (pct >= 98) {
-        disclaimerScrollDone = true;
-        label.textContent   = '✓ Selesai dibaca';
-        label.style.color   = '#f97316';
+        disclaimerScrollDone          = true;
+        lbl.textContent               = '✓ Selesai dibaca';
+        lbl.style.color               = '#f97316';
         document.getElementById('disclaimerScrollHint').style.opacity = '0';
-
-        var checkRow = document.getElementById('disclaimerCheckRow');
-        checkRow.style.opacity       = '1';
-        checkRow.style.pointerEvents = 'auto';
-        checkRow.style.cursor        = 'pointer';
+        var cr = document.getElementById('disclaimerCheckRow');
+        cr.style.opacity       = '1';
+        cr.style.pointerEvents = 'auto';
+        cr.style.cursor        = 'pointer';
     } else {
-        label.textContent = pct + '% dibaca';
-        if (pct < 30) document.getElementById('disclaimerScrollHint').style.opacity = '1';
-        else          document.getElementById('disclaimerScrollHint').style.opacity = '0';
+        lbl.textContent = pct + '% dibaca';
+        document.getElementById('disclaimerScrollHint').style.opacity = pct < 30 ? '1' : '0';
     }
     updateDisclaimerBtn();
 }
@@ -2454,23 +2216,21 @@ function onDisclaimerScroll() {
 function toggleDisclaimerCheck() {
     if (!disclaimerScrollDone) return;
     disclaimerChecked = !disclaimerChecked;
-
-    var checkBox = document.getElementById('disclaimerCheckBox');
-    var tick     = document.getElementById('disclaimerTick');
-    var checkRow = document.getElementById('disclaimerCheckRow');
-
+    var cb = document.getElementById('disclaimerCheckBox');
+    var tk = document.getElementById('disclaimerTick');
+    var cr = document.getElementById('disclaimerCheckRow');
     if (disclaimerChecked) {
-        checkBox.style.background  = '#f97316';
-        checkBox.style.borderColor = '#f97316';
-        tick.style.display         = 'block';
-        checkRow.style.borderColor = 'rgba(249,115,22,0.45)';
-        checkRow.style.background  = 'rgba(249,115,22,0.09)';
+        cb.style.background  = '#f97316';
+        cb.style.borderColor = '#f97316';
+        tk.style.display     = 'block';
+        cr.style.borderColor = 'rgba(249,115,22,0.45)';
+        cr.style.background  = 'rgba(249,115,22,0.09)';
     } else {
-        checkBox.style.background  = '#fff';
-        checkBox.style.borderColor = 'rgba(249,115,22,0.4)';
-        tick.style.display         = 'none';
-        checkRow.style.borderColor = 'rgba(249,115,22,0.18)';
-        checkRow.style.background  = 'rgba(249,115,22,0.06)';
+        cb.style.background  = '#fff';
+        cb.style.borderColor = 'rgba(249,115,22,0.4)';
+        tk.style.display     = 'none';
+        cr.style.borderColor = 'rgba(249,115,22,0.18)';
+        cr.style.background  = 'rgba(249,115,22,0.06)';
     }
     updateDisclaimerBtn();
 }
@@ -2478,23 +2238,22 @@ function toggleDisclaimerCheck() {
 function updateDisclaimerBtn() {
     var btn = document.getElementById('disclaimerConfirmBtn');
     if (disclaimerScrollDone && disclaimerChecked) {
-        btn.disabled          = false;
-        btn.style.background  = 'linear-gradient(135deg, #f97316, #c2410c)';
-        btn.style.color       = '#fff';
-        btn.style.cursor      = 'pointer';
-        btn.style.boxShadow   = '0 8px 24px rgba(249,115,22,0.38)';
+        btn.disabled         = false;
+        btn.style.background = 'linear-gradient(135deg, #f97316, #c2410c)';
+        btn.style.color      = '#fff';
+        btn.style.cursor     = 'pointer';
+        btn.style.boxShadow  = '0 8px 24px rgba(249,115,22,0.38)';
     } else {
-        btn.disabled          = true;
-        btn.style.background  = 'rgba(26,16,7,0.12)';
-        btn.style.color       = 'rgba(255,255,255,0.4)';
-        btn.style.cursor      = 'not-allowed';
-        btn.style.boxShadow   = 'none';
+        btn.disabled         = true;
+        btn.style.background = 'rgba(26,16,7,0.12)';
+        btn.style.color      = 'rgba(255,255,255,0.4)';
+        btn.style.cursor     = 'not-allowed';
+        btn.style.boxShadow  = 'none';
     }
 }
 
 function disclaimerConfirm() {
-    if (!disclaimerScrollDone || !disclaimerChecked) return;
-    if (!pendingKategoriRoute) return;
+    if (!disclaimerScrollDone || !disclaimerChecked || !pendingKategoriRoute) return;
     var md  = document.getElementById('modalDisclaimer');
     var mdc = document.getElementById('modalDisclaimerCard');
     md.classList.add('anim-out');
