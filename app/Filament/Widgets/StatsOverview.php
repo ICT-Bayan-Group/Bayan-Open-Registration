@@ -9,15 +9,14 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 class StatsOverview extends BaseWidget
 {
     protected static ?int $sort = 1;
-    // hapus $columnSpan — tidak perlu untuk StatsOverview
 
     protected function getStats(): array
     {
         $totalPeserta = Registration::count();
         $totalRevenue = Registration::where('status', 'paid')->sum('harga');
         $sudahBayar   = Registration::where('status', 'paid')->count();
-        $regu         = Registration::where('kategori', 'regu')->count();
-        $open         = Registration::where('kategori', 'open')->count();
+        $ganda        = Registration::where('kategori', 'LIKE', 'ganda-%')->count();
+        $regu         = Registration::where('kategori', 'beregu')->count();
         $pending      = Registration::where('status', 'pending')->count();
 
         $sparkline = Registration::selectRaw('DATE(created_at) as d, COUNT(*) as n')
@@ -42,15 +41,15 @@ class StatsOverview extends BaseWidget
                 ->descriptionIcon('heroicon-m-check-badge')
                 ->color('success'),
 
-            Stat::make('Peserta Regu', $regu)
+            Stat::make('Peserta Ganda', $ganda)
+                ->description('Semua kategori ganda')
+                ->descriptionIcon('heroicon-m-user-plus')
+                ->color('info'),
+
+            Stat::make('Peserta Beregu', $regu)
                 ->description('Kategori beregu (tim)')
                 ->descriptionIcon('heroicon-m-users')
                 ->color('primary'),
-
-            Stat::make('Peserta Open', $open)
-                ->description('Kategori open (perorangan)')
-                ->descriptionIcon('heroicon-m-user')
-                ->color('info'),
 
             Stat::make('Pending Bayar', $pending)
                 ->description('Menunggu konfirmasi')
