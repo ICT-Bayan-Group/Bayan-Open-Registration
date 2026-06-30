@@ -44,8 +44,6 @@ class GandaVeteranPutraStats extends BaseWidget
 
         return [
             Stat::make('Total Peserta', $total . ' tim')
-                ->description('Ganda Veteran Putra')
-                ->descriptionIcon('heroicon-m-star')
                 ->color('warning')
                 ->chart(
                     Registration::where('kategori', $slug)
@@ -56,16 +54,10 @@ class GandaVeteranPutraStats extends BaseWidget
                         ->pluck('count')->toArray()
                 ),
             Stat::make('Sudah Bayar', $paid . ' tim')
-                ->description("{$paidPercent}% dari total peserta")
-                ->descriptionIcon('heroicon-m-check-circle')
                 ->color('success'),
             Stat::make('Lolos Syarat Veteran', $lolos . ' tim')
-                ->description("{$tidakLolos} tidak lolos · {$belumScan} belum scan KTP")
-                ->descriptionIcon('heroicon-m-shield-check')
                 ->color($tidakLolos > 0 ? 'danger' : 'success'),
             Stat::make('Pemasukan', 'Rp ' . number_format($revenue, 0, ',', '.'))
-                ->description('Dari ' . $paid . ' tim terbayar')
-                ->descriptionIcon('heroicon-m-banknotes')
                 ->color('success'),
         ];
     }

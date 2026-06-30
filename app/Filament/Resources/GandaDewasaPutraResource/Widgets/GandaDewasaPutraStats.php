@@ -24,8 +24,6 @@ class GandaDewasaPutraStats extends BaseWidget
 
         return [
             Stat::make('Total Peserta', $total . ' tim')
-                ->description('Ganda Dewasa Putra')
-                ->descriptionIcon('heroicon-m-user')
                 ->color('primary')
                 ->chart(
                     Registration::where('kategori', $slug)
@@ -38,18 +36,12 @@ class GandaDewasaPutraStats extends BaseWidget
                 ),
 
             Stat::make('Sudah Bayar', $paid . ' tim')
-                ->description("{$paidPercent}% dari total peserta")
-                ->descriptionIcon('heroicon-m-check-circle')
                 ->color('success'),
 
             Stat::make('Menunggu Bayar', $pending . ' tim')
-                ->description("{$failed} gagal / expired")
-                ->descriptionIcon('heroicon-m-clock')
                 ->color('warning'),
 
             Stat::make('Pemasukan', 'Rp ' . number_format($revenue, 0, ',', '.'))
-                ->description('Dari ' . $paid . ' tim terbayar')
-                ->descriptionIcon('heroicon-m-banknotes')
                 ->color('success'),
         ];
     }
