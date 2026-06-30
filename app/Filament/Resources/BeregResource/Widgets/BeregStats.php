@@ -29,8 +29,6 @@ class BeregStats extends BaseWidget
 
         return [
             Stat::make('Total Tim', $total . ' tim')
-                ->description('Beregu')
-                ->descriptionIcon('heroicon-m-user-group')
                 ->color('success')
                 ->chart(
                     Registration::where('kategori', $slug)
@@ -41,16 +39,10 @@ class BeregStats extends BaseWidget
                         ->pluck('count')->toArray()
                 ),
             Stat::make('Sudah Bayar', $paid . ' tim')
-                ->description("{$paidPercent}% dari total tim")
-                ->descriptionIcon('heroicon-m-check-circle')
                 ->color('success'),
             Stat::make('Menunggu Bayar', $pending . ' tim')
-                ->description("{$failed} gagal / expired")
-                ->descriptionIcon('heroicon-m-clock')
                 ->color('warning'),
             Stat::make('Pemasukan', 'Rp ' . number_format($revenue, 0, ',', '.'))
-                ->description('Dari ' . $paid . ' tim · ' . $totalPemain . ' pemain terdaftar')
-                ->descriptionIcon('heroicon-m-banknotes')
                 ->color('success'),
         ];
     }
