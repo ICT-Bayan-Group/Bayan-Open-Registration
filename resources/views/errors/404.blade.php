@@ -200,7 +200,7 @@
 
     /* Brand */
     .brand-footer { animation:fade-up 0.5s ease 0.72s both;margin-top:36px; }
-    .brand-footer img { height:36px;width:auto;opacity:0.3;filter:brightness(0) invert(1);transition:opacity 0.25s; }
+    .brand-footer img { height:50px;width:auto;opacity:0.3;filter:brightness(0) invert(1);transition:opacity 0.25s; }
     .brand-footer img:hover { opacity:0.6; }
 
     @keyframes fade-up { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
@@ -243,11 +243,6 @@
 
     <div class="content">
 
-        <div class="eyebrow-404">
-            <div class="eyebrow-dot"></div>
-            <span class="eyebrow-text">Bayan Open 2026 · Error 404</span>
-        </div>
-
         <div class="num-wrap" aria-label="404">
             <div class="num-404" aria-hidden="true">404</div>
             <div class="num-404-glitch g1" aria-hidden="true">404</div>
@@ -287,32 +282,6 @@
         </div>
 
         <div class="line-divider"></div>
-
-        <div class="quick-links">
-            <p class="quick-label">Atau langsung ke</p>
-            <div class="quick-grid">
-                <a href="{{ route('registration.ganda-dewasa-putra') }}" class="quick-chip">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
-                    Ganda Dewasa Putra
-                </a>
-                <a href="{{ route('registration.ganda-dewasa-putri') }}" class="quick-chip">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
-                    Ganda Dewasa Putri
-                </a>
-                <a href="{{ route('registration.ganda-veteran-putra') }}" class="quick-chip">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                    Ganda Veteran Putra
-                </a>
-                <a href="{{ route('registration.beregu') }}" class="quick-chip">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
-                    Beregu
-                </a>
-                <a href="https://si.pbsi.id/" target="_blank" rel="noopener noreferrer" class="quick-chip">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
-                    Sirkuit Nasional (PBSI)
-                </a>
-            </div>
-        </div>
 
         <div class="brand-footer">
             <a href="{{ url('/') }}">

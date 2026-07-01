@@ -697,12 +697,156 @@
         color:      #fff;
         box-shadow: 0 4px 16px rgba(220,38,38,.25);
     }
+
+    /* ════════════════════════════════════════════════════════════
+       REGISTRATION DEADLINE — Banner & Countdown
+    ════════════════════════════════════════════════════════════ */
+    #regDeadlineBanner {
+        display:       none;
+        border-radius: 18px;
+        padding:       32px 28px;
+        margin-bottom: 28px;
+        text-align:    center;
+        background:    rgba(239,68,68,.07);
+        border:        1.5px solid rgba(239,68,68,.28);
+        animation:     fadeSlideUp .4s ease both;
+    }
+    #regDeadlineBanner.show { display: block; }
+    .deadline-icon {
+        font-size:     2.5rem;
+        margin-bottom: 12px;
+        display:       block;
+    }
+    .deadline-title {
+        font-size:      1.1rem;
+        font-weight:    800;
+        color:          #f87171;
+        margin:         0 0 6px;
+        font-family:    var(--font-display, sans-serif);
+        text-transform: uppercase;
+        letter-spacing: .06em;
+    }
+    .deadline-sub {
+        font-size:   .8rem;
+        color:       rgb(255, 255, 255);
+        line-height: 1.6;
+    }
+    .deadline-sub strong { color: rgb(255, 255, 255); }
+
+    #regCountdown {
+        display:       none;
+        margin-bottom: 8px;              /* diubah dari 24px */
+        border-radius: 16px;
+        padding:       14px 20px;        /* diubah dari 18px 20px, biar card-nya lebih ramping juga */
+        background:    transparent;
+        animation:     fadeSlideUp .35s ease both;
+    }
+    #regCountdown.show { display: block; }
+    .countdown-label {
+        font-size:      10px;
+        font-weight:    700;
+        text-transform: uppercase;
+        letter-spacing: .1em;
+        color:          #d97706;          /* diubah dari putih */
+        text-align:     center;
+        margin-bottom:  14px;
+    }
+    .countdown-grid {
+        display:         flex;
+        align-items:     center;
+        justify-content: center;
+        gap:             6px;
+    }
+    .countdown-unit {
+        display:        flex;
+        flex-direction: column;
+        align-items:    center;
+        gap:            4px;
+    }
+    .countdown-num {
+        font-size:     1.65rem;
+        font-weight:   900;
+        color:         #c2410c;           /* diubah dari putih */
+        font-family:   var(--font-display, 'Barlow Condensed', sans-serif);
+        min-width:     52px;
+        text-align:    center;
+        background:    rgba(249,115,22,.08);   /* kotak angka tetap ada aksen oranye tipis */
+        border:        1px solid rgba(249,115,22,.25);
+        border-radius: 10px;
+        padding:       6px 4px 4px;
+        line-height:   1;
+        transition:    color .2s;
+    }
+    .countdown-num.urgent { color: #dc2626; }
+    .countdown-unit-label {
+        font-size:      9px;
+        font-weight:    700;
+        text-transform: uppercase;
+        letter-spacing: .08em;
+        color:          #b45309;          /* diubah dari putih */
+    }
+    .countdown-sep {
+        font-size:     1.4rem;
+        font-weight:   900;
+        color:         rgba(249,115,22,.35);
+        margin-bottom: 14px;
+        line-height:   1;
+    }
+
+    .form-wrap-relative { position: relative; }
+    #formDisabledMask {
+        display:         none;
+        position:        absolute;
+        inset:           0;
+        z-index:         500;
+        border-radius:   12px;
+        background:      rgba(0,0,0,.45);
+        backdrop-filter: blur(2px);
+        -webkit-backdrop-filter: blur(2px);
+        cursor:          not-allowed;
+    }
 </style>
 @endpush
 
 @section('content')
 <section class="min-h-screen py-20 px-6">
 <div class="max-w-2xl mx-auto">
+
+    {{-- ── DEADLINE BANNER (shown when closed) ────────────────────── --}}
+    <div id="regDeadlineBanner">
+        <p class="deadline-title">Pendaftaran Telah Ditutup</p>
+        <p class="deadline-sub">
+            Batas pendaftaran <strong>Bayan Open 2026 — {{ $label ?? 'Ganda Dewasa' }}</strong><br>
+            telah berakhir pada <strong>19 Agustus 2026, 00:00 WITA</strong>.<br><br>
+            Untuk informasi lebih lanjut silakan hubungi panitia.
+        </p>
+    </div>
+
+    {{-- ── COUNTDOWN (shown when still open) ──────────────────────── --}}
+    <div id="regCountdown">
+        <p class="countdown-label">Sisa Waktu Pendaftaran</p>
+        <div class="countdown-grid">
+            <div class="countdown-unit">
+                <span class="countdown-num" id="cd_hari">--</span>
+                <span class="countdown-unit-label">Hari</span>
+            </div>
+            <span class="countdown-sep">:</span>
+            <div class="countdown-unit">
+                <span class="countdown-num" id="cd_jam">--</span>
+                <span class="countdown-unit-label">Jam</span>
+            </div>
+            <span class="countdown-sep">:</span>
+            <div class="countdown-unit">
+                <span class="countdown-num" id="cd_menit">--</span>
+                <span class="countdown-unit-label">Menit</span>
+            </div>
+            <span class="countdown-sep">:</span>
+            <div class="countdown-unit">
+                <span class="countdown-num" id="cd_detik">--</span>
+                <span class="countdown-unit-label">Detik</span>
+            </div>
+        </div>
+    </div>
 
     {{-- ── HEADER ──────────────────────────────────────────────────── --}}
     <div class="text-center mb-10 form-section">
@@ -754,6 +898,8 @@
     </div>
 
     {{-- ── FORM ─────────────────────────────────────────────────────── --}}
+    <div class="form-wrap-relative">
+    <div id="formDisabledMask"></div>
     <form id="regForm" novalidate>
     @csrf
     <input type="hidden" name="kategori" value="{{ $kategori ?? '' }}">
@@ -945,6 +1091,7 @@
     </p>
 
     </form>
+    </div>{{-- end form-wrap-relative --}}
 </div>
 </section>
 
@@ -974,6 +1121,137 @@
 </div>
 
 @push('scripts')
+<script>
+/* ================================================================
+   DEADLINE CHECK — Server Time based (anti manipulasi jam lokal)
+   Deadline: 19 Agustus 2026 00:00:00 WITA (UTC+8)
+   = 2026-08-18 16:00:00 UTC
+================================================================ */
+(function () {
+'use strict';
+
+// UTC+8 → Date.UTC bulan 0-index, Agustus = 7
+var DEADLINE_UTC_MS = Date.UTC(2026, 7, 18, 16, 0, 0);
+
+var _offsetMs       = 0;   // koreksi: serverTime - clientTime
+var _deadlinePassed = false;
+var _cdInterval     = null;
+
+/* ── 1. Fetch server time, hitung offset dgn kompensasi latency ── */
+async function initDeadline() {
+    try {
+        var fetchStart = Date.now();
+        var res = await fetch('/server-time?_=' + fetchStart, { cache: 'no-store' });
+        var fetchEnd = Date.now();
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        var json = await res.json();
+
+        var latencyMs = (fetchEnd - fetchStart) / 2;
+        var serverMs  = (json.timestamp * 1000) + latencyMs;
+        _offsetMs     = serverMs - fetchEnd;
+
+    } catch (e) {
+        console.warn('[DEADLINE] Gagal fetch /server-time, fallback ke client time:', e);
+        _offsetMs = 0;
+    }
+
+    checkAndRender();
+    _cdInterval = setInterval(tick, 1000);
+}
+
+function nowCorrected() { return Date.now() + _offsetMs; }
+
+function checkAndRender() {
+    var remaining = DEADLINE_UTC_MS - nowCorrected();
+    if (remaining <= 0) {
+        _deadlinePassed = true;
+        showClosed();
+    } else {
+        showCountdown(remaining);
+    }
+}
+
+function tick() {
+    var remaining = DEADLINE_UTC_MS - nowCorrected();
+    if (remaining <= 0) {
+        _deadlinePassed = true;
+        clearInterval(_cdInterval);
+        showClosed();
+        return;
+    }
+    updateCountdownDisplay(remaining);
+}
+
+function showClosed() {
+    var banner = document.getElementById('regDeadlineBanner');
+    if (banner) banner.classList.add('show');
+
+    var cd = document.getElementById('regCountdown');
+    if (cd) cd.classList.remove('show');
+
+    var mask = document.getElementById('formDisabledMask');
+    if (mask) mask.style.display = 'block';
+
+    var form = document.getElementById('regForm');
+    if (form) {
+        form.querySelectorAll('input, select, textarea, button').forEach(function (el) {
+            el.disabled = true;
+        });
+    }
+
+    var tambahBtn = document.getElementById('tambahPemainBtn');
+    if (tambahBtn) tambahBtn.disabled = true;
+}
+
+function showCountdown(remainingMs) {
+    var cd = document.getElementById('regCountdown');
+    if (cd && !cd.classList.contains('show')) cd.classList.add('show');
+    updateCountdownDisplay(remainingMs);
+}
+
+function updateCountdownDisplay(remainingMs) {
+    var totalSec = Math.max(0, Math.floor(remainingMs / 1000));
+    var hari     = Math.floor(totalSec / 86400);
+    var jam      = Math.floor((totalSec % 86400) / 3600);
+    var menit    = Math.floor((totalSec % 3600) / 60);
+    var detik    = totalSec % 60;
+    var urgent   = (hari === 0);
+
+    setCD('cd_hari',  pad(hari),  urgent && jam === 0);
+    setCD('cd_jam',   pad(jam),   urgent);
+    setCD('cd_menit', pad(menit), urgent);
+    setCD('cd_detik', pad(detik), urgent);
+}
+
+function setCD(id, val, urgent) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = val;
+    urgent ? el.classList.add('urgent') : el.classList.remove('urgent');
+}
+
+function pad(n) { return n < 10 ? '0' + n : String(n); }
+
+/* ── Guard submit — intercept sebelum AJAX handler jalan ── */
+document.addEventListener('DOMContentLoaded', function () {
+    var form = document.getElementById('regForm');
+    if (!form) return;
+
+    form.addEventListener('submit', function (e) {
+        var passed = _deadlinePassed || (DEADLINE_UTC_MS - nowCorrected() <= 0);
+        if (passed) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            showClosed();
+        }
+    }, true); // capture phase — jalan paling duluan, sebelum handler AJAX submit
+});
+
+document.addEventListener('DOMContentLoaded', initDeadline);
+
+})();
+</script>
+
 <script>
 /* ================================================================
    WILAYAH CASCADE

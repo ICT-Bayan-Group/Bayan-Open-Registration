@@ -33,6 +33,11 @@ class RegistrationController extends Controller
 
     public function showGandaDewasaPutra()
     {
+        if ($this->isPastDeadline()) {
+            return redirect()->route('registration.index')
+                ->with('deadline_error', 'Pendaftaran sudah ditutup per 19 Agustus 2026 pukul 00.00 WITA.');
+        }
+
         return view('registration.form-dewasa', [
             'kategori'  => 'ganda-dewasa-putra',
             'label'     => 'Ganda Dewasa Putra',
@@ -44,6 +49,11 @@ class RegistrationController extends Controller
 
     public function showGandaDewasaPutri()
     {
+        if ($this->isPastDeadline()) {
+            return redirect()->route('registration.index')
+                ->with('deadline_error', 'Pendaftaran sudah ditutup per 19 Agustus 2026 pukul 00.00 WITA.');
+        }
+
         return view('registration.form-dewasa', [
             'kategori'  => 'ganda-dewasa-putri',
             'label'     => 'Ganda Dewasa Putri',
@@ -55,11 +65,21 @@ class RegistrationController extends Controller
 
     public function showGandaVeteranPutra()
     {
+        if ($this->isPastDeadline()) {
+            return redirect()->route('registration.index')
+                ->with('deadline_error', 'Pendaftaran sudah ditutup per 19 Agustus 2026 pukul 00.00 WITA.');
+        }
+
         return view('registration.form-veteran');
     }
 
     public function showBeregu()
     {
+        if ($this->isPastDeadline()) {
+            return redirect()->route('registration.index')
+                ->with('deadline_error', 'Pendaftaran sudah ditutup per 19 Agustus 2026 pukul 00.00 WITA.');
+        }
+
         return view('registration.form-beregu');
     }
 
@@ -76,6 +96,18 @@ class RegistrationController extends Controller
 
         $kategori = $request->input('kategori');
         $isBeregu = ($kategori === 'beregu');
+
+        // ── Deadline check ─────────────────────────────────────────
+        if ($this->isPastDeadline()) {
+            $msg = 'Pendaftaran sudah ditutup per 19 Agustus 2026 pukul 00.00 WITA.';
+            if ($isAjax) {
+                return response()->json([
+                    'message' => $msg,
+                    'errors'  => ['deadline' => [$msg]],
+                ], 422);
+            }
+            return back()->withErrors(['deadline' => $msg]);
+        }
 
         // ── 0. Cek kuota beregu (max 32 tim paid) ─────────────────
         if ($isBeregu) {
@@ -719,6 +751,16 @@ class RegistrationController extends Controller
     ];
 
     private const MAX_BEREGU_TEAMS = 32;
+    // ── Deadline pendaftaran ─────────────────────────────────────
+    private const DEADLINE_WITA = '2026-08-19 00:00:00';
+    private const DEADLINE_TZ   = 'Asia/Makassar';
+
+    private function isPastDeadline(): bool
+    {
+        return now(self::DEADLINE_TZ)->gte(
+            Carbon::parse(self::DEADLINE_WITA, self::DEADLINE_TZ)
+        );
+    }
 
     private function isCityValid(string $city): bool
     {
