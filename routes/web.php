@@ -31,6 +31,16 @@ Route::prefix('wilayah')->group(function () {
     Route::get('/regencies/{id}',  [WilayahController::class, 'regencies'])->where('id', '[0-9]+');
 });
 
+// ── Server Time (untuk deadline check client-side, anti-manipulasi jam lokal) ──
+Route::get('/server-time', function () {
+    $now = now('Asia/Makassar');
+    return response()->json([
+        'timestamp' => $now->timestamp,
+        'wita'      => $now->toDateTimeString(),
+    ])->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+      ->header('Pragma', 'no-cache');
+})->name('server.time');
+
 // ── OCR KTP ─────────────────────────────────────────────────────
 Route::post('/ocr/ktp', [KtpOcrController::class, 'scan'])->name('ocr.ktp');
 

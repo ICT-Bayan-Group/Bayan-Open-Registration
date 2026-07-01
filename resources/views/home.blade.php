@@ -1485,7 +1485,7 @@ body {
                 ['1','Pilih Kategori','Pilih jalur dan kategori turnamen yang ingin diikuti.'],
                 ['2','Isi Data','Isi data tim, kontak, dan upload scan KTP pemain.'],
                 ['3','Bayar','Lakukan pembayaran via transfer, dan unggah bukti pembayaran di form pendaftaran.'],
-                ['4','Bertanding!','Konfirmasi diterima — sampai jumpa di lapangan!'],
+                ['4','Bertanding!','Konfirmasi diterima & sampai jumpa di lapangan!'],
             ] as $s)
             <div class="step-card reveal">
                 <div class="step-num">{{ $s[0] }}</div>
@@ -1506,7 +1506,7 @@ body {
         <div class="cta-banner reveal">
             <div class="cta-fire-line"></div>
             <p class="cta-banner-title">SIAP BERTANDING di<br><em>BAYAN OPEN 2026?</em></p>
-            <p class="cta-banner-sub">Tempat terbatas — jangan sampai ketinggalan!</p>
+            <p class="cta-banner-sub">Tempat terbatas jangan sampai ketinggalan!</p>
             <button type="button" onclick="bukaModalDaftar()" class="btn-fire" style="font-size:11px;">
                 Daftar Sekarang
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -1607,16 +1607,28 @@ body {
     <div id="modal1Card" class="mo-card" style="width:100%;max-width:560px;">
         <div style="padding:36px 32px 30px;">
             <div style="display:flex;justify-content:center;margin-bottom:22px;">
-                <div class="mo-badge">
-                    <span class="mo-badge-dot"></span>
-                    <span class="mo-badge-text">Bayan Open 2026</span>
-                </div>
+                <img src="https://res.cloudinary.com/djs5pi7ev/image/upload/q_auto/f_auto/v1775803080/bayanopen-logo_mfcb55.png"
+                     alt="Bayan Open 2026"
+                     style="height:44px;width:auto;object-fit:contain;display:block;">
             </div>
             <div style="text-align:center;margin-bottom:26px;">
                 <h2 style="font-family:var(--font-display);font-size:24px;font-weight:800;color:var(--m-ink);margin:0 0 8px;letter-spacing:-0.02em;line-height:1.2;">Pilih Jalur Pendaftaran</h2>
                 <p style="color:var(--m-ink-60);font-size:13px;margin:0;">Silakan pilih jalur turnamen yang ingin Anda ikuti</p>
             </div>
             <div class="jalur-grid" style="margin-bottom:22px;">
+            <button type="button" onclick="bukaModal2()" class="jalur-card jc-orange">
+                    <div class="jalur-shimmer"></div>
+                    <div class="jalur-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(249,115,22,1)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>
+                        </svg>
+                    </div>
+                    <p class="jalur-title">OPEN</p>
+                    <div class="jalur-badge-pill">
+                        <span class="mo-badge-dot" style="width:5px;height:5px;"></span>
+                        <span class="jalur-badge-pill-text">DAFTAR SEKARANG</span>
+                    </div>
+                </button>
                 <button type="button" onclick="bukaModalSirnas()" class="jalur-card jc-indigo" style="font-family:inherit;width:100%;">
                     <div class="jalur-shimmer"></div>
                     <div class="jalur-icon">
@@ -1630,19 +1642,6 @@ body {
                         <span class="jalur-badge-pill-text">18 KATEGORI</span>
                     </div>
                 </button>
-                <button type="button" onclick="bukaModal2()" class="jalur-card jc-orange">
-                    <div class="jalur-shimmer"></div>
-                    <div class="jalur-icon">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(249,115,22,1)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>
-                        </svg>
-                    </div>
-                    <p class="jalur-title">OPEN</p>
-                    <div class="jalur-badge-pill">
-                        <span class="mo-badge-dot" style="width:5px;height:5px;"></span>
-                        <span class="jalur-badge-pill-text">DAFTAR SEKARANG</span>
-                    </div>
-                </button>
             </div>
             <div class="mo-info-row" style="margin-bottom:12px;">
                 <div class="mo-divider-line"></div>
@@ -1651,12 +1650,12 @@ body {
             </div>
             <div class="mo-info-grid">
                 <div class="mo-info-box">
-                    <p class="mo-info-title">Sirkuit Nasional C</p>
-                    <p class="mo-info-desc">Didaftarkan melalui sistem resmi PBSI</p>
-                </div>
-                <div class="mo-info-box">
                     <p class="mo-info-title">Open</p>
                     <p class="mo-info-desc">Pendaftaran mandiri, pilih kategori sesuai kelas</p>
+                </div>
+                <div class="mo-info-box">
+                    <p class="mo-info-title">Sirkuit Nasional C</p>
+                    <p class="mo-info-desc">Didaftarkan melalui sistem resmi PBSI</p>
                 </div>
             </div>
             <button type="button" onclick="tutupModalDaftar()" style="width:100%;margin-top:16px;padding:10px;border:1px solid var(--m-ink-12);border-radius:10px;background:transparent;color:var(--m-ink-60);font-size:12px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background='transparent'">
@@ -1679,7 +1678,7 @@ body {
                 </button>
                 <div>
                     <h2 style="font-family:var(--font-display);font-size:26px;font-weight:800;color:var(--m-ink);margin:0 0 6px;letter-spacing:-0.02em;">Sirkuit Nasional C</h2>
-                    <p style="color:var(--m-ink-60);font-size:15px;margin:0;">Pilih kategori — semua daftar via <span style="color:#4338ca;font-weight:700;">si.pbsi.id</span></p>
+                    <p style="color:var(--m-ink-60);font-size:15px;margin:0;">Pilih kategori  semua daftar via <span style="color:#4338ca;font-weight:700;">si.pbsi.id</span></p>
                 </div>
             </div>
             <div class="sirnas-modal-list">
@@ -1867,7 +1866,7 @@ body {
                     style="width:100%;padding:14px 24px;border-radius:13px;border:none;font-family:var(--font-display);font-size:11px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.4);background:rgba(26,16,7,0.12);cursor:not-allowed;transition:all 0.3s cubic-bezier(0.22,1,0.36,1);">
                 ✓ &nbsp; Saya Mengerti &amp; Siap Bertanding
             </button>
-            <button onclick="tutupDisclaimerModal()" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--m-ink-12);background:transparent;font-family:var(--font-display);font-size:11px;color:var(--m-ink-35);cursor:pointer;transition:background 0.2s;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background='transparent'">
+            <button onclick="tutupDisclaimerModal()" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--m-ink-12);background:transparent;font-family:var(--font-display);font-size:11px;color:var(--m-black-50);cursor:pointer;transition:background 0.2s;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background='transparent'">
                 Batalkan Pendaftaran
             </button>
         </div>
