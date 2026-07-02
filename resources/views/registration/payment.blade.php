@@ -2,22 +2,116 @@
 
 @section('title', 'Pembayaran')
 
+@push('styles')
+<style>
+    @keyframes fadeSlideUp {
+        from { opacity: 0; transform: translateY(18px); }
+        to   { opacity: 1; transform: translateY(0);    }
+    }
+
+    #payDeadlineBanner {
+        display:       none;
+        border-radius: 18px;
+        padding:       28px 24px;
+        margin-bottom: 24px;
+        text-align:    center;
+        background:    rgb(223, 39, 39);
+        border:        1.5px solid rgba(239,68,68,.28);
+        animation:     fadeSlideUp .4s ease both;
+    }
+    #payDeadlineBanner.show { display: block; }
+    .pay-deadline-icon  { font-size: 2.25rem; margin-bottom: 10px; display: block; }
+    .pay-deadline-title {
+        font-size: 1.05rem; font-weight: 800; color: #ffffff;
+        margin: 0 0 6px; text-transform: uppercase; letter-spacing: .05em;
+    }
+    .pay-deadline-sub { font-size: .8rem; color: rgba(255,255,255,.7); line-height: 1.6; }
+    .pay-deadline-sub strong { color: #fff; }
+
+    #payCountdown {
+        display:       none;
+        margin-bottom: 20px;
+        border-radius: 16px;
+        padding:       14px 20px;
+        animation:     fadeSlideUp .35s ease both;
+    }
+    #payCountdown.show { display: block; }
+    .pay-cd-label {
+        font-size: 10px; font-weight: 700; text-transform: uppercase;
+        letter-spacing: .1em; color: #d97706; text-align: center; margin-bottom: 12px;
+    }
+    .pay-cd-grid { display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .pay-cd-unit { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .pay-cd-num {
+        font-size: 1.5rem; font-weight: 900; color: #c2410c;
+        min-width: 48px; text-align: center;
+        background: rgba(249,115,22,.08); border: 1px solid rgba(249,115,22,.25);
+        border-radius: 10px; padding: 6px 4px 4px; line-height: 1; transition: color .2s;
+    }
+    .pay-cd-num.urgent { color: #dc2626; }
+    .pay-cd-unit-label {
+        font-size: 9px; font-weight: 700; text-transform: uppercase;
+        letter-spacing: .08em; color: #b45309;
+    }
+    .pay-cd-sep { font-size: 1.3rem; font-weight: 900; color: rgba(249,115,22,.35); margin-bottom: 12px; }
+
+    .payform-wrap-relative { position: relative; }
+    #payFormDisabledMask {
+        display: none; position: absolute; inset: 0; z-index: 500;
+        border-radius: 20px; background: rgba(0,0,0,.5);
+        backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px); cursor: not-allowed;
+    }
+</style>
+@endpush
+
 @section('content')
 
 <section class="min-h-screen py-20 px-6 flex items-center justify-center">
     <div class="max-w-lg w-full">
 
         <div class="text-center mb-8">
-            <div class="w-16 h-16 rounded-2xl bg-brand-500/20 flex items-center justify-center mx-auto mb-4">
-                <svg class="w-8 h-8 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
-                </svg>
-            </div>
             <h1 class="font-display text-2xl font-bold mb-2">Selesaikan Pembayaran</h1>
             <p class="text-white/50 text-sm">Transfer ke rekening berikut dan upload bukti pembayaran</p>
         </div>
 
-        <div class="card-glass rounded-2xl p-8">
+        {{-- ── DEADLINE BANNER (shown when closed) ──────────────────── --}}
+        <div id="payDeadlineBanner">
+            <p class="pay-deadline-title">Batas Waktu Pembayaran Terlewati</p>
+            <p class="pay-deadline-sub">
+                Batas pendaftaran &amp; pembayaran <strong>Bayan Open 2026</strong><br>
+                telah berakhir pada <strong>19 Agustus 2026, 00:00 WITA</strong>.<br><br>
+                Upload bukti pembayaran tidak dapat lagi dilakukan. Silakan hubungi panitia.
+            </p>
+        </div>
+
+        {{-- ── COUNTDOWN (shown when still open) ─────────────────────── --}}
+        <div id="payCountdown">
+            <p class="pay-cd-label">Sisa Waktu Pembayaran</p>
+            <div class="pay-cd-grid">
+                <div class="pay-cd-unit">
+                    <span class="pay-cd-num" id="pcd_hari">--</span>
+                    <span class="pay-cd-unit-label">Hari</span>
+                </div>
+                <span class="pay-cd-sep">:</span>
+                <div class="pay-cd-unit">
+                    <span class="pay-cd-num" id="pcd_jam">--</span>
+                    <span class="pay-cd-unit-label">Jam</span>
+                </div>
+                <span class="pay-cd-sep">:</span>
+                <div class="pay-cd-unit">
+                    <span class="pay-cd-num" id="pcd_menit">--</span>
+                    <span class="pay-cd-unit-label">Menit</span>
+                </div>
+                <span class="pay-cd-sep">:</span>
+                <div class="pay-cd-unit">
+                    <span class="pay-cd-num" id="pcd_detik">--</span>
+                    <span class="pay-cd-unit-label">Detik</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-glass rounded-2xl p-8" style="position: relative; overflow: hidden;">
+        <div id="payFormDisabledMask"></div>
 
             {{-- Order Summary --}}
             <div class="mb-6 space-y-3">
@@ -65,7 +159,7 @@
             </div>
 
             {{-- Upload Form --}}
-            <form method="POST" action="{{ route('registration.upload-payment', $registration->uuid) }}" enctype="multipart/form-data" class="space-y-4">
+            <form id="paymentForm" method="POST" action="{{ route('registration.upload-payment', $registration->uuid) }}" enctype="multipart/form-data" class="space-y-4">
                 @csrf
 
                 {{-- Error Messages --}}
@@ -104,6 +198,7 @@
 
                 <button
                     type="submit"
+                    id="paySubmitBtn"
                     class="btn-primary w-full py-4 rounded-xl font-display text-sm font-bold text-white tracking-wide"
                 >
                     KIRIM BUKTI PEMBAYARAN →
@@ -117,5 +212,126 @@
 
     </div>
 </section>
+
+@push('scripts')
+<script>
+/* ================================================================
+   PAYMENT DEADLINE CHECK — Server Time based (anti manipulasi jam lokal)
+   Deadline: 19 Agustus 2026 00:00:00 WITA (UTC+8) = 2026-08-18 16:00:00 UTC
+================================================================ */
+(function () {
+'use strict';
+
+var DEADLINE_UTC_MS = Date.UTC(2026, 7, 18, 16, 0, 0);
+
+var _offsetMs       = 0;
+var _deadlinePassed = false;
+var _cdInterval     = null;
+
+async function initDeadline() {
+    try {
+        var fetchStart = Date.now();
+        var res = await fetch('/server-time?_=' + fetchStart, { cache: 'no-store' });
+        var fetchEnd = Date.now();
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        var json = await res.json();
+
+        var latencyMs = (fetchEnd - fetchStart) / 2;
+        var serverMs  = (json.timestamp * 1000) + latencyMs;
+        _offsetMs     = serverMs - fetchEnd;
+    } catch (e) {
+        console.warn('[PAY DEADLINE] Gagal fetch /server-time, fallback ke client time:', e);
+        _offsetMs = 0;
+    }
+
+    checkAndRender();
+    _cdInterval = setInterval(tick, 1000);
+}
+
+function nowCorrected() { return Date.now() + _offsetMs; }
+
+function checkAndRender() {
+    var remaining = DEADLINE_UTC_MS - nowCorrected();
+    if (remaining <= 0) { _deadlinePassed = true; showClosed(); }
+    else                { showCountdown(remaining); }
+}
+
+function tick() {
+    var remaining = DEADLINE_UTC_MS - nowCorrected();
+    if (remaining <= 0) {
+        _deadlinePassed = true;
+        clearInterval(_cdInterval);
+        showClosed();
+        return;
+    }
+    updateCountdownDisplay(remaining);
+}
+
+function showClosed() {
+    var banner = document.getElementById('payDeadlineBanner');
+    if (banner) banner.classList.add('show');
+
+    var cd = document.getElementById('payCountdown');
+    if (cd) cd.classList.remove('show');
+
+    var mask = document.getElementById('payFormDisabledMask');
+    if (mask) mask.style.display = 'block';
+
+    var form = document.getElementById('paymentForm');
+    if (form) {
+        form.querySelectorAll('input, select, textarea, button').forEach(function (el) {
+            el.disabled = true;
+        });
+    }
+}
+
+function showCountdown(remainingMs) {
+    var cd = document.getElementById('payCountdown');
+    if (cd && !cd.classList.contains('show')) cd.classList.add('show');
+    updateCountdownDisplay(remainingMs);
+}
+
+function updateCountdownDisplay(remainingMs) {
+    var totalSec = Math.max(0, Math.floor(remainingMs / 1000));
+    var hari     = Math.floor(totalSec / 86400);
+    var jam      = Math.floor((totalSec % 86400) / 3600);
+    var menit    = Math.floor((totalSec % 3600) / 60);
+    var detik    = totalSec % 60;
+    var urgent   = (hari === 0);
+
+    setCD('pcd_hari',  pad(hari),  urgent && jam === 0);
+    setCD('pcd_jam',   pad(jam),   urgent);
+    setCD('pcd_menit', pad(menit), urgent);
+    setCD('pcd_detik', pad(detik), urgent);
+}
+
+function setCD(id, val, urgent) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = val;
+    urgent ? el.classList.add('urgent') : el.classList.remove('urgent');
+}
+
+function pad(n) { return n < 10 ? '0' + n : String(n); }
+
+document.addEventListener('DOMContentLoaded', function () {
+    var form = document.getElementById('paymentForm');
+    if (!form) return;
+
+    form.addEventListener('submit', function (e) {
+        var passed = _deadlinePassed || (DEADLINE_UTC_MS - nowCorrected() <= 0);
+        if (passed) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            showClosed();
+        }
+    }, true); // capture phase — cegah submit sebelum handler lain jalan
+});
+
+document.addEventListener('DOMContentLoaded', initDeadline);
+
+})();
+</script>
+@endpush
 
 @endsection
