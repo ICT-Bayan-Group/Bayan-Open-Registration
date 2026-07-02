@@ -714,6 +714,13 @@ class RegistrationController extends Controller
     {
         $registration = Registration::where('uuid', $uuid)->firstOrFail();
 
+        // ── Deadline check ─────────────────────────────────────────
+        if ($this->isPastDeadline()) {
+            return back()->withErrors([
+                'deadline' => 'Batas waktu pembayaran sudah lewat per 19 Agustus 2026 pukul 00.00 WITA. Bukti pembayaran tidak dapat lagi dikirim.',
+            ]);
+        }
+
         if ($registration->approval_status !== 'approved' || !in_array($registration->status, ['pending', 'failed'])) {
             return back()->withErrors(['error' => 'Pendaftaran tidak dalam status yang memungkinkan upload bukti pembayaran.']);
         }

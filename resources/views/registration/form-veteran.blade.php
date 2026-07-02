@@ -480,41 +480,6 @@ select.input-field:disabled        { opacity: .4 !important; cursor: not-allowed
 @section('content')
 <section class="min-h-screen py-20 px-6">
 <div class="max-w-2xl mx-auto">
-   {{-- ── DEADLINE BANNER (shown when closed) ────────────────────── --}}
-    <div id="regDeadlineBanner">
-        <p class="deadline-title">Pendaftaran Telah Ditutup</p>
-        <p class="deadline-sub">
-            Batas pendaftaran <strong>Bayan Open 2026 — {{ $label ?? 'Ganda Veteran' }}</strong><br>
-            telah berakhir pada <strong>19 Agustus 2026, 00:00 WITA</strong>.<br><br>
-            Untuk informasi lebih lanjut silakan hubungi panitia.
-        </p>
-    </div>
-
-    {{-- ── COUNTDOWN (shown when still open) ──────────────────────── --}}
-    <div id="regCountdown">
-        <p class="countdown-label">⏳ Sisa Waktu Pendaftaran</p>
-        <div class="countdown-grid">
-            <div class="countdown-unit">
-                <span class="countdown-num" id="cd_hari">--</span>
-                <span class="countdown-unit-label">Hari</span>
-            </div>
-            <span class="countdown-sep">:</span>
-            <div class="countdown-unit">
-                <span class="countdown-num" id="cd_jam">--</span>
-                <span class="countdown-unit-label">Jam</span>
-            </div>
-            <span class="countdown-sep">:</span>
-            <div class="countdown-unit">
-                <span class="countdown-num" id="cd_menit">--</span>
-                <span class="countdown-unit-label">Menit</span>
-            </div>
-            <span class="countdown-sep">:</span>
-            <div class="countdown-unit">
-                <span class="countdown-num" id="cd_detik">--</span>
-                <span class="countdown-unit-label">Detik</span>
-            </div>
-        </div>
-    </div>
     {{-- ── HEADER ─────────────────────────────────────────────── --}}
     <div class="text-center mb-10 form-section">
         <a href="{{ route('registration.index') }}"
@@ -531,6 +496,41 @@ select.input-field:disabled        { opacity: .4 !important; cursor: not-allowed
         </div>
 
         <h1 class="font-display text-3xl font-bold mb-3">Formulir Pendaftaran</h1>
+         {{-- ── DEADLINE BANNER (shown when closed) ────────────────────── --}}
+            <div id="regDeadlineBanner">
+                <p class="deadline-title">Pendaftaran Telah Ditutup</p>
+                <p class="deadline-sub">
+                    Batas pendaftaran <strong>Bayan Open 2026 — {{ $label ?? 'Ganda Veteran' }}</strong><br>
+                    telah berakhir pada <strong>19 Agustus 2026, 00:00 WITA</strong>.<br><br>
+                    Untuk informasi lebih lanjut silakan hubungi panitia.
+                </p>
+            </div>
+
+            {{-- ── COUNTDOWN (shown when still open) ──────────────────────── --}}
+            <div id="regCountdown">
+                <p class="countdown-label">⏳ Sisa Waktu Pendaftaran</p>
+                <div class="countdown-grid">
+                    <div class="countdown-unit">
+                        <span class="countdown-num" id="cd_hari">--</span>
+                        <span class="countdown-unit-label">Hari</span>
+                    </div>
+                    <span class="countdown-sep">:</span>
+                    <div class="countdown-unit">
+                        <span class="countdown-num" id="cd_jam">--</span>
+                        <span class="countdown-unit-label">Jam</span>
+                    </div>
+                    <span class="countdown-sep">:</span>
+                    <div class="countdown-unit">
+                        <span class="countdown-num" id="cd_menit">--</span>
+                        <span class="countdown-unit-label">Menit</span>
+                    </div>
+                    <span class="countdown-sep">:</span>
+                    <div class="countdown-unit">
+                        <span class="countdown-num" id="cd_detik">--</span>
+                        <span class="countdown-unit-label">Detik</span>
+                    </div>
+                </div>
+            </div>
 
         <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-3"
              style="background:rgba(234,179,8,.1);border:1px solid rgba(234,179,8,.3);">

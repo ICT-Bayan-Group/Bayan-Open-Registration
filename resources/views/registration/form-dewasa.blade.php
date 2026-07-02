@@ -811,8 +811,23 @@
 @section('content')
 <section class="min-h-screen py-20 px-6">
 <div class="max-w-2xl mx-auto">
+    {{-- ── HEADER ──────────────────────────────────────────────────── --}}
+    <div class="text-center mb-10 form-section">
+        <a href="{{ route('registration.index') }}"
+           class="inline-flex items-center gap-2 text-white/30 text-xs hover:text-white/60 transition mb-6">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 12H5M12 5l-7 7 7 7"/>
+            </svg>
+            Ganti kategori
+        </a>
 
-    {{-- ── DEADLINE BANNER (shown when closed) ────────────────────── --}}
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-brand-500/40
+                    bg-brand-500/10 text-brand-300 text-xs font-semibold uppercase tracking-widest mb-4">
+            Pendaftaran Online · Bayan Open 2026
+        </div>
+
+        <h1 class="font-display text-3xl font-bold mb-3">Formulir Pendaftaran</h1>
+         {{-- ── DEADLINE BANNER (shown when closed) ────────────────────── --}}
     <div id="regDeadlineBanner">
         <p class="deadline-title">Pendaftaran Telah Ditutup</p>
         <p class="deadline-sub">
@@ -848,23 +863,6 @@
         </div>
     </div>
 
-    {{-- ── HEADER ──────────────────────────────────────────────────── --}}
-    <div class="text-center mb-10 form-section">
-        <a href="{{ route('registration.index') }}"
-           class="inline-flex items-center gap-2 text-white/30 text-xs hover:text-white/60 transition mb-6">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M19 12H5M12 5l-7 7 7 7"/>
-            </svg>
-            Ganti kategori
-        </a>
-
-        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-brand-500/40
-                    bg-brand-500/10 text-brand-300 text-xs font-semibold uppercase tracking-widest mb-4">
-            Pendaftaran Online · Bayan Open 2026
-        </div>
-
-        <h1 class="font-display text-3xl font-bold mb-3">Formulir Pendaftaran</h1>
-
         <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-3"
              style="background:rgba(249,115,22,.1);border:1px solid rgba(249,115,22,.3);">
             @if(($kategori ?? '') === 'beregu')
@@ -883,6 +881,8 @@
 
         <p class="text-white/40 text-sm mt-2">Isi semua data dengan benar dan lengkap</p>
     </div>
+
+    
 
     {{-- ── AJAX ERROR BANNER ───────────────────────────────────────── --}}
     <div id="ajaxErrorBanner">

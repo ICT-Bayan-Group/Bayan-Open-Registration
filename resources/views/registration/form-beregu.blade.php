@@ -598,44 +598,6 @@
 @section('content')
 <section class="min-h-screen py-20 px-4">
 <div class="max-w-3xl mx-auto">
-
-     {{-- ── DEADLINE BANNER (shown when closed) ────────────────────── --}}
-    <div id="regDeadlineBanner">
-        <span class="deadline-icon">🔒</span>
-        <p class="deadline-title">Pendaftaran Telah Ditutup</p>
-        <p class="deadline-sub">
-            Batas pendaftaran <strong>Bayan Open 2026 — {{ $label ?? 'Beregu' }}</strong><br>
-            telah berakhir pada <strong>19 Agustus 2026, 00:00 WITA</strong>.<br><br>
-            Untuk informasi lebih lanjut silakan hubungi panitia.
-        </p>
-    </div>
-
-    {{-- ── COUNTDOWN (shown when still open) ──────────────────────── --}}
-    <div id="regCountdown">
-        <p class="countdown-label">⏳ Sisa Waktu Pendaftaran</p>
-        <div class="countdown-grid">
-            <div class="countdown-unit">
-                <span class="countdown-num" id="cd_hari">--</span>
-                <span class="countdown-unit-label">Hari</span>
-            </div>
-            <span class="countdown-sep">:</span>
-            <div class="countdown-unit">
-                <span class="countdown-num" id="cd_jam">--</span>
-                <span class="countdown-unit-label">Jam</span>
-            </div>
-            <span class="countdown-sep">:</span>
-            <div class="countdown-unit">
-                <span class="countdown-num" id="cd_menit">--</span>
-                <span class="countdown-unit-label">Menit</span>
-            </div>
-            <span class="countdown-sep">:</span>
-            <div class="countdown-unit">
-                <span class="countdown-num" id="cd_detik">--</span>
-                <span class="countdown-unit-label">Detik</span>
-            </div>
-        </div>
-    </div>
-
     {{-- ── HEADER ──────────────────────────────────────────────────── --}}
     <div class="text-center mb-10 form-section">
         <a href="{{ route('registration.index') }}"
@@ -650,6 +612,42 @@
             Pendaftaran Online · Bayan Open 2026
         </div>
         <h1 class="font-display text-3xl font-bold mb-3">Formulir Beregu</h1>
+          {{-- ── DEADLINE BANNER (shown when closed) ────────────────────── --}}
+            <div id="regDeadlineBanner">
+                <span class="deadline-icon">🔒</span>
+                <p class="deadline-title">Pendaftaran Telah Ditutup</p>
+                <p class="deadline-sub">
+                    Batas pendaftaran <strong>Bayan Open 2026 — {{ $label ?? 'Beregu' }}</strong><br>
+                    telah berakhir pada <strong>19 Agustus 2026, 00:00 WITA</strong>.<br><br>
+                    Untuk informasi lebih lanjut silakan hubungi panitia.
+                </p>
+            </div>
+
+            {{-- ── COUNTDOWN (shown when still open) ──────────────────────── --}}
+            <div id="regCountdown">
+                <p class="countdown-label">⏳ Sisa Waktu Pendaftaran</p>
+                <div class="countdown-grid">
+                    <div class="countdown-unit">
+                        <span class="countdown-num" id="cd_hari">--</span>
+                        <span class="countdown-unit-label">Hari</span>
+                    </div>
+                    <span class="countdown-sep">:</span>
+                    <div class="countdown-unit">
+                        <span class="countdown-num" id="cd_jam">--</span>
+                        <span class="countdown-unit-label">Jam</span>
+                    </div>
+                    <span class="countdown-sep">:</span>
+                    <div class="countdown-unit">
+                        <span class="countdown-num" id="cd_menit">--</span>
+                        <span class="countdown-unit-label">Menit</span>
+                    </div>
+                    <span class="countdown-sep">:</span>
+                    <div class="countdown-unit">
+                        <span class="countdown-num" id="cd_detik">--</span>
+                        <span class="countdown-unit-label">Detik</span>
+                    </div>
+                </div>
+            </div>
         <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-3"
              style="background:rgba(249,115,22,.1);border:1px solid rgba(249,115,22,.3);">
             <svg width="13" height="13" viewBox="0 0 20 20" fill="rgba(251,146,60,1)">
