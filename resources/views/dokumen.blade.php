@@ -441,7 +441,7 @@
             </div>
             <div class="dk-banner-badge">
                 <span class="dk-live-dot"></span>
-                2 Dokumen
+                3 Dokumen
             </div>
         </div>
 
@@ -574,6 +574,62 @@
                     </div>
                 </div>
 
+                {{-- ── DOCUMENT 3: Ketentuan Lainnya ── --}}
+                <div class="dk-doc-card">
+                    <div class="dk-doc-head">
+                        <div class="dk-doc-icon-wrap">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                                <line x1="16" y1="13" x2="8" y2="13"/>
+                                <line x1="16" y1="17" x2="8" y2="17"/>
+                                <polyline points="10 9 9 9 8 9"/>
+                            </svg>
+                        </div>
+                        <div class="dk-doc-meta">
+                            <div class="dk-doc-category">Ketentuan Kejuaraan</div>
+                            <div class="dk-doc-title">Sirkuit Nasional C</div>
+                            <div class="dk-doc-desc">Aturan dan ketentuan lengkap kategori Sirkuit Nasional C Bayan Open 2026</div>
+                        </div>
+                    </div>
+
+                    {{-- PDF Preview via Google Drive embed --}}
+                    <div class="dk-doc-preview" id="preview-wrap-3">
+                        <div class="dk-doc-loading" id="loading-3">
+                            <div class="dk-spinner"></div>
+                            <div class="dk-loading-text">Memuat dokumen…</div>
+                        </div>
+                        <iframe
+                            class="dk-doc-iframe"
+                            id="iframe-3"
+                            src="https://drive.google.com/file/d/1q8GIPB6XGJNtIuZrocRfeeD_p3UprLcU/preview"
+                            allow="autoplay"
+                            onload="iframeLoaded('loading-3')"
+                            title="Ketentuan Kejuaraan Sirkuit Nasional C">
+                        </iframe>
+                        <div class="dk-doc-preview-overlay"></div>
+                    </div>
+
+                    <div class="dk-doc-footer">
+                        <a href="https://drive.google.com/uc?export=download&id=1q8GIPB6XGJNtIuZrocRfeeD_p3UprLcU"
+                           class="dk-btn dk-btn-primary"
+                           download>
+                            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                                <polyline points="7 10 12 15 17 10"/>
+                                <line x1="12" y1="15" x2="12" y2="3"/>
+                            </svg>
+                            Unduh PDF
+                        </a>
+                        <button class="dk-expand-btn" onclick="openModal('modal-3', 'Ketentuan Kejuaraan Sirkuit Nasional C', 'https://drive.google.com/file/d/1q8GIPB6XGJNtIuZrocRfeeD_p3UprLcU/preview')">
+                            <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
+                            </svg>
+                            Layar Penuh
+                        </button>
+                    </div>
+                </div>
+
             </div>{{-- /.dk-doc-grid --}}
         </div>
 
@@ -644,6 +700,40 @@
         </div>
         <iframe class="dk-modal-iframe" id="modal-2-iframe"
             src="https://drive.google.com/file/d/1C2NmuBWD6mZGoJR0nOvs96yuYI0eY234/preview"
+            allow="autoplay"
+            title="Preview Dokumen">
+        </iframe>
+    </div>
+</div>
+
+<div class="dk-modal-backdrop" id="modal-3" onclick="closeModalOutside(event, 'modal-3')">
+    <div class="dk-modal">
+        <div class="dk-modal-head">
+            <div class="dk-doc-icon-wrap" style="width:30px;height:30px;border-radius:8px;flex-shrink:0;">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                </svg>
+            </div>
+            <div class="dk-modal-title" id="modal-3-title">Dokumen</div>
+            <a id="modal-3-download"
+               href="https://drive.google.com/uc?export=download&id=1q8GIPB6XGJNtIuZrocRfeeD_p3UprLcU"
+               class="dk-btn dk-btn-primary" style="padding:6px 12px;font-size:8px;" download>
+                <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+                Unduh
+            </a>
+            <button class="dk-modal-close" onclick="closeModal('modal-3')" aria-label="Tutup">
+                <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+            </button>
+        </div>
+        <iframe class="dk-modal-iframe" id="modal-3-iframe"
+            src="https://drive.google.com/file/d/1q8GIPB6XGJNtIuZrocRfeeD_p3UprLcU/preview"
             allow="autoplay"
             title="Preview Dokumen">
         </iframe>
