@@ -477,7 +477,7 @@
                         <div class="dk-doc-meta">
                             <div class="dk-doc-category">Ketentuan Kejuaraan</div>
                             <div class="dk-doc-title">Beregu Se-Kota Balikpapan</div>
-                            <div class="dk-doc-desc">Aturan dan ketentuan lengkap kategori beregu tingkat kota Balikpapan</div>
+                            <div class="dk-doc-desc">Aturan dan ketentuan lengkap kategori Beregu tingkat kota Balikpapan</div>
                         </div>
                     </div>
 
@@ -533,7 +533,7 @@
                         <div class="dk-doc-meta">
                             <div class="dk-doc-category">Ketentuan Kejuaraan</div>
                             <div class="dk-doc-title">Dewasa dan Veteran</div>
-                            <div class="dk-doc-desc">Aturan dan ketentuan lengkap kategori dewasa dan veteran Bayan Open 2026</div>
+                            <div class="dk-doc-desc">Aturan dan ketentuan lengkap kategori Dewasa dan Veteran Bayan Open 2026</div>
                         </div>
                     </div>
 
