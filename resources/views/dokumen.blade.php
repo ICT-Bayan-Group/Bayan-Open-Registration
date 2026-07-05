@@ -602,7 +602,7 @@
                         <iframe
                             class="dk-doc-iframe"
                             id="iframe-3"
-                            src="https://drive.google.com/file/d/1q8GIPB6XGJNtIuZrocRfeeD_p3UprLcU/preview"
+                            src="https://drive.google.com/file/d/1cJP479tQc8E3sUJ6ga3MLaysB0wiTUVU/preview"
                             allow="autoplay"
                             onload="iframeLoaded('loading-3')"
                             title="Ketentuan Kejuaraan Sirkuit Nasional C">
@@ -611,7 +611,7 @@
                     </div>
 
                     <div class="dk-doc-footer">
-                        <a href="https://drive.google.com/uc?export=download&id=1q8GIPB6XGJNtIuZrocRfeeD_p3UprLcU"
+                        <a href="https://drive.google.com/uc?export=download&id=1cJP479tQc8E3sUJ6ga3MLaysB0wiTUVU"
                            class="dk-btn dk-btn-primary"
                            download>
                             <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
@@ -621,7 +621,7 @@
                             </svg>
                             Unduh PDF
                         </a>
-                        <button class="dk-expand-btn" onclick="openModal('modal-3', 'Ketentuan Kejuaraan Sirkuit Nasional C', 'https://drive.google.com/file/d/1q8GIPB6XGJNtIuZrocRfeeD_p3UprLcU/preview')">
+                        <button class="dk-expand-btn" onclick="openModal('modal-3', 'Ketentuan Kejuaraan Sirkuit Nasional C', 'https://drive.google.com/file/d/1cJP479tQc8E3sUJ6ga3MLaysB0wiTUVU/preview')">
                             <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                                 <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
                             </svg>
@@ -717,7 +717,7 @@
             </div>
             <div class="dk-modal-title" id="modal-3-title">Dokumen</div>
             <a id="modal-3-download"
-               href="https://drive.google.com/uc?export=download&id=1q8GIPB6XGJNtIuZrocRfeeD_p3UprLcU"
+               href="https://drive.google.com/uc?export=download&id=1cJP479tQc8E3sUJ6ga3MLaysB0wiTUVU"
                class="dk-btn dk-btn-primary" style="padding:6px 12px;font-size:8px;" download>
                 <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                     <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
@@ -733,7 +733,7 @@
             </button>
         </div>
         <iframe class="dk-modal-iframe" id="modal-3-iframe"
-            src="https://drive.google.com/file/d/1q8GIPB6XGJNtIuZrocRfeeD_p3UprLcU/preview"
+            src="https://drive.google.com/file/d/1cJP479tQc8E3sUJ6ga3MLaysB0wiTUVU/preview"
             allow="autoplay"
             title="Preview Dokumen">
         </iframe>
