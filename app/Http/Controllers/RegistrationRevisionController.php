@@ -25,22 +25,23 @@ class RegistrationRevisionController extends Controller
 
         return view('registration.revisi', compact('registration', 'token'));
     }
+
     public function previewKtp(string $token, int $index)
-        {
-            // Cari pendaftaran berdasarkan token revisi
-            $registration = Registration::where('revision_token', $token)->firstOrFail();
+    {
+        // Cari pendaftaran berdasarkan token revisi
+        $registration = Registration::where('revision_token', $token)->firstOrFail();
 
-            // Ambil path file sesuai index pemain
-            $files = $registration->ktp_files ?? [];
-            $path = $files[$index] ?? null;
+        // Ambil path file sesuai index pemain
+        $files = $registration->ktp_files ?? [];
+        $path = $files[$index] ?? null;
 
-            if (!$path || !Storage::disk('private')->exists($path)) {
-                abort(404);
-            }
-
-            // Kembalikan file sebagai response gambar
-            return response()->file(Storage::disk('private')->path($path));
+        if (!$path || !Storage::disk('private')->exists($path)) {
+            abort(404);
         }
+
+        // Kembalikan file sebagai response gambar
+        return response()->file(Storage::disk('private')->path($path));
+    }
 
     /**
      * PUT /daftar/revisi/{token}
@@ -82,26 +83,27 @@ class RegistrationRevisionController extends Controller
         $newFiles      = [];
         $ktpCityValid  = $registration->ktp_city_valid ?? [];
 
-        if ($request->hasFile('ktp_files')) {
-            foreach ($request->file('ktp_files') as $index => $file) {
-                if ($file && $file->isValid()) {
-                    // Delete old file if exists
-                    if (!empty($existingFiles[$index])) {
-                        Storage::disk('private')->delete($existingFiles[$index]);
-                    }
+        $uploadedFiles = $request->file('ktp_files', []); // sparse array
+        $totalMembers  = count($request->input('pemain', []));
 
-                    $path = $file->store(
-                        'ktp/' . $registration->uuid,
-                        'private'
-                    );
-                    $newFiles[$index] = $path;
-                } else {
-                    // Keep existing file
-                    $newFiles[$index] = $existingFiles[$index] ?? null;
+        for ($index = 0; $index < $totalMembers; $index++) {
+            $file = $uploadedFiles[$index] ?? null;
+
+            if ($file && $file->isValid()) {
+                // Ada file baru untuk index ini → hapus file lama, simpan yang baru
+                if (!empty($existingFiles[$index])) {
+                    Storage::disk('private')->delete($existingFiles[$index]);
                 }
+
+                $path = $file->store(
+                    'ktp/' . $registration->uuid,
+                    'private'
+                );
+                $newFiles[$index] = $path;
+            } else {
+                // Tidak ada file baru → pertahankan file lama (bisa null kalau memang belum ada)
+                $newFiles[$index] = $existingFiles[$index] ?? null;
             }
-        } else {
-            $newFiles = $existingFiles;
         }
 
         // ── Build city valid array from submitted kota_ktp ────────
@@ -135,6 +137,9 @@ class RegistrationRevisionController extends Controller
             'nik'            => $request->nik,
             'tgl_lahir'      => $request->tgl_lahir,
             'kota_ktp'       => $request->kota_ktp,
+            // $newFiles sekarang sudah terisi lengkap & berurutan
+            // index 0..totalMembers-1 tanpa gap, jadi array_values()
+            // di sini sudah aman dipakai.
             'ktp_files'      => array_values($newFiles),
             'ktp_city_valid' => $newCityValid,
         ]);
