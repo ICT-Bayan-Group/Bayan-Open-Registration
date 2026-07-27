@@ -17,5 +17,8 @@ class AppServiceProvider extends ServiceProvider
         if (request()->server('HTTP_X_FORWARDED_PROTO') === 'https') {
             URL::forceScheme('https');
         }
+
+        \Livewire\Livewire::component('editable-ktp-detail', \App\Livewire\EditableKtpDetail::class);
+         \Livewire\Livewire::component('editable-registration-ktp', \App\Livewire\EditableRegistrationKtp::class);
     }
 }

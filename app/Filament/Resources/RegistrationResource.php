@@ -240,11 +240,11 @@ class RegistrationResource extends Resource
 
             Infolists\Components\Section::make('Data Pemain & Dokumen')
                 ->schema([
-                    Infolists\Components\TextEntry::make('ktp_html')
-                        ->label('')->html()->columnSpanFull()
-                        ->state(fn (Registration $r) => new HtmlString(
-                            self::buildKtpHtml($r)
-                        )),
+                    Infolists\Components\ViewEntry::make('editable_ktp')
+                        ->label('')
+                        ->columnSpanFull()
+                        ->viewData(fn (Registration $r) => ['record' => $r])
+                        ->view('filament.infolists.editable-registration-ktp-wrapper'),
                 ]),
         ]);
     }
