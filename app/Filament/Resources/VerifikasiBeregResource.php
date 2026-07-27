@@ -170,11 +170,11 @@ Infolists\Components\TextEntry::make('uuid')
 
             Infolists\Components\Section::make('Detail KTP Seluruh Anggota')
                 ->schema([
-                    Infolists\Components\TextEntry::make('ktp_detail_html')
-                        ->label('')->html()->columnSpanFull()
-                        ->state(fn (Registration $r) => new HtmlString(
-                            self::buildKtpDetail($r)
-                        )),
+                    Infolists\Components\ViewEntry::make('editable_ktp')
+                        ->label('')
+                        ->columnSpanFull()
+                        ->viewData(fn (Registration $r) => ['record' => $r])
+                        ->view('filament.infolists.editable-ktp-wrapper'),
                 ]),
         ]);
     }

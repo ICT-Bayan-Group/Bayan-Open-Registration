@@ -1,0 +1,1 @@
+@livewire('editable-registration-ktp', ['record' => $record], key('editable-reg-ktp-' . $record->id))
