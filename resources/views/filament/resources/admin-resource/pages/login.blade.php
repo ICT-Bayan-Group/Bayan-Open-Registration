@@ -13,6 +13,9 @@
             overflow: hidden !important;
             background: #faf8f5 !important;
         }
+        html.dark, html.dark body {
+            background: #0d0906 !important;
+        }
 
         /* Target every possible Filament ancestor */
         .fi-simple-layout,
@@ -45,6 +48,9 @@
             overflow: hidden;
             z-index: 0;
         }
+        html.dark .bo-login-shell {
+            background: #0d0906;
+        }
 
         /* ── Left panel — decorative ────────────────────────────────── */
         .bo-left {
@@ -62,6 +68,12 @@
                 radial-gradient(ellipse 60% 80% at 70% 80%, rgba(251,191,36,0.08) 0%, transparent 60%),
                 linear-gradient(135deg, #fdf6ee 0%, #faf0e4 50%, #f5e8d8 100%);
         }
+        html.dark .bo-left-bg {
+            background:
+                radial-gradient(ellipse 80% 70% at 30% 40%, rgba(249,115,22,0.16) 0%, transparent 65%),
+                radial-gradient(ellipse 60% 80% at 70% 80%, rgba(251,191,36,0.10) 0%, transparent 60%),
+                linear-gradient(135deg, #140c07 0%, #1a1007 50%, #1e1209 100%);
+        }
         /* Subtle grid pattern */
         .bo-left-bg::after {
             content: '';
@@ -70,6 +82,11 @@
                 linear-gradient(rgba(249,115,22,0.05) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(249,115,22,0.05) 1px, transparent 1px);
             background-size: 48px 48px;
+        }
+        html.dark .bo-left-bg::after {
+            background-image:
+                linear-gradient(rgba(249,115,22,0.08) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(249,115,22,0.08) 1px, transparent 1px);
         }
         .bo-left-content {
             position: relative; z-index: 2;
@@ -82,6 +99,12 @@
             margin-bottom: 36px;
             display: block; margin-left: auto; margin-right: auto;
         }
+        /* Logo swap: light logo default, white logo di dark mode */
+        .bo-logo-light { display: block; }
+        .bo-logo-dark  { display: none; }
+        html.dark .bo-logo-light { display: none; }
+        html.dark .bo-logo-dark  { display: block; }
+
         .bo-left-title {
             font-size: 13px; font-weight: 700;
             letter-spacing: 0.22em; text-transform: uppercase;
@@ -96,6 +119,9 @@
             line-height: 1.15;
             margin-bottom: 20px;
         }
+        html.dark .bo-left-headline {
+            color: #faf8f5;
+        }
         .bo-left-headline em { font-style: normal; color: #f97316; }
         .bo-left-sub {
             font-size: 14px;
@@ -103,6 +129,9 @@
             line-height: 1.7;
             max-width: 340px;
             margin: 0 auto;
+        }
+        html.dark .bo-left-sub {
+            color: rgba(250,248,245,0.45);
         }
 
         /* Decorative floating orbs */
@@ -125,12 +154,18 @@
             top: 40%; right: 10%;
             background: radial-gradient(circle, rgba(249,115,22,0.06) 0%, transparent 70%);
         }
+        html.dark .bo-orb-1 { background: radial-gradient(circle, rgba(249,115,22,0.12) 0%, transparent 70%); }
+        html.dark .bo-orb-2 { background: radial-gradient(circle, rgba(251,191,36,0.14) 0%, transparent 70%); }
+        html.dark .bo-orb-3 { background: radial-gradient(circle, rgba(249,115,22,0.10) 0%, transparent 70%); }
 
         /* Vertical divider */
         .bo-divider {
             width: 1px;
             background: linear-gradient(to bottom, transparent, rgba(249,115,22,0.2) 20%, rgba(249,115,22,0.2) 80%, transparent);
             flex-shrink: 0;
+        }
+        html.dark .bo-divider {
+            background: linear-gradient(to bottom, transparent, rgba(249,115,22,0.3) 20%, rgba(249,115,22,0.3) 80%, transparent);
         }
 
         /* ── Right panel — form ──────────────────────────────────────── */
@@ -156,6 +191,10 @@
             background: rgba(249,115,22,0.06);
             margin-bottom: 28px;
         }
+        html.dark .bo-form-eyebrow {
+            border-color: rgba(249,115,22,0.35);
+            background: rgba(249,115,22,0.1);
+        }
         .bo-form-eyebrow-dot {
             width: 6px; height: 6px; border-radius: 50%;
             background: #f97316;
@@ -170,6 +209,9 @@
             letter-spacing: 0.16em; text-transform: uppercase;
             color: #ea580c;
         }
+        html.dark .bo-form-eyebrow-text {
+            color: #fb923c;
+        }
         .bo-form-title {
             font-size: clamp(28px, 3vw, 38px);
             font-weight: 800;
@@ -178,10 +220,16 @@
             line-height: 1.1;
             margin-bottom: 8px;
         }
+        html.dark .bo-form-title {
+            color: #faf8f5;
+        }
         .bo-form-sub {
             font-size: 14px;
             color: rgba(26,16,7,0.45);
             margin-bottom: 44px;
+        }
+        html.dark .bo-form-sub {
+            color: rgba(250,248,245,0.4);
         }
 
         /* Override Filament form field styles */
@@ -195,6 +243,10 @@
             color: rgba(26,16,7,0.45) !important;
             margin-bottom: 8px !important;
         }
+        html.dark .fi-fo-field-wrp-label label,
+        html.dark .fi-fo-field-wrp-label .fi-fo-field-wrp-label-wrapper {
+            color: rgba(250,248,245,0.5) !important;
+        }
         .fi-input {
             background: #fff !important;
             border: 1.5px solid rgba(26,16,7,0.1) !important;
@@ -206,14 +258,27 @@
             transition: all 0.2s ease !important;
             box-shadow: 0 2px 8px rgba(0,0,0,0.04) !important;
         }
+        html.dark .fi-input {
+            background: rgba(255,255,255,0.04) !important;
+            border-color: rgba(255,255,255,0.12) !important;
+            color: #faf8f5 !important;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.25) !important;
+        }
         .fi-input:focus {
             border-color: #f97316 !important;
             box-shadow: 0 0 0 3px rgba(249,115,22,0.12) !important;
             outline: none !important;
         }
+        html.dark .fi-input:focus {
+            box-shadow: 0 0 0 3px rgba(249,115,22,0.22) !important;
+        }
         .fi-input-wrp {
             border-radius: 14px !important;
             overflow: hidden !important;
+        }
+        html.dark .fi-input-wrp {
+            background: rgba(255,255,255,0.04) !important;
+            border-color: rgba(255,255,255,0.12) !important;
         }
 
         /* Submit button */
@@ -239,6 +304,14 @@
             transform: translateY(-2px) !important;
             box-shadow: 0 16px 40px rgba(249,115,22,0.5) !important;
         }
+        html.dark .fi-btn-primary,
+        html.dark button[type="submit"].fi-btn {
+            box-shadow: 0 8px 24px rgba(249,115,22,0.45) !important;
+        }
+        html.dark .fi-btn-primary:hover,
+        html.dark button[type="submit"].fi-btn:hover {
+            box-shadow: 0 16px 40px rgba(249,115,22,0.6) !important;
+        }
 
         /* Checkbox */
         .fi-checkbox-input {
@@ -246,15 +319,25 @@
             border-color: rgba(26,16,7,0.15) !important;
             color: #f97316 !important;
         }
+        html.dark .fi-checkbox-input {
+            border-color: rgba(255,255,255,0.2) !important;
+            background: rgba(255,255,255,0.04) !important;
+        }
         .fi-checkbox-label {
             font-size: 13px !important;
             color: rgba(26,16,7,0.5) !important;
+        }
+        html.dark .fi-checkbox-label {
+            color: rgba(250,248,245,0.45) !important;
         }
 
         /* Error states */
         .fi-fo-field-wrp-error-message {
             font-size: 12px !important;
             color: #ef4444 !important;
+        }
+        html.dark .fi-fo-field-wrp-error-message {
+            color: #f87171 !important;
         }
 
         /* Footer credit */
@@ -265,6 +348,25 @@
             color: rgba(26,16,7,0.25);
             letter-spacing: 0.04em;
         }
+        html.dark .bo-footer {
+            color: rgba(250,248,245,0.22);
+        }
+
+        /* ── Mobile-only logo (tampil di atas form saat panel kiri disembunyikan) ── */
+        .bo-mobile-logo {
+            display: none;
+            justify-content: center;
+            margin-bottom: 32px;
+        }
+        .bo-mobile-logo img {
+            height: 64px;
+            width: auto;
+            filter: drop-shadow(0 6px 20px rgba(249,115,22,0.2));
+        }
+        .bo-mobile-logo .bo-logo-light { display: block; }
+        .bo-mobile-logo .bo-logo-dark  { display: none; }
+        html.dark .bo-mobile-logo .bo-logo-light { display: none; }
+        html.dark .bo-mobile-logo .bo-logo-dark  { display: block; }
 
         /* ── Responsive ──────────────────────────────────────────────── */
         @media (max-width: 768px) {
@@ -272,6 +374,7 @@
             .bo-divider { display: none; }
             .bo-right { padding: 40px 28px; }
             .bo-form-wrap { max-width: 100%; }
+            .bo-mobile-logo { display: flex; }
         }
     </style>
 
@@ -288,7 +391,9 @@
 
             <div class="bo-left-content">
                 <img src="https://res.cloudinary.com/djs5pi7ev/image/upload/q_auto/f_auto/v1775803080/bayanopen-logo_mfcb55.png"
-                     alt="Bayan Open 2026" class="bo-logo">
+                     alt="Bayan Open 2026" class="bo-logo bo-logo-light">
+                <img src="https://res.cloudinary.com/djs5pi7ev/image/upload/v1776413938/LOGO_BO2026_White_bpz9gb.png"
+                     alt="Bayan Open 2026" class="bo-logo bo-logo-dark">
 
                 <p class="bo-left-title">Admin Dashboard</p>
                 <h1 class="bo-left-headline">
@@ -307,6 +412,13 @@
         {{-- ── Right form panel ─────────────────────────────────── --}}
         <div class="bo-right">
             <div class="bo-form-wrap">
+
+                <div class="bo-mobile-logo">
+                    <img src="https://res.cloudinary.com/djs5pi7ev/image/upload/q_auto/f_auto/v1775803080/bayanopen-logo_mfcb55.png"
+                         alt="Bayan Open 2026" class="bo-logo-light">
+                    <img src="https://res.cloudinary.com/djs5pi7ev/image/upload/v1776413938/LOGO_BO2026_White_bpz9gb.png"
+                         alt="Bayan Open 2026" class="bo-logo-dark">
+                </div>
 
                 <h2 class="bo-form-title">Masuk ke<br>Dashboard</h2>
                 <p class="bo-form-sub">Khusus administrator turnamen.</p>

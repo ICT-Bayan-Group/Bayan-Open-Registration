@@ -25,7 +25,7 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-
+use Illuminate\Support\HtmlString;
 class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
@@ -38,7 +38,21 @@ class AdminPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Orange,
             ])
-            ->brandLogo('https://res.cloudinary.com/djs5pi7ev/image/upload/q_auto/f_auto/v1775803080/bayanopen-logo_mfcb55.png')
+            ->brandLogo(fn () => new HtmlString('
+                <style>
+                    .bo-logo-dark { display: none; }
+                    html.dark .bo-logo-dark { display: block; }
+                    html.dark .bo-logo-light { display: none; }
+                </style>
+                <img src="https://res.cloudinary.com/djs5pi7ev/image/upload/q_auto/f_auto/v1775803080/bayanopen-logo_mfcb55.png"
+                    alt="Bayan Open 2026"
+                    class="bo-logo-light"
+                    style="height: 3.5rem;" />
+                <img src="https://res.cloudinary.com/djs5pi7ev/image/upload/v1776413938/LOGO_BO2026_White_bpz9gb.png"
+                    alt="Bayan Open 2026"
+                    class="bo-logo-dark"
+                    style="height: 3.5rem;" />
+            '))
             ->brandLogoHeight('3rem')
             ->darkMode(true)
             ->sidebarCollapsibleOnDesktop()
