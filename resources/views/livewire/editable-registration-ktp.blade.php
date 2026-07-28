@@ -1,7 +1,9 @@
+@include('filament.partials.ktp-dark-styles')
+
 <div style="display:grid;grid-template-columns:1fr;gap:24px;">
 
     @if (empty($anggota))
-        <p style="color:#6b7280;font-size:14px;">Belum ada data pemain.</p>
+        <p class="txt-muted" style="font-size:14px;">Belum ada data pemain.</p>
     @endif
 
     @php
@@ -15,15 +17,13 @@
             $nilUsia   = $item['usia'] !== '' ? (int) $item['usia'] : null;
 
             if ($isEditing) {
-                $cardBorder = '#2563eb'; $headerBg = '#eff6ff'; $badgeBg = '#dbeafe';
+                $stateClass = 'ktp-state-edit';
             } elseif ($isPaspor) {
-                $cardBorder = '#c4b5fd'; $headerBg = '#f5f3ff'; $badgeBg = '#ede9fe';
+                $stateClass = 'ktp-state-paspor';
             } elseif ($isVeteran && $nilUsia !== null) {
-                $cardBorder = $nilUsia >= 45 ? '#86efac' : '#fca5a5';
-                $headerBg   = $nilUsia >= 45 ? '#f0fdf4'  : '#fef2f2';
-                $badgeBg    = $nilUsia >= 45 ? '#dcfce7'  : '#fee2e2';
+                $stateClass = $nilUsia >= 45 ? 'ktp-state-valid' : 'ktp-state-invalid';
             } else {
-                $cardBorder = '#d1d5db'; $headerBg = '#f9fafb'; $badgeBg = '#f3f4f6';
+                $stateClass = 'ktp-state-neutral';
             }
 
             $ktpFiles    = $record->ktp_files ?? [];
@@ -35,24 +35,24 @@
                 : null;
         @endphp
 
-        <div style="border-radius:12px;border:1.5px solid {{ $cardBorder }};overflow:hidden;background:#fff;" wire:key="reganggota-{{ $i }}">
+        <div class="ktp-card {{ $stateClass }}" wire:key="reganggota-{{ $i }}">
 
             {{-- HEADER --}}
-            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1.5px solid {{ $cardBorder }};background:{{ $headerBg }};">
+            <div class="ktp-header">
                 <div style="display:flex;align-items:center;gap:10px;">
-                    <div style="width:28px;height:28px;border-radius:50%;background:{{ $badgeBg }};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#374151;border:1px solid {{ $cardBorder }};">{{ $i + 1 }}</div>
-                    <span style="font-weight:600;font-size:14px;color:#111827;">{{ $item['nama'] }}</span>
+                    <div class="ktp-avatar">{{ $i + 1 }}</div>
+                    <span class="ktp-name">{{ $item['nama'] }}</span>
                 </div>
                 <div style="display:flex;align-items:center;gap:8px;">
                     @if (!$isEditing)
-                        <span style="{{ $isPaspor ? 'background:#ede9fe;color:#6d28d9;border-color:#c4b5fd;' : 'background:#fff7ed;color:#c2410c;border-color:#fed7aa;' }}display:inline-flex;align-items:center;gap:4px;padding:2px 10px;border-radius:99px;font-size:10px;font-weight:700;border:1px solid;">
+                        <span class="{{ $isPaspor ? 'badge-paspor' : 'badge-ktp' }}">
                             {{ $isPaspor ? '🛂 PASPOR' : '🪪 KTP' }}
                         </span>
-                        <button wire:click="edit({{ $i }})" type="button" title="Koreksi data" style="border:none;background:#e5e7eb;color:#374151;border-radius:8px;padding:6px 10px;font-size:12px;font-weight:600;cursor:pointer;">
+                        <button wire:click="edit({{ $i }})" type="button" title="Koreksi data" class="btn-edit-small">
                             ✏ Koreksi
                         </button>
                     @else
-                        <span style="font-size:11px;font-weight:700;color:#2563eb;">Mode Edit</span>
+                        <span class="ktp-edit-mode-label">Mode Edit</span>
                     @endif
                 </div>
             </div>
@@ -62,7 +62,7 @@
                 @if (!$isEditing)
                     {{-- ── READ MODE ── --}}
                     <div>
-                        <p style="font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">{{ $isPaspor ? '📋 Data Paspor' : '📋 Data KTP' }}</p>
+                        <p class="ktp-section-label">{{ $isPaspor ? '📋 Data Paspor' : '📋 Data KTP' }}</p>
 
                         @if ($isPaspor)
                             <x-registration-ktp-row label="No. Paspor" :value="$item['paspor_number'] ?: '—'" mono weight="bold" />
@@ -78,7 +78,7 @@
                                     $ok = $nilUsia >= 45;
                                     $usiaLabel = ($ok ? '✓ ' : '✗ ') . $nilUsia . ' tahun — ' . ($ok ? 'Memenuhi syarat (≥ 45 thn)' : 'Tidak memenuhi syarat (min. 45 thn)');
                                 @endphp
-                                <x-registration-ktp-row label="Usia" :value="$usiaLabel" :color="$ok ? '#15803d' : '#dc2626'" weight="bold" />
+                                <x-registration-ktp-row label="Usia" :value="$usiaLabel" :color="$ok ? 'txt-ok' : 'txt-bad'" weight="bold" />
                             @else
                                 <x-registration-ktp-row label="Usia" :value="$nilUsia . ' tahun'" />
                             @endif
@@ -87,7 +87,7 @@
                         @if ($item['jenis_kelamin'])
                             @php
                                 $genderLabel = $item['jenis_kelamin'] === 'L' ? '♂ Laki-laki' : ($item['jenis_kelamin'] === 'P' ? '♀ Perempuan' : $item['jenis_kelamin']);
-                                $genderColor = $item['jenis_kelamin'] === 'L' ? '#1d4ed8' : '#be185d';
+                                $genderColor = $item['jenis_kelamin'] === 'L' ? 'txt-blue' : 'txt-pink';
                             @endphp
                             <x-registration-ktp-row label="Kelamin" :value="$genderLabel" :color="$genderColor" weight="bold" />
                         @endif
@@ -96,14 +96,14 @@
                     {{-- ── EDIT MODE ── --}}
                     <div style="display:flex;flex-direction:column;gap:10px;">
                         <div>
-                            <label style="font-size:10px;font-weight:700;text-transform:uppercase;color:#6b7280;">Nama</label>
-                            <input type="text" wire:model="anggota.{{ $i }}.nama" style="width:100%;margin-top:2px;padding:6px 8px;border:1px solid #d1d5db;border-radius:6px;font-size:13px;">
-                            @error("anggota.$i.nama") <span style="color:#dc2626;font-size:11px;">{{ $message }}</span> @enderror
+                            <label class="ktp-field-label">Nama</label>
+                            <input type="text" wire:model="anggota.{{ $i }}.nama" class="ktp-input">
+                            @error("anggota.$i.nama") <span class="ktp-error">{{ $message }}</span> @enderror
                         </div>
 
                         <div>
-                            <label style="font-size:10px;font-weight:700;text-transform:uppercase;color:#6b7280;">Tipe Dokumen</label>
-                            <select wire:model="anggota.{{ $i }}.ktp_type" style="width:100%;margin-top:2px;padding:6px 8px;border:1px solid #d1d5db;border-radius:6px;font-size:13px;">
+                            <label class="ktp-field-label">Tipe Dokumen</label>
+                            <select wire:model="anggota.{{ $i }}.ktp_type" class="ktp-select">
                                 <option value="ktp">KTP</option>
                                 <option value="paspor">Paspor</option>
                             </select>
@@ -111,33 +111,33 @@
 
                         @if ($item['ktp_type'] === 'paspor')
                             <div>
-                                <label style="font-size:10px;font-weight:700;text-transform:uppercase;color:#6b7280;">No. Paspor</label>
-                                <input type="text" wire:model="anggota.{{ $i }}.paspor_number" style="width:100%;margin-top:2px;padding:6px 8px;border:1px solid #d1d5db;border-radius:6px;font-size:13px;font-family:monospace;">
-                                @error("anggota.$i.paspor_number") <span style="color:#dc2626;font-size:11px;">{{ $message }}</span> @enderror
+                                <label class="ktp-field-label">No. Paspor</label>
+                                <input type="text" wire:model="anggota.{{ $i }}.paspor_number" class="ktp-input mono">
+                                @error("anggota.$i.paspor_number") <span class="ktp-error">{{ $message }}</span> @enderror
                             </div>
                         @else
                             <div>
-                                <label style="font-size:10px;font-weight:700;text-transform:uppercase;color:#6b7280;">NIK</label>
-                                <input type="text" wire:model="anggota.{{ $i }}.nik" style="width:100%;margin-top:2px;padding:6px 8px;border:1px solid #d1d5db;border-radius:6px;font-size:13px;font-family:monospace;">
-                                @error("anggota.$i.nik") <span style="color:#dc2626;font-size:11px;">{{ $message }}</span> @enderror
+                                <label class="ktp-field-label">NIK</label>
+                                <input type="text" wire:model="anggota.{{ $i }}.nik" class="ktp-input mono">
+                                @error("anggota.$i.nik") <span class="ktp-error">{{ $message }}</span> @enderror
                             </div>
                         @endif
 
                         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
                             <div>
-                                <label style="font-size:10px;font-weight:700;text-transform:uppercase;color:#6b7280;">Tgl Lahir</label>
-                                <input type="text" wire:model="anggota.{{ $i }}.tgl_lahir" placeholder="DD-MM-YYYY" style="width:100%;margin-top:2px;padding:6px 8px;border:1px solid #d1d5db;border-radius:6px;font-size:13px;">
+                                <label class="ktp-field-label">Tgl Lahir</label>
+                                <input type="text" wire:model="anggota.{{ $i }}.tgl_lahir" placeholder="DD-MM-YYYY" class="ktp-input">
                             </div>
                             <div>
-                                <label style="font-size:10px;font-weight:700;text-transform:uppercase;color:#6b7280;">Usia</label>
-                                <input type="number" wire:model="anggota.{{ $i }}.usia" style="width:100%;margin-top:2px;padding:6px 8px;border:1px solid #d1d5db;border-radius:6px;font-size:13px;">
-                                @error("anggota.$i.usia") <span style="color:#dc2626;font-size:11px;">{{ $message }}</span> @enderror
+                                <label class="ktp-field-label">Usia</label>
+                                <input type="number" wire:model="anggota.{{ $i }}.usia" class="ktp-input">
+                                @error("anggota.$i.usia") <span class="ktp-error">{{ $message }}</span> @enderror
                             </div>
                         </div>
 
                         <div>
-                            <label style="font-size:10px;font-weight:700;text-transform:uppercase;color:#6b7280;">Jenis Kelamin</label>
-                            <select wire:model="anggota.{{ $i }}.jenis_kelamin" style="width:100%;margin-top:2px;padding:6px 8px;border:1px solid #d1d5db;border-radius:6px;font-size:13px;">
+                            <label class="ktp-field-label">Jenis Kelamin</label>
+                            <select wire:model="anggota.{{ $i }}.jenis_kelamin" class="ktp-select">
                                 <option value="">—</option>
                                 <option value="L">Laki-laki</option>
                                 <option value="P">Perempuan</option>
@@ -145,26 +145,22 @@
                         </div>
 
                         <div style="display:flex;gap:8px;margin-top:6px;">
-                            <button wire:click="save({{ $i }})" type="button" style="flex:1;background:#059669;color:#fff;border:none;border-radius:8px;padding:8px 12px;font-size:12px;font-weight:700;cursor:pointer;">
-                                ✓ Simpan
-                            </button>
-                            <button wire:click="cancel" type="button" style="flex:1;background:#e5e7eb;color:#374151;border:none;border-radius:8px;padding:8px 12px;font-size:12px;font-weight:700;cursor:pointer;">
-                                Batal
-                            </button>
+                            <button wire:click="save({{ $i }})" type="button" class="btn-save">✓ Simpan</button>
+                            <button wire:click="cancel" type="button" class="btn-cancel">Batal</button>
                         </div>
                     </div>
                 @endif
 
                 {{-- FOTO --}}
                 <div>
-                    <p style="font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">{{ $isPaspor ? '📷 Foto Paspor' : '📷 Foto KTP' }}</p>
+                    <p class="ktp-section-label">{{ $isPaspor ? '📷 Foto Paspor' : '📷 Foto KTP' }}</p>
                     @if ($fotoUrl)
                         <a href="{{ $fotoUrl }}" target="_blank">
-                            <img src="{{ $fotoUrl }}" alt="{{ $isPaspor ? 'Paspor' : 'KTP' }}" style="width:100%;max-height:192px;object-fit:contain;border-radius:8px;border:1px solid #d1d5db;background:#f9fafb;cursor:pointer;">
+                            <img src="{{ $fotoUrl }}" alt="{{ $isPaspor ? 'Paspor' : 'KTP' }}" class="ktp-photo" style="max-height:192px;">
                         </a>
-                        <p style="font-size:11px;color:#6b7280;margin-top:4px;">{{ basename($filePath) }} · Klik untuk buka fullsize</p>
+                        <p class="ktp-photo-caption" style="margin-top:4px;">{{ basename($filePath) }} · Klik untuk buka fullsize</p>
                     @else
-                        <p style="font-size:12px;color:#6b7280;font-style:italic;">File tidak ditemukan.</p>
+                        <p class="txt-muted" style="font-size:12px;font-style:italic;">File tidak ditemukan.</p>
                     @endif
                 </div>
             </div>

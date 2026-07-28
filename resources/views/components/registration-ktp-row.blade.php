@@ -1,6 +1,24 @@
-@props(['label', 'value', 'color' => '#374151', 'weight' => 'normal', 'mono' => false])
+@props([
+    'label',
+    'value',
+    'mono' => false,
+    'weight' => 'normal',
+    'color' => 'ktp-row-value', // sekarang berupa nama CSS class, misal: txt-ok / txt-bad / txt-blue / txt-pink
+])
 
-<div style="display:flex;gap:12px;padding:6px 0;border-bottom:1px solid #e5e7eb;">
-    <span style="font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;min-width:90px;flex-shrink:0;">{{ $label }}</span>
-    <span style="font-size:12px;color:{{ $color }};font-weight:{{ $weight }};{{ $mono ? 'font-family:monospace;' : '' }}">{{ $value }}</span>
+@php
+    $weightMap = [
+        'bold' => '800',
+        'semibold' => '700',
+        '600' => '600',
+        'normal' => '600',
+    ];
+    $fontWeight = $weightMap[$weight] ?? $weight;
+@endphp
+
+<div class="ktp-row">
+    <span class="ktp-row-label">{{ $label }}</span>
+    <span class="ktp-row-value {{ $mono ? 'mono' : '' }} {{ $color }}" style="font-weight:{{ $fontWeight }};">
+        {{ $value }}
+    </span>
 </div>

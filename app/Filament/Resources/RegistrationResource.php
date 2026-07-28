@@ -44,6 +44,15 @@ class RegistrationResource extends Resource
             ->helperText('Masukkan password khusus untuk melanjutkan aksi ini');
     }
 
+    /**
+     * CSS bersama untuk semua HTML mentah (modal, infolist) yang dark-mode aware.
+     * Sama persis dengan partial blade "filament.partials.ktp-dark-styles" supaya konsisten.
+     */
+    private static function darkStyles(): string
+    {
+        return view('filament.partials.ktp-dark-styles')->render();
+    }
+
     // ============================================================
     // FORM (Create / Edit)
     // ============================================================
@@ -438,9 +447,10 @@ class RegistrationResource extends Resource
                         Forms\Components\Placeholder::make('info')
                             ->label('')
                             ->content(fn (Registration $r) => new HtmlString(
-                                '<div style="padding:12px 14px;border-radius:10px;background:#f0fdf4;border:1px solid #86efac;margin-bottom:4px;">'
-                                . '<p style="font-size:13px;font-weight:600;color:#15803d;margin:0 0 4px;">Konfirmasi Approve Pembayaran</p>'
-                                . '<p style="font-size:12px;color:#166534;margin:0;">PDF receipt akan digenerate dan email konfirmasi dikirim ke peserta setelah approve.</p>'
+                                self::darkStyles()
+                                . '<div class="confirm-box confirm-success">'
+                                . '<p style="font-size:13px;font-weight:600;margin:0 0 4px;" class="txt-ok">Konfirmasi Approve Pembayaran</p>'
+                                . '<p style="font-size:12px;margin:0;" class="txt-ok">PDF receipt akan digenerate dan email konfirmasi dikirim ke peserta setelah approve.</p>'
                                 . '</div>'
                             )),
                         self::passwordField(),
@@ -482,9 +492,10 @@ class RegistrationResource extends Resource
                         Forms\Components\Placeholder::make('info')
                             ->label('')
                             ->content(new HtmlString(
-                                '<div style="padding:12px 14px;border-radius:10px;background:#fef2f2;border:1px solid #fca5a5;margin-bottom:4px;">'
-                                . '<p style="font-size:13px;font-weight:600;color:#dc2626;margin:0 0 4px;">Konfirmasi Penolakan Pembayaran</p>'
-                                . '<p style="font-size:12px;color:#991b1b;margin:0;">Peserta dapat upload ulang bukti pembayaran setelah ditolak.</p>'
+                                self::darkStyles()
+                                . '<div class="confirm-box confirm-danger">'
+                                . '<p style="font-size:13px;font-weight:600;margin:0 0 4px;" class="txt-bad">Konfirmasi Penolakan Pembayaran</p>'
+                                . '<p style="font-size:12px;margin:0;" class="txt-bad">Peserta dapat upload ulang bukti pembayaran setelah ditolak.</p>'
                                 . '</div>'
                             )),
                         self::passwordField(),
@@ -596,22 +607,22 @@ class RegistrationResource extends Resource
     private static function buildPaymentProofModalHtml(Registration $record): string
     {
         if (! $record->payment_proof) {
-            return '<p style="color:#6b7280;font-size:14px;padding:16px;text-align:center;">Bukti pembayaran tidak tersedia.</p>';
+            return self::darkStyles() . '<p class="txt-muted" style="font-size:14px;padding:16px;text-align:center;">Bukti pembayaran tidak tersedia.</p>';
         }
 
         $url      = asset('storage/' . $record->payment_proof);
         $filename = htmlspecialchars(basename($record->payment_proof));
         $nama     = htmlspecialchars($record->nama);
 
-        return '
+        return self::darkStyles() . '
         <div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:8px;">
             <img
                 src="' . $url . '"
                 alt="Bukti Pembayaran ' . $nama . '"
-                style="width:100%;max-height:540px;object-fit:contain;border-radius:10px;border:1px solid #d1d5db;background:#f9fafb;"
-                onerror="this.outerHTML=\'<div style=\\\'text-align:center;padding:32px;\\\'><p style=\\\'color:#dc2626;font-size:13px;\\\'>❌ Gambar tidak dapat dimuat.</p></div>\'"
+                class="proof-img"
+                onerror="this.outerHTML=\'<div style=\\\'text-align:center;padding:32px;\\\'><p class=\\\'txt-bad\\\' style=\\\'font-size:13px;\\\'>❌ Gambar tidak dapat dimuat.</p></div>\'"
             >
-            <p style="font-size:11px;color:#9ca3af;margin:0;">' . $filename . '</p>
+            <p class="txt-muted" style="font-size:11px;margin:0;">' . $filename . '</p>
         </div>';
     }
 
@@ -636,16 +647,15 @@ class RegistrationResource extends Resource
         $nama0 = htmlspecialchars($pemain[0] ?? 'Pemain 1');
         $nama1 = htmlspecialchars($pemain[1] ?? 'Pemain 2');
 
-        $borderColor = $allValid ? '#86efac' : '#fca5a5';
-        $bgColor     = $allValid ? '#f0fdf4'  : '#fef2f2';
-        $titleColor  = $allValid ? '#15803d'  : '#dc2626';
-        $titleText   = $allValid
+        $boxClass   = $allValid ? 'vet-ok' : 'vet-bad';
+        $titleClass = $allValid ? 'txt-ok' : 'txt-bad';
+        $titleText  = $allValid
             ? '✓ Kedua pemain memenuhi syarat veteran'
             : '✗ Terdapat pelanggaran syarat veteran';
 
         $rowHtml = function ($nama, $usia, $valid) {
-            $warna = $valid ? '#15803d' : '#dc2626';
-            $icon  = $valid ? '✓' : '✗';
+            $cls  = $valid ? 'txt-ok' : 'txt-bad';
+            $icon = $valid ? '✓' : '✗';
             $keterangan = $usia !== null
                 ? ($valid
                     ? $usia . ' tahun — Memenuhi syarat (≥ 45 thn)'
@@ -653,16 +663,16 @@ class RegistrationResource extends Resource
                 : 'Data usia tidak tersedia';
 
             return '
-            <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #e5e7eb;">
+            <div class="vet-row">
                 <div style="display:flex;align-items:center;gap:8px;">
-                    <span style="font-size:12px;font-weight:700;color:' . $warna . ';">' . $icon . '</span>
-                    <span style="font-size:12px;color:#374151;">' . $nama . '</span>
+                    <span class="' . $cls . '" style="font-size:12px;font-weight:700;">' . $icon . '</span>
+                    <span class="txt-body" style="font-size:12px;">' . $nama . '</span>
                 </div>
-                <span style="font-size:12px;font-weight:700;color:' . $warna . ';">' . $keterangan . '</span>
+                <span class="' . $cls . '" style="font-size:12px;font-weight:700;">' . $keterangan . '</span>
             </div>';
         };
 
-        $totalColor = $totalOk ? '#15803d' : '#dc2626';
+        $totalClass = $totalOk ? 'txt-ok' : 'txt-bad';
         $totalIcon  = $totalOk ? '✓' : '✗';
         $totalText  = $total !== null
             ? ($totalOk
@@ -670,14 +680,14 @@ class RegistrationResource extends Resource
                 : $total . ' tahun — Tidak memenuhi syarat (min. 95 thn)')
             : 'Data tidak lengkap';
 
-        return '
-        <div style="background:' . $bgColor . ';border:1px solid ' . $borderColor . ';border-radius:12px;padding:16px;">
-            <p style="font-size:12px;font-weight:700;margin-bottom:12px;color:' . $titleColor . ';">' . $titleText . '</p>
+        return self::darkStyles() . '
+        <div class="vet-box ' . $boxClass . '">
+            <p class="' . $titleClass . '" style="font-size:12px;font-weight:700;margin-bottom:12px;">' . $titleText . '</p>
             ' . $rowHtml($nama0, $u0, $v0) . '
             ' . $rowHtml($nama1, $u1, $v1) . '
             <div style="display:flex;align-items:center;justify-content:space-between;padding-top:12px;margin-top:4px;">
-                <span style="font-size:12px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;">Total Usia 2 Pemain</span>
-                <span style="font-size:14px;font-weight:800;color:' . $totalColor . ';">
+                <span class="vet-total-label">Total Usia 2 Pemain</span>
+                <span class="' . $totalClass . '" style="font-size:14px;font-weight:800;">
                     ' . $totalIcon . ' ' . $totalText . '
                 </span>
             </div>
@@ -702,10 +712,10 @@ class RegistrationResource extends Resource
         $isVeteran   = $record->kategori === 'ganda-veteran-putra';
 
         if (empty($pemain)) {
-            return '<p style="color:#6b7280;font-size:14px;">Belum ada data pemain.</p>';
+            return self::darkStyles() . '<p class="txt-muted" style="font-size:14px;">Belum ada data pemain.</p>';
         }
 
-        $html = '<div style="display:grid;grid-template-columns:1fr;gap:24px;">';
+        $html = self::darkStyles() . '<div style="display:grid;grid-template-columns:1fr;gap:24px;">';
 
         foreach ($pemain as $i => $nama) {
             $docType  = $ktpType[$i] ?? 'ktp';
@@ -716,26 +726,26 @@ class RegistrationResource extends Resource
             $nilUsia  = isset($usia[$i]) ? (int) $usia[$i] : null;
 
             $docBadge = $isPaspor
-                ? '<span style="display:inline-flex;align-items:center;gap:4px;padding:2px 10px;border-radius:99px;font-size:10px;font-weight:700;background:#ede9fe;color:#6d28d9;border:1px solid #c4b5fd;">🛂 PASPOR</span>'
-                : '<span style="display:inline-flex;align-items:center;gap:4px;padding:2px 10px;border-radius:99px;font-size:10px;font-weight:700;background:#fff7ed;color:#c2410c;border:1px solid #fed7aa;">🪪 KTP</span>';
+                ? '<span class="badge-paspor">🛂 PASPOR</span>'
+                : '<span class="badge-ktp">🪪 KTP</span>';
 
             $usiaHtml = '';
             if ($nilUsia !== null) {
                 if ($isVeteran) {
                     $validPerPemain = $nilUsia >= 45;
-                    $warna = $validPerPemain ? '#15803d' : '#dc2626';
+                    $cls   = $validPerPemain ? 'txt-ok' : 'txt-bad';
                     $label = ($validPerPemain ? '✓ ' : '✗ ') . $nilUsia
                            . ' tahun — ' . ($validPerPemain ? 'Memenuhi syarat (≥ 45 thn)' : 'Tidak memenuhi syarat (min. 45 thn)');
                 } else {
-                    $warna = '#374151';
+                    $cls   = 'txt-body';
                     $label = $nilUsia . ' tahun';
                 }
-                $usiaHtml = self::infoRow('Usia', $label, $warna, 'bold');
+                $usiaHtml = self::infoRow('Usia', $label, $cls, 'bold');
             }
 
             $docRows = $isPaspor
-                ? self::infoRow('No. Paspor', htmlspecialchars($pasporNum[$i] ?? '—'), '#111827', 'bold', 'monospace')
-                : self::infoRow('NIK', htmlspecialchars($nik[$i] ?? '—'), '#111827', 'bold', 'monospace');
+                ? self::infoRow('No. Paspor', htmlspecialchars($pasporNum[$i] ?? '—'), 'txt-heading', 'bold', 'monospace')
+                : self::infoRow('NIK', htmlspecialchars($nik[$i] ?? '—'), 'txt-heading', 'bold', 'monospace');
 
             // Foto
             $fotoHtml = '';
@@ -745,16 +755,16 @@ class RegistrationResource extends Resource
                     $url = route('admin.paspor.serve', ['uuid' => $record->uuid, 'filename' => basename($filePath)]);
                     $fotoHtml = '
                     <div>
-                        <p style="font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">📷 Foto Paspor</p>
+                        <p class="ktp-section-label">📷 Foto Paspor</p>
                         <a href="' . $url . '" target="_blank" style="display:block;">
                             <img src="' . $url . '" alt="Paspor Pemain ' . ($i + 1) . '"
-                                 style="max-height:192px;width:100%;border-radius:8px;border:1px solid #d1d5db;object-fit:contain;cursor:pointer;background:#f9fafb;"
-                                 onerror="this.outerHTML=\'<p style=\\\'color:#dc2626;font-size:12px;margin-top:8px;\\\'>File tidak dapat dimuat.</p>\'">
+                                 class="ktp-photo" style="max-height:192px;"
+                                 onerror="this.outerHTML=\'<p class=\\\'txt-bad\\\' style=\\\'font-size:12px;margin-top:8px;\\\'>File tidak dapat dimuat.</p>\'">
                         </a>
-                        <p style="font-size:11px;color:#6b7280;margin-top:4px;">' . htmlspecialchars(basename($filePath)) . ' · <a href="' . $url . '" target="_blank" style="color:#2563eb;text-decoration:none;">Buka fullsize</a></p>
+                        <p class="ktp-photo-caption" style="margin-top:4px;">' . htmlspecialchars(basename($filePath)) . ' · <a href="' . $url . '" target="_blank" class="txt-blue" style="text-decoration:none;">Buka fullsize</a></p>
                     </div>';
                 } else {
-                    $fotoHtml = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;border-radius:8px;border:1.5px dashed #c4b5fd;background:#faf5ff;text-align:center;"><span style="font-size:28px;margin-bottom:8px;">🛂</span><p style="font-size:12px;font-weight:700;color:#6d28d9;margin:0;">Foto Paspor</p><p style="font-size:11px;color:#8b5cf6;margin:4px 0 0;">File tidak ditemukan</p></div>';
+                    $fotoHtml = '<div class="doc-empty-paspor"><span style="font-size:28px;margin-bottom:8px;">🛂</span><p class="txt-purple" style="font-size:12px;font-weight:700;margin:0;">Foto Paspor</p><p class="txt-purple" style="font-size:11px;margin:4px 0 0;">File tidak ditemukan</p></div>';
                 }
             } else {
                 $filePath = self::getFilePathForIndex($ktpFiles, $i);
@@ -762,16 +772,16 @@ class RegistrationResource extends Resource
                     $url = route('admin.ktp.serve', ['uuid' => $record->uuid, 'filename' => basename($filePath)]);
                     $fotoHtml = '
                     <div>
-                        <p style="font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">📷 Foto KTP</p>
+                        <p class="ktp-section-label">📷 Foto KTP</p>
                         <a href="' . $url . '" target="_blank" style="display:block;">
                             <img src="' . $url . '" alt="KTP Pemain ' . ($i + 1) . '"
-                                 style="max-height:192px;width:100%;border-radius:8px;border:1px solid #d1d5db;object-fit:contain;cursor:pointer;background:#f9fafb;"
-                                 onerror="this.outerHTML=\'<p style=\\\'color:#dc2626;font-size:12px;margin-top:8px;\\\'>File tidak dapat dimuat.</p>\'">
+                                 class="ktp-photo" style="max-height:192px;"
+                                 onerror="this.outerHTML=\'<p class=\\\'txt-bad\\\' style=\\\'font-size:12px;margin-top:8px;\\\'>File tidak dapat dimuat.</p>\'">
                         </a>
-                        <p style="font-size:11px;color:#6b7280;margin-top:4px;">' . htmlspecialchars(basename($filePath)) . ' · <a href="' . $url . '" target="_blank" style="color:#2563eb;text-decoration:none;">Buka fullsize</a></p>
+                        <p class="ktp-photo-caption" style="margin-top:4px;">' . htmlspecialchars(basename($filePath)) . ' · <a href="' . $url . '" target="_blank" class="txt-blue" style="text-decoration:none;">Buka fullsize</a></p>
                     </div>';
                 } else {
-                    $fotoHtml = '<p style="font-size:12px;color:#6b7280;font-style:italic;">File KTP tidak ditemukan.</p>';
+                    $fotoHtml = '<p class="txt-muted" style="font-size:12px;font-style:italic;">File KTP tidak ditemukan.</p>';
                 }
             }
 
@@ -786,7 +796,7 @@ class RegistrationResource extends Resource
                     $extraHtml .= self::infoRow($label, $val);
                 }
                 if ($extraHtml) {
-                    $extraHtml = '<div style="margin-top:12px;padding-top:8px;border-top:1px solid #e5e7eb;">' . $extraHtml . '</div>';
+                    $extraHtml = '<div style="margin-top:12px;padding-top:8px;border-top:1px solid rgba(120,120,120,0.2);">' . $extraHtml . '</div>';
                 }
             }
 
@@ -796,33 +806,33 @@ class RegistrationResource extends Resource
             $genderHtml   = '';
             if ($jenisKelamin) {
                 $genderLabel = $jenisKelamin === 'L' ? '♂ Laki-laki' : ($jenisKelamin === 'P' ? '♀ Perempuan' : htmlspecialchars($jenisKelamin));
-                $genderColor = $jenisKelamin === 'L' ? '#1d4ed8' : '#be185d';
-                $genderHtml  = self::infoRow('Kelamin', $genderLabel, $genderColor, 'bold');
+                $genderCls   = $jenisKelamin === 'L' ? 'txt-blue' : 'txt-pink';
+                $genderHtml  = self::infoRow('Kelamin', $genderLabel, $genderCls, 'bold');
             }
 
-            // Border warna kartu
+            // State class kartu
             if ($isPaspor) {
-                $cardBorderColor = '#c4b5fd'; $headerBgColor = '#f5f3ff'; $badgeBg = '#ede9fe';
+                $stateClass = 'ktp-state-paspor';
             } elseif ($isVeteran && $nilUsia !== null) {
-                $cardBorderColor = $nilUsia >= 45 ? '#86efac' : '#fca5a5';
-                $headerBgColor   = $nilUsia >= 45 ? '#f0fdf4'  : '#fef2f2';
-                $badgeBg         = $nilUsia >= 45 ? '#dcfce7'  : '#fee2e2';
+                $stateClass = $nilUsia >= 45 ? 'ktp-state-valid' : 'ktp-state-invalid';
             } else {
-                $cardBorderColor = '#d1d5db'; $headerBgColor = '#f9fafb'; $badgeBg = '#f3f4f6';
+                $stateClass = 'ktp-state-neutral';
             }
 
             $html .= '
-            <div style="border-radius:12px;border:1px solid ' . $cardBorderColor . ';overflow:hidden;background:#ffffff;">
-                <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid ' . $cardBorderColor . ';background:' . $headerBgColor . ';">
-                    <div style="width:28px;height:28px;border-radius:50%;background:' . $badgeBg . ';display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#374151;border:1px solid ' . $cardBorderColor . ';">' . ($i + 1) . '</div>
-                    <span style="font-weight:600;font-size:14px;color:#111827;">' . $namaHtml . '</span>
-                    ' . $docBadge . '
+            <div class="ktp-card ' . $stateClass . '">
+                <div class="ktp-header">
+                    <div style="display:flex;align-items:center;gap:12px;">
+                        <div class="ktp-avatar">' . ($i + 1) . '</div>
+                        <span class="ktp-name">' . $namaHtml . '</span>
+                        ' . $docBadge . '
+                    </div>
                 </div>
                 <div style="padding:16px;display:grid;grid-template-columns:1fr 1fr;gap:24px;">
                     <div>
-                        <p style="font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">' . ($isPaspor ? '📋 Data Paspor' : '📋 Data KTP') . '</p>
+                        <p class="ktp-section-label">' . ($isPaspor ? '📋 Data Paspor' : '📋 Data KTP') . '</p>
                         ' . $docRows . '
-                        ' . self::infoRow('Nama', $namaHtml, '#111827', 'semibold') . '
+                        ' . self::infoRow('Nama', $namaHtml, 'txt-heading', 'semibold') . '
                         ' . self::infoRow('Tgl Lahir', $nilTgl) . '
                         ' . $usiaHtml . '
                         ' . $genderHtml . '
@@ -840,14 +850,14 @@ class RegistrationResource extends Resource
     private static function infoRow(
         string $label,
         string $value,
-        string $color      = '#374151',
+        string $colorClass = 'txt-body',
         string $weight     = 'normal',
         string $fontFamily = 'inherit'
     ): string {
         return '
-        <div style="display:flex;gap:12px;padding:6px 0;border-bottom:1px solid #e5e7eb;">
-            <span style="font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;min-width:90px;flex-shrink:0;">' . htmlspecialchars($label) . '</span>
-            <span style="font-size:12px;color:' . $color . ';font-weight:' . $weight . ';font-family:' . $fontFamily . ';">' . $value . '</span>
+        <div class="ktp-row">
+            <span class="ktp-row-label" style="min-width:90px;">' . htmlspecialchars($label) . '</span>
+            <span class="' . $colorClass . '" style="font-size:12px;font-weight:' . $weight . ';font-family:' . $fontFamily . ';">' . $value . '</span>
         </div>';
     }
 
@@ -867,39 +877,39 @@ class RegistrationResource extends Resource
         $pasporNum   = $record->paspor_number ?? [];
 
         if (empty($ktpFiles) && empty($pasporFiles) && empty(array_filter($pasporNum ?? []))) {
-            return '<p style="color:#6b7280;font-size:14px;padding:16px;">Tidak ada dokumen.</p>';
+            return self::darkStyles() . '<p class="txt-muted" style="font-size:14px;padding:16px;">Tidak ada dokumen.</p>';
         }
 
-        $html = '<div style="display:flex;flex-direction:column;gap:24px;padding:8px;">';
+        $html = self::darkStyles() . '<div style="display:flex;flex-direction:column;gap:24px;padding:8px;">';
 
         foreach ($pemain as $i => $nama) {
             $docType  = $ktpType[$i] ?? 'ktp';
             $isPaspor = $docType === 'paspor';
             $namaHtml = htmlspecialchars($nama);
 
-            $html .= '<div><p style="font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">Pemain ' . ($i + 1) . ' — ' . $namaHtml
+            $html .= '<div><p class="ktp-section-label">Pemain ' . ($i + 1) . ' — ' . $namaHtml
                 . ($isPaspor
-                    ? ' <span style="margin-left:6px;padding:1px 8px;border-radius:99px;font-size:10px;background:#ede9fe;color:#6d28d9;border:1px solid #c4b5fd;">🛂 Paspor</span>'
-                    : ' <span style="margin-left:6px;padding:1px 8px;border-radius:99px;font-size:10px;background:#fff7ed;color:#c2410c;border:1px solid #fed7aa;">🪪 KTP</span>')
+                    ? ' <span class="badge-paspor" style="margin-left:6px;padding:1px 8px;">🛂 Paspor</span>'
+                    : ' <span class="badge-ktp" style="margin-left:6px;padding:1px 8px;">🪪 KTP</span>')
                 . '</p>';
 
             if ($isPaspor) {
                 $noPass = htmlspecialchars($pasporNum[$i] ?? '—');
-                $html  .= '<div style="padding:16px;border-radius:8px;border:1.5px dashed #c4b5fd;background:#faf5ff;text-align:center;"><p style="font-size:11px;color:#8b5cf6;margin:0 0 4px;">Nomor Paspor</p><p style="font-size:18px;font-weight:800;color:#6d28d9;font-family:monospace;margin:0;">' . $noPass . '</p></div>';
+                $html  .= '<div class="paspor-num-box"><p class="txt-purple" style="font-size:11px;margin:0 0 4px;">Nomor Paspor</p><p class="txt-purple" style="font-size:18px;font-weight:800;font-family:monospace;margin:0;">' . $noPass . '</p></div>';
                 $pasporPath = self::getFilePathForIndex($pasporFiles, $i);
                 if ($pasporPath) {
                     $url   = route('admin.paspor.serve', ['uuid' => $record->uuid, 'filename' => basename($pasporPath)]);
-                    $html .= '<a href="' . $url . '" target="_blank" style="margin-top:12px;display:block;"><img src="' . $url . '" alt="Paspor ' . $namaHtml . '" style="width:100%;max-height:256px;object-fit:contain;border-radius:8px;border:1px solid #d1d5db;background:#f9fafb;cursor:pointer;" onerror="this.outerHTML=\'<p style=\\\'color:#dc2626;font-size:12px;\\\'>Gambar tidak dapat dimuat.</p>\'"></a><p style="font-size:11px;color:#6b7280;margin-top:4px;">' . htmlspecialchars(basename($pasporPath)) . ' · Klik untuk buka fullsize</p>';
+                    $html .= '<a href="' . $url . '" target="_blank" style="margin-top:12px;display:block;"><img src="' . $url . '" alt="Paspor ' . $namaHtml . '" class="ktp-photo" style="max-height:256px;" onerror="this.outerHTML=\'<p class=\\\'txt-bad\\\' style=\\\'font-size:12px;\\\'>Gambar tidak dapat dimuat.</p>\'"></a><p class="ktp-photo-caption" style="margin-top:4px;">' . htmlspecialchars(basename($pasporPath)) . ' · Klik untuk buka fullsize</p>';
                 } else {
-                    $html .= '<p style="font-size:12px;color:#6b7280;font-style:italic;margin-top:8px;">File paspor tidak ditemukan.</p>';
+                    $html .= '<p class="txt-muted" style="font-size:12px;font-style:italic;margin-top:8px;">File paspor tidak ditemukan.</p>';
                 }
             } else {
                 $path = self::getFilePathForIndex($ktpFiles, $i);
                 if ($path) {
                     $url   = route('admin.ktp.serve', ['uuid' => $record->uuid, 'filename' => basename($path)]);
-                    $html .= '<a href="' . $url . '" target="_blank"><img src="' . $url . '" alt="KTP ' . $namaHtml . '" style="width:100%;max-height:256px;object-fit:contain;border-radius:8px;border:1px solid #d1d5db;background:#f9fafb;cursor:pointer;" onerror="this.outerHTML=\'<p style=\\\'color:#dc2626;font-size:12px;\\\'>Gambar tidak dapat dimuat.</p>\'"></a><p style="font-size:11px;color:#6b7280;margin-top:4px;">' . htmlspecialchars(basename($path)) . ' · Klik untuk buka fullsize</p>';
+                    $html .= '<a href="' . $url . '" target="_blank"><img src="' . $url . '" alt="KTP ' . $namaHtml . '" class="ktp-photo" style="max-height:256px;" onerror="this.outerHTML=\'<p class=\\\'txt-bad\\\' style=\\\'font-size:12px;\\\'>Gambar tidak dapat dimuat.</p>\'"></a><p class="ktp-photo-caption" style="margin-top:4px;">' . htmlspecialchars(basename($path)) . ' · Klik untuk buka fullsize</p>';
                 } else {
-                    $html .= '<p style="font-size:12px;color:#6b7280;font-style:italic;">File KTP tidak ditemukan.</p>';
+                    $html .= '<p class="txt-muted" style="font-size:12px;font-style:italic;">File KTP tidak ditemukan.</p>';
                 }
             }
 

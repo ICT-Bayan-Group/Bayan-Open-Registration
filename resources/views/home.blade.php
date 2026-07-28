@@ -833,6 +833,68 @@ body {
 .gallery-item:hover .gallery-overlay { opacity: 1; }
 .gallery-overlay span { font-family: var(--font-display); font-size: 9.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #fff; }
 
+
+/* ═══════════════════════════════════════
+   LIGHTBOX GALERI
+═══════════════════════════════════════ */
+.gallery-item { cursor: pointer; }
+
+.lightbox-overlay {
+    position: fixed; inset: 0; z-index: 10000;
+    background: rgba(13,9,6,0.92);
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px;
+}
+.lightbox-overlay.anim-in  { animation: fadeInOverlay 0.25s ease forwards; }
+.lightbox-overlay.anim-out { animation: fadeOutOverlay 0.2s ease forwards; pointer-events: none; }
+
+.lightbox-close {
+    position: absolute; top: 24px; right: 28px; z-index: 2;
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #fff; font-family: var(--font-display); font-size: 11px; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 10px 18px; border-radius: 99px; cursor: pointer;
+    backdrop-filter: blur(10px); transition: all 0.2s;
+}
+.lightbox-close:hover { background: rgba(255,255,255,0.18); }
+
+.lightbox-content {
+    position: relative; max-width: 1100px; width: 100%;
+    display: flex; flex-direction: column; align-items: center;
+    animation: slideUpCard 0.35s cubic-bezier(0.22,1,0.36,1) both;
+}
+.lightbox-img-wrap {
+    width: 100%; border-radius: 20px; overflow: hidden;
+    box-shadow: 0 40px 100px rgba(0,0,0,0.5);
+    background: #000;
+}
+.lightbox-img-wrap img { width: 100%; max-height: 78vh; object-fit: contain; display: block; }
+.lightbox-caption {
+    margin-top: 16px; font-family: var(--font-display); font-size: 13px;
+    color: rgba(255,255,255,0.7); letter-spacing: 0.04em;
+}
+
+.lightbox-nav {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    width: 48px; height: 48px; border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: #fff; backdrop-filter: blur(10px);
+    transition: all 0.2s;
+}
+.lightbox-nav:hover { background: rgba(249,115,22,0.3); border-color: rgba(249,115,22,0.5); }
+.lightbox-prev { left: -64px; }
+.lightbox-next { right: -64px; }
+
+@media (max-width: 900px) {
+    .lightbox-prev { left: 6px; }
+    .lightbox-next { right: 6px; }
+    .lightbox-close { top: 14px; right: 14px; }
+}
+
 /* ═══════════════════════════════════════
    CARA DAFTAR
 ═══════════════════════════════════════ */
@@ -1453,16 +1515,17 @@ body {
 
     <div class="gallery-track-wrap">
         <div class="gallery-track" id="track1">
-            @foreach($doubled as $photo)
-            <div class="gallery-item">
+            @foreach($doubled as $i => $photo)
+            <div class="gallery-item" onclick="openLightbox({{ $i % count($photos) }})">
                 <img src="{{ $photo[0] }}" alt="{{ $photo[1] }}" loading="lazy" decoding="async">
                 <div class="gallery-overlay"><span>{{ $photo[1] }}</span></div>
             </div>
             @endforeach
         </div>
         <div class="gallery-track" id="track2">
-            @foreach($doubled2 as $photo)
-            <div class="gallery-item">
+            @foreach($doubled2 as $i => $photo)
+            @php $origIndex = count($photos) - 1 - ($i % count($photos)); @endphp
+            <div class="gallery-item" onclick="openLightbox({{ $origIndex }})">
                 <img src="{{ $photo[0] }}" alt="{{ $photo[1] }}" loading="lazy" decoding="async">
                 <div class="gallery-overlay"><span>{{ $photo[1] }}</span></div>
             </div>
@@ -1872,7 +1935,24 @@ body {
         </div>
     </div>
 </div>
-
+<div id="lightbox" class="lightbox-overlay" style="display:none;">
+    <button type="button" class="lightbox-close" onclick="closeLightbox()">
+        Close
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+    <div class="lightbox-content">
+        <button type="button" class="lightbox-nav lightbox-prev" onclick="lightboxNav(-1)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div class="lightbox-img-wrap">
+            <img id="lightboxImg" src="" alt="">
+        </div>
+        <button type="button" class="lightbox-nav lightbox-next" onclick="lightboxNav(1)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+        <p id="lightboxCaption" class="lightbox-caption"></p>
+    </div>
+</div>
 @endpush
 
 @push('scripts')
@@ -2273,5 +2353,52 @@ function tutupDisclaimerModal() {
         document.getElementById('disclaimerScroll').removeEventListener('scroll', onDisclaimerScroll);
     }, 220);
 }
+// ════════════════════════════════════════════════════════════
+// LIGHTBOX GALERI
+// ════════════════════════════════════════════════════════════
+var lightboxPhotos = @json($photos);
+var lightboxIndex  = 0;
+
+function openLightbox(index) {
+    lightboxIndex = index;
+    updateLightbox();
+    document.body.style.overflow = 'hidden';
+    var lb = document.getElementById('lightbox');
+    lb.style.display = 'flex';
+    lb.classList.add('anim-in');
+    setTimeout(function() { lb.classList.remove('anim-in'); }, 300);
+    lb.onclick = function(e) { if (e.target === lb) closeLightbox(); };
+}
+
+function updateLightbox() {
+    var photo = lightboxPhotos[lightboxIndex];
+    document.getElementById('lightboxImg').src = photo[0].replace('w_600', 'w_1400');
+    document.getElementById('lightboxImg').alt = photo[1];
+    document.getElementById('lightboxCaption').textContent = photo[1];
+}
+
+function lightboxNav(dir) {
+    lightboxIndex = (lightboxIndex + dir + lightboxPhotos.length) % lightboxPhotos.length;
+    updateLightbox();
+}
+
+function closeLightbox() {
+    var lb = document.getElementById('lightbox');
+    lb.classList.add('anim-out');
+    setTimeout(function() {
+        lb.style.display = 'none';
+        lb.classList.remove('anim-out');
+        document.body.style.overflow = '';
+    }, 200);
+}
+
+document.addEventListener('keydown', function(e) {
+    var lb = document.getElementById('lightbox');
+    if (lb.style.display === 'flex') {
+        if (e.key === 'Escape')    closeLightbox();
+        if (e.key === 'ArrowLeft')  lightboxNav(-1);
+        if (e.key === 'ArrowRight') lightboxNav(1);
+    }
+});
 </script>
 @endpush
