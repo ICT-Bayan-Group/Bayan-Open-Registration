@@ -1,5 +1,3 @@
-@include('filament.partials.ktp-dark-styles')
-
 <div style="display:grid;grid-template-columns:1fr;gap:24px;">
 
     @if (empty($anggota))

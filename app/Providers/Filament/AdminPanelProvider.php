@@ -18,6 +18,7 @@ use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\View\PanelsRenderHook;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -56,6 +57,15 @@ class AdminPanelProvider extends PanelProvider
             ->brandLogoHeight('3rem')
             ->darkMode(true)
             ->sidebarCollapsibleOnDesktop()
+
+            // ── CSS khusus kartu KTP/Paspor/Veteran, di-inject SEKALI ──
+            // ── di <head>, di luar tree Livewire supaya gak ganggu ──
+            // ── boundary detection komponen (lihat catatan di ──────
+            // ── ktp-dark-styles.blade.php).                     ──────
+            ->renderHook(
+                PanelsRenderHook::HEAD_END,
+                fn () => view('filament.partials.ktp-dark-styles')->render(),
+            )
 
             ->pages([
                 \App\Filament\Pages\Dashboard::class,
