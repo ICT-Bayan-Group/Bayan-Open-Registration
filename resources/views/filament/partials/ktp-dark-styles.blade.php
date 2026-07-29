@@ -1,4 +1,3 @@
-@once
 <style>
     /* ── Card + Header ── */
     .ktp-card { border-radius:12px; overflow:hidden; background:#fff; border:1.5px solid #d1d5db; }
@@ -72,6 +71,21 @@
     .ktp-input, .ktp-select { width:100%;margin-top:2px;padding:6px 8px;border:1px solid #d1d5db;border-radius:6px;font-size:13px;background:#fff;color:#111827; }
     html.dark .ktp-input, html.dark .ktp-select { background:rgba(255,255,255,0.05); border-color:rgba(255,255,255,0.15); color:#f3f4f6; }
     .ktp-input.mono { font-family:monospace; }
+
+    /* ── Select: reset native appearance biar chevron gak dobel/berulang ── */
+    .ktp-select {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        padding-right: 32px;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 8px center;
+        background-size: 16px;
+    }
+    html.dark .ktp-select {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%239ca3af' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+    }
     .ktp-checkbox-label { display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:#374151; }
     html.dark .ktp-checkbox-label { color:#d1d5db; }
     .ktp-error { color:#dc2626;font-size:11px; }
@@ -121,4 +135,3 @@
     .paspor-num-box { padding:16px;border-radius:8px;border:1.5px dashed #c4b5fd;background:#faf5ff;text-align:center; }
     html.dark .paspor-num-box { border-color:rgba(167,139,250,0.4); background:rgba(167,139,250,0.06); }
 </style>
-@endonce

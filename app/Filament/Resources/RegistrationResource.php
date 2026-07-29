@@ -43,20 +43,6 @@ class RegistrationResource extends Resource
             ->autocomplete('new-password')
             ->helperText('Masukkan password khusus untuk melanjutkan aksi ini');
     }
-
-    /**
-     * CSS bersama untuk semua HTML mentah (modal, infolist) yang dark-mode aware.
-     * Sama persis dengan partial blade "filament.partials.ktp-dark-styles" supaya konsisten.
-     */
-    private static function darkStyles(): string
-    {
-        return view('filament.partials.ktp-dark-styles')->render();
-    }
-
-    // ============================================================
-    // FORM (Create / Edit)
-    // ============================================================
-
     public static function form(Form $form): Form
     {
         return $form->schema([
@@ -447,8 +433,7 @@ class RegistrationResource extends Resource
                         Forms\Components\Placeholder::make('info')
                             ->label('')
                             ->content(fn (Registration $r) => new HtmlString(
-                                self::darkStyles()
-                                . '<div class="confirm-box confirm-success">'
+                                '<div class="confirm-box confirm-success">'
                                 . '<p style="font-size:13px;font-weight:600;margin:0 0 4px;" class="txt-ok">Konfirmasi Approve Pembayaran</p>'
                                 . '<p style="font-size:12px;margin:0;" class="txt-ok">PDF receipt akan digenerate dan email konfirmasi dikirim ke peserta setelah approve.</p>'
                                 . '</div>'
@@ -492,8 +477,7 @@ class RegistrationResource extends Resource
                         Forms\Components\Placeholder::make('info')
                             ->label('')
                             ->content(new HtmlString(
-                                self::darkStyles()
-                                . '<div class="confirm-box confirm-danger">'
+                                '<div class="confirm-box confirm-danger">'
                                 . '<p style="font-size:13px;font-weight:600;margin:0 0 4px;" class="txt-bad">Konfirmasi Penolakan Pembayaran</p>'
                                 . '<p style="font-size:12px;margin:0;" class="txt-bad">Peserta dapat upload ulang bukti pembayaran setelah ditolak.</p>'
                                 . '</div>'
@@ -607,14 +591,14 @@ class RegistrationResource extends Resource
     private static function buildPaymentProofModalHtml(Registration $record): string
     {
         if (! $record->payment_proof) {
-            return self::darkStyles() . '<p class="txt-muted" style="font-size:14px;padding:16px;text-align:center;">Bukti pembayaran tidak tersedia.</p>';
+            return '<p class="txt-muted" style="font-size:14px;padding:16px;text-align:center;">Bukti pembayaran tidak tersedia.</p>';
         }
 
         $url      = asset('storage/' . $record->payment_proof);
         $filename = htmlspecialchars(basename($record->payment_proof));
         $nama     = htmlspecialchars($record->nama);
 
-        return self::darkStyles() . '
+        return '
         <div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:8px;">
             <img
                 src="' . $url . '"
@@ -680,7 +664,7 @@ class RegistrationResource extends Resource
                 : $total . ' tahun — Tidak memenuhi syarat (min. 95 thn)')
             : 'Data tidak lengkap';
 
-        return self::darkStyles() . '
+        return '
         <div class="vet-box ' . $boxClass . '">
             <p class="' . $titleClass . '" style="font-size:12px;font-weight:700;margin-bottom:12px;">' . $titleText . '</p>
             ' . $rowHtml($nama0, $u0, $v0) . '
@@ -712,10 +696,10 @@ class RegistrationResource extends Resource
         $isVeteran   = $record->kategori === 'ganda-veteran-putra';
 
         if (empty($pemain)) {
-            return self::darkStyles() . '<p class="txt-muted" style="font-size:14px;">Belum ada data pemain.</p>';
+            return '<p class="txt-muted" style="font-size:14px;">Belum ada data pemain.</p>';
         }
 
-        $html = self::darkStyles() . '<div style="display:grid;grid-template-columns:1fr;gap:24px;">';
+        $html = '<div style="display:grid;grid-template-columns:1fr;gap:24px;">';
 
         foreach ($pemain as $i => $nama) {
             $docType  = $ktpType[$i] ?? 'ktp';
@@ -877,10 +861,10 @@ class RegistrationResource extends Resource
         $pasporNum   = $record->paspor_number ?? [];
 
         if (empty($ktpFiles) && empty($pasporFiles) && empty(array_filter($pasporNum ?? []))) {
-            return self::darkStyles() . '<p class="txt-muted" style="font-size:14px;padding:16px;">Tidak ada dokumen.</p>';
+            return '<p class="txt-muted" style="font-size:14px;padding:16px;">Tidak ada dokumen.</p>';
         }
 
-        $html = self::darkStyles() . '<div style="display:flex;flex-direction:column;gap:24px;padding:8px;">';
+        $html = '<div style="display:flex;flex-direction:column;gap:24px;padding:8px;">';
 
         foreach ($pemain as $i => $nama) {
             $docType  = $ktpType[$i] ?? 'ktp';
