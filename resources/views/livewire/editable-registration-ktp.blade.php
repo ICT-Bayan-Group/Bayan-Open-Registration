@@ -31,6 +31,8 @@
             $fotoUrl     = $filePath
                 ? route($isPaspor ? 'admin.paspor.serve' : 'admin.ktp.serve', ['uuid' => $record->uuid, 'filename' => basename($filePath)])
                 : null;
+
+            $genderLabels = ['' => '—', 'L' => 'Laki-laki', 'P' => 'Perempuan'];
         @endphp
 
         <div class="ktp-card {{ $stateClass }}" wire:key="reganggota-{{ $i }}">
@@ -99,12 +101,17 @@
                             @error("anggota.$i.nama") <span class="ktp-error">{{ $message }}</span> @enderror
                         </div>
 
-                        <div>
+                        {{-- ── Tipe Dokumen: dropdown custom ── --}}
+                        <div x-data="{ open: false }" class="ktp-select-wrap" @click.outside="open = false">
                             <label class="ktp-field-label">Tipe Dokumen</label>
-                            <select wire:model="anggota.{{ $i }}.ktp_type" class="ktp-select">
-                                <option value="ktp">KTP</option>
-                                <option value="paspor">Paspor</option>
-                            </select>
+                            <button type="button" class="ktp-select-btn" @click="open = !open">
+                                <span>{{ $item['ktp_type'] === 'paspor' ? 'Paspor' : 'KTP' }}</span>
+                                <span class="ktp-select-chev">▾</span>
+                            </button>
+                            <div class="ktp-select-menu" x-show="open" x-cloak>
+                                <button type="button" class="ktp-select-option" wire:click="$set('anggota.{{ $i }}.ktp_type', 'ktp')" @click="open = false">KTP</button>
+                                <button type="button" class="ktp-select-option" wire:click="$set('anggota.{{ $i }}.ktp_type', 'paspor')" @click="open = false">Paspor</button>
+                            </div>
                         </div>
 
                         @if ($item['ktp_type'] === 'paspor')
@@ -133,13 +140,18 @@
                             </div>
                         </div>
 
-                        <div>
+                        {{-- ── Jenis Kelamin: dropdown custom ── --}}
+                        <div x-data="{ open: false }" class="ktp-select-wrap" @click.outside="open = false">
                             <label class="ktp-field-label">Jenis Kelamin</label>
-                            <select wire:model="anggota.{{ $i }}.jenis_kelamin" class="ktp-select">
-                                <option value="">—</option>
-                                <option value="L">Laki-laki</option>
-                                <option value="P">Perempuan</option>
-                            </select>
+                            <button type="button" class="ktp-select-btn" @click="open = !open">
+                                <span>{{ $genderLabels[$item['jenis_kelamin'] ?? ''] ?? '—' }}</span>
+                                <span class="ktp-select-chev">▾</span>
+                            </button>
+                            <div class="ktp-select-menu" x-show="open" x-cloak>
+                                <button type="button" class="ktp-select-option" wire:click="$set('anggota.{{ $i }}.jenis_kelamin', '')" @click="open = false">—</button>
+                                <button type="button" class="ktp-select-option" wire:click="$set('anggota.{{ $i }}.jenis_kelamin', 'L')" @click="open = false">Laki-laki</button>
+                                <button type="button" class="ktp-select-option" wire:click="$set('anggota.{{ $i }}.jenis_kelamin', 'P')" @click="open = false">Perempuan</button>
+                            </div>
                         </div>
 
                         <div style="display:flex;gap:8px;margin-top:6px;">
