@@ -100,13 +100,20 @@
                                 @error("anggota.$i.usia") <span class="ktp-error">{{ $message }}</span> @enderror
                             </div>
                         </div>
-                        <div>
+
+                        {{-- ── Tipe Dokumen: dropdown custom ── --}}
+                        <div x-data="{ open: false }" class="ktp-select-wrap" @click.outside="open = false">
                             <label class="ktp-field-label">Tipe Dokumen</label>
-                            <select wire:model="anggota.{{ $i }}.ktp_type" class="ktp-select">
-                                <option value="ktp">KTP</option>
-                                <option value="paspor">Paspor</option>
-                            </select>
+                            <button type="button" class="ktp-select-btn" @click="open = !open">
+                                <span>{{ $item['ktp_type'] === 'paspor' ? 'Paspor' : 'KTP' }}</span>
+                                <span class="ktp-select-chev">▾</span>
+                            </button>
+                            <div class="ktp-select-menu" x-show="open" x-cloak>
+                                <button type="button" class="ktp-select-option" wire:click="$set('anggota.{{ $i }}.ktp_type', 'ktp')" @click="open = false">KTP</button>
+                                <button type="button" class="ktp-select-option" wire:click="$set('anggota.{{ $i }}.ktp_type', 'paspor')" @click="open = false">Paspor</button>
+                            </div>
                         </div>
+
                         @if ($item['ktp_type'] === 'ktp')
                             <div>
                                 <label class="ktp-field-label">Kota (hasil baca KTP)</label>
