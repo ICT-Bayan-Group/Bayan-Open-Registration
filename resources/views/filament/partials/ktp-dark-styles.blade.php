@@ -1,8 +1,9 @@
 <style>
     /* ── Card + Header ── */
-    .ktp-card { border-radius:12px; overflow:hidden; background:#fff; border:1.5px solid #d1d5db; }
+    .ktp-card { border-radius:12px; background:#fff; border:1.5px solid #d1d5db; }
     html.dark .ktp-card { background:rgba(255,255,255,0.03); border-color:rgba(255,255,255,0.12); }
-    .ktp-header { display:flex; align-items:center; justify-content:space-between; padding:12px 16px; border-bottom:1.5px solid inherit; }
+    .ktp-header { display:flex; align-items:center; justify-content:space-between; padding:12px 16px; border-bottom:1.5px solid inherit; border-top-left-radius:10px; border-top-right-radius:10px; }
+    .ktp-card [style*="grid-template-columns"] > div { min-width:0; }
 
     .ktp-state-edit { border-color:#2563eb !important; }
     .ktp-state-edit .ktp-header { background:#eff6ff; border-bottom-color:#2563eb; }
@@ -68,24 +69,34 @@
     /* ── Edit-mode fields ── */
     .ktp-field-label { font-size:10px;font-weight:700;text-transform:uppercase;color:#6b7280; }
     html.dark .ktp-field-label { color:#9ca3af; }
-    .ktp-input, .ktp-select { width:100%;margin-top:2px;padding:6px 8px;border:1px solid #d1d5db;border-radius:6px;font-size:13px;background:#fff;color:#111827; }
+    .ktp-input, .ktp-select { width:100%;min-width:0;box-sizing:border-box;margin-top:2px;padding:6px 8px;border:1px solid #d1d5db;border-radius:6px;font-size:13px;background:#fff;color:#111827; }
     html.dark .ktp-input, html.dark .ktp-select { background:rgba(255,255,255,0.05); border-color:rgba(255,255,255,0.15); color:#f3f4f6; }
     .ktp-input.mono { font-family:monospace; }
 
-    /* ── Select: reset native appearance biar chevron gak dobel/berulang ── */
-    .ktp-select {
-        -webkit-appearance: none;
-        -moz-appearance: none;
-        appearance: none;
-        padding-right: 32px;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
-        background-repeat: no-repeat;
-        background-position: right 8px center;
-        background-size: 16px;
+    /* ── Custom dropdown (pengganti native <select>) ──
+       Native <select> popup gak bisa dikontrol penuh via CSS di
+       sebagian browser/OS (terutama Android WebView), jadi dropdown
+       tipe dokumen & jenis kelamin dibikin custom pakai Alpine.js
+       biar tampilan buka/tutup-nya konsisten di semua device. ── */
+    .ktp-select-wrap { position:relative; }
+    .ktp-select-btn {
+        width:100%;box-sizing:border-box;margin-top:2px;padding:6px 32px 6px 8px;
+        border:1px solid #d1d5db;border-radius:6px;font-size:13px;background:#fff;color:#111827;
+        text-align:left;display:flex;align-items:center;justify-content:space-between;cursor:pointer;
     }
-    html.dark .ktp-select {
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%239ca3af' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+    html.dark .ktp-select-btn { background:rgba(255,255,255,0.05); border-color:rgba(255,255,255,0.15); color:#f3f4f6; }
+    .ktp-select-btn .ktp-select-chev { opacity:.6;font-size:11px;margin-left:8px; }
+    .ktp-select-menu {
+        position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:50;
+        background:#fff;border:1px solid #d1d5db;border-radius:8px;
+        box-shadow:0 4px 16px rgba(0,0,0,.12);overflow:hidden;
     }
+    html.dark .ktp-select-menu { background:#1f2430;border-color:rgba(255,255,255,0.15); box-shadow:0 4px 16px rgba(0,0,0,.4); }
+    .ktp-select-option { display:block;width:100%;text-align:left;padding:8px 12px;font-size:13px;background:transparent;border:none;color:#111827;cursor:pointer; }
+    html.dark .ktp-select-option { color:#f3f4f6; }
+    .ktp-select-option:hover { background:#f3f4f6; }
+    html.dark .ktp-select-option:hover { background:rgba(255,255,255,0.08); }
+    [x-cloak] { display:none !important; }
     .ktp-checkbox-label { display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:#374151; }
     html.dark .ktp-checkbox-label { color:#d1d5db; }
     .ktp-error { color:#dc2626;font-size:11px; }
