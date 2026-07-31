@@ -896,6 +896,143 @@ body {
 }
 
 /* ═══════════════════════════════════════
+   AKOMODASI & WISATA — homepage preview
+═══════════════════════════════════════ */
+.akm-section { background: var(--paper); }
+.akm-sub-block { margin-top: 56px; }
+.akm-sub-block:first-of-type { margin-top: 40px; }
+.akm-sub-header { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 24px; }
+.akm-sub-title { font-family: var(--font-display); font-size: 19px; font-weight: 800; color: var(--ink); letter-spacing: -0.01em; margin-bottom: 4px; }
+.akm-sub-sub   { font-size: 12.5px; color: var(--ink-60); max-width: 440px; }
+.akm-see-all {
+    display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0;
+    font-family: var(--font-display); font-size: 11px; font-weight: 700;
+    letter-spacing: 0.06em; color: var(--fire-deep); text-decoration: none;
+    white-space: nowrap; padding: 8px 0;
+    border-bottom: 1.5px solid transparent; transition: border-color 0.2s;
+}
+.akm-see-all:hover { border-color: var(--fire-deep); }
+
+/* ── Hotel resmi: full-width block, terpisah dari grid mini ── */
+.akm-hotel-official {
+    display: flex;
+    background: linear-gradient(160deg, var(--night) 0%, var(--night-2) 100%);
+    border-radius: var(--r-xl);
+    padding: 24px;
+    gap: 24px;
+    position: relative; overflow: hidden;
+    text-decoration: none;
+    margin-bottom: 16px;
+    transition: transform 0.3s cubic-bezier(0.22,1,0.36,1), box-shadow 0.3s;
+}
+.akm-hotel-official:hover { transform: translateY(-3px); box-shadow: 0 24px 56px rgba(0,0,0,0.3); }
+.akm-hotel-official::before {
+    content: ''; position: absolute; top: -60px; right: -60px;
+    width: 220px; height: 220px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(249,115,22,0.22) 0%, transparent 70%);
+    pointer-events: none;
+}
+.akm-official-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 12px 5px 8px; border-radius: 99px; width: fit-content;
+    background: rgba(249,115,22,0.16); border: 1px solid rgba(249,115,22,0.35);
+    margin-bottom: 14px; position: relative; z-index: 1;
+}
+.akm-official-badge-icon {
+    width: 16px; height: 16px; border-radius: 50%; background: var(--fire);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.akm-official-badge-text { font-family: var(--font-display); font-size: 9.5px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: #fff; }
+.akm-hotel-photo-block {
+    width: 260px; height: 200px; flex-shrink: 0;
+    border-radius: var(--r-md); overflow: hidden;
+    background: linear-gradient(135deg, rgba(249,115,22,0.14), rgba(249,115,22,0.04));
+    border: 1px solid rgba(249,115,22,0.18);
+    display: flex; align-items: center; justify-content: center;
+}
+.akm-hotel-photo-block img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.akm-hotel-official-info { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.akm-hotel-official .akm-hotel-name { font-family: var(--font-display); font-size: 17px; font-weight: 800; color: #fff; line-height: 1.3; margin-bottom: 6px; position: relative; z-index: 1; }
+.akm-hotel-official .akm-hotel-sub  { font-size: 12px; color: rgba(255,255,255,0.5); line-height: 1.6; margin-bottom: 14px; position: relative; z-index: 1; }
+.akm-hotel-official .akm-hotel-foot { display: flex; align-items: baseline; justify-content: space-between; position: relative; z-index: 1; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.1); margin-top: auto; }
+.akm-price-big { font-family: var(--font-display); font-size: 20px; font-weight: 800; color: var(--fire); }
+.akm-price-per { font-size: 10px; color: rgba(255,255,255,0.35); }
+
+/* ── Hotel mini grid (4 hotel biasa) ── */
+.akm-hotel-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+}
+.akm-hotel-mini {
+    background: #fff; border: 1px solid var(--ink-12); border-radius: var(--r-lg);
+    overflow: hidden;
+    display: flex; flex-direction: column;
+    text-decoration: none;
+    transition: transform 0.3s cubic-bezier(0.22,1,0.36,1), box-shadow 0.3s, border-color 0.3s;
+}
+.akm-hotel-mini:hover { transform: translateY(-3px); box-shadow: 0 16px 36px rgba(0,0,0,0.08); border-color: rgba(249,115,22,0.2); }
+.akm-mini-photo {
+    width: 100%; aspect-ratio: 4 / 3; overflow: hidden; position: relative;
+    background: var(--paper-2); flex-shrink: 0;
+}
+.akm-mini-photo img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.45s ease; }
+.akm-hotel-mini:hover .akm-mini-photo img { transform: scale(1.06); }
+.akm-mini-photo-fallback { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+.akm-mini-tier-badge {
+    position: absolute; top: 9px; right: 9px;
+    font-size: 8.5px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
+    padding: 4px 9px; border-radius: 99px; backdrop-filter: blur(6px);
+}
+.akm-mini-body { padding: 13px 14px 12px; display: flex; flex-direction: column; flex: 1; }
+.akm-mini-name { font-size: 12.5px; font-weight: 700; color: var(--ink); line-height: 1.3; margin-bottom: 2px; }
+.akm-mini-room { font-size: 10px; color: var(--ink-30); margin-bottom: 10px; }
+.akm-mini-foot { display: flex; align-items: center; justify-content: space-between; padding-top: 10px; border-top: 1px dashed var(--ink-12); margin-top: auto; }
+.akm-mini-price { font-family: var(--font-display); font-size: 13px; font-weight: 800; color: var(--ink); }
+
+/* ── Tour preview row ── */
+.akm-tour-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.akm-tour-mini {
+    background: #fff; border: 1px solid var(--ink-12); border-radius: var(--r-lg);
+    overflow: hidden;
+    display: flex; flex-direction: column;
+    text-decoration: none;
+    transition: transform 0.3s cubic-bezier(0.22,1,0.36,1), box-shadow 0.3s, border-color 0.3s;
+}
+.akm-tour-mini:hover { transform: translateY(-3px); box-shadow: 0 16px 36px rgba(249,115,22,0.1); border-color: rgba(249,115,22,0.25); }
+.akm-tour-mini-photo {
+    width: 100%; aspect-ratio: 4 / 3; overflow: hidden; position: relative;
+    background: linear-gradient(160deg, var(--night), var(--night-2));
+    flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+}
+.akm-tour-mini-photo img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.45s ease; }
+.akm-tour-mini:hover .akm-tour-mini-photo img { transform: scale(1.06); }
+.akm-tour-mini-dur {
+    position: absolute; top: 9px; left: 9px;
+    font-family: var(--font-display); font-size: 8.5px; font-weight: 700;
+    letter-spacing: 0.06em; text-transform: uppercase; color: #fff;
+    background: rgba(249,115,22,0.88); padding: 4px 10px; border-radius: 99px;
+    backdrop-filter: blur(6px);
+}
+.akm-tour-mini-body { padding: 16px 16px 15px; display: flex; flex-direction: column; flex: 1; }
+.akm-tour-mini-title { font-size: 13px; font-weight: 700; color: var(--ink); line-height: 1.35; margin-bottom: 6px; }
+.akm-tour-mini-desc  { font-size: 11.5px; color: var(--ink-60); line-height: 1.6; margin-bottom: 14px; }
+.akm-tour-mini-foot  { display: flex; align-items: center; justify-content: space-between; padding-top: 12px; border-top: 1px dashed var(--ink-12); margin-top: auto; }
+.akm-tour-mini-price { font-family: var(--font-display); font-size: 13.5px; font-weight: 800; color: var(--fire-deep); }
+.akm-tour-mini-per   { font-size: 9px; color: var(--ink-30); }
+
+@media (max-width: 900px) {
+    .akm-hotel-grid { grid-template-columns: repeat(2, 1fr); }
+    .akm-tour-row { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 560px) {
+    .akm-hotel-official { flex-direction: column; }
+    .akm-hotel-photo-block { width: 100%; height: auto; aspect-ratio: 16 / 9; }
+    .akm-hotel-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .akm-tour-row { grid-template-columns: 1fr; }
+}
+
+/* ═══════════════════════════════════════
    CARA DAFTAR
 ═══════════════════════════════════════ */
 .steps-section { background: var(--paper-2); }
@@ -1117,8 +1254,11 @@ body {
    RESPONSIVE — MOBILE
 ═══════════════════════════════════════ */
 @media (max-width: 768px) {
-    .guest-grid { grid-template-columns: 1fr; max-width: 440px; }
-    .guest-photo-wrap { height: 260px; }
+    .akm-mini-photo { height: 120px; }
+    .akm-tour-mini-photo { height: 130px; }
+}
+@media (max-width: 640px) {
+    .akm-tour-row { grid-template-columns: 1fr; }
 }
 
 /* ═══════════════════════════════════════
@@ -1165,6 +1305,7 @@ body {
     #modalFraud .mo-card { border-radius: 20px; margin: 0 4px; }
     #modalFraud .mo-card > div:first-of-type { padding: 24px 20px 0 !important; }
     #modalFraud .mo-card > div:last-of-type  { padding: 14px 20px 24px !important; }
+    .akm-tour-row { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 480px) {
@@ -1530,6 +1671,145 @@ body {
                 <div class="gallery-overlay"><span>{{ $photo[1] }}</span></div>
             </div>
             @endforeach
+        </div>
+    </div>
+</section>
+
+{{-- ══════════════════════════════════════════
+     AKOMODASI & WISATA (preview)
+══════════════════════════════════════════ --}}
+@php
+    $akmData        = config('akomodasi');
+    $akmOfficial    = collect($akmData['hotels'])->firstWhere('is_official', true);
+    $akmOtherHotels = collect($akmData['hotels'])->reject(fn($h) => $h['is_official'])->take(4);
+    $akmTours       = $akmData['tours'];
+
+    $akmTierLabel = ['budget' => 'Hemat', 'standard' => 'Standard', 'premium' => 'Premium'];
+    $akmTierColor = [
+        'budget'   => ['bg' => 'rgba(16,185,129,0.1)',  'fg' => '#0d9488', 'bd' => 'rgba(16,185,129,0.2)'],
+        'standard' => ['bg' => 'rgba(59,130,246,0.1)',  'fg' => '#2563eb', 'bd' => 'rgba(59,130,246,0.2)'],
+        'premium'  => ['bg' => 'rgba(249,115,22,0.1)',  'fg' => '#c2410c', 'bd' => 'rgba(249,115,22,0.2)'],
+    ];
+    $akmTourIcons = [
+        'market' => '<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><path d="M3 6h18M16 10a4 4 0 01-8 0"/></svg>',
+        'crocodile' => '<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12c2-4 6-6 11-6 5 0 8 3 9 5-1 1-3 2-5 2H8l-2 3-1-3-3 1 1-2z"/><circle cx="16" cy="9" r="0.8" fill="#f97316"/></svg>',
+        'ikn' => '<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V9l7-5 7 5v12M9 21v-6h6v6"/></svg>',
+    ];
+@endphp
+<section id="akomodasi" class="section akm-section">
+    <div class="section-inner">
+        <div style="max-width:640px;">
+            <span class="sec-tag reveal">Sebelum Bertanding</span>
+            <h2 class="sec-title reveal">Sudah Siap Hotel &amp; Liburannya?</h2>
+            <p class="sec-sub reveal">Datang dari luar kota buat Bayan Open 2026? Ini rekomendasi hotel terdekat dan paket wisata seru buat kamu dan keluarga selama di Balikpapan.</p>
+        </div>
+
+      {{-- ═══ SUB A: HOTEL ═══ --}}
+        <div class="akm-sub-block reveal">
+            <div class="akm-sub-header">
+                <div>
+                    <p class="akm-sub-title">Rekomendasi Hotel</p>
+                    <p class="akm-sub-sub">Dari hotel resmi turnamen sampai pilihan hemat, semua sudah kami rangkum.</p>
+                </div>
+                <a href="{{ route('akomodasi-tour') }}#hotel" class="akm-see-all">
+                    Lihat Semua 33 Hotel
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </a>
+            </div>
+
+            @if($akmOfficial)
+            <a href="{{ route('akomodasi-tour') }}#hotel" class="akm-hotel-official">
+                <div class="akm-hotel-photo-block">
+                    @if($akmOfficial['image_url'])
+                        <img src="{{ $akmOfficial['image_url'] }}" alt="{{ $akmOfficial['name'] }}" loading="lazy" decoding="async">
+                    @else
+                        <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6M9 11h.01M15 11h.01M9 8h.01M15 8h.01"/>
+                        </svg>
+                    @endif
+                </div>
+                <div class="akm-hotel-official-info">
+                    <div class="akm-official-badge">
+                        <span class="akm-official-badge-icon">
+                            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+                        </span>
+                        <span class="akm-official-badge-text">Hotel Resmi Bayan Open</span>
+                    </div>
+                    <p class="akm-hotel-name">{{ $akmOfficial['name'] }}</p>
+                    <p class="akm-hotel-sub">Lokasi paling dekat dengan venue pertandingan. Tipe {{ $akmOfficial['room_type'] }} mulai Rp {{ number_format($akmOfficial['rate'],0,',','.') }}/malam.</p>
+                    <div class="akm-hotel-foot">
+                        <div>
+                            <span class="akm-price-big">Rp {{ number_format($akmOfficial['rate'],0,',','.') }}</span>
+                            <div class="akm-price-per">per malam</div>
+                        </div>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--fire)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </div>
+                </div>
+            </a>
+            @endif
+
+            <div class="akm-hotel-grid">
+                @foreach($akmOtherHotels as $h)
+                @php $tc = $akmTierColor[$h['tier']]; @endphp
+                <a href="{{ route('akomodasi-tour') }}#hotel" class="akm-hotel-mini">
+                    <div class="akm-mini-photo">
+                        @if(!empty($h['image_url']))
+                            <img src="{{ $h['image_url'] }}" alt="{{ $h['name'] }}" loading="lazy" decoding="async">
+                        @else
+                            <div class="akm-mini-photo-fallback" style="background:{{ $tc['bg'] }};">
+                                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="{{ $tc['fg'] }}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V9l7-5 7 5v12M9 21v-6h6v6"/></svg>
+                            </div>
+                        @endif
+                        <span class="akm-mini-tier-badge" style="background:{{ $tc['bg'] }};color:{{ $tc['fg'] }};">{{ $akmTierLabel[$h['tier']] }}</span>
+                    </div>
+                    <div class="akm-mini-body">
+                        <p class="akm-mini-name">{{ $h['name'] }}</p>
+                        <p class="akm-mini-room">Tipe {{ $h['room_type'] }}</p>
+                        <div class="akm-mini-foot">
+                            <span class="akm-mini-price">Rp {{ number_format($h['rate'],0,',','.') }}</span>
+                            <span style="font-size:9px;color:var(--ink-30);">per malam</span>
+                        </div>
+                    </div>
+                </a>
+                @endforeach
+            </div>
+        </div>
+
+        {{-- ═══ SUB B: TOUR ═══ --}}
+        <div class="akm-sub-block reveal">
+            <div class="akm-sub-header">
+                <div>
+                    <p class="akm-sub-title">Rekomendasi Paket Wisata</p>
+                    <p class="akm-sub-sub">Sekalian liburan di Balikpapan? 3 paket tour ini siap nemenin kamu keliling kota.</p>
+                </div>
+                <a href="{{ route('akomodasi-tour') }}#tour" class="akm-see-all">
+                    Lihat Detail &amp; Pesan Paket
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </a>
+            </div>
+
+            <div class="akm-tour-row">
+                @foreach($akmTours as $t)
+                <a href="{{ route('akomodasi-tour') }}#tour" class="akm-tour-mini">
+                    <div class="akm-tour-mini-photo">
+                        @if(!empty($t['image_url']))
+                            <img src="{{ $t['image_url'] }}" alt="{{ $t['title'] }}" loading="lazy" decoding="async">
+                        @else
+                            {!! $akmTourIcons[$t['icon']] !!}
+                        @endif
+                        <span class="akm-tour-mini-dur">{{ $t['duration'] }}</span>
+                    </div>
+                    <div class="akm-tour-mini-body">
+                        <p class="akm-tour-mini-title">{{ $t['title'] }}</p>
+                        <p class="akm-tour-mini-desc">{{ $t['highlights'][0] }}.</p>
+                        <div class="akm-tour-mini-foot">
+                            <span class="akm-tour-mini-price">Rp {{ number_format($t['price'],0,',','.') }}</span>
+                            <span class="akm-tour-mini-per">/orang</span>
+                        </div>
+                    </div>
+                </a>
+                @endforeach
+            </div>
         </div>
     </div>
 </section>
