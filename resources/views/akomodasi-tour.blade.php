@@ -153,6 +153,7 @@
     display: flex; align-items: center; justify-content: center;
     position: relative; overflow: hidden; padding: 24px;
 }
+.at-tour-visual.has-photo { padding: 0; }
 .at-tour-visual::before { content:''; position:absolute; inset:-40%; background: radial-gradient(circle, rgba(249,115,22,0.25) 0%, transparent 65%); }
 .at-tour-visual svg { position: relative; z-index: 1; }
 .at-tour-visual img { position: relative; z-index: 1; width: 100%; height: 100%; object-fit: cover; }
@@ -186,6 +187,14 @@
     background: var(--night-2); border-radius: 28px; padding: 60px 40px;
     text-align: center; position: relative; overflow: hidden; border: 1px solid rgba(249,115,22,0.15);
 }
+.at-btn-detail-outline {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-display); font-size: 11px; font-weight: 700;
+    letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none;
+    color: var(--ink-60); border: 1px solid var(--ink-12);
+    padding: 12px 18px; border-radius: 13px; transition: all 0.2s;
+}
+.at-btn-detail-outline:hover { background: var(--paper-2); border-color: rgba(249,115,22,0.3); color: var(--ink); }
 .at-cta-banner::before { content:''; position:absolute; top:-80px; right:-80px; width:360px; height:360px; border-radius:50%; background: radial-gradient(circle, rgba(249,115,22,0.2) 0%, transparent 65%); }
 .at-cta-line { width: 80px; height: 2px; background: linear-gradient(90deg, transparent, var(--fire), transparent); margin: 0 auto 26px; position: relative; z-index: 1; }
 .at-cta-title { font-family: var(--font-display); font-size: clamp(22px,4vw,36px); font-weight: 800; color: #fff; letter-spacing: -0.02em; line-height: 1.2; margin-bottom: 12px; position: relative; z-index: 1; }
@@ -229,7 +238,7 @@
                 Kembali ke Beranda
             </a>
             <h1 class="at-hero-title">Akomodasi &amp; Tour</h1>
-            <p class="at-hero-sub">Rencanakan perjalananmu ke Balikpapan — dari tempat menginap sampai jalan-jalan setelah pertandingan selesai.</p>
+            <p class="at-hero-sub">Rencanakan perjalananmu ke Balikpapan dari tempat menginap sampai jalan-jalan setelah pertandingan selesai.</p>
         </div>
     </div>
 
@@ -267,7 +276,7 @@
 
             <div class="at-hotel-grid" id="hotelGrid"></div>
 
-            <p class="at-footnote">Harga di atas adalah rate per malam dan dapat berubah tergantung musim/ketersediaan. Hubungi hotel langsung untuk reservasi. &middot; Update terakhir: {{ $updatedAt }}</p>
+            <p class="at-footnote">Hubungi hotel langsung untuk cek ketersediaan &amp; reservasi. &middot; Update terakhir: {{ $updatedAt }}</p>
         </div>
     </section>
 
@@ -288,9 +297,9 @@
                 @endphp
                 @foreach($tours as $t)
                 <div class="at-tour-card reveal">
-                    <div class="at-tour-visual">
-                        @if(!empty($t['image_url']))
-                            <img src="{{ $t['image_url'] }}" alt="{{ $t['title'] }}" loading="lazy">
+                    <div class="at-tour-visual {{ !empty($t['images']) ? 'has-photo' : '' }}">
+                        @if(!empty($t['images']))
+                            @include('partials.tour-image-collage', ['images' => $t['images'], 'alt' => $t['title']])
                         @else
                             {!! $tourIconsSvg[$t['icon']] !!}
                         @endif
@@ -315,10 +324,13 @@
                         <p class="at-tour-includes"><strong>Termasuk:</strong> {{ implode(', ', $t['includes']) }}</p>
                         @endif
                         <div class="at-tour-foot">
+                            {{--
                             <div class="at-tour-price-wrap">
                                 <span class="at-tour-price">Rp {{ number_format($t['price'],0,',','.') }}</span>
                                 <div class="at-tour-price-note">per orang &middot; minimal {{ $t['min_person'] }} orang</div>
                             </div>
+                            --}}
+                            <a href="{{ route('akomodasi-tour.tour', $t['slug']) }}" class="at-btn-detail-outline">Lihat Detail</a>
                             @php
                                 $waText = rawurlencode("Halo, saya peserta Bayan Open 2026. Saya mau tanya-tanya soal paket {$t['title']} ({$t['duration']}). Apakah masih tersedia?");
                             @endphp
@@ -385,7 +397,7 @@ var tierColors = { budget: '#0d9488', standard: '#2563eb', premium: '#c2410c' };
 function buildHotelCard(h) {
     if (h.is_official) {
         return `
-        <div class="at-hotel-card official at-tier-${h.tier}">
+        <a href="/akomodasi-tour/hotel/${h.slug}" class="at-hotel-card official at-tier-${h.tier}">
             <div class="at-hotel-icon">
                 ${hotelIconOrImage(h, 48, '#f97316')}
             </div>
@@ -396,22 +408,23 @@ function buildHotelCard(h) {
                 </div>
                 <p class="at-hotel-name">${h.name}</p>
                 <p class="at-hotel-room">Tipe ${h.room_type}</p>
-                <div class="at-hotel-foot" style="border-top:none;padding-top:0;padding-left:0;padding-right:0;">
-                    <div><span class="at-hotel-price">${fmtRupiah(h.rate)}</span><div class="at-hotel-price-per">per malam</div></div>
+                <div class="at-hotel-foot" style="border-top:none;padding-top:0;padding-left:0;padding-right:0;justify-content:flex-end;">
+                    <!-- <div><span class="at-hotel-price">${fmtRupiah(h.rate)}</span><div class="at-hotel-price-per">per malam</div></div> -->
                     <span class="at-tier-badge">${atTierLabel[h.tier]}</span>
+                </div>
                 </div>
             </div>
         </div>`;
     }
     return `
-    <div class="at-hotel-card at-tier-${h.tier}">
+    <a href="/akomodasi-tour/hotel/${h.slug}" class="at-hotel-card at-tier-${h.tier}">
         <div class="at-hotel-icon">${hotelIconOrImage(h, 28, tierColors[h.tier])}</div>
         <div class="at-hotel-body">
             <p class="at-hotel-name">${h.name}</p>
             <p class="at-hotel-room">Tipe ${h.room_type}</p>
         </div>
-        <div class="at-hotel-foot">
-            <span class="at-hotel-price">${fmtRupiah(h.rate)}</span>
+        <div class="at-hotel-foot" style="justify-content:flex-end;">
+            <!-- <span class="at-hotel-price">${fmtRupiah(h.rate)}</span> -->
             <span class="at-tier-badge">${atTierLabel[h.tier]}</span>
         </div>
     </div>`;

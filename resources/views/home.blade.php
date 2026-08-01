@@ -1681,8 +1681,11 @@ body {
 @php
     $akmData        = config('akomodasi');
     $akmOfficial    = collect($akmData['hotels'])->firstWhere('is_official', true);
-    $akmOtherHotels = collect($akmData['hotels'])->reject(fn($h) => $h['is_official'])->take(4);
-    $akmTours       = $akmData['tours'];
+    $akmOfficial    = $akmOfficial ? \App\Services\AkomodasiHelper::enrichHotel($akmOfficial) : null;
+    $akmOtherHotels = collect($akmData['hotels'])->reject(fn($h) => $h['is_official'])->take(4)
+                        ->map(fn($h) => \App\Services\AkomodasiHelper::enrichHotel($h));
+    $akmTours       = collect($akmData['tours'])
+                        ->map(fn($t, $i) => \App\Services\AkomodasiHelper::enrichTour($t, $akmData['hotels'], $i));
 
     $akmTierLabel = ['budget' => 'Hemat', 'standard' => 'Standard', 'premium' => 'Premium'];
     $akmTierColor = [
@@ -1718,7 +1721,7 @@ body {
             </div>
 
             @if($akmOfficial)
-            <a href="{{ route('akomodasi-tour') }}#hotel" class="akm-hotel-official">
+             <a href="{{ route('akomodasi-tour.hotel', $akmOfficial['slug']) }}" class="akm-hotel-official">
                 <div class="akm-hotel-photo-block">
                     @if($akmOfficial['image_url'])
                         <img src="{{ $akmOfficial['image_url'] }}" alt="{{ $akmOfficial['name'] }}" loading="lazy" decoding="async">
@@ -1738,10 +1741,10 @@ body {
                     <p class="akm-hotel-name">{{ $akmOfficial['name'] }}</p>
                     <p class="akm-hotel-sub">Lokasi paling dekat dengan venue pertandingan. Tipe {{ $akmOfficial['room_type'] }} mulai Rp {{ number_format($akmOfficial['rate'],0,',','.') }}/malam.</p>
                     <div class="akm-hotel-foot">
-                        <div>
+                        <!--<div>
                             <span class="akm-price-big">Rp {{ number_format($akmOfficial['rate'],0,',','.') }}</span>
                             <div class="akm-price-per">per malam</div>
-                        </div>
+                        </div>-->
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--fire)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                     </div>
                 </div>
@@ -1751,7 +1754,7 @@ body {
             <div class="akm-hotel-grid">
                 @foreach($akmOtherHotels as $h)
                 @php $tc = $akmTierColor[$h['tier']]; @endphp
-                <a href="{{ route('akomodasi-tour') }}#hotel" class="akm-hotel-mini">
+               <a href="{{ route('akomodasi-tour.hotel', $h['slug']) }}" class="akm-hotel-mini">
                     <div class="akm-mini-photo">
                         @if(!empty($h['image_url']))
                             <img src="{{ $h['image_url'] }}" alt="{{ $h['name'] }}" loading="lazy" decoding="async">
@@ -1765,10 +1768,10 @@ body {
                     <div class="akm-mini-body">
                         <p class="akm-mini-name">{{ $h['name'] }}</p>
                         <p class="akm-mini-room">Tipe {{ $h['room_type'] }}</p>
-                        <div class="akm-mini-foot">
-                            <span class="akm-mini-price">Rp {{ number_format($h['rate'],0,',','.') }}</span>
+                         <!--  <div class="akm-mini-foot">
+                         <span class="akm-mini-price">Rp {{ number_format($h['rate'],0,',','.') }}</span>
                             <span style="font-size:9px;color:var(--ink-30);">per malam</span>
-                        </div>
+                        </div>-->
                     </div>
                 </a>
                 @endforeach
@@ -1790,10 +1793,10 @@ body {
 
             <div class="akm-tour-row">
                 @foreach($akmTours as $t)
-                <a href="{{ route('akomodasi-tour') }}#tour" class="akm-tour-mini">
+                <a href="{{ route('akomodasi-tour.tour', $t['slug']) }}" class="akm-tour-mini">
                     <div class="akm-tour-mini-photo">
-                        @if(!empty($t['image_url']))
-                            <img src="{{ $t['image_url'] }}" alt="{{ $t['title'] }}" loading="lazy" decoding="async">
+                        @if(!empty($t['images']))
+                            @include('partials.tour-image-collage', ['images' => $t['images'], 'alt' => $t['title']])
                         @else
                             {!! $akmTourIcons[$t['icon']] !!}
                         @endif
@@ -1802,10 +1805,10 @@ body {
                     <div class="akm-tour-mini-body">
                         <p class="akm-tour-mini-title">{{ $t['title'] }}</p>
                         <p class="akm-tour-mini-desc">{{ $t['highlights'][0] }}.</p>
-                        <div class="akm-tour-mini-foot">
-                            <span class="akm-tour-mini-price">Rp {{ number_format($t['price'],0,',','.') }}</span>
+                           <!--<div class="akm-tour-mini-foot">
+                         <span class="akm-tour-mini-price">Rp {{ number_format($t['price'],0,',','.') }}</span>
                             <span class="akm-tour-mini-per">/orang</span>
-                        </div>
+                        </div>-->
                     </div>
                 </a>
                 @endforeach

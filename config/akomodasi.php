@@ -25,7 +25,20 @@ return [
 
     'hotels' => [
 // ✅ BENAR
-        ['name' => 'Platinum Hotel & Convention Hall Balikpapan', 'room_type' => 'Deluxe', 'rate' => 828000, 'tier' => 'premium', 'is_official' => true, 'image_url' => 'https://res.cloudinary.com/djs5pi7ev/image/upload/f_auto,q_auto,w_600,c_fill/v1785480156/504660739_nmnshi.jpg'],  
+        [
+        'name' => 'Platinum Hotel & Convention Hall Balikpapan',
+        'room_type' => 'Deluxe',
+        'rate' => 828000,
+        'tier' => 'premium',
+        'is_official' => true,
+        'image_url' => 'https://res.cloudinary.com/djs5pi7ev/image/upload/f_auto,q_auto,w_600,c_fill/v1785480156/504660739_nmnshi.jpg',
+        'images' => [
+            'https://res.cloudinary.com/djs5pi7ev/image/upload/f_auto,q_auto,w_800,c_fill/v1785480156/504660739_nmnshi.jpg',
+            'https://res.cloudinary.com/ddeigqz5d/image/upload/v1785569107/90dc226b_azzpef.avif',
+            'https://res.cloudinary.com/ddeigqz5d/image/upload/v1785569107/platinum-hotel-convention-hall-balikpapan_161297840833_alti3e.jpg',
+            'https://res.cloudinary.com/ddeigqz5d/image/upload/v1785569107/our-new-venue-rooftop_igca7f.jpg',
+        ],
+    ],
         ['name' => 'Golden Tulip Balikpapan',                     'room_type' => 'Deluxe',          'rate' => 800000,  'tier' => 'premium',  'is_official' => false, 'image_url' => 'https://res.cloudinary.com/viecqvpk/image/upload/f_auto,q_auto,w_600,c_fill/v1785483157/89732501_XL_iuvkdc.jpg'],
         ['name' => 'Swissbel Hotel Balikpapan',                   'room_type' => 'Deluxe',          'rate' => 650000,  'tier' => 'standard', 'is_official' => false, 'image_url' => 'https://res.cloudinary.com/viecqvpk/image/upload/f_auto,q_auto,w_600,c_fill/v1785483157/swiss-belhotel-balikpapan-facade-3-1920w_xv57hg.webp'],
         ['name' => 'Novotel Balikpapan',                          'room_type' => 'Superior',        'rate' => 950000,  'tier' => 'premium',  'is_official' => false, 'image_url' => 'https://res.cloudinary.com/viecqvpk/image/upload/f_auto,q_auto,w_600,c_fill/v1785483157/expedia_group-167742-196789730-524170_iakv2c.jpg'],
@@ -65,7 +78,7 @@ return [
             'slug'          => 'city-tour-4-jam',
             'title'         => 'Balikpapan City Tour 4 Jam',
             'duration'      => '4 Jam',
-            'description'   => 'Mulai dari Pasar Kebun Sayur — surganya oleh-oleh khas Kalimantan seperti batu mulia, manik-manik, kaos khas, kerajinan kayu Bajaka, sampai camilan amplang. Lanjut keliling kawasan Kilang Minyak Balikpapan, lewat Pelabuhan Semayang, dan ditutup dengan foto-foto cantik di pantai pasir putih Kilang Mandiri saat matahari terbenam.',
+            'description'   => 'Mulai dari Pasar Kebun Sayur, surganya oleh-oleh khas Kalimantan seperti batu mulia, manik-manik, kaos khas, kerajinan kayu Bajaka, sampai camilan amplang. Lanjut keliling kawasan Kilang Minyak Balikpapan, lewat Pelabuhan Semayang, dan ditutup dengan foto-foto cantik di pantai pasir putih Kilang Mandiri saat matahari terbenam.',
             'highlights'    => [
                 'Belanja oleh-oleh khas Kalimantan',
                 'Keliling Kilang Minyak & Pelabuhan Semayang',
@@ -76,7 +89,12 @@ return [
             'min_person'    => 5,
             'contact_phone' => '62811544453',
             'icon'          => 'market',
-            'image_url'     => null,
+            'image_url'     => 'https://res.cloudinary.com/ddeigqz5d/image/upload/v1785570260/12_Pesona_Pantai_Kilang_Mandiri_Balikpapan_2_Medium_23c3cbbfcc_abf9fs.png',
+            'images' => [
+                'https://res.cloudinary.com/ddeigqz5d/image/upload/v1785570260/berburu-oleholeh-khas-di-pasar-inpres-kebun-sayur-balikpapan-8_cj2pxj.jpg',
+                'https://res.cloudinary.com/ddeigqz5d/image/upload/v1785570260/RDMP-Balikpapan-mengulas-sejarah-Sumur-Mathilda-hingga-peran-Kilang-Pertamina-sebagai-garda-depan-kemandirian-energi-Indonesia-Timur-1085241711_t4ilha.webp',
+                'https://res.cloudinary.com/ddeigqz5d/image/upload/v1785570282/Screenshot_2025-10-17-21-32-55-33_6012fa4d4ddec268fc5c7112cbb265e7_lwxi3d.jpg',
+            ],
         ],
         [
             'slug'          => 'buaya-kebun-sayur-pantai-6-jam',
