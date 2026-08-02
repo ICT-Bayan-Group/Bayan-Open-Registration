@@ -48,7 +48,38 @@ class AkomodasiHelper
             $hotel['maps_query'] = $hotel['name'] . ', Balikpapan, Kalimantan Timur';
         }
 
+        if (empty($hotel['venues'])) {
+            $hotel['venues'] = self::venueDistances($hotel['name']);
+        }
+
         return $hotel;
+    }
+
+    /**
+     * Ambil data jarak & estimasi waktu 1 hotel ke 3 venue Bayan Open 2026,
+     * dari lookup table 'venues' + 'hotel_venue_distance' di config/akomodasi.php.
+     * Kalau nama hotel tidak ada di lookup table, dikembalikan array kosong
+     * (tidak error — bagian jarak venue cuma tidak ditampilkan di halaman detail).
+     */
+    public static function venueDistances(string $hotelName): array
+    {
+        $venueDefs = config('akomodasi.venues', []);
+        $distances = config('akomodasi.hotel_venue_distance', [])[$hotelName] ?? [];
+
+        $result = [];
+
+        foreach ($venueDefs as $key => $def) {
+            $entry = $distances[$key] ?? null;
+
+            $result[$key] = [
+                'name'         => $def['name'],
+                'maps_query'   => $def['maps_query'] ?? $def['name'] . ', Balikpapan',
+                'distance_km'  => $entry['km'] ?? null,
+                'duration_min' => $entry['menit'] ?? null,
+            ];
+        }
+
+        return $result;
     }
 
     /**

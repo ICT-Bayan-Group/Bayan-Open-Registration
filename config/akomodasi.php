@@ -39,7 +39,7 @@ return [
             'https://res.cloudinary.com/ddeigqz5d/image/upload/v1785569107/our-new-venue-rooftop_igca7f.jpg',
         ],
     ],
-        ['name' => 'Golden Tulip Balikpapan',                     'room_type' => 'Deluxe',          'rate' => 800000,  'tier' => 'premium',  'is_official' => false, 'image_url' => 'https://res.cloudinary.com/viecqvpk/image/upload/f_auto,q_auto,w_600,c_fill/v1785483157/89732501_XL_iuvkdc.jpg'],
+        ['name' => 'Golden Tulip Balikpapan',                     'room_type' => 'Deluxe',          'rate' => 800000,  'tier' => 'premium',  'is_official' => false, 'image_url' => 'https://res.cloudinary.com/viecqvpk/image/upload/f_auto,q_auto,w_600,c_fill/v1785483157/89732501_XL_iuvkdc.jpg',],
         ['name' => 'Swissbel Hotel Balikpapan',                   'room_type' => 'Deluxe',          'rate' => 650000,  'tier' => 'standard', 'is_official' => false, 'image_url' => 'https://res.cloudinary.com/viecqvpk/image/upload/f_auto,q_auto,w_600,c_fill/v1785483157/swiss-belhotel-balikpapan-facade-3-1920w_xv57hg.webp'],
         ['name' => 'Novotel Balikpapan',                          'room_type' => 'Superior',        'rate' => 950000,  'tier' => 'premium',  'is_official' => false, 'image_url' => 'https://res.cloudinary.com/viecqvpk/image/upload/f_auto,q_auto,w_600,c_fill/v1785483157/expedia_group-167742-196789730-524170_iakv2c.jpg'],
         ['name' => 'Bluesky Hotel',                                'room_type' => 'Business',        'rate' => 700000,  'tier' => 'standard', 'is_official' => false, 'image_url' => 'https://res.cloudinary.com/viecqvpk/image/upload/f_auto,q_auto,w_600,c_fill/v1785483157/463290917_x9dsj3.jpg'],
@@ -71,6 +71,53 @@ return [
         ['name' => 'The Hill Residence',                           'room_type' => 'Executive House',  'rate' => 2500000, 'tier' => 'premium',  'is_official' => false, 'image_url' => 'https://res.cloudinary.com/viecqvpk/image/upload/f_auto,q_auto,w_600,c_fill/v1785483153/a8429b62-6af3-4a65-87f7-255e2045baac-1663834531435-a3447c41633979a795ef11a9672dc1a1_verpbo.webp'],
         ['name' => 'Mahligai Beach Resort',                        'room_type' => 'Manggar Villa',   'rate' => 1000000, 'tier' => 'premium',  'is_official' => false, 'image_url' => 'https://res.cloudinary.com/viecqvpk/image/upload/f_auto,q_auto,w_600,c_fill/v1785483152/24fb0dce-f53c-4e3b-acbe-8d90147e32e1-1726130726970-78811c921fa30f3909799f601d74f40a_oxpuxz.webp'],
         ['name' => 'BEST IN',                                      'room_type' => 'Superior',        'rate' => 380000,  'tier' => 'budget',   'is_official' => false, 'image_url' => 'https://res.cloudinary.com/viecqvpk/image/upload/f_auto,q_auto,w_600,c_fill/v1785483151/c8ed8db8b5e6abf07890b39ba79ff045_im6y66.jpg'],
+    ],
+
+    /**
+     * 3 venue resmi Bayan Open 2026. Jarak & estimasi waktu di bawah dihitung manual
+     * berdasarkan lokasi asli tiap hotel (Google Maps) — estimasi waktu untuk kondisi
+     * lalu lintas normal, bisa lebih lama saat jam sibuk/hujan.
+     */
+    'venues' => [
+        'bscc'    => ['name' => 'BSCC Dome Balikpapan',    'maps_query' => 'BSCC Dome Balikpapan'],
+        'hevindo' => ['name' => 'Hevindo Arena Balikpapan', 'maps_query' => 'GOR Hevindo Arena Balikpapan'],
+        'bjbj'    => ['name' => 'GOR Bulutangkis BJBJ',     'maps_query' => 'GOR Bulutangkis BJBJ Balikpapan Tenis Stadium'],
+    ],
+
+    'hotel_venue_distance' => [
+        'Platinum Hotel & Convention Hall Balikpapan' => ['bscc' => ['km' => 6.3, 'menit' => 15], 'hevindo' => ['km' => 2.6, 'menit' => 6],  'bjbj' => ['km' => 6.8, 'menit' => 15]],
+        'Golden Tulip Balikpapan'                     => ['bscc' => ['km' => 8.3, 'menit' => 20], 'hevindo' => ['km' => 8.1, 'menit' => 20], 'bjbj' => ['km' => 7.1, 'menit' => 20]],
+        'Swissbel Hotel Balikpapan'                   => ['bscc' => ['km' => 9.0, 'menit' => 25], 'hevindo' => ['km' => 8.7, 'menit' => 20], 'bjbj' => ['km' => 7.8, 'menit' => 20]],
+        'Novotel Balikpapan'                          => ['bscc' => ['km' => 9.6, 'menit' => 25], 'hevindo' => ['km' => 8.8, 'menit' => 20], 'bjbj' => ['km' => 8.5, 'menit' => 20]],
+        'Bluesky Hotel'                                => ['bscc' => ['km' => 9.5, 'menit' => 25], 'hevindo' => ['km' => 6.5, 'menit' => 15], 'bjbj' => ['km' => 9.0, 'menit' => 20]],
+        'Grand Jatra'                                  => ['bscc' => ['km' => 6.4, 'menit' => 15], 'hevindo' => ['km' => 7.0, 'menit' => 15], 'bjbj' => ['km' => 5.1, 'menit' => 15]],
+        'Astara'                                       => ['bscc' => ['km' => 6.9, 'menit' => 15], 'hevindo' => ['km' => 7.3, 'menit' => 20], 'bjbj' => ['km' => 5.6, 'menit' => 15]],
+        'Pentacity Hotel'                              => ['bscc' => ['km' => 6.8, 'menit' => 15], 'hevindo' => ['km' => 7.2, 'menit' => 20], 'bjbj' => ['km' => 5.6, 'menit' => 15]],
+        'Grand Tjokro'                                 => ['bscc' => ['km' => 2.9, 'menit' => 7],  'hevindo' => ['km' => 6.4, 'menit' => 15], 'bjbj' => ['km' => 2.1, 'menit' => 5]],
+        'Four Points Hotel'                            => ['bscc' => ['km' => 2.4, 'menit' => 6],  'hevindo' => ['km' => 6.3, 'menit' => 15], 'bjbj' => ['km' => 2.3, 'menit' => 6]],
+        'Gran Senyiur'                                 => ['bscc' => ['km' => 9.6, 'menit' => 25], 'hevindo' => ['km' => 8.6, 'menit' => 20], 'bjbj' => ['km' => 8.5, 'menit' => 20]],
+        'Horison Ultima Bandara'                       => ['bscc' => ['km' => 3.0, 'menit' => 8],  'hevindo' => ['km' => 6.9, 'menit' => 15], 'bjbj' => ['km' => 2.8, 'menit' => 7]],
+        'Grand Tiga Mustika'                           => ['bscc' => ['km' => 9.7, 'menit' => 25], 'hevindo' => ['km' => 8.8, 'menit' => 20], 'bjbj' => ['km' => 8.7, 'menit' => 20]],
+        'Pacific Hotel'                                => ['bscc' => ['km' => 8.8, 'menit' => 20], 'hevindo' => ['km' => 8.0, 'menit' => 20], 'bjbj' => ['km' => 7.7, 'menit' => 20]],
+        'Zurich Hotel'                                 => ['bscc' => ['km' => 6.1, 'menit' => 15], 'hevindo' => ['km' => 6.5, 'menit' => 15], 'bjbj' => ['km' => 4.9, 'menit' => 10]],
+        'Horison Sagita Balikpapan'                    => ['bscc' => ['km' => 7.9, 'menit' => 20], 'hevindo' => ['km' => 7.3, 'menit' => 20], 'bjbj' => ['km' => 6.8, 'menit' => 15]],
+        'Ibis Hotel Balikpapan'                        => ['bscc' => ['km' => 9.6, 'menit' => 25], 'hevindo' => ['km' => 8.8, 'menit' => 20], 'bjbj' => ['km' => 8.5, 'menit' => 20]],
+        'Quest Hotel Balikpapan'                       => ['bscc' => ['km' => 6.7, 'menit' => 15], 'hevindo' => ['km' => 7.2, 'menit' => 20], 'bjbj' => ['km' => 5.5, 'menit' => 15]],
+        'BDI Town House'                               => ['bscc' => ['km' => 3.2, 'menit' => 8],  'hevindo' => ['km' => 4.6, 'menit' => 10], 'bjbj' => ['km' => 2.0, 'menit' => 5]],
+        'NEO+'                                         => ['bscc' => ['km' => 8.0, 'menit' => 20], 'hevindo' => ['km' => 6.8, 'menit' => 15], 'bjbj' => ['km' => 7.0, 'menit' => 20]],
+        'Swissbel Inn'                                 => ['bscc' => ['km' => 6.9, 'menit' => 15], 'hevindo' => ['km' => 6.9, 'menit' => 15], 'bjbj' => ['km' => 5.8, 'menit' => 15]],
+        'Maxone Hotel'                                 => ['bscc' => ['km' => 5.4, 'menit' => 15], 'hevindo' => ['km' => 5.4, 'menit' => 15], 'bjbj' => ['km' => 4.2, 'menit' => 10]],
+        "D'Prima"                                      => ['bscc' => ['km' => 6.0, 'menit' => 15], 'hevindo' => ['km' => 6.0, 'menit' => 15], 'bjbj' => ['km' => 4.8, 'menit' => 10]],
+        'Whiz Hotel'                                   => ['bscc' => ['km' => 7.2, 'menit' => 20], 'hevindo' => ['km' => 7.2, 'menit' => 20], 'bjbj' => ['km' => 6.0, 'menit' => 15]],
+        'Midtown Xpress'                               => ['bscc' => ['km' => 6.2, 'menit' => 15], 'hevindo' => ['km' => 6.5, 'menit' => 15], 'bjbj' => ['km' => 5.0, 'menit' => 15]],
+        'Mega Lestari Hotel'                           => ['bscc' => ['km' => 9.8, 'menit' => 25], 'hevindo' => ['km' => 9.0, 'menit' => 20], 'bjbj' => ['km' => 8.7, 'menit' => 20]],
+        'The Point Hotel'                              => ['bscc' => ['km' => 6.0, 'menit' => 15], 'hevindo' => ['km' => 6.1, 'menit' => 15], 'bjbj' => ['km' => 4.8, 'menit' => 10]],
+        'PILLOW'                                       => ['bscc' => ['km' => 3.3, 'menit' => 8],  'hevindo' => ['km' => 3.8, 'menit' => 10], 'bjbj' => ['km' => 2.3, 'menit' => 6]],
+        'La Casa Borneo'                               => ['bscc' => ['km' => 6.3, 'menit' => 15], 'hevindo' => ['km' => 10.0, 'menit' => 25], 'bjbj' => ['km' => 6.8, 'menit' => 15]],
+        'Sepinggan'                                    => ['bscc' => ['km' => 2.7, 'menit' => 7],  'hevindo' => ['km' => 6.6, 'menit' => 15], 'bjbj' => ['km' => 2.5, 'menit' => 6]],
+        'The Hill Residence'                           => ['bscc' => ['km' => 3.5, 'menit' => 9],  'hevindo' => ['km' => 1.2, 'menit' => 3],  'bjbj' => ['km' => 3.5, 'menit' => 9]],
+        'Mahligai Beach Resort'                        => ['bscc' => ['km' => 14.4, 'menit' => 35], 'hevindo' => ['km' => 16.9, 'menit' => 40], 'bjbj' => ['km' => 15.4, 'menit' => 40]],
+        'BEST IN'                                      => ['bscc' => ['km' => 2.7, 'menit' => 7],  'hevindo' => ['km' => 2.8, 'menit' => 7],  'bjbj' => ['km' => 2.1, 'menit' => 5]],
     ],
 
     'tours' => [
@@ -111,7 +158,12 @@ return [
             'min_person'    => 5,
             'contact_phone' => '62811544453',
             'icon'          => 'crocodile',
-            'image_url'     => null,
+            'image_url'     => 'https://res.cloudinary.com/ddeigqz5d/image/upload/v1785570260/12_Pesona_Pantai_Kilang_Mandiri_Balikpapan_2_Medium_23c3cbbfcc_abf9fs.png',
+            'images' => [
+                'https://res.cloudinary.com/ddeigqz5d/image/upload/v1785570260/berburu-oleholeh-khas-di-pasar-inpres-kebun-sayur-balikpapan-8_cj2pxj.jpg',
+                'https://res.cloudinary.com/ddeigqz5d/image/upload/v1785659963/img_20120126113316_4f20d78ce13e2_nofsjz.jpg',
+                'https://res.cloudinary.com/ddeigqz5d/image/upload/v1785570282/Screenshot_2025-10-17-21-32-55-33_6012fa4d4ddec268fc5c7112cbb265e7_lwxi3d.jpg',
+            ],
         ],
         [
             'slug'          => 'tour-ikn-8-jam',
@@ -128,7 +180,12 @@ return [
             'min_person'    => 5,
             'contact_phone' => '62811544453',
             'icon'          => 'ikn',
-            'image_url'     => null,
+           'image_url'     => 'https://res.cloudinary.com/ddeigqz5d/image/upload/v1785660478/DJI_20260404183138_0170_D_zbaxzm.webp',
+            'images' => [
+                'https://res.cloudinary.com/ddeigqz5d/image/upload/v1785660478/DJI_20260404183138_0170_D_zbaxzm.webp',
+                'https://res.cloudinary.com/ddeigqz5d/image/upload/v1785660417/penutupan-kunjungan-5-6-feb-2025-2_mvg0jg.jpg',
+                'https://res.cloudinary.com/ddeigqz5d/image/upload/v1785660416/Konservasi_Beruang_Madu_xrkjhr.jpg',
+            ],
         ],
     ],
 

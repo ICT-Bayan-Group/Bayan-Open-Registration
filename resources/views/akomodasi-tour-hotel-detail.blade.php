@@ -56,6 +56,21 @@
 .hd-map-wrap { border-radius: var(--r-lg); overflow: hidden; border: 1px solid var(--ink-12); }
 .hd-map-wrap iframe { display: block; width: 100%; height: 340px; border: 0; }
 
+.hd-venue-block { margin-top: 30px; }
+.hd-venue-title { font-family: var(--font-display); font-size: 15px; font-weight: 800; margin-bottom: 12px; }
+.hd-venue-list { display: flex; flex-direction: column; gap: 8px; }
+.hd-venue-item {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    background: #fff; border: 1px solid var(--ink-12); border-radius: 14px;
+    padding: 13px 16px;
+}
+.hd-venue-name-wrap { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.hd-venue-icon { width: 32px; height: 32px; border-radius: 9px; background: rgba(249,115,22,0.08); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.hd-venue-name { font-size: 12.5px; font-weight: 700; color: var(--ink); line-height: 1.3; }
+.hd-venue-stats { display: flex; align-items: baseline; gap: 6px; flex-shrink: 0; white-space: nowrap; }
+.hd-venue-time { font-family: var(--font-display); font-size: 14px; font-weight: 800; color: var(--fire-deep); }
+.hd-venue-km { font-size: 11px; color: var(--ink-30); }
+
 /* Sidebar */
 .hd-sidebar { position: sticky; top: 90px; }
 .hd-price-card { background: #fff; border: 1px solid var(--ink-12); border-radius: var(--r-xl); padding: 26px 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); }
@@ -127,6 +142,32 @@
                 <p class="hd-room">Tipe kamar {{ $hotel['room_type'] }} &middot; Balikpapan, Kalimantan Timur</p>
                 <p class="hd-desc">{{ $hotel['description'] }}</p>
 
+                @if(!empty($hotel['venues']))
+                <div class="hd-venue-block">
+                    <p class="hd-venue-title">Jarak ke Venue Bayan Open 2026</p>
+                    <div class="hd-venue-list">
+                        @foreach($hotel['venues'] as $v)
+                        <div class="hd-venue-item">
+                            <div class="hd-venue-name-wrap">
+                                <span class="hd-venue-icon">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                </span>
+                                <span class="hd-venue-name">{{ $v['name'] }}</span>
+                            </div>
+                            @if($v['distance_km'] !== null)
+                            <div class="hd-venue-stats">
+                                <span class="hd-venue-time">&plusmn;{{ $v['duration_min'] }} menit</span>
+                                <span class="hd-venue-km">({{ number_format($v['distance_km'],1) }} km)</span>
+                            </div>
+                            @else
+                            <span class="hd-venue-km">data belum tersedia</span>
+                            @endif
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+                @endif
+
                 <div class="hd-map-block">
                     <p class="hd-map-title">Lokasi</p>
                     <div class="hd-map-wrap">
@@ -139,9 +180,9 @@
 
             <aside class="hd-sidebar">
                 <div class="hd-price-card">
-                         <!--  <p class="hd-price-label">Mulai dari</p>
-             <p class="hd-price-val">Rp {{ number_format($hotel['rate'],0,',','.') }}</p>
-                    <p class="hd-price-per">per malam &middot; tipe {{ $hotel['room_type'] }}</p>-->
+                    {{-- <p class="hd-price-label">Mulai dari</p>
+                    <p class="hd-price-val">Rp {{ number_format($hotel['rate'],0,',','.') }}</p>
+                    <p class="hd-price-per">per malam &middot; tipe {{ $hotel['room_type'] }}</p> --}}
                     <div class="hd-price-note">
                         Reservasi &amp; pembayaran dilakukan langsung ke pihak hotel, bukan melalui panitia Bayan Open. Harga dapat berubah sewaktu-waktu, silakan konfirmasi ketersediaan kamar langsung ke hotel.
                     </div>
@@ -165,7 +206,7 @@
                 </div>
                 <div class="hd-oth-body">
                     <p class="hd-oth-name">{{ $h['name'] }}</p>
-                    <p class="hd-oth-price">Rp {{ number_format($h['rate'],0,',','.') }}</p>
+                    {{-- <p class="hd-oth-price">Rp {{ number_format($h['rate'],0,',','.') }}</p> --}}
                 </div>
             </a>
             @endforeach
