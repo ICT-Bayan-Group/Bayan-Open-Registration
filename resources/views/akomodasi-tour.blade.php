@@ -68,7 +68,7 @@
     padding: 14px 20px;
 }
 .at-disclaimer-icon { width: 34px; height: 34px; border-radius: 10px; flex-shrink: 0; background: rgba(249,115,22,0.09); display: flex; align-items: center; justify-content: center; }
-.at-disclaimer-text { font-size: 12.5px; color: var(--ink-60); line-height: 1.6; }
+.at-disclaimer-text { font-size: 13px; color:black; line-height: 1.6; font-weight: 700; }
 
 /* ── Section commons ── */
 .at-section { padding: 76px 24px 20px; }
@@ -248,7 +248,7 @@
             <div class="at-disclaimer-icon">
                 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#c2410c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
             </div>
-            <p class="at-disclaimer-text">Hotel &amp; paket wisata di halaman ini adalah rekomendasi pihak ketiga. Reservasi &amp; pembayaran dilakukan langsung ke pihak hotel/penyedia tour, bukan melalui panitia Bayan Open. Harga sewaktu-waktu dapat berubah.</p>
+            <p class="at-disclaimer-text">Hotel &amp; paket wisata di halaman ini adalah rekomendasi pihak ketiga. Reservasi &amp; pembayaran dilakukan langsung ke pihak hotel/penyedia tour dan melalui aplikasi online, bukan melalui panitia Bayan Open. Harga sewaktu-waktu dapat berubah.</p>
             </div>
     </div>
 
@@ -349,7 +349,7 @@
         </div>
     </section>
 
-    {{-- ══ CTA BANNER PENUTUP ══ --}}
+    {{-- ══ CTA BANNER PENUTUP ══ 
     <div class="at-cta-wrap">
         <div class="at-cta-banner reveal">
             <div class="at-cta-line"></div>
@@ -360,7 +360,7 @@
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </a>
         </div>
-    </div>
+    </div>--}}
 
 </div>
 @endsection

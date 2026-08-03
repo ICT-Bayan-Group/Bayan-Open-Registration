@@ -171,7 +171,7 @@
                 </div>
                 <div class="td-oth-body">
                     <p class="td-oth-name">{{ $t['title'] }}</p>
-                    <p class="td-oth-price">Rp {{ number_format($t['price'],0,',','.') }} /orang</p>
+                   <!-- <p class="td-oth-price">Rp {{ number_format($t['price'],0,',','.') }} /orang</p>-->
                 </div>
             </a>
             @endforeach
