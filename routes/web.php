@@ -4,6 +4,7 @@ use App\Http\Controllers\KtpOcrController;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\WilayahController;
 use App\Http\Controllers\RegistrationRevisionController;
+use App\Http\Controllers\AkomodasiTourController;
 use Illuminate\Support\Facades\Route;
 
 // ── Auth ────────────────────────────────────────────────────────
@@ -24,7 +25,11 @@ Route::get('/jadwal', fn() => view('jadwal'))->name('jadwal');
 Route::get('/dokumen', fn() => view('dokumen'))->name('dokumen');
 Route::get('/livescore', fn() => view('livescore'))->name('livescore');
 Route::get('/kontak', fn() => view('contact'))->name('contact');
-
+Route::get('/akomodasi-tour', [AkomodasiTourController::class, 'index'])->name('akomodasi-tour');
+Route::get('/akomodasi-tour/hotel/{slug}', [AkomodasiTourController::class, 'hotelDetail'])
+    ->name('akomodasi-tour.hotel');
+Route::get('/akomodasi-tour/tour/{slug}', [AkomodasiTourController::class, 'tourDetail'])
+    ->name('akomodasi-tour.tour');
 // ── Wilayah cascade ─────────────────────────────────────────────
 Route::prefix('wilayah')->group(function () {
     Route::get('/provinces',       [WilayahController::class, 'provinces']);

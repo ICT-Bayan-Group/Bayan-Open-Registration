@@ -318,6 +318,11 @@
                             {{ request()->routeIs('dokumen') ? 'active' : '' }}">       
                     Dokumen
                 </a>
+                <a href="{{ route('akomodasi-tour') }}"
+                   class="nav-link transition font-semibold text-sm tracking-wide px-3 py-2 rounded-lg
+                          {{ request()->routeIs('akomodasi-tour') || request()->routeIs('akomodasi-tour.*') ? 'active' : '' }}">
+                    Akomodasi &amp; Tour
+                </a>
            <!--
                 <a href="{{ route('bagan') }}"
                    class="nav-link transition font-semibold text-sm tracking-wide px-3 py-2 rounded-lg
@@ -374,6 +379,9 @@
         <a href="{{ route('dokumen') }}"
            class="nav-link-mobile {{ request()->routeIs('dokumen') ? 'active' : '' }}"
               onclick="closeMobileMenu()">Dokumen</a>
+        <a href="{{ route('akomodasi-tour') }}"
+           class="nav-link-mobile {{ request()->routeIs('akomodasi-tour') || request()->routeIs('akomodasi-tour.*') ? 'active' : '' }}"
+           onclick="closeMobileMenu()">Akomodasi &amp; Tour</a>
  <!--
         <a href="{{ route('bagan') }}"
            class="nav-link-mobile {{ request()->routeIs('bagan') ? 'active' : '' }}"
@@ -460,6 +468,11 @@
                         <li>
                             <a href="{{ route('dokumen') }}" class="footer-nav-link">
                                 <span class="dot"></span>Dokumen
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('akomodasi-tour') }}" class="footer-nav-link">
+                                <span class="dot"></span>Akomodasi &amp; Tour
                             </a>
                         </li>
                          <!--
