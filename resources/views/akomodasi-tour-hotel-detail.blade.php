@@ -77,7 +77,7 @@
 .hd-price-label { font-size: 11px; color: var(--ink-30); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; }
 .hd-price-val { font-family: var(--font-display); font-size: 30px; font-weight: 800; color: var(--ink); margin: 6px 0 2px; }
 .hd-price-per { font-size: 11.5px; color: var(--ink-30); }
-.hd-price-note { margin-top: 18px; padding: 14px 16px; background: var(--paper-2); border-radius: 14px; font-size: 12px; line-height: 1.6; color: var(--ink-60); }
+.hd-price-note { margin-top: 18px; padding: 14px 16px; background: var(--paper-2); border-radius: 14px; font-size: 12px; line-height: 1.6; color: var(--ink-60); font-weight: 700; }
 .hd-back-btn { display: block; text-align: center; margin-top: 14px; padding: 13px; border-radius: 13px; border: 1px solid var(--ink-12); background: transparent; text-decoration: none; font-family: var(--font-display); font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-60); transition: all 0.2s; }
 .hd-back-btn:hover { background: var(--paper-2); }
 .hd-cta-btn { display: block; text-align: center; margin-top: 10px; padding: 14px; border-radius: 13px; border: none; background: linear-gradient(135deg,var(--fire),var(--fire-deep)); text-decoration: none; font-family: var(--font-display); font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: #fff; box-shadow: 0 8px 22px rgba(249,115,22,0.3); transition: all 0.2s; }
@@ -184,9 +184,9 @@
                     <p class="hd-price-val">Rp {{ number_format($hotel['rate'],0,',','.') }}</p>
                     <p class="hd-price-per">per malam &middot; tipe {{ $hotel['room_type'] }}</p> --}}
                     <div class="hd-price-note">
-                        Reservasi &amp; pembayaran dilakukan langsung ke pihak hotel, bukan melalui panitia Bayan Open. Harga dapat berubah sewaktu-waktu, silakan konfirmasi ketersediaan kamar langsung ke hotel.
+                        Reservasi &amp; pembayaran dilakukan langsung ke pihak hotel dan aplikasi online, bukan melalui panitia Bayan Open. Harga dapat berubah sewaktu-waktu, silakan konfirmasi ketersediaan kamar langsung ke pihak hotel dan melalui aplikasi online.
                     </div>
-                    <a href="{{ route('home') }}#kategori" class="hd-cta-btn">Daftar Bayan Open 2026</a>
+                    <!--<a href="{{ route('home') }}#kategori" class="hd-cta-btn">Daftar Bayan Open 2026</a>-->
                     <a href="{{ route('akomodasi-tour') }}#hotel" class="hd-back-btn">&larr; Lihat Semua Hotel</a>
                 </div>
             </aside>
