@@ -1465,7 +1465,7 @@ body {
         {{-- Panel: Open --}}
         <div id="panel-open" class="kat-panel active" role="tabpanel" aria-labelledby="tab-open">
             <div class="kategori-grid">
-                <a href="{{ route('registration.ganda-dewasa-putra') }}" class="kat-card c-blue reveal">
+               <button type="button" onclick="pilihKategoriLangsung('ganda-dewasa-putra')" class="kat-card c-blue reveal">
                     <div class="kat-icon">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/>
@@ -1481,8 +1481,9 @@ body {
                         </div>
                         <div class="kat-cta"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
                     </div>
-                </a>
-                <a href="{{ route('registration.ganda-dewasa-putri') }}" class="kat-card c-rose reveal">
+                </button>
+
+                <button type="button" onclick="pilihKategoriLangsung('ganda-dewasa-putri')" class="kat-card c-rose reveal">
                     <div class="kat-icon">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f43f5e" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/>
@@ -1498,8 +1499,9 @@ body {
                         </div>
                         <div class="kat-cta"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f43f5e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
                     </div>
-                </a>
-                <a href="{{ route('registration.ganda-veteran-putra') }}" class="kat-card c-amber reveal">
+                </button>
+
+                <button type="button" onclick="pilihKategoriLangsung('ganda-veteran-putra')" class="kat-card c-amber reveal">
                     <div class="kat-icon">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/>
@@ -1514,8 +1516,9 @@ body {
                         </div>
                         <div class="kat-cta"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
                     </div>
-                </a>
-                <a href="{{ route('registration.beregu') }}" class="kat-card c-teal reveal">
+                </button>
+
+                <button type="button" onclick="pilihKategoriLangsung('beregu')" class="kat-card c-teal reveal">
                     <div class="kat-icon">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#14b8a6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/>
@@ -1531,7 +1534,7 @@ body {
                         </div>
                         <div class="kat-cta"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#14b8a6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
                     </div>
-                </a>
+                </button>
             </div>
         </div>
 
@@ -2317,6 +2320,10 @@ function tutupModalDaftar() {
         }
     });
     document.body.style.overflow = '';
+}
+function pilihKategoriLangsung(k) {
+    pendingKategoriRoute = kategoriRoutes[k];
+    bukaDisclaimerModal();
 }
 
 function bukaModal2() {
