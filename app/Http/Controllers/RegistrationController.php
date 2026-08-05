@@ -652,14 +652,12 @@ class RegistrationController extends Controller
             abort(404, 'Receipt belum tersedia.');
         }
 
-        $path = storage_path('app/' . $registration->pdf_receipt_path);
-
-        if (! file_exists($path)) {
+        if (! Storage::disk('local')->exists($registration->pdf_receipt_path)) {
             abort(404, 'File receipt tidak ditemukan.');
         }
 
-        return response()->download(
-            $path,
+        return Storage::disk('local')->download(
+            $registration->pdf_receipt_path,
             'receipt-' . $registration->uuid . '.pdf'
         );
     }

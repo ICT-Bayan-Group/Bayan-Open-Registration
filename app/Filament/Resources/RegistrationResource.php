@@ -17,6 +17,10 @@ use App\Services\ReceiptPdfService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\HtmlString;
+use App\Filament\Exports\RegistrationExporter;
+use Filament\Actions\Exports\Enums\ExportFormat;
+use Filament\Tables\Actions\ExportAction;
+use Filament\Tables\Actions\ExportBulkAction;
 
 class RegistrationResource extends Resource
 {
@@ -357,6 +361,12 @@ class RegistrationResource extends Resource
                     ->label('Daftar')->dateTime('d M Y, H:i')->sortable(),
             ])
             ->defaultSort('created_at', 'desc')
+            ->headerActions([
+                ExportAction::make()
+                    ->label('Export Excel')
+                    ->exporter(RegistrationExporter::class)
+                    ->formats([ExportFormat::Xlsx]),
+            ])
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
                     ->options([
@@ -577,6 +587,10 @@ class RegistrationResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
+                    ExportBulkAction::make()
+                        ->label('Export Terpilih (Excel)')
+                        ->exporter(RegistrationExporter::class)
+                        ->formats([ExportFormat::Xlsx]),
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])
