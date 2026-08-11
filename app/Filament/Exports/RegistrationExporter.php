@@ -11,7 +11,26 @@ class RegistrationExporter extends Exporter
 {
     protected static ?string $model = Registration::class;
 
+    // Dipakai di halaman utama (RegistrationResource) yang menampilkan
+    // SEMUA kategori campur (termasuk Beregu), jadi disiapkan 8 kolom
+    // pemain supaya data Beregu tidak terpotong.
+    // Untuk export khusus per kategori, lihat GandaExporter & BeregExporter.
+    protected static int $maxPemainColumns = 8;
+
     public static function getColumns(): array
+    {
+        return [
+            ...static::getCommonColumns(),
+            ...static::getPemainColumns(),
+            ...static::getTrailingColumns(),
+        ];
+    }
+
+    // ============================================================
+    // Kolom umum (identik untuk semua exporter kategori)
+    // ============================================================
+
+    protected static function getCommonColumns(): array
     {
         return [
             ExportColumn::make('id')
@@ -57,11 +76,12 @@ class RegistrationExporter extends Exporter
 
             ExportColumn::make('jumlah_pemain')
                 ->label('Jumlah Pemain'),
+        ];
+    }
 
-            ExportColumn::make('pemain_list')
-                ->label('Nama Pemain')
-                ->formatStateUsing(fn ($state) => $state ? ucwords(strtolower($state)) : $state),
-
+    protected static function getTrailingColumns(): array
+    {
+        return [
             ExportColumn::make('harga')
                 ->label('Harga')
                 ->formatStateUsing(fn ($state) => 'Rp ' . number_format($state, 0, ',', '.')),
@@ -93,6 +113,31 @@ class RegistrationExporter extends Exporter
             ExportColumn::make('created_at')
                 ->label('Waktu Daftar'),
         ];
+    }
+
+    // ============================================================
+    // Kolom Pemain — jumlah kolom ditentukan oleh static::$maxPemainColumns
+    // (di-override di subclass GandaExporter / BeregExporter)
+    // ============================================================
+
+    protected static function getPemainColumns(): array
+    {
+        $columns = [];
+
+        for ($i = 0; $i < static::$maxPemainColumns; $i++) {
+            $index = $i; // closure capture
+
+            $columns[] = ExportColumn::make("pemain_{$index}")
+                ->label('Pemain ' . ($index + 1))
+                ->getStateUsing(function (Registration $record) use ($index) {
+                    $pemain = $record->pemain ?? [];
+                    $nama   = $pemain[$index] ?? null;
+
+                    return $nama ? ucwords(strtolower($nama)) : null;
+                });
+        }
+
+        return $columns;
     }
 
     public static function getCompletedNotificationBody(Export $export): string

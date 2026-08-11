@@ -4,11 +4,15 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\GandaDewasaPutraResource\Pages;
 use App\Filament\Resources\GandaDewasaPutraResource\Widgets\GandaDewasaPutraStats;
+use App\Filament\Exports\GandaExporter;
 use App\Models\Registration;
+use Filament\Actions\Exports\Enums\ExportFormat;
 use Filament\Forms\Form;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
+use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Tables\Actions\ExportAction;
 use Illuminate\Database\Eloquent\Builder;
 
 class GandaDewasaPutraResource extends RegistrationResource
@@ -51,13 +55,19 @@ class GandaDewasaPutraResource extends RegistrationResource
 
     // ── Infolist: inherited ───────────────────────────────────────
 
-    // ── Table: inherited, tapi kita sembunyikan kolom 'kategori' karena sudah pasti ──
+    // ── Table: inherited, tapi export pakai GandaExporter (2 kolom pemain) ──
 
     public static function table(Table $table): Table
     {
         return parent::table($table)
             ->heading('Ganda Dewasa Putra')
-            ->description('Daftar peserta kategori Ganda Dewasa Putra');
+            ->description('Daftar peserta kategori Ganda Dewasa Putra')
+            ->headerActions([
+                ExportAction::make()
+                    ->label('Export Excel')
+                    ->exporter(GandaExporter::class)
+                    ->formats([ExportFormat::Xlsx]),
+            ]);
     }
 
     // ── Pages ─────────────────────────────────────────────────────
@@ -76,10 +86,11 @@ class GandaDewasaPutraResource extends RegistrationResource
     {
         return [];
     }
-        public static function getWidgets(): array
-        {
-            return [
-                GandaDewasaPutraStats::class,
-            ];
-        }
+
+    public static function getWidgets(): array
+    {
+        return [
+            GandaDewasaPutraStats::class,
+        ];
+    }
 }
