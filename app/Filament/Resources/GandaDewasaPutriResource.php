@@ -4,9 +4,12 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\GandaDewasaPutriResource\Pages;
 use App\Filament\Resources\GandaDewasaPutriResource\Widgets\GandaDewasaPutriStats;
+use App\Filament\Exports\GandaExporter;
 use App\Models\Registration;
+use Filament\Actions\Exports\Enums\ExportFormat;
 use Filament\Resources\Resource;
 use Filament\Tables\Table;
+use Filament\Tables\Actions\ExportAction;
 use Illuminate\Database\Eloquent\Builder;
 
 class GandaDewasaPutriResource extends RegistrationResource
@@ -42,15 +45,21 @@ class GandaDewasaPutriResource extends RegistrationResource
     {
         return parent::table($table)
             ->heading('Ganda Dewasa Putri')
-            ->description('Daftar peserta kategori Ganda Dewasa Putri');
+            ->description('Daftar peserta kategori Ganda Dewasa Putri')
+            ->headerActions([
+                ExportAction::make()
+                    ->label('Export Excel')
+                    ->exporter(GandaExporter::class)
+                    ->formats([ExportFormat::Xlsx]),
+            ]);
     }
 
-            public static function getWidgets(): array
-        {
-            return [
-                GandaDewasaPutriStats::class,
-            ];
-        }
+    public static function getWidgets(): array
+    {
+        return [
+            GandaDewasaPutriStats::class,
+        ];
+    }
 
     public static function getPages(): array
     {
@@ -61,7 +70,6 @@ class GandaDewasaPutriResource extends RegistrationResource
             'edit'   => Pages\EditGandaDewasaPutri::route('/{record}/edit'),
         ];
     }
-
 
     public static function getRelations(): array { return []; }
 }

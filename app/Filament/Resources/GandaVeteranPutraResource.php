@@ -4,10 +4,13 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\GandaVeteranPutraResource\Pages;
 use App\Filament\Resources\GandaVeteranPutraResource\Widgets\GandaVeteranPutraStats;
+use App\Filament\Exports\GandaExporter;
 use App\Models\Registration;
+use Filament\Actions\Exports\Enums\ExportFormat;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Tables\Actions\ExportAction;
 use Illuminate\Database\Eloquent\Builder;
 
 class GandaVeteranPutraResource extends RegistrationResource
@@ -46,6 +49,12 @@ class GandaVeteranPutraResource extends RegistrationResource
         return parent::table($table)
             ->heading('Ganda Veteran Putra')
             ->description('Daftar peserta kategori Ganda Veteran Putra — verifikasi usia wajib')
+            ->headerActions([
+                ExportAction::make()
+                    ->label('Export Excel')
+                    ->exporter(GandaExporter::class)
+                    ->formats([ExportFormat::Xlsx]),
+            ])
             // Tambahkan filter khusus: yang tidak lolos syarat veteran
             ->filters(array_merge(
                 [],
@@ -87,12 +96,12 @@ class GandaVeteranPutraResource extends RegistrationResource
         ];
     }
 
-            public static function getWidgets(): array
-        {
-            return [
-                GandaVeteranPutraStats::class,
-            ];
-        }
+    public static function getWidgets(): array
+    {
+        return [
+            GandaVeteranPutraStats::class,
+        ];
+    }
 
     public static function getRelations(): array { return []; }
 }

@@ -466,6 +466,12 @@ body {
     overflow: hidden;
     transition: all 0.35s cubic-bezier(0.22,1,0.36,1);
     box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    cursor: pointer;
+    text-align: left;
+    width: 100%;
+    font-family: inherit;
+    border-width: 1px;
+    display: block;
 }
 .guest-card:hover {
     transform: translateY(-6px);
@@ -474,7 +480,7 @@ body {
 }
 .guest-photo-wrap {
     width: 100%;
-    height: 220px;
+    aspect-ratio: 3 / 4;
     position: relative;
     overflow: hidden;
     background: var(--paper-2);
@@ -485,9 +491,13 @@ body {
     object-fit: cover;
     object-position: top center;
     display: block;
-    transition: transform 0.5s ease;
+    filter: grayscale(100%) contrast(1.02);
+    transition: filter 0.6s ease, transform 0.6s ease;
 }
-.guest-card:hover .guest-photo-wrap img { transform: scale(1.05); }
+.guest-card:hover .guest-photo-wrap img {
+    filter: grayscale(0%) contrast(1);
+    transform: scale(1.05);
+}
 .guest-photo-fallback {
     display: none;
     width: 100%;
@@ -503,17 +513,35 @@ body {
 .guest-photo-gradient {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to bottom, transparent 40%, rgba(255,247,237,0.6) 100%);
+    background: linear-gradient(to bottom, transparent 55%, rgba(255,247,237,0.7) 100%);
     pointer-events: none;
 }
-.guest-body { padding: 24px 28px 28px; }
+.guest-photo-hint {
+    position: absolute;
+    bottom: 14px; right: 14px;
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 14px 7px 12px;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(6px);
+    border-radius: 99px;
+    font-family: var(--font-display);
+    font-size: 9.5px; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--fire-deep);
+    opacity: 0; transform: translateY(6px);
+    transition: all 0.3s ease;
+}
+.guest-card:hover .guest-photo-hint {
+    opacity: 1; transform: translateY(0);
+}
+.guest-body { padding: 22px 26px 24px; }
 .guest-name {
-    font-size: 20px;
+    font-size: 19px;
     font-weight: 800;
     letter-spacing: -0.02em;
     color: var(--ink);
     line-height: 1.2;
-    margin-bottom: 3px;
+    margin-bottom: 4px;
 }
 .guest-nickname {
     font-size: 11px;
@@ -521,64 +549,40 @@ body {
     letter-spacing: 0.10em;
     text-transform: uppercase;
     color: var(--fire);
-    margin-bottom: 12px;
+    margin-bottom: 0;
 }
-.guest-divider {
-    height: 1px;
-    background: linear-gradient(90deg, rgba(249,115,22,0.15), rgba(249,115,22,0.05) 60%, transparent);
-    margin: 14px 0;
+
+/* ── Modal Detail Guest Star ── */
+.guest-modal-photo-wrap {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    border-radius: 20px 20px 0 0;
+    overflow: hidden;
+    position: relative;
+    background: var(--paper-2);
 }
-.guest-bio {
-    font-size: 12.5px;
-    line-height: 1.75;
-    color: var(--ink-60);
-    margin-bottom: 16px;
+.guest-modal-photo-wrap img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
 }
-.guest-achv-list { display: flex; flex-direction: column; gap: 8px; }
-.guest-achv-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 9px;
-    font-size: 11.5px;
-    color: var(--ink-60);
-    line-height: 1.45;
+.guest-modal-photo-gradient {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 45%);
+    pointer-events: none;
 }
-.guest-achv-icon {
-    width: 20px; height: 20px; border-radius: 6px; flex-shrink: 0;
-    background: #fff7ed;
-    border: 1px solid rgba(249,115,22,0.15);
-    display: flex; align-items: center; justify-content: center;
-    margin-top: 1px;
+.guest-modal-name-overlay {
+    position: absolute; left: 24px; right: 24px; bottom: 18px;
 }
-.guest-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 18px;
-    padding-top: 16px;
-    border-top: 1px solid rgba(26,16,7,0.08);
-    flex-wrap: wrap;
-    gap: 10px;
+.guest-modal-name-overlay .gm-name {
+    font-family: var(--font-display); font-size: 24px; font-weight: 800;
+    color: #fff; letter-spacing: -0.02em; line-height: 1.2; margin-bottom: 4px;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.3);
 }
-.guest-country { display: flex; align-items: center; gap: 8px; }
-.guest-flag {
-    width: 24px; height: 16px; border-radius: 3px; overflow: hidden;
-    border: 1px solid rgba(26,16,7,0.08); flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 13px; line-height: 1;
-}
-.guest-country-name { font-size: 12px; font-weight: 700; color: var(--ink); }
-.guest-country-role { font-size: 10.5px; color: var(--ink-30); margin-top: 1px; }
-.guest-pill {
-    display: inline-flex; align-items: center; gap: 5px;
-    padding: 5px 12px;
-    background: #fff7ed;
-    border: 1px solid rgba(249,115,22,0.15);
-    border-radius: 99px;
-    font-size: 10px; font-weight: 700;
-    letter-spacing: 0.06em;
-    color: #c2410c;
-    white-space: nowrap;
+.guest-modal-name-overlay .gm-nick {
+    font-family: var(--font-display); font-size: 11px; font-weight: 700;
+    letter-spacing: 0.10em; text-transform: uppercase; color: var(--gold);
 }
 
 /* ═══════════════════════════════════════
@@ -1259,6 +1263,23 @@ body {
 }
 @media (max-width: 640px) {
     .akm-tour-row { grid-template-columns: 1fr; }
+    .guest-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        max-width: 420px;
+    }
+    .guest-photo-wrap {
+        aspect-ratio: 4 / 3;
+    }
+    .guest-body {
+        padding: 22px 22px 24px;
+    }
+    .guest-name {
+        font-size: 19px;
+    }
+    .guest-photo-wrap img {
+        object-position: center 15%;
+    }
 }
 
 /* ═══════════════════════════════════════
@@ -1312,11 +1333,14 @@ body {
     .about-stat-grid  { grid-template-columns: repeat(2, 1fr); gap: 10px; }
     .guest-body       { padding: 20px 20px 24px; }
     .guest-name       { font-size: 18px; }
-    .guest-photo-wrap { height: 220px; }
+    .guest-photo-wrap { aspect-ratio: 16 / 10; }
     .about-grid       { gap: 32px; }
     .kat-name  { font-size: 12.5px; }
     .kat-price { font-size: 14px; }
     .kat-desc  { display: none; }
+    .guest-photo-wrap img {
+        object-position: center 10%;
+    }
 }
 
 @media (max-width: 360px) {
@@ -1618,6 +1642,61 @@ body {
                 </div>
             </div>
             @endforeach
+        </div>
+    </div>
+</section>
+
+{{-- ══════════════════════════════════════════
+     GUEST STAR
+══════════════════════════════════════════ --}}
+<section class="section" style="background: var(--paper); padding-top: 80px; padding-bottom: 88px;">
+    <div class="section-inner">
+        <div style="max-width:640px; margin:0 auto; text-align:center;">
+            <span class="sec-tag reveal">Bintang Tamu</span>
+            <h2 class="sec-title reveal">Meet Our <em style="font-style:normal;color:var(--fire);">Guest Star</em></h2>
+            <p class="sec-sub reveal" style="margin-left:auto;margin-right:auto;">
+                Dua legenda bulutangkis Indonesia yang akan hadir langsung dan meramaikan Bayan Open 2026. Klik foto untuk lihat profil lengkap.
+            </p>
+        </div>
+
+        <div class="guest-grid" style="margin-top:44px;">
+
+            <button type="button" class="guest-card reveal" onclick="openGuestModal(0)">
+                <div class="guest-photo-wrap">
+                    <img src="https://res.cloudinary.com/viecqvpk/image/upload/v1786430991/jonatan-christie-bintang-badminton-indonesia_mknxdw.avif"
+                         alt="Jonathan Christie" loading="lazy" decoding="async"
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="guest-photo-fallback">JC</div>
+                    <div class="guest-photo-gradient"></div>
+                    <span class="guest-photo-hint">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"/></svg>
+                        Lihat Profil
+                    </span>
+                </div>
+                <div class="guest-body">
+                    <p class="guest-name">Jonathan Christie</p>
+                    <p class="guest-nickname">Atlit Bulutangkis Nasional</p>
+                </div>
+            </button>
+
+            <button type="button" class="guest-card reveal" onclick="openGuestModal(1)">
+                <div class="guest-photo-wrap">
+                    <img src="https://res.cloudinary.com/viecqvpk/image/upload/v1786430992/Screenshot_20241203_223047_Chrome-3486784227_newjcu.webp"
+                         alt="Hendra Setiawan" loading="lazy" decoding="async"
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="guest-photo-fallback">HS</div>
+                    <div class="guest-photo-gradient"></div>
+                    <span class="guest-photo-hint">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"/></svg>
+                        Lihat Profil
+                    </span>
+                </div>
+                <div class="guest-body">
+                    <p class="guest-name">Hendra Setiawan</p>
+                    <p class="guest-nickname">Atlit Legenda Bulutangkis</p>
+                </div>
+            </button>
+
         </div>
     </div>
 </section>
@@ -2089,6 +2168,42 @@ body {
 </div>
 
 {{-- ══════════════════════════════════════════
+     MODAL GUEST STAR — DETAIL PROFIL
+══════════════════════════════════════════ --}}
+<div id="modalGuest" class="mo-overlay" style="display:none;">
+    <div id="modalGuestCard" class="mo-card" style="width:100%;max-width:520px;">
+        <button type="button" onclick="closeGuestModal()"
+                style="position:absolute;top:16px;right:16px;z-index:3;width:36px;height:36px;border-radius:99px;background:rgba(0,0,0,0.35);backdrop-filter:blur(6px);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;transition:background 0.2s;"
+                onmouseover="this.style.background='rgba(0,0,0,0.5)'" onmouseout="this.style.background='rgba(0,0,0,0.35)'">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+
+        <div class="guest-modal-photo-wrap">
+            <img id="gmPhoto" src="" alt="">
+            <div class="guest-modal-photo-gradient"></div>
+            <div class="guest-modal-name-overlay">
+                <p class="gm-name" id="gmName"></p>
+                <p class="gm-nick" id="gmNick"></p>
+            </div>
+        </div>
+
+        <div style="padding:22px 26px 26px;">
+            <p id="gmBio" style="font-size:13px;line-height:1.75;color:var(--m-ink-60);font-weight:500;margin-bottom:16px;"></p>
+
+            <div id="gmAchvList" style="display:flex;flex-direction:column;gap:8px;margin-bottom:18px;"></div>
+
+            <div style="display:flex;align-items:center;gap:8px;padding-top:16px;border-top:1px solid var(--m-ink-12);">
+                <span style="width:24px;height:16px;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:13px;">🇮🇩</span>
+                <div>
+                    <p style="font-size:12px;font-weight:700;color:var(--m-ink);margin:0;">Indonesia</p>
+                    <p id="gmRole" style="font-size:10.5px;color:var(--m-ink-35);font-weight:600;margin:1px 0 0;"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- ══════════════════════════════════════════
      MODAL 2 — PILIH KATEGORI OPEN
 ══════════════════════════════════════════ --}}
 <div id="modal2" class="mo-overlay" style="display:none;">
@@ -2253,6 +2368,80 @@ var kategoriRoutes = {
     'ganda-veteran-putra' : '{{ route("registration.ganda-veteran-putra") }}',
     'beregu'              : '{{ route("registration.beregu") }}',
 };
+
+// ── Guest Star Data & Modal ─────────────────────────────────
+var guestData = [
+    {
+        name: 'Jonathan Christie',
+        nick: 'Atlit Bulutangkis Nasional',
+        photo: 'https://res.cloudinary.com/viecqvpk/image/upload/v1786430991/jonatan-christie-bintang-badminton-indonesia_mknxdw.avif',
+        bio: 'Atlet tunggal putra andalan Indonesia yang dikenal dengan gaya permainan agresif dan mental juara di lapangan.',
+        role: 'Tim Nasional PBSI',
+        achievements: [
+            'Peraih medali emas Asian Games 2018, nomor tunggal putra',
+            'Peraih medali perunggu Olimpiade Paris 2024, tunggal putra',
+            'Juara turnamen Super Series & BWF World Tour'
+        ]
+    },
+    {
+        name: 'Hendra Setiawan',
+        nick: 'Atlit Legenda Bulutangkis',
+        photo: 'https://res.cloudinary.com/viecqvpk/image/upload/v1786430992/Screenshot_20241203_223047_Chrome-3486784227_newjcu.webp',
+        bio: 'Salah satu pemain ganda putra terhebat sepanjang masa, dijuluki "Old but Gold" berkat konsistensi prestasinya lintas generasi.',
+        role: 'Legenda Ganda Putra',
+        achievements: [
+            'Peraih medali emas Olimpiade Beijing 2008 & Tokyo 2020, ganda putra',
+            'Juara dunia BWF berkali-kali di nomor ganda putra',
+            'Ikon bulutangkis Indonesia dengan karier lebih dari dua dekade'
+        ]
+    }
+];
+
+function openGuestModal(index) {
+    var g = guestData[index];
+    document.getElementById('gmPhoto').src = g.photo;
+    document.getElementById('gmPhoto').alt = g.name;
+    document.getElementById('gmName').textContent = g.name;
+    document.getElementById('gmNick').textContent = g.nick;
+    document.getElementById('gmBio').textContent = g.bio;
+    document.getElementById('gmRole').textContent = g.role;
+
+    var listEl = document.getElementById('gmAchvList');
+    listEl.innerHTML = '';
+    g.achievements.forEach(function(item) {
+        var row = document.createElement('div');
+        row.style.cssText = 'display:flex;align-items:flex-start;gap:9px;font-size:12px;color:var(--m-ink-60);line-height:1.5;font-weight:500;';
+        row.innerHTML = '<span style="width:20px;height:20px;border-radius:6px;flex-shrink:0;background:#fff7ed;border:1px solid rgba(249,115,22,0.15);display:flex;align-items:center;justify-content:center;margin-top:1px;">' +
+            '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>' +
+            '<span>' + item + '</span>';
+        listEl.appendChild(row);
+    });
+
+    document.body.style.overflow = 'hidden';
+    var mg  = document.getElementById('modalGuest');
+    var mgc = document.getElementById('modalGuestCard');
+    mg.style.display = 'flex';
+    mg.classList.add('anim-in');
+    animCard(mgc, 'in');
+    setTimeout(function() { mg.classList.remove('anim-in'); }, 400);
+    mg.onclick = function(e) { if (e.target === mg) closeGuestModal(); };
+}
+
+function closeGuestModal() {
+    var mg  = document.getElementById('modalGuest');
+    var mgc = document.getElementById('modalGuestCard');
+    mg.classList.add('anim-out');
+    animCard(mgc, 'out');
+    setTimeout(function() {
+        mg.style.display = 'none';
+        mg.classList.remove('anim-out');
+        document.body.style.overflow = '';
+    }, 220);
+}
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeGuestModal();
+});
 
 // ── Tab Switcher ─────────────────────────────────────────────
 function switchTab(tab) {
