@@ -1663,7 +1663,7 @@ body {
 
             <button type="button" class="guest-card reveal" onclick="openGuestModal(0)">
                 <div class="guest-photo-wrap">
-                    <img src="https://res.cloudinary.com/viecqvpk/image/upload/v1786430991/jonatan-christie-bintang-badminton-indonesia_mknxdw.avif"
+                    <img src="https://res.cloudinary.com/viecqvpk/image/upload/q_auto/f_auto/v1786436721/JOJO_iszmac.jpg"
                          alt="Jonathan Christie" loading="lazy" decoding="async"
                          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                     <div class="guest-photo-fallback">JC</div>
@@ -1681,7 +1681,7 @@ body {
 
             <button type="button" class="guest-card reveal" onclick="openGuestModal(1)">
                 <div class="guest-photo-wrap">
-                    <img src="https://res.cloudinary.com/viecqvpk/image/upload/v1786430992/Screenshot_20241203_223047_Chrome-3486784227_newjcu.webp"
+                    <img src="https://res.cloudinary.com/viecqvpk/image/upload/q_auto/f_auto/v1786437080/d7028702-06de-4b2f-937b-0987ef047d16_dzyno5.png"
                          alt="Hendra Setiawan" loading="lazy" decoding="async"
                          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                     <div class="guest-photo-fallback">HS</div>
@@ -2374,7 +2374,7 @@ var guestData = [
     {
         name: 'Jonathan Christie',
         nick: 'Atlit Bulutangkis Nasional',
-        photo: 'https://res.cloudinary.com/viecqvpk/image/upload/v1786430991/jonatan-christie-bintang-badminton-indonesia_mknxdw.avif',
+        photo: 'https://res.cloudinary.com/viecqvpk/image/upload/v1786436721/JOJO_iszmac.jpg',
         bio: 'Atlet tunggal putra andalan Indonesia yang dikenal dengan gaya permainan agresif dan mental juara di lapangan.',
         role: 'Tim Nasional PBSI',
         achievements: [
@@ -2386,7 +2386,7 @@ var guestData = [
     {
         name: 'Hendra Setiawan',
         nick: 'Atlit Legenda Bulutangkis',
-        photo: 'https://res.cloudinary.com/viecqvpk/image/upload/v1786430992/Screenshot_20241203_223047_Chrome-3486784227_newjcu.webp',
+        photo: 'https://res.cloudinary.com/viecqvpk/image/upload/v1786436746/HENDRA_zrjzr7.png',
         bio: 'Salah satu pemain ganda putra terhebat sepanjang masa, dijuluki "The Daddies, Old but Gold" berkat konsistensi prestasinya lintas generasi.',
         role: 'Legenda Ganda Putra',
         achievements: [
