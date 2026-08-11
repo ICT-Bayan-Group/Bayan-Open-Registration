@@ -2379,7 +2379,7 @@ var guestData = [
         role: 'Tim Nasional PBSI',
         achievements: [
             'Peraih medali emas Asian Games 2018, nomor tunggal putra',
-            'Peraih medali perunggu Olimpiade Paris 2024, tunggal putra',
+            'Juara All England 2024 (BWF World Tour Super 1000)',
             'Juara turnamen Super Series & BWF World Tour'
         ]
     },
@@ -2387,10 +2387,10 @@ var guestData = [
         name: 'Hendra Setiawan',
         nick: 'Atlit Legenda Bulutangkis',
         photo: 'https://res.cloudinary.com/viecqvpk/image/upload/v1786430992/Screenshot_20241203_223047_Chrome-3486784227_newjcu.webp',
-        bio: 'Salah satu pemain ganda putra terhebat sepanjang masa, dijuluki "Old but Gold" berkat konsistensi prestasinya lintas generasi.',
+        bio: 'Salah satu pemain ganda putra terhebat sepanjang masa, dijuluki "The Daddies, Old but Gold" berkat konsistensi prestasinya lintas generasi.',
         role: 'Legenda Ganda Putra',
         achievements: [
-            'Peraih medali emas Olimpiade Beijing 2008 & Tokyo 2020, ganda putra',
+            'Peraih medali emas Olimpiade Beijing 2008 nomor ganda putra',
             'Juara dunia BWF berkali-kali di nomor ganda putra',
             'Ikon bulutangkis Indonesia dengan karier lebih dari dua dekade'
         ]
