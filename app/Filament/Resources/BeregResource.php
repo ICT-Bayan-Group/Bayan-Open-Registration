@@ -4,9 +4,12 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\BeregResource\Pages;
 use App\Filament\Resources\BeregResource\Widgets\BeregStats;
+use App\Filament\Exports\BeregExporter;
 use App\Models\Registration;
+use Filament\Actions\Exports\Enums\ExportFormat;
 use Filament\Resources\Resource;
 use Filament\Tables\Table;
+use Filament\Tables\Actions\ExportAction;
 use Illuminate\Database\Eloquent\Builder;
 
 class BeregResource extends RegistrationResource
@@ -42,15 +45,21 @@ class BeregResource extends RegistrationResource
     {
         return parent::table($table)
             ->heading('Beregu')
-            ->description('Daftar peserta kategori Beregu — harga Rp 1.000.000');
+            ->description('Daftar peserta kategori Beregu — harga Rp 1.000.000')
+            ->headerActions([
+                ExportAction::make()
+                    ->label('Export Excel')
+                    ->exporter(BeregExporter::class)
+                    ->formats([ExportFormat::Xlsx]),
+            ]);
     }
 
-        public static function getWidgets(): array
-        {
-            return [
-                BeregStats::class,
-            ];
-        }
+    public static function getWidgets(): array
+    {
+        return [
+            BeregStats::class,
+        ];
+    }
 
     public static function getPages(): array
     {
