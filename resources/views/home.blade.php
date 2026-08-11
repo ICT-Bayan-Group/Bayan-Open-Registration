@@ -1664,7 +1664,7 @@ body {
             <button type="button" class="guest-card reveal" onclick="openGuestModal(0)">
                 <div class="guest-photo-wrap">
                     <img src="https://res.cloudinary.com/viecqvpk/image/upload/q_auto/f_auto/v1786436721/JOJO_iszmac.jpg"
-                         alt="Jonathan Christie" loading="lazy" decoding="async"
+                         alt="Jonatan Christie" loading="lazy" decoding="async"
                          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                     <div class="guest-photo-fallback">JC</div>
                     <div class="guest-photo-gradient"></div>
@@ -1674,7 +1674,7 @@ body {
                     </span>
                 </div>
                 <div class="guest-body">
-                    <p class="guest-name">Jonathan Christie</p>
+                    <p class="guest-name">Jonatan Christie</p>
                     <p class="guest-nickname">Atlit Bulutangkis Nasional</p>
                 </div>
             </button>
@@ -2372,7 +2372,7 @@ var kategoriRoutes = {
 // ── Guest Star Data & Modal ─────────────────────────────────
 var guestData = [
     {
-        name: 'Jonathan Christie',
+        name: 'Jonatan Christie',
         nick: 'Atlit Bulutangkis Nasional',
         photo: 'https://res.cloudinary.com/viecqvpk/image/upload/v1786436721/JOJO_iszmac.jpg',
         bio: 'Atlet tunggal putra andalan Indonesia yang dikenal dengan gaya permainan agresif dan mental juara di lapangan.',
