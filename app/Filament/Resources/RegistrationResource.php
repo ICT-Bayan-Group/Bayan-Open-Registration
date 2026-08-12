@@ -269,8 +269,8 @@ class RegistrationResource extends Resource
                 Tables\Columns\TextColumn::make('pemain_list')
                     ->label('Pemain')->limit(40)
                     ->tooltip(fn (Registration $r) => $r->pemain_list)
-                    ->searchable(query: fn (Builder $q, string $s) =>
-                        $q->whereRaw('JSON_SEARCH(pemain, "one", ?) IS NOT NULL', ["%{$s}%"])
+                    ->searchable(query: fn (Builder $query, string $search) =>
+                        $query->whereRaw('JSON_SEARCH(pemain, "one", ?) IS NOT NULL', ["%{$search}%"])
                     ),
 
                 Tables\Columns\BadgeColumn::make('kategori')
