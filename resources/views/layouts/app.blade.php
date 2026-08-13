@@ -300,7 +300,7 @@
             {{-- Logo --}}
             <a href="{{ url('/') }}" class="flex items-center gap-4 group">
                 <img
-                    src="https://res.cloudinary.com/djs5pi7ev/image/upload/q_auto/f_auto/v1775803080/bayanopen-logo_mfcb55.png"
+                    src="https://res.cloudinary.com/viecqvpk/image/upload/q_auto/f_auto/v1786581021/bayanopen-logo_mfcb55_rk41oh.webp"
                     alt="Bayan Open 2026"
                     class="h-10 sm:h-12 lg:h-16 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
                 >
@@ -434,7 +434,7 @@
                 {{-- Brand --}}
                 <div class="sm:col-span-2 lg:col-span-1">
                     <img
-                        src="https://res.cloudinary.com/djs5pi7ev/image/upload/q_auto/f_auto/v1775803080/bayanopen-logo_mfcb55.png"
+                        src="https://res.cloudinary.com/viecqvpk/image/upload/q_auto/f_auto/v1786581021/bayanopen-logo_mfcb55_rk41oh.webp"
                         alt="Bayan Open 2026"
                         class="h-12 sm:h-14 object-contain mb-4 sm:mb-5"
                     >
