@@ -1363,7 +1363,7 @@ body {
 ══════════════════════════════════════════ --}}
 <section class="hero">
     <video class="hero-video"
-        src="https://res.cloudinary.com/djs5pi7ev/video/upload/q_auto/f_auto/v1776060629/202604131402_v5lt3b.mp4"
+        src="https://res.cloudinary.com/viecqvpk/video/upload/v1786601622/202604131402_imsn8i.mp4"
         autoplay muted loop playsinline
         preload="metadata"
         decoding="async"
@@ -1382,7 +1382,7 @@ body {
                 <div class="eyebrow-dot-wrap"><div class="eyebrow-dot"></div></div>
                 <span class="eyebrow-text">Pendaftaran Resmi Dibuka</span>
             </div>
-            <img src="https://res.cloudinary.com/djs5pi7ev/image/upload/q_auto/f_auto/v1775803080/bayanopen-logo_mfcb55.png"
+            <img src="https://res.cloudinary.com/viecqvpk/image/upload/q_auto/f_auto/v1786581021/bayanopen-logo_mfcb55_rk41oh.webp"
                  alt="Bayan Open 2026" class="hero-logo" id="h-logo">
             <p class="hero-headline" id="h-tag">
                 Turnamen bulutangkis bergengsi dan Sirkuit Nasional.<br>
@@ -1432,10 +1432,10 @@ body {
                 <span class="sec-tag reveal">Tentang Turnamen</span>
                 <h2 class="sec-title reveal">Mengenal<br><em style="font-style:normal;color:var(--fire);">Bayan Open</em></h2>
                 <p class="sec-sub reveal" style="max-width:100%; margin-bottom:16px;">
-                    Bayan Open adalah turnamen bulutangkis bergengsi yang diselenggarakan di Balikpapan, Kalimantan Timur — menjadi salah satu ajang paling ditunggu-tunggu oleh para pecinta olahraga tepuk bulu di wilayah Kalimantan dan sekitarnya.
+                    Bayan Open adalah turnamen bulutangkis bergengsi yang diselenggarakan di Balikpapan, Kalimantan Timur. Menjadi salah satu ajang paling ditunggu-tunggu oleh para pecinta olahraga tepuk bulu di wilayah Kalimantan dan sekitarnya.
                 </p>
                 <p style="font-size:13.5px; line-height:1.8; color:var(--ink-60);" class="reveal">
-                    Pertama kali digelar pada 2023, Bayan Open hadir dengan misi mempertemukan atlet-atlet terbaik dari berbagai daerah dalam satu arena yang kompetitif, sportif, dan berkesan. Turnamen ini bukan sekadar pertandingan — ia adalah perayaan semangat juang, kebersamaan komunitas, dan cinta terhadap bulutangkis Indonesia.
+                    Pertama kali digelar pada 2023, Bayan Open hadir dengan misi mempertemukan atlet-atlet terbaik dari berbagai daerah dalam satu arena yang kompetitif, sportif, dan berkesan. Turnamen ini bukan sekadar pertandingan, namun adalah perayaan semangat juang, kebersamaan komunitas, dan cinta terhadap bulutangkis Indonesia.
                 </p>
                 <p style="font-size:13.5px; line-height:1.8; color:var(--ink-60); margin-top:12px;" class="reveal">
                     Pada edisi 2026 ini, Bayan Open hadir lebih besar dengan jalur <strong>Sirkuit Nasional C (PBSI)</strong> di samping kategori Open, menjadikannya platform resmi bagi atlet muda untuk meraih poin nasional.
@@ -1706,7 +1706,7 @@ body {
 ══════════════════════════════════════════ --}}
 <section class="gallery-section">
     <video class="gallery-bg-video"
-        src="https://res.cloudinary.com/djs5pi7ev/video/upload/q_50,w_1280/v1769502814/bayanopen-hero_iqhyip.mp4"
+        src="https://res.cloudinary.com/viecqvpk/video/upload/v1786581233/bayanopen-hero_lxmlnl.mp4"
         autoplay muted loop playsinline preload="none"></video>
     <div class="gallery-video-overlay"></div>
     <div class="grain" aria-hidden="true"></div>
@@ -1721,16 +1721,16 @@ body {
 
     @php
     $photos = [
-        ['https://res.cloudinary.com/djs5pi7ev/image/upload/w_600,q_60,f_webp/v1767765503/Bayan-8672_iuuxhb.jpg',   'Ganda Veteran Putra'],
-        ['https://res.cloudinary.com/djs5pi7ev/image/upload/w_600,q_60,f_webp/v1767765503/Bayan-1739_e0mi1r.jpg',   'Aksi Lapangan'],
-        ['https://res.cloudinary.com/djs5pi7ev/image/upload/w_600,q_60,f_webp/v1767765501/Bayan-1715_rppm7m.jpg',   'Smash Keras'],
-        ['https://res.cloudinary.com/djs5pi7ev/image/upload/w_600,q_60,f_webp/v1767765497/Bayan-8837_rpl0gl.jpg',   'Ganda Putri'],
-        ['https://res.cloudinary.com/djs5pi7ev/image/upload/w_600,q_60,f_webp/v1767765495/PenyerahanMedali-575_yhyuds.jpg', 'Penyerahan Medali'],
-        ['https://res.cloudinary.com/djs5pi7ev/image/upload/w_600,q_60,f_webp/v1773113997/Bayan-2268_tnmwt4.jpg',   'Guest Star'],
-        ['https://res.cloudinary.com/djs5pi7ev/image/upload/w_600,q_60,f_webp/v1773113996/Bayan-36_mpnqui.jpg',     'Servis Perdana'],
-        ['https://res.cloudinary.com/djs5pi7ev/image/upload/w_600,q_60,f_webp/v1773113996/Bayan-2324_itnoc5.jpg',   'Aksi Hendra Setiawan'],
-        ['https://res.cloudinary.com/djs5pi7ev/image/upload/w_600,q_60,f_webp/v1773113995/Bayan-26_llektw.jpg',     'Taruna Putra'],
-        ['https://res.cloudinary.com/djs5pi7ev/image/upload/w_600,q_60,f_webp/v1773113995/Bayan-1427_s2frld.jpg',   'Ganda Putra'],
+        ['https://res.cloudinary.com/viecqvpk/image/upload/w_600,q_60,f_webp/v1786581020/Bayan-8672_iuuxhb_lnjy0x.webp',   'Ganda Veteran Putra'],
+        ['https://res.cloudinary.com/viecqvpk/image/upload/w_600,q_60,f_webp/v1786581020/Bayan-1739_e0mi1r_cvbtv3.webp',   'Aksi Lapangan'],
+        ['https://res.cloudinary.com/viecqvpk/image/upload/w_600,q_60,f_webp/v1786581020/Bayan-1715_rppm7m_cmskbx.webp',   'Ganda Remaja Putra'],
+        ['https://res.cloudinary.com/viecqvpk/image/upload/w_600,q_60,f_webp/v1786581020/Bayan-8837_rpl0gl_l3w5ep.webp',   'Ganda Putri'],
+        ['https://res.cloudinary.com/viecqvpk/image/upload/w_600,q_60,f_webp/v1786581020/PenyerahanMedali-575_yhyuds_pgh5nr.webp', 'Penyerahan Medali'],
+        ['https://res.cloudinary.com/viecqvpk/image/upload/w_600,q_60,f_webp/v1786581096/Bayan-2268_ll0s3o.jpg',   'Guest Star'],
+        ['https://res.cloudinary.com/viecqvpk/image/upload/w_600,q_60,f_webp/v1786581081/Bayan-36_lgwrcz.jpg',     'Servis Perdana'],
+        ['https://res.cloudinary.com/viecqvpk/image/upload/w_600,q_60,f_webp/v1786581080/Bayan-2324_d4suu3.jpg',   'Aksi Hendra Setiawan'],
+        ['https://res.cloudinary.com/viecqvpk/image/upload/w_600,q_60,f_webp/v1786581075/Bayan-26_rfucmc.jpg',     'Taruna Putra'],
+        ['https://res.cloudinary.com/viecqvpk/image/upload/w_600,q_60,f_webp/v1786581031/Bayan-1427_uliqvq.jpg',   'Tunggal Putra'],
     ];
     $doubled  = array_merge($photos, $photos);
     $doubled2 = array_merge(array_reverse($photos), array_reverse($photos));
@@ -1963,7 +1963,7 @@ body {
 
             {{-- Logo --}}
             <div style="margin-bottom:18px;">
-                <img src="https://res.cloudinary.com/djs5pi7ev/image/upload/q_auto/f_auto/v1775803080/bayanopen-logo_mfcb55.png"
+                <img src="https://res.cloudinary.com/viecqvpk/image/upload/q_auto/f_auto/v1786581021/bayanopen-logo_mfcb55_rk41oh.webp"
                      alt="Bayan Open 2026"
                      style="height:44px;width:auto;object-fit:contain;display:block;">
             </div>
@@ -2035,7 +2035,7 @@ body {
     <div id="modal1Card" class="mo-card" style="width:100%;max-width:560px;">
         <div style="padding:36px 32px 30px;">
             <div style="display:flex;justify-content:center;margin-bottom:22px;">
-                <img src="https://res.cloudinary.com/djs5pi7ev/image/upload/q_auto/f_auto/v1775803080/bayanopen-logo_mfcb55.png"
+                <img src="https://res.cloudinary.com/viecqvpk/image/upload/q_auto/f_auto/v1786581021/bayanopen-logo_mfcb55_rk41oh.webp"
                      alt="Bayan Open 2026"
                      style="height:44px;width:auto;object-fit:contain;display:block;">
             </div>
@@ -2276,7 +2276,7 @@ body {
         <div style="height:4px;background:linear-gradient(90deg,#f97316,#fbbf24,#f97316);"></div>
         <div style="padding:28px 28px 0;">
             <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;">
-                <img src="https://res.cloudinary.com/djs5pi7ev/image/upload/q_auto/f_auto/v1775803080/bayanopen-logo_mfcb55.png"
+                <img src="https://res.cloudinary.com/viecqvpk/image/upload/q_auto/f_auto/v1786581021/bayanopen-logo_mfcb55_rk41oh.webp"
                      alt="Bayan Open 2026"
                      class="h-10 sm:h-12 lg:h-16 w-auto object-contain transition-transform duration-300 group-hover:scale-105">
                 <div>

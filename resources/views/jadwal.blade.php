@@ -412,7 +412,7 @@
     {{-- ══ VIDEO HERO ══ --}}
     <div class="jp-hero">
         <video class="jp-hero-video"
-            src="https://res.cloudinary.com/djs5pi7ev/video/upload/q_50,w_1280/v1769502814/bayanopen-hero_iqhyip.mp4"
+            src="https://res.cloudinary.com/viecqvpk/video/upload/v1786601622/202604131402_imsn8i.mp4"
             autoplay muted loop playsinline preload="auto"></video>
         <div class="jp-hero-overlay"></div>
         <div class="jp-hero-grain"></div>

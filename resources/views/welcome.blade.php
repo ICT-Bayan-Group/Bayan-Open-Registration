@@ -225,7 +225,7 @@
             </svg>
         </div>
         <div class="loader-ring-inner"></div>
-        <img src="https://res.cloudinary.com/djs5pi7ev/image/upload/q_auto/f_auto/v1775803080/bayanopen-logo_mfcb55.png" alt="Bayan Open 2026" class="loader-logo">
+        <img src="https://res.cloudinary.com/viecqvpk/image/upload/q_auto/f_auto/v1786581021/bayanopen-logo_mfcb55_rk41oh.webp" alt="Bayan Open 2026" class="loader-logo">
     </div>
     <div class="loader-progress-wrap" id="loaderProgressWrap">
         <div class="loader-bar" id="loaderBar"></div>

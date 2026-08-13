@@ -45,11 +45,11 @@ class AdminPanelProvider extends PanelProvider
                     html.dark .bo-logo-dark { display: block; }
                     html.dark .bo-logo-light { display: none; }
                 </style>
-                <img src="https://res.cloudinary.com/djs5pi7ev/image/upload/q_auto/f_auto/v1775803080/bayanopen-logo_mfcb55.png"
+                <img src="https://res.cloudinary.com/viecqvpk/image/upload/q_auto/f_auto/v1786581021/bayanopen-logo_mfcb55_rk41oh.webp"
                     alt="Bayan Open 2026"
                     class="bo-logo-light"
                     style="height: 3.5rem;" />
-                <img src="https://res.cloudinary.com/djs5pi7ev/image/upload/v1776413938/LOGO_BO2026_White_bpz9gb.png"
+                <img src="https://res.cloudinary.com/viecqvpk/image/upload/q_auto/f_auto/v1786593160/LOGO_BO2026_White_bpz9gb_wni9g5.png"
                     alt="Bayan Open 2026"
                     class="bo-logo-dark"
                     style="height: 3.5rem;" />

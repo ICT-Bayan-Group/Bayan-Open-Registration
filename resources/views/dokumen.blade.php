@@ -404,7 +404,7 @@
     {{-- ══ VIDEO HERO ══ --}}
     <div class="dk-hero">
         <video class="dk-hero-video"
-            src="https://res.cloudinary.com/djs5pi7ev/video/upload/q_50,w_1280/v1769502814/bayanopen-hero_iqhyip.mp4"
+            src="https://res.cloudinary.com/viecqvpk/video/upload/v1786601622/202604131402_imsn8i.mp4"
             autoplay muted loop playsinline preload="auto"></video>
         <div class="dk-hero-overlay"></div>
         <div class="dk-hero-grain"></div>
