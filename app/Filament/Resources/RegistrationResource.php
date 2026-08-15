@@ -259,9 +259,9 @@ class RegistrationResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('uuid')
-                    ->label('ID Pendaftaran')->searchable()->copyable()
-                    ->fontFamily('mono')->size('sm'),
+               // Tables\Columns\TextColumn::make('uuid')
+                 //   ->label('ID Pendaftaran')->searchable()->copyable()
+                   // ->fontFamily('mono')->size('sm'),
 
                 Tables\Columns\TextColumn::make('nama')
                     ->label('Nama PIC')->searchable()->weight('bold'),
@@ -276,21 +276,21 @@ class RegistrationResource extends Resource
                         $query->whereRaw('JSON_SEARCH(pemain, "one", ?) IS NOT NULL', ["%{$search}%"])
                     ),
 
-                Tables\Columns\BadgeColumn::make('kategori')
-                    ->label('Kategori')
-                    ->colors([
-                        'primary' => 'ganda-dewasa-putra',
-                        'info'    => 'ganda-dewasa-putri',
-                        'warning' => 'ganda-veteran-putra',
-                        'success' => 'beregu',
-                    ])
-                    ->formatStateUsing(fn ($state) => match ($state) {
-                        'ganda-dewasa-putra'  => 'Dewasa Putra',
-                        'ganda-dewasa-putri'  => 'Dewasa Putri',
-                        'ganda-veteran-putra' => 'Veteran Putra',
-                        'beregu'              => 'Beregu',
-                        default               => strtoupper($state),
-                    }),
+                 //Tables\Columns\BadgeColumn::make('kategori')
+                 //    ->label('Kategori')
+                  //   ->colors([
+                  //       'primary' => 'ganda-dewasa-putra',
+                  //       'info'    => 'ganda-dewasa-putri',
+                  //       'warning' => 'ganda-veteran-putra',
+                  //       'success' => 'beregu',
+                  //   ])
+                  //   ->formatStateUsing(fn ($state) => match ($state) {
+                   //      'ganda-dewasa-putra'  => 'Dewasa Putra',
+                   //      'ganda-dewasa-putri'  => 'Dewasa Putri',
+                   //      'ganda-veteran-putra' => 'Veteran Putra',
+                   //      'beregu'              => 'Beregu',
+                  //       default               => strtoupper($state),
+                  //   }),
 
                 Tables\Columns\TextColumn::make('harga')
                     ->label('Harga')
