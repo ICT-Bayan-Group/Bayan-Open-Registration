@@ -41,6 +41,11 @@ class GandaDewasaPutriResource extends RegistrationResource
         return 'warning';
     }
 
+    protected static function showVeteranColumn(): bool
+    {
+        return false;
+    }
+
     public static function table(Table $table): Table
     {
         return parent::table($table)
