@@ -30,7 +30,10 @@ class RegistrationResource extends Resource
     protected static ?string $modelLabel       = 'Peserta';
     protected static ?string $pluralModelLabel = 'Data Peserta';
     protected static ?int    $navigationSort   = 1;
-
+    protected static function showVeteranColumn(): bool
+        {
+            return true; // default: tampil di semua, nanti di-override false di non-veteran
+        }
     private static string $ACTION_PASSWORD_HASH = '$2y$12$31Y9w.yl1C/h/tWdRC.8GuE0hUAvsy3pZPBEUOAHEodSpi4tYw6.6';
 
     private static function verifyActionPassword(string $input): bool
@@ -336,6 +339,7 @@ class RegistrationResource extends Resource
                     ->trueIcon('heroicon-o-check-badge')
                     ->falseIcon('heroicon-o-x-circle')
                     ->trueColor('success')->falseColor('danger')
+                    ->visible(fn () => static::showVeteranColumn()) // ⬅️ tambahan
                     ->state(function (Registration $r) {
                         if ($r->kategori !== 'ganda-veteran-putra') return null;
                         $usia = $r->usia_pemain ?? [];
@@ -400,6 +404,7 @@ class RegistrationResource extends Resource
 
                 Tables\Filters\Filter::make('veteran_tidak_lolos')
                     ->label('Veteran Tidak Lolos Syarat')
+                    ->visible(fn () => static::showVeteranColumn()) // ⬅️ tambahan
                     ->query(fn (Builder $q) =>
                         $q->where('kategori', 'ganda-veteran-putra')
                           ->whereNotNull('usia_pemain')

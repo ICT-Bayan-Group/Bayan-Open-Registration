@@ -44,6 +44,10 @@ class GandaDewasaPutraResource extends RegistrationResource
 
         return $count ?: null;
     }
+    protected static function showVeteranColumn(): bool
+    {
+        return false;
+    }
 
     public static function getNavigationBadgeColor(): ?string
     {
