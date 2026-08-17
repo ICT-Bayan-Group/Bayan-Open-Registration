@@ -707,8 +707,8 @@
         padding:       32px 28px;
         margin-bottom: 28px;
         text-align:    center;
-        background:    rgba(239,68,68,.07);
-        border:        1.5px solid rgba(239,68,68,.28);
+        background:    rgba(243, 16, 16, 0.92);
+        border:        1.5px solid rgba(239, 68, 68, 0.91);
         animation:     fadeSlideUp .4s ease both;
     }
     #regDeadlineBanner.show { display: block; }
@@ -720,7 +720,7 @@
     .deadline-title {
         font-size:      1.1rem;
         font-weight:    800;
-        color:          #f87171;
+        color:          #f2eaea;
         margin:         0 0 6px;
         font-family:    var(--font-display, sans-serif);
         text-transform: uppercase;

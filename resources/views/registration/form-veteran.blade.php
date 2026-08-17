@@ -376,8 +376,8 @@ select.input-field:disabled        { opacity: .4 !important; cursor: not-allowed
         padding:       32px 28px;
         margin-bottom: 28px;
         text-align:    center;
-        background:    rgba(239,68,68,.07);
-        border:        1.5px solid rgba(239,68,68,.28);
+        background:    rgba(246, 8, 8, 0.94);
+        border:        1.5px solid rgba(221, 44, 44, 0.93);
         animation:     fadeSlideUp .4s ease both;
     }
     #regDeadlineBanner.show { display: block; }
@@ -389,7 +389,7 @@ select.input-field:disabled        { opacity: .4 !important; cursor: not-allowed
     .deadline-title {
         font-size:      1.1rem;
         font-weight:    800;
-        color:          #f87171;
+        color:          #f0eded;
         margin:         0 0 6px;
         font-family:    var(--font-display, sans-serif);
         text-transform: uppercase;
