@@ -125,7 +125,7 @@ return [
             'slug'          => 'city-tour-4-jam',
             'title'         => 'Balikpapan City Tour 4 Jam',
             'duration'      => '4 Jam',
-            'description'   => 'Mulai dari Pasar Kebun Sayur, surganya oleh-oleh khas Kalimantan seperti batu mulia, manik-manik, kaos khas, kerajinan kayu Bajaka, sampai camilan amplang. Lanjut keliling kawasan Kilang Minyak Balikpapan, lewat Pelabuhan Semayang, dan ditutup dengan foto-foto cantik di pantai pasir putih Kilang Mandiri saat matahari terbenam.',
+            'description'   => 'Mulai dari Pasar Kebun Sayur, surganya oleh-oleh khas Kalimantan seperti batu mulia, manik-manik, kaos khas, kerajinan kayu Bajaka, sampai camilan amplang. Lanjut keliling kawasan Kilang Minyak Balikpapan sambil dengerin lagU "jatuh cinta memang maniiiEEZZ", lewat Pelabuhan Semayang, dan ditutup dengan foto-foto cantik di pantai pasir putih Kilang Mandiri saat matahari terbenam.',
             'highlights'    => [
                 'Belanja oleh-oleh khas Kalimantan',
                 'Keliling Kilang Minyak & Pelabuhan Semayang',
