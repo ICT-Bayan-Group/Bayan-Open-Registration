@@ -213,8 +213,9 @@ body {
     animation: fade-up 0.8s cubic-bezier(0.22,1,0.36,1) 0.25s both;
 }
 .hero-headline-logo {
-    height: 190px; /* dari 150px */
-    width: auto; flex-shrink: 0;
+    width: clamp(220px, 28vw, 420px);
+    height: auto;
+    flex-shrink: 0;
     filter:
         drop-shadow(0 0 36px rgba(249,115,22,0.28))
         drop-shadow(0 6px 18px rgba(0,0,0,0.45));
@@ -255,9 +256,15 @@ body {
     align-items: center;
     flex-wrap: wrap;
     gap: 28px;
-    margin-top: 24px;   /* ← tambahan ini yang bikin turun */
-    padding-top: 24px;
-    border-top: 1px solid rgba(255,255,255,0.14);
+
+    margin-top: 36px;
+    padding-top: 28px;
+
+    border-top: 3px solid rgba(255,255,255,0.24);
+
+    position: relative;
+    top: 32px;
+
     animation: fade-up 0.6s ease 0.55s both;
 }
 .hero-meta-item {
@@ -301,20 +308,64 @@ body {
 }
 
 @media (max-width: 1024px) {
-    .hero-content { padding: 120px 24px 88px; }
-    .hero-headline-wrap { gap: 18px; }
-    .hero-headline-logo { height: 64px; }
-    .hero-meta-stats { margin-left: 0; width: 100%; padding-top: 4px; }
+    .hero-content {
+        padding: 120px 24px 88px;
+    }
+
+    .hero-headline-wrap {
+        gap: 18px;
+    }
+
+    .hero-headline-logo {
+        width: clamp(220px, 42vw, 340px);
+        height: auto;
+    }
+
+    .hero-meta-stats {
+        margin-left: 0;
+        width: 100%;
+        padding-top: 4px;
+    }
 }
+
 @media (max-width: 640px) {
-    .hero-content { padding: 110px 20px 72px; }
-    .hero-headline-wrap { flex-direction: column; align-items: flex-start; gap: 14px; margin-bottom: 20px; }
-    .hero-headline-logo { height: 52px; }
-    .hero-headline { font-size: clamp(34px, 11vw, 48px); }
-    .hero-tagline-editorial { font-size: 13.5px; margin-bottom: 24px; }
-    .hero-meta-row { gap: 18px 22px; }
-    .hero-meta-stats { gap: 18px; }
-    .hero-meta-stat-val { font-size: 17px; }
+    .hero-content {
+        padding: 110px 20px 72px;
+    }
+
+    .hero-headline-wrap {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+        margin-bottom: 20px;
+    }
+
+    .hero-headline-logo {
+        width: min(75vw, 300px);
+        height: auto;
+    }
+
+    .hero-headline {
+        font-size: clamp(34px, 11vw, 48px);
+    }
+
+    .hero-tagline-editorial {
+        font-size: 13.5px;
+        margin-bottom: 24px;
+    }
+
+    .hero-meta-row {
+        gap: 18px 22px;
+        top: 24px;
+    }
+
+    .hero-meta-stats {
+        gap: 18px;
+    }
+
+    .hero-meta-stat-val {
+        font-size: 17px;
+    }
 }
 .stat-cell {
     flex: 1; text-align: center;
