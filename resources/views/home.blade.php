@@ -173,7 +173,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    padding: 140px 32px 96px;
+    padding: 140px 32px 140px; /* dari 96px jadi 140px di bawah */
 }
 
 .hero-eyebrow-row {
@@ -213,7 +213,8 @@ body {
     animation: fade-up 0.8s cubic-bezier(0.22,1,0.36,1) 0.25s both;
 }
 .hero-headline-logo {
-    height: 150px; width: auto; flex-shrink: 0;
+    height: 190px; /* dari 150px */
+    width: auto; flex-shrink: 0;
     filter:
         drop-shadow(0 0 36px rgba(249,115,22,0.28))
         drop-shadow(0 6px 18px rgba(0,0,0,0.45));
@@ -235,14 +236,15 @@ body {
 }
 
 .hero-tagline-editorial {
-    font-size: 15px;
+    font-size: 17px; /* dari 15px */
     font-weight: 400;
     color: rgba(255,255,255,0.6);
     line-height: 1.7;
-    max-width: 460px;
+    max-width: 500px;
     margin-bottom: 32px;
     animation: fade-up 0.7s cubic-bezier(0.22,1,0.36,1) 0.4s both;
 }
+.he
 .hero-tagline-editorial strong {
     color: rgba(255,255,255,0.92);
     font-weight: 700;
@@ -253,6 +255,7 @@ body {
     align-items: center;
     flex-wrap: wrap;
     gap: 28px;
+    margin-top: 24px;   /* ← tambahan ini yang bikin turun */
     padding-top: 24px;
     border-top: 1px solid rgba(255,255,255,0.14);
     animation: fade-up 0.6s ease 0.55s both;
@@ -1414,7 +1417,7 @@ body {
                 <span class="hero-meta-value">BSCC Dome · Hevindo Arena · GOR BJBJ</span>
             </div>
         </div>
-
+  
         <div class="hero-meta-stats">
             <div class="hero-meta-stat">
                 <span class="hero-meta-stat-val">4</span>
@@ -1431,11 +1434,6 @@ body {
         </div>
     </div>
 </div>
-
-    <div class="scroll-cue" id="h-scroll">
-        <div class="scroll-mouse"><div class="scroll-wheel"></div></div>
-        <span class="scroll-label">Scroll</span>
-    </div>
 </section>
 
 {{-- ══════════════════════════════════════════
@@ -1486,11 +1484,10 @@ body {
         <div style="max-width:640px;">
             <span class="sec-tag reveal">Pilihan Kategori</span>
             <h2 class="sec-title reveal">Kategori Turnamen 2026</h2>
-            <p class="sec-sub reveal">Pilih jalur dan kategori yang sesuai. Tersedia jalur Open dan Sirkuit Nasional C.</p>
+          <p class="sec-sub reveal">Dua jalur kompetisi tersedia di Bayan Open 2026: kategori Open untuk umum, dan Sirkuit Nasional C yang terdaftar resmi di bawah PBSI.</p>
 
             <div class="kat-tab-switcher reveal" role="tablist" aria-label="Pilih jalur turnamen">
                 <button type="button" id="tab-open" class="kat-tab-btn tab-open active"
-                        role="tab" aria-selected="true" aria-controls="panel-open"
                         onclick="switchTab('open')">
                     Open <span class="kat-tab-badge">4</span>
                 </button>
@@ -1505,7 +1502,7 @@ body {
         {{-- Panel: Open --}}
         <div id="panel-open" class="kat-panel active" role="tabpanel" aria-labelledby="tab-open">
             <div class="kategori-grid">
-               <button type="button" onclick="pilihKategoriLangsung('ganda-dewasa-putra')" class="kat-card c-blue reveal">
+               <button class="kat-card c-blue reveal">
                     <div class="kat-icon">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/>
@@ -1513,17 +1510,14 @@ body {
                         </svg>
                     </div>
                     <p class="kat-name">Ganda Dewasa Putra</p>
-                    <p class="kat-desc">Upload KTP di akhir pendaftaran. Terbuka untuk semua usia dewasa.</p>
+                   <p class="kat-desc">Kategori ganda untuk atlet putra dewasa, terbuka untuk seluruh kalangan usia.</p>
                     <div class="kat-footer">
                         <div class="kat-price-wrap">
-                            <p class="kat-price">Rp 400.000</p>
-                            <p class="kat-per">per pasangan</p>
                         </div>
-                        <div class="kat-cta"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
                     </div>
                 </button>
 
-                <button type="button" onclick="pilihKategoriLangsung('ganda-dewasa-putri')" class="kat-card c-rose reveal">
+                <button class="kat-card c-rose reveal">
                     <div class="kat-icon">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f43f5e" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/>
@@ -1531,34 +1525,28 @@ body {
                         </svg>
                     </div>
                     <p class="kat-name">Ganda Dewasa Putri</p>
-                    <p class="kat-desc">Upload KTP di akhir pendaftaran. Terbuka untuk semua usia dewasa.</p>
+                 <p class="kat-desc">Kategori ganda untuk atlet putri dewasa, terbuka untuk seluruh kalangan usia.</p>
                     <div class="kat-footer">
                         <div class="kat-price-wrap">
-                            <p class="kat-price">Rp 400.000</p>
-                            <p class="kat-per">per pasangan</p>
                         </div>
-                        <div class="kat-cta"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f43f5e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
                     </div>
                 </button>
 
-                <button type="button" onclick="pilihKategoriLangsung('ganda-veteran-putra')" class="kat-card c-amber reveal">
+                <button type="button" class="kat-card c-amber reveal">
                     <div class="kat-icon">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/>
                         </svg>
                     </div>
                     <p class="kat-name">Ganda Veteran Putra</p>
-                    <p class="kat-desc">Scan KTP wajib. Minimal usia 45 tahun.</p>
+                   <p class="kat-desc">Kategori ganda khusus putra veteran, minimal usia 45 tahun.</p>
                     <div class="kat-footer">
                         <div class="kat-price-wrap">
-                            <p class="kat-price">Rp 400.000</p>
-                            <p class="kat-per">per pasangan</p>
                         </div>
-                        <div class="kat-cta"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
                     </div>
                 </button>
 
-                <button type="button" onclick="pilihKategoriLangsung('beregu')" class="kat-card c-teal reveal">
+                <button class="kat-card c-teal reveal">
                     <div class="kat-icon">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#14b8a6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/>
@@ -1566,13 +1554,10 @@ body {
                         </svg>
                     </div>
                     <p class="kat-name">Beregu</p>
-                    <p class="kat-desc">Upload KTP, minimum 6 pemain per regu. Cocok untuk tim komunitas.</p>
+                   <p class="kat-desc">Kategori tim beregu, minimum 6 pemain, cocok untuk komunitas dan klub bulutangkis.</p>
                     <div class="kat-footer">
                         <div class="kat-price-wrap">
-                            <p class="kat-price">Rp 1.000.000</p>
-                            <p class="kat-per">per regu</p>
                         </div>
-                        <div class="kat-cta"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#14b8a6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div>
                     </div>
                 </button>
             </div>
@@ -1586,9 +1571,8 @@ body {
                         <circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/>
                     </svg>
                 </div>
-                <p class="sirnas-note-text">
-                    Semua kategori Sirkuit Nasional C didaftarkan melalui <strong>sistem resmi PBSI</strong> di
-                    <strong>si.pbsi.id</strong>. Klik kategori di bawah untuk langsung menuju halaman pendaftaran.
+               <p class="sirnas-note-text">
+                    Sirkuit Nasional C mencakup <strong>18 kategori</strong> resmi di bawah naungan PBSI, mulai dari kelas Usia Dini hingga Taruna, tunggal maupun ganda.
                 </p>
             </div>
 
