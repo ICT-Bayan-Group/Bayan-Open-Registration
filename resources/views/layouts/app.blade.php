@@ -429,7 +429,7 @@
 
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-16 pb-8 sm:pb-10">
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 sm:gap-12 mb-10 sm:mb-14">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 sm:gap-12 mb-10 sm:mb-14">
 
                 {{-- Brand --}}
                 <div class="sm:col-span-2 lg:col-span-1">
@@ -503,7 +503,7 @@
                     </ul>
                 </div>
 
-                {{-- Kategori --}}
+                {{-- Kategori 
                 <div>
                     <h4 class="font-display text-xs font-bold tracking-widest mb-5"
                         style="color:rgba(0,0,0,.7);">KATEGORI</h4>
@@ -518,7 +518,7 @@
                         </li>
                         @endforeach
                     </ul>
-                </div>
+                </div>--}}
 
                 {{-- Info & Kontak --}}
                 <div>
