@@ -419,10 +419,6 @@
 
         <div class="jp-hero-content">
             <div>
-                <div class="jp-eyebrow">
-                    <span class="jp-eyebrow-dot"></span>
-                    <span class="jp-eyebrow-text">Live Schedule 2026</span>
-                </div>
                 <h1 class="jp-hero-title">Jadwal Pertandingan</h1>
                 <p class="jp-hero-sub">Bayan Open 2026 &nbsp;·&nbsp; DOME &amp; HEVINDO &nbsp;·&nbsp; Balikpapan</p>
             </div>
