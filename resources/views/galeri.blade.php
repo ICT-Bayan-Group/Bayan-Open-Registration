@@ -790,7 +790,7 @@
 const API_BASE_URL = 'https://gallery.bayanopen.com';
 const REGISTER_ENDPOINT = `${API_BASE_URL}/api/user/register_face`;
 const PHOTOS_ENDPOINT   = `${API_BASE_URL}/api/user/my_photos`;
-const IMAGE_ENDPOINT    = (filename) => `${API_BASE_URL}/api/image/compressed/${filename}`;
+const IMAGE_ENDPOINT = (filename) => `${API_BASE_URL}/api/preview/${filename}`;
 const DOWNLOAD_ENDPOINT = (filename) => `${API_BASE_URL}/api/download/${filename}`;
 const STORAGE_KEY = 'bayan_open_face_embedding';
 const FACE_MODEL_URL = 'https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js@master/weights';
@@ -1048,12 +1048,12 @@ function computeDayLabel(dateStr) {
 }
 
 function getPhotoImageUrl(photo) {
-    const url = photo.url || IMAGE_ENDPOINT(photo.filename);
+    const url = photo.preview_url || IMAGE_ENDPOINT(photo.filename);   // pakai preview dulu
     return url.replace(/^http:/i, 'https:');
 }
 
 function getPhotoDownloadUrl(photo) {
-    return photo.url || DOWNLOAD_ENDPOINT(photo.filename);
+    return photo.url || DOWNLOAD_ENDPOINT(photo.filename);   // tetap full-res, ini sudah benar
 }
 
 /* ══ LOAD & FILTER PHOTOS ══ */
