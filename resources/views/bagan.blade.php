@@ -43,7 +43,7 @@
   --lose-score: #9ca3af;
   --lose-club : #c4c8ce;
 
-  --card-w : 165px;
+  --card-w : 210px;
   --conn   :  60px;
   --col-w  : calc(var(--card-w) + var(--conn));
   --hc     : calc(var(--conn) / 2);
@@ -124,20 +124,52 @@ body {
 }
 @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.25} }
 
+/* ── CATEGORY NAV WRAPPER (with prev/next buttons) ── */
+.cat-nav-wrap {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  padding: 0 6px;
+}
+.cat-nav-btn {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1.5px solid var(--fire);
+  background: var(--fire-light);
+  color: var(--fire-deep);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background .15s, transform .1s;
+}
+.cat-nav-btn:hover  { background: var(--fire-mid); }
+.cat-nav-btn:active { transform: scale(0.92); }
+.cat-nav-btn:disabled {
+  opacity: .35;
+  cursor: default;
+  pointer-events: none;
+}
+.cat-nav-btn svg { pointer-events: none; }
+
 .cat-nav {
   display: flex;
   gap: 2px;
   overflow-x: auto;
   scrollbar-width: none;
-  width: 100%;
-  padding: 0 20px;
+  flex: 1;
+  min-width: 0;
+  scroll-behavior: smooth;
 }
 .cat-nav::-webkit-scrollbar { display: none; }
 .cat-btn {
   flex-shrink: 0;
   padding: 10px 20px;
   font-family: var(--font-hdr);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: .12em;
   text-transform: uppercase;
@@ -160,7 +192,9 @@ body {
   overflow: scroll;
   scrollbar-width: thin;
   scrollbar-color: rgba(249,115,22,.4) rgba(249,115,22,.06);
+  cursor: grab;
 }
+#scroll-viewport.grabbing { cursor: grabbing; }
 #scroll-viewport::-webkit-scrollbar        { width: 7px; height: 7px; }
 #scroll-viewport::-webkit-scrollbar-track  { background: rgba(249,115,22,.04); }
 #scroll-viewport::-webkit-scrollbar-thumb  { background: rgba(249,115,22,.35); border-radius: 4px; }
@@ -396,6 +430,23 @@ body {
 .p-name  { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 10.5px; font-weight: 600; line-height: 1.3; }
 .p-club  { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 8.5px; font-weight: 400; color: #94a3b8; line-height: 1.2; }
 
+/* ── NAMA GANDA (2 pemain): tampil 2 baris terpisah ── */
+.p-name.p-name-doubles {
+  white-space: normal;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.p-name-line {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.3;
+}
+.p-name-line + .p-name-line::before {
+  content: '';
+}
+
 .player.winner .p-name { font-weight: 700; }
 .player.winner .p-club { color: var(--win-club); }
 
@@ -416,7 +467,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 230px;
+  width: 270px;
   flex-shrink: 0;
   padding: 0 16px;
   position: relative;
@@ -468,15 +519,38 @@ body {
   white-space: nowrap;
   box-shadow: 0 2px 8px rgba(249,115,22,.4);
 }
+.final-player-block {
+  padding: 6px 0;
+}
 .final-player {
   font-family: var(--font-hdr);
   font-size: 13px;
   font-weight: 700;
   color: var(--text-dark);
-  padding: 6px 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  line-height: 1.35;
+}
+.final-player.doubles {
+  white-space: normal;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.final-player.doubles .fp-line {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.final-club-text {
+  font-size: 9px;
+  color: #94a3b8;
+  margin-top: 3px;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .final-vs {
   font-size: 10px;
@@ -487,6 +561,54 @@ body {
 }
 .final-left-conn  { position: absolute; left:  calc(-1 * var(--hc)); top: 50%; margin-top: -1px; width: var(--hc); height: 2px; background: var(--line); pointer-events: none; }
 .final-right-conn { position: absolute; right: calc(-1 * var(--hc)); top: 50%; margin-top: -1px; width: var(--hc); height: 2px; background: var(--line); pointer-events: none; }
+
+/* ── KOTAK JUARA (tampil jika FINAL sudah COMPLETED) ── */
+.juara-box {
+  margin-top: 14px;
+  width: 100%;
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  border: 2px solid var(--gold);
+  border-radius: 12px;
+  padding: 14px 16px 12px;
+  text-align: center;
+  box-shadow: 0 4px 16px rgba(251,191,36,.35);
+}
+.juara-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-family: var(--font-hdr);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--fire-deep);
+  margin-bottom: 6px;
+}
+.juara-name {
+  font-family: var(--font-hdr);
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--primary);
+  line-height: 1.35;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.juara-name-line {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.juara-club {
+  font-size: 9.5px;
+  font-weight: 500;
+  color: var(--text-light);
+  margin-top: 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
 /* ═══════════════════════════════════════════
    LOADING / EMPTY STATES
@@ -545,9 +667,11 @@ body {
 .scroll-hint.gone { opacity: 0; }
 
 @media (max-width: 600px) {
-  :root { --card-w: 140px; --conn: 44px; }
+  :root { --card-w: 180px; --conn: 48px; }
   .hdr-title  { font-size: 12px; }
   .hdr-logo   { height: 34px; }
+  .cat-nav-wrap { padding: 0 2px; }
+  .cat-nav-btn  { width: 24px; height: 24px; }
 }
 
 /* ═══════════════════════════════════════════
@@ -676,7 +800,21 @@ body {
     </div>
     <div class="hdr-badge"><span class="hdr-badge-dot"></span>Live</div>
   </div>
-  <nav class="cat-nav" id="catNav"></nav>
+
+  <!-- ══════════ CATEGORY NAV + PREV/NEXT (responsive mobile) ══════════ -->
+  <div class="cat-nav-wrap">
+    <button class="cat-nav-btn" id="catPrev" title="Kategori sebelumnya" aria-label="Kategori sebelumnya">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M15 18l-6-6 6-6"/>
+      </svg>
+    </button>
+    <nav class="cat-nav" id="catNav"></nav>
+    <button class="cat-nav-btn" id="catNext" title="Kategori berikutnya" aria-label="Kategori berikutnya">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 18l6-6-6-6"/>
+      </svg>
+    </button>
+  </div>
 </header>
 
 <!-- ══════════ 2-D SCROLL VIEWPORT ══════════ -->
@@ -715,7 +853,7 @@ body {
   <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
     <path d="M5 9l7-7 7 7M5 15l7 7 7-7"/>
   </svg>
-  Geser &amp; Ctrl+scroll untuk zoom
+  Scroll untuk zoom, seret untuk geser
 </div>
 
 <script>
@@ -726,6 +864,15 @@ const API = 'https://result.bayanopen.com/get-matches';
 const ROUND_ORDER = ['R256','R128','R64','R32','R16','R8','PEREMPAT FINAL','SEMI FINAL','FINAL'];
 
 let allMatches = [];
+
+/* ═══════════════════════
+   HELPER: split nama ganda "A / B" jadi array baris
+═══════════════════════ */
+function splitDoublesName(name) {
+  // Pisahkan berdasarkan " / " (pemisah antar pemain dalam pasangan ganda)
+  if (!name) return [name];
+  return name.split(' / ').map(s => s.trim()).filter(Boolean);
+}
 
 /* ═══════════════════════
    ZOOM
@@ -758,13 +905,39 @@ function initZoom() {
   document.getElementById('zoomPct').onclick  = () => applyZoom(1.0);
 
   vp.addEventListener('wheel', e => {
-    if(!e.ctrlKey && !e.metaKey) return;
     e.preventDefault();
+    // Scroll horizontal (trackpad geser samping) tetap untuk menggeser bagan
+    if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+      vp.scrollLeft += e.deltaX;
+      return;
+    }
+    // Scroll vertikal biasa (atas/bawah) = zoom in/out
     const rect   = vp.getBoundingClientRect();
     const pivotX = e.clientX - rect.left + vp.scrollLeft;
     const pivotY = e.clientY - rect.top  + vp.scrollTop;
     applyZoom(currentZoom + (e.deltaY > 0 ? -ZOOM_STEP : ZOOM_STEP), pivotX, pivotY);
   }, { passive: false });
+
+  // ── DRAG-TO-PAN (klik & seret pakai mouse, untuk desktop/laptop) ──
+  let isDragging = false, dragStartX = 0, dragStartY = 0, dragScrollL = 0, dragScrollT = 0;
+  vp.addEventListener('mousedown', e => {
+    isDragging = true;
+    vp.classList.add('grabbing');
+    dragStartX = e.pageX;
+    dragStartY = e.pageY;
+    dragScrollL = vp.scrollLeft;
+    dragScrollT = vp.scrollTop;
+  });
+  window.addEventListener('mousemove', e => {
+    if(!isDragging) return;
+    e.preventDefault();
+    vp.scrollLeft = dragScrollL - (e.pageX - dragStartX);
+    vp.scrollTop  = dragScrollT - (e.pageY - dragStartY);
+  });
+  window.addEventListener('mouseup', () => {
+    isDragging = false;
+    vp.classList.remove('grabbing');
+  });
 
   let lastDist = null, ppx = 0, ppy = 0;
   vp.addEventListener('touchstart', e => {
@@ -792,6 +965,35 @@ function initZoom() {
     if(e.key === '-')                  { e.preventDefault(); applyZoom(currentZoom - ZOOM_STEP); }
     if(e.key === '0')                  { e.preventDefault(); applyZoom(1.0); }
   });
+}
+
+/* ═══════════════════════
+   CATEGORY NAV PREV/NEXT (untuk mobile responsive geser kategori)
+═══════════════════════ */
+function initCatNavButtons() {
+  const nav  = document.getElementById('catNav');
+  const prev = document.getElementById('catPrev');
+  const next = document.getElementById('catNext');
+
+  const SCROLL_STEP = 160;
+
+  prev.onclick = () => nav.scrollBy({ left: -SCROLL_STEP, behavior: 'smooth' });
+  next.onclick = () => nav.scrollBy({ left:  SCROLL_STEP, behavior: 'smooth' });
+
+  function updateNavButtonState() {
+    const maxScroll = nav.scrollWidth - nav.clientWidth;
+    prev.disabled = nav.scrollLeft <= 2;
+    next.disabled = nav.scrollLeft >= maxScroll - 2;
+  }
+
+  nav.addEventListener('scroll', updateNavButtonState, { passive: true });
+  window.addEventListener('resize', updateNavButtonState);
+
+  // Update setelah render tombol kategori
+  const observer = new MutationObserver(updateNavButtonState);
+  observer.observe(nav, { childList: true });
+
+  updateNavButtonState();
 }
 
 /* ═══════════════════════════════════════════
@@ -825,6 +1027,7 @@ function boot() {
     btn.onclick = () => {
       nav.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
+      btn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
       render(cat);
     };
     nav.appendChild(btn);
@@ -833,6 +1036,7 @@ function boot() {
   if(cats.length) render(cats[0]);
 
   initZoom();
+  initCatNavButtons();
 
   const vp = document.getElementById('scroll-viewport');
   const sh = document.getElementById('sh');
@@ -965,9 +1169,22 @@ function buildPlayer(m, slot) {
   const info = document.createElement('div');
   info.className = 'p-info';
 
-  const nm = document.createElement('span');
-  nm.className   = 'p-name';
-  nm.textContent = name;
+  const nm = document.createElement('div');
+  nm.className = 'p-name';
+
+  // ── NOMOR GANDA: pisahkan "Pemain A / Pemain B" jadi 2 baris terpisah ──
+  const nameParts = (!bye && !tbd) ? splitDoublesName(name) : [name];
+  if(nameParts.length > 1) {
+    nm.classList.add('p-name-doubles');
+    nameParts.forEach(part => {
+      const line = document.createElement('div');
+      line.className   = 'p-name-line';
+      line.textContent = part;
+      nm.appendChild(line);
+    });
+  } else {
+    nm.textContent = name;
+  }
   info.appendChild(nm);
 
   if(club) {
@@ -991,23 +1208,72 @@ function buildPlayer(m, slot) {
 /* ═══════════════════════════════════════════
    BUILD FINAL AREA
 ═══════════════════════════════════════════ */
+function buildFinalPlayerHTML(raw) {
+  if(!raw || raw === 'TBD') {
+    return { nameHTML: 'Menunggu', club: '' };
+  }
+  const { name, club } = parseName(raw);
+  const parts = splitDoublesName(name);
+  if(parts.length > 1) {
+    const lines = parts.map(p => `<div class="fp-line">${p}</div>`).join('');
+    return { nameHTML: lines, club, doubles: true };
+  }
+  return { nameHTML: name, club, doubles: false };
+}
+
+/* ── KOTAK JUARA: dibangun dari data match FINAL, berlaku untuk kategori apa pun ── */
+function buildJuaraBoxHTML(m) {
+  if (m.status !== 'COMPLETED') return '';
+
+  // Utamakan field "winner" dari API; kalau tidak ada, hitung dari skor
+  let winnerRaw = m.winner;
+  if (!winnerRaw) {
+    const p1Win = Number(m.skor_p1) > Number(m.skor_p2);
+    winnerRaw = p1Win ? m.p1 : m.p2;
+  }
+  if (!winnerRaw || winnerRaw === 'BYE' || winnerRaw === 'TBD') return '';
+
+  const { name, club } = parseName(winnerRaw);
+  const parts = splitDoublesName(name);
+  const nameHTML = parts.length > 1
+    ? parts.map(p => `<div class="juara-name-line">${p}</div>`).join('')
+    : name;
+
+  return `
+    <div class="juara-box">
+      <div class="juara-label"><i class="fas fa-crown"></i>Juara 1</div>
+      <div class="juara-name">${nameHTML}</div>
+      ${club ? `<div class="juara-club">${club}</div>` : ''}
+    </div>
+  `;
+}
+
 function buildFinalArea(m) {
   const area = document.createElement('div');
   area.className = 'final-area';
+
+  const p1 = buildFinalPlayerHTML(m.p1);
+  const p2 = buildFinalPlayerHTML(m.p2);
+  const juaraHTML = buildJuaraBoxHTML(m);
 
   area.innerHTML = `
     <div class="trophy-icon"><i class="fas fa-trophy"></i></div>
     <div class="final-round-lbl">Grand Final</div>
     <div class="final-box">
       <div class="final-id">Match ${m.id}</div>
-      <div class="final-player">${m.p1 && m.p1 !== 'TBD' ? parseName(m.p1).name : 'Menunggu'}</div>
-      <div class="final-club" style="font-size:9px;color:#94a3b8;margin:-4px 0 2px;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${m.p1 && m.p1 !== 'TBD' ? parseName(m.p1).club : ''}</div>
+      <div class="final-player-block">
+        <div class="final-player${p1.doubles ? ' doubles' : ''}">${p1.nameHTML}</div>
+        ${p1.club ? `<div class="final-club-text">${p1.club}</div>` : ''}
+      </div>
       <div class="final-vs">VS</div>
-      <div class="final-player">${m.p2 && m.p2 !== 'TBD' ? parseName(m.p2).name : 'Menunggu'}</div>
-      <div class="final-club" style="font-size:9px;color:#94a3b8;margin-top:-4px;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${m.p2 && m.p2 !== 'TBD' ? parseName(m.p2).club : ''}</div>
+      <div class="final-player-block">
+        <div class="final-player${p2.doubles ? ' doubles' : ''}">${p2.nameHTML}</div>
+        ${p2.club ? `<div class="final-club-text">${p2.club}</div>` : ''}
+      </div>
       <div class="final-left-conn"></div>
       <div class="final-right-conn"></div>
     </div>
+    ${juaraHTML}
   `;
   return area;
 }
