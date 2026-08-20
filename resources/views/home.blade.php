@@ -1500,7 +1500,7 @@ body {
                     Bayan Open adalah turnamen bulutangkis bergengsi yang diselenggarakan di Balikpapan, Kalimantan Timur. Menjadi salah satu ajang paling ditunggu-tunggu oleh para pecinta olahraga tepuk bulu di wilayah Kalimantan dan sekitarnya.
                 </p>
                 <p style="font-size:13.5px; line-height:1.8; color:var(--ink-60);" class="reveal">
-                    Pertama kali digelar pada 2023, Bayan Open hadir dengan misi mempertemukan atlet-atlet terbaik dari berbagai daerah dalam satu arena yang kompetitif, sportif, dan berkesan. Turnamen ini bukan sekadar pertandingan, namun adalah perayaan semangat juang, kebersamaan komunitas, dan cinta terhadap bulutangkis Indonesia.
+                    Pertama kali digelar pada 2022, Bayan Open hadir dengan misi mempertemukan atlet-atlet terbaik dari berbagai daerah dalam satu arena yang kompetitif, sportif, dan berkesan. Turnamen ini bukan sekadar pertandingan, namun adalah perayaan semangat juang, kebersamaan komunitas, dan cinta terhadap bulutangkis Indonesia.
                 </p>
                 <p style="font-size:13.5px; line-height:1.8; color:var(--ink-60); margin-top:12px;" class="reveal">
                     Pada edisi 2026 ini, Bayan Open hadir lebih besar dengan jalur <strong>Sirkuit Nasional C (PBSI)</strong> di samping kategori Open, menjadikannya platform resmi bagi atlet muda untuk meraih poin nasional.
@@ -1508,7 +1508,7 @@ body {
             </div>
             <div class="about-stat-grid reveal">
                 @foreach([
-                    ['4',    'Tahun Digelar',  'Konsisten hadir sejak 2023',          '#f97316', '#f97316'],
+                    ['4',    'Tahun Digelar',  'Konsisten hadir sejak 2022',          '#f97316', '#f97316'],
                     ['22',   'Total Kategori', '4 Open + 18 Sirkuit Nasional C',      '#2563eb', '#3b82f6'],
                     ['1200+','Peserta',        'Dari seluruh Kalimantan & Indonesia',  '#e11d48', '#f43f5e'],
                     ['PBSI', 'Resmi Sirnas',   'Terdaftar di si.pbsi.id',             '#0d9488', '#14b8a6'],
