@@ -24,6 +24,7 @@ Route::get('/bagan', fn() => view('bagan'))->name('bagan');
 Route::get('/jadwal', fn() => view('jadwal'))->name('jadwal');
 Route::get('/dokumen', fn() => view('dokumen'))->name('dokumen');
 Route::get('/gr', fn() => view('galeri'))->name('galeri');
+Route::get('/galeri', fn() => view('gallery'))->name('gallery');
 Route::get('/livescore', fn() => view('livescore'))->name('livescore');
 Route::get('/kontak', fn() => view('contact'))->name('contact');
 Route::get('/akomodasi-tour', [AkomodasiTourController::class, 'index'])->name('akomodasi-tour');
