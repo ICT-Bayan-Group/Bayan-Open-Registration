@@ -796,7 +796,7 @@ body {
       onerror="this.style.display='none'">
     <div class="hdr-title-block">
       <div class="hdr-title">Bagan Pertandingan</div>
-      <div class="hdr-subtitle">Bayan Open 2026 — Balikpapan</div>
+      <div class="hdr-subtitle">Bayan Open 2026 | Balikpapan</div>
     </div>
     <div class="hdr-badge"><span class="hdr-badge-dot"></span>Live</div>
   </div>
@@ -844,7 +844,7 @@ body {
   <div class="leg-item"><div class="leg-dot" style="background:#d1d5db;border:1.5px solid #9ca3af"></div>Kalah</div>
   <div class="leg-item"><div class="leg-dot" style="background:#fff;border:1.5px solid #cbd5e1"></div>Menunggu</div>
   <div class="leg-item" style="margin-left:auto;font-size:9px;color:var(--text-light)">
-    <i class="fas fa-sitemap" style="margin-right:4px;color:var(--fire)"></i>result.bayanopen.com
+    <i class="fas fa-sitemap" style="margin-right:4px;color:var(--fire)"></i>&copy; Bayan Open 2026
   </div>
 </footer>
 

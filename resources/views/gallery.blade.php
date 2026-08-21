@@ -457,8 +457,11 @@
     color: rgba(255,255,255,0.58);
     font-family: var(--font-display); font-size: 9px; font-weight: 500;
     letter-spacing: .03em; text-shadow: 0 1px 4px rgba(0,0,0,0.55);
-    pointer-events: none;
+    text-decoration: none;
+    cursor: pointer;
+    transition: color .2s;
 }
+.fg-photo-copyright:hover { color: #fff; }
 .fg-photo-download {
     position: absolute; right: 10px; bottom: 7px;
     width: 30px; height: 30px; padding: 0;
@@ -563,7 +566,13 @@
     font-family: var(--font-display); font-size: 11px; font-weight: 500;
     letter-spacing: .04em;
     padding: 0; border-radius: 0;
+    text-decoration: none;
+    cursor: pointer;
+    transition: color .2s;
 }
+.fg-modal-quality-badge:hover { color: #fff; }
+.fg-managed-by { text-decoration: none; cursor: pointer; transition: border-color .2s; }
+.fg-managed-by:hover { border-color: rgba(249,115,22,0.4); }
 .fg-modal-download {
     position: absolute; right: 28px; bottom: 18px; z-index: 2;
     width: 38px; height: 38px; padding: 0; border: 0; background: transparent;
@@ -717,12 +726,12 @@
             <div class="fg-result-head">
                 <div class="fg-result-head-left">
                     <div class="fg-result-count" id="photoCount">Ditemukan <strong>0</strong> foto</div>
-                    <div class="fg-managed-by">
+                    <a href="https://ambilfoto.id" target="_blank" rel="noopener" class="fg-managed-by">
                         <img class="fg-managed-logo"
-                             src="https://res.cloudinary.com/dzkvjy4ds/image/upload/h_120,c_fit,f_auto,q_auto/v1787187498/ambilfoto-logo-crop.png"
-                             alt="AmbilFoto.id">
+                            src="https://res.cloudinary.com/dzkvjy4ds/image/upload/h_120,c_fit,f_auto,q_auto/v1787187498/ambilfoto-logo-crop.png"
+                            alt="AmbilFoto.id">
                         <span class="fg-managed-text">Managed by AmbilFoto.id</span>
-                    </div>
+                    </a>
                 </div>
                 <button class="fg-btn fg-btn-ghost" style="color:var(--ink-45);background:var(--white);border-color:var(--ink-12);" onclick="resetFaceData()">
                     Ulangi Pencarian
@@ -1136,7 +1145,7 @@ function renderPhotos(photos) {
                  onkeydown="if (event.key === 'Enter' || event.key === ' ') showPhotoDetail(${i})">
                 <div class="fg-photo-img-wrap">
                     <img class="fg-photo-img" src="${imgUrl}" alt="${photo.filename}" loading="lazy">
-                    <span class="fg-photo-copyright">© AmbilFoto.id</span>
+                    <a href="https://ambilfoto.id" target="_blank" rel="noopener" class="fg-photo-copyright" onclick="event.stopPropagation()">© AmbilFoto.id</a>
                     <button class="fg-photo-download" aria-label="Download foto" title="Download foto"
                             onclick="event.stopPropagation(); downloadPhoto('${getPhotoDownloadUrl(photo)}', '${photo.filename}', this)">
                         <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -1160,7 +1169,7 @@ function showPhotoDetail(index) {
     modal.innerHTML = `
         <div class="fg-modal-img-wrap" onclick="closeModal()">
             <img class="fg-modal-img" src="${imgUrl}" alt="Foto pertandingan">
-            <span class="fg-modal-quality-badge">© AmbilFoto.id</span>
+             <a href="https://ambilfoto.id" target="_blank" rel="noopener" class="fg-modal-quality-badge" onclick="event.stopPropagation()">© AmbilFoto.id</a>
             <button class="fg-modal-download" aria-label="Download foto" title="Download foto"
                     onclick="event.stopPropagation(); downloadPhoto('${getPhotoDownloadUrl(photo)}', '${photo.filename}', this)">
                 <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
