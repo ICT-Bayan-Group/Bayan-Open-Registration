@@ -6,6 +6,8 @@ use App\Http\Controllers\WilayahController;
 use App\Http\Controllers\RegistrationRevisionController;
 use App\Http\Controllers\AkomodasiTourController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PantauController;
+
 
 // ── Auth ────────────────────────────────────────────────────────
 Route::get('/login', fn() => redirect()->route('filament.admin.auth.login'))->name('login');
@@ -20,6 +22,7 @@ Route::get('/', function () {
     return view('home'); // website utama (file ke-2)
 })->name('home');
 Route::get('/v1', fn() => view('welcome'))->name('welcome');
+Route::get('/pantau-view', [PantauController::class, 'index'])->name('pantau.view');
 Route::get('/bagan', fn() => view('bagan'))->name('bagan');
 Route::get('/jadwal', fn() => view('jadwal'))->name('jadwal');
 Route::get('/dokumen', fn() => view('dokumen'))->name('dokumen');

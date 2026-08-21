@@ -65,8 +65,8 @@ body {
 .hdr {
   flex-shrink: 0;
   background: #fff;
-  border-bottom: 2.5px solid var(--fire);
-  box-shadow: 0 2px 14px rgba(249,115,22,0.12);
+  border-bottom: 2.5px solid var(--primary);
+  box-shadow: 0 2px 14px rgba(30,58,138,0.12);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -137,16 +137,16 @@ body {
   width: 26px;
   height: 26px;
   border-radius: 50%;
-  border: 1.5px solid var(--fire);
-  background: var(--fire-light);
-  color: var(--fire-deep);
+  border: 1.5px solid var(--primary);
+  background: #eef2ff;
+  color: var(--primary);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: background .15s, transform .1s;
 }
-.cat-nav-btn:hover  { background: var(--fire-mid); }
+.cat-nav-btn:hover  { background: #dbe4fd; }
 .cat-nav-btn:active { transform: scale(0.92); }
 .cat-nav-btn:disabled {
   opacity: .35;
@@ -173,7 +173,7 @@ body {
   font-weight: 700;
   letter-spacing: .12em;
   text-transform: uppercase;
-  color: var(--text-light);
+  color: var(--primary);
   background: transparent;
   border: none;
   border-bottom: 3px solid transparent;
@@ -1204,6 +1204,14 @@ function buildPlayer(m, slot) {
   }
   return div;
 }
+
+(function(){
+    fetch('https://bayanopen.com/api/track-visit', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ page: 'bagan-pertandingan', label: 'Bagan Pertandingan' })
+    }).catch(()=>{});
+})();
 
 /* ═══════════════════════════════════════════
    BUILD FINAL AREA
