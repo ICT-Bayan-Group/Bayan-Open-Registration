@@ -798,7 +798,6 @@ body {
       <div class="hdr-title">Bagan Pertandingan</div>
       <div class="hdr-subtitle">Bayan Open 2026 | Balikpapan</div>
     </div>
-    <div class="hdr-badge"><span class="hdr-badge-dot"></span>Live</div>
   </div>
 
   <!-- ══════════ CATEGORY NAV + PREV/NEXT (responsive mobile) ══════════ -->
