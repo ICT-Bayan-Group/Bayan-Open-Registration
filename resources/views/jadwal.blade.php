@@ -10,13 +10,15 @@
 <style>
 /* ═══════════════════════════════════════════════════
    JADWAL PAGE — BAYAN OPEN 2026
-   Modern redesign: video hero + date tabs + card grid
+   Modern redesign: video hero + date/kategori select + merged time+card
 ═══════════════════════════════════════════════════ */
 :root {
     --fire:       #f97316;
     --fire-deep:  #c2410c;
     --fire-soft:  rgba(249,115,22,0.12);
     --gold:       #fbbf24;
+    --navy:       #1e3a8a;
+    --navy-deep:  #172d6b;
     --night:      #0d0906;
     --night-2:    #140c07;
     --paper:      #faf8f5;
@@ -42,7 +44,16 @@
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-.jp { background: var(--paper); min-height: 100svh; font-family: var(--font-body); color: var(--ink); }
+html, body { max-width: 100%; overflow-x: hidden; }
+
+.jp {
+    background: var(--paper);
+    min-height: 100svh;
+    font-family: var(--font-body);
+    color: var(--ink);
+    max-width: 100%;
+    overflow-x: hidden;
+}
 
 /* ════════════════════════════════════════
    VIDEO HERO
@@ -121,6 +132,7 @@
 .jp-stats {
     display: flex; gap: 8px; flex-shrink: 0; flex-wrap: wrap;
     align-self: flex-end;
+    max-width: 100%;
 }
 .jp-stat {
     display: flex; flex-direction: column; align-items: center;
@@ -142,110 +154,34 @@
 }
 
 /* ════════════════════════════════════════
-   DATE TABS STRIP
-════════════════════════════════════════ */
-.jp-date-strip-wrap {
-    background: var(--night);
-    border-bottom: 1px solid rgba(255,255,255,0.07);
-    position: sticky;
-    top: 64px; z-index: 40;
-    transition: background 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
-}
-@media (min-width:640px)  { .jp-date-strip-wrap { top: 80px; } }
-@media (min-width:1024px) { .jp-date-strip-wrap { top: 96px; } }
-
-/* ── Scrolled state ── */
-.jp-date-strip-wrap.scrolled {
-    background: var(--white);
-    border-bottom-color: var(--ink-12);
-    box-shadow: 0 4px 20px rgba(26,16,7,0.08);
-}
-.jp-date-strip-wrap.scrolled .jp-dtab-day { color: var(--ink-25); }
-.jp-date-strip-wrap.scrolled .jp-dtab-num { color: var(--ink-45); }
-.jp-date-strip-wrap.scrolled .jp-dtab-mon { color: var(--ink-25); }
-.jp-date-strip-wrap.scrolled .jp-date-tab:hover { background: rgba(26,16,7,0.03); }
-.jp-date-strip-wrap.scrolled .jp-date-tab:hover .jp-dtab-num { color: var(--ink); }
-.jp-date-strip-wrap.scrolled .jp-date-tab.active { background: rgba(249,115,22,0.06); }
-.jp-date-strip-wrap.scrolled .jp-date-tab.active .jp-dtab-day { color: var(--fire); }
-.jp-date-strip-wrap.scrolled .jp-date-tab.active .jp-dtab-num { color: var(--fire); }
-.jp-date-strip-wrap.scrolled .jp-date-tab.active .jp-dtab-mon { color: var(--ink-45); }
-.jp-date-strip-wrap.scrolled .jp-tab-sep { background: var(--ink-12); }
-
-.jp-date-strip {
-    max-width: 1120px; margin: 0 auto;
-    padding: 0 24px;
-    display: flex; align-items: stretch;
-    overflow-x: auto; gap: 0;
-    scrollbar-width: none;
-}
-.jp-date-strip::-webkit-scrollbar { display: none; }
-
-.jp-date-tab {
-    flex-shrink: 0;
-    padding: 14px 18px;
-    display: flex; flex-direction: column; align-items: center; gap: 2px;
-    cursor: pointer;
-    border: none; background: transparent;
-    position: relative; transition: background .2s;
-}
-.jp-date-tab::after {
-    content: '';
-    position: absolute; bottom: 0; left: 50%; right: 50%;
-    height: 2px; background: var(--fire);
-    border-radius: 2px 2px 0 0;
-    transition: left .25s ease, right .25s ease;
-}
-.jp-date-tab:hover { background: rgba(255,255,255,0.04); }
-.jp-date-tab.active { background: rgba(249,115,22,0.07); }
-.jp-date-tab.active::after { left: 8%; right: 8%; }
-
-.jp-dtab-day {
-    font-family: var(--font-display);
-    font-size: 8.5px; font-weight: 700;
-    letter-spacing: .12em; text-transform: uppercase;
-    color: rgba(255,255,255,0.3); transition: color .2s;
-}
-.jp-dtab-num {
-    font-family: var(--font-display);
-    font-size: 19px; font-weight: 800;
-    color: rgba(255,255,255,0.85); line-height: 1; transition: color .2s;
-}
-.jp-dtab-mon {
-    font-size: 9.5px; color: rgba(255,255,255,0.28);
-    font-weight: 500; transition: color .2s;
-}
-.jp-date-tab.active .jp-dtab-day { color: var(--fire); }
-.jp-date-tab.active .jp-dtab-num { color: var(--fire); } /* ← ini yang diubah */
-.jp-date-tab.active .jp-dtab-mon { color: rgba(255,255,255,0.5); }
-.jp-date-tab:hover .jp-dtab-num  { color: rgba(255,255,255,0.8); }
-
-.jp-tab-sep {
-    width: 1px; background: rgba(255,255,255,0.06);
-    align-self: stretch; margin: 8px 0; flex-shrink: 0;
-    transition: background 0.35s ease;
-}
-
-/* ════════════════════════════════════════
-   FILTER BAR
+   FILTER BAR (search + date + kategori)
 ════════════════════════════════════════ */
 .jp-filter-bar {
     background: var(--white);
     border-bottom: 1px solid var(--ink-12);
     position: sticky;
-    top: calc(64px + 71px); z-index: 39;
+    top: 64px; z-index: 40;
     box-shadow: 0 2px 16px rgba(26,16,7,0.04);
+    max-width: 100%;
+    overflow: hidden;
 }
-@media (min-width:640px)  { .jp-filter-bar { top: calc(80px  + 71px); } }
-@media (min-width:1024px) { .jp-filter-bar { top: calc(96px  + 71px); } }
+@media (min-width:640px)  { .jp-filter-bar { top: 80px; } }
+@media (min-width:1024px) { .jp-filter-bar { top: 96px; } }
 
-.jp-filter-inner {
+.jp-filter-top {
     max-width: 1120px; margin: 0 auto;
-    padding: 11px 24px;
+    padding: 11px 24px 8px;
     display: flex; align-items: center; gap: 10px;
     flex-wrap: wrap;
 }
+.jp-filter-bottom {
+    max-width: 1120px; margin: 0 auto;
+    padding: 0 24px 11px;
+    display: flex; align-items: center; gap: 8px;
+    flex-wrap: wrap;
+}
 
-.jp-search-wrap { position: relative; flex: 1; min-width: 180px; }
+.jp-search-wrap { position: relative; flex: 1 1 200px; min-width: 0; }
 .jp-search-icon {
     position: absolute; left: 13px; top: 50%; transform: translateY(-50%);
     color: var(--ink-25); pointer-events: none; display: flex; align-items: center;
@@ -263,21 +199,33 @@
 }
 .jp-search::placeholder { color: var(--ink-25); }
 
-.jp-kat-pills { display: flex; gap: 6px; flex-wrap: wrap; }
-.jp-pill {
-    padding: 6px 12px; border-radius: 99px;
-    border: 1.5px solid var(--ink-12); background: var(--paper);
-    font-family: var(--font-display); font-size: 9px; font-weight: 700;
-    letter-spacing: .08em; text-transform: uppercase;
-    color: var(--ink-45); cursor: pointer; transition: all .2s;
+.jp-select-wrap { position: relative; flex-shrink: 0; min-width: 0; }
+.jp-select-icon {
+    position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+    color: var(--fire-deep); pointer-events: none; display:flex; align-items:center;
 }
-.jp-pill:hover { border-color: rgba(249,115,22,.35); color: var(--fire); background: rgba(249,115,22,.05); }
-.jp-pill.active {
-    background: linear-gradient(135deg, var(--fire), var(--fire-deep));
-    border-color: transparent; color: #fff;
-    box-shadow: 0 4px 14px rgba(249,115,22,.3);
+.jp-select {
+    appearance: none;
+    max-width: 100%;
+    padding: 9px 30px 9px 34px;
+    border: 1.5px solid var(--ink-12);
+    border-radius: var(--r-sm);
+    font-family: var(--font-display); font-size: 12px; font-weight: 700;
+    color: var(--ink);
+    background-color: var(--paper);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='rgba(26,16,7,0.4)' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 12px 12px;
+    outline: none; cursor: pointer;
+    transition: all .22s;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
-
+.jp-select:focus, .jp-select:hover {
+    border-color: var(--fire); background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(249,115,22,0.1);
+}
 .jp-count-badge {
     margin-left: auto; flex-shrink: 0;
     display: flex; align-items: center; gap: 6px;
@@ -289,13 +237,29 @@
     padding: 2px 8px; border-radius: 6px; font-size: 12px;
 }
 
+@media (max-width:640px) {
+    .jp-hero { height:300px; }
+    .jp-hero-content { padding:0 18px 28px; }
+    .jp-stats { display:none; }
+    .jp-hero-title { font-size:24px; }
+    .jp-filter-top { padding:10px 16px 8px; flex-wrap: wrap; }
+    .jp-filter-bottom { padding:0 16px 10px; flex-wrap: wrap; }
+    .jp-search-wrap { flex: 1 1 100%; }
+    .jp-select-wrap { flex: 1 1 100%; }
+    .jp-select { width: 100%; }
+    .jp-count-badge { margin-left: 0; flex: 1 1 100%; justify-content: flex-end; }
+    .jp-main { padding:20px 16px 60px; }
+    .jp-match-grid { grid-template-columns:1fr; }
+}
+
 /* ════════════════════════════════════════
    MAIN
 ════════════════════════════════════════ */
-.jp-main { max-width: 1120px; margin: 0 auto; padding: 28px 24px 80px; }
+.jp-main { max-width: 1120px; margin: 0 auto; padding: 28px 24px 80px; overflow: hidden; }
 
 .jp-date-label {
     display: flex; align-items: center; gap: 14px; margin-bottom: 22px;
+    flex-wrap: wrap;
 }
 .jp-date-label-text {
     font-family: var(--font-display);
@@ -304,53 +268,61 @@
     white-space: nowrap; display: flex; align-items: center; gap: 8px;
 }
 .jp-date-label-fire { color: var(--fire); display:flex; align-items:center; }
-.jp-date-label-line { flex:1; height:1px; background: linear-gradient(90deg, var(--ink-12), transparent); }
+.jp-date-label-line { flex:1; height:1px; min-width: 20px; background: linear-gradient(90deg, var(--ink-12), transparent); }
 .jp-date-label-count { font-size:11px; color:var(--ink-25); font-weight:600; white-space:nowrap; }
-
-.jp-time-slot { margin-bottom: 22px; }
-.jp-time-pill {
-    display: inline-flex; align-items: center; gap: 7px;
-    padding: 5px 14px 5px 10px;
-    background: var(--night); border-radius: 99px;
-    margin-bottom: 11px;
-}
-.jp-time-dot { width:6px; height:6px; border-radius:50%; background:var(--fire); box-shadow:0 0 8px var(--fire); }
-.jp-time-text { font-family:var(--font-display); font-size:10px; font-weight:800; letter-spacing:.14em; color:rgba(255,255,255,.9); }
 
 .jp-match-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
-    gap: 12px;
+    gap: 14px;
 }
 
 /* ════════════════════════════════════════
-   MATCH CARD
+   MATCH CARD (jam + info digabung jadi satu kartu)
 ════════════════════════════════════════ */
 .jp-card {
     background: var(--white);
     border: 1px solid var(--ink-12);
     border-radius: var(--r-lg);
-    padding: 17px 18px 14px 21px;
-    position: relative; overflow: hidden;
+    overflow: hidden;
+    position: relative;
     transition: transform .3s cubic-bezier(.22,1,.36,1), box-shadow .3s, border-color .3s;
 }
-.jp-card::before {
-    content: '';
-    position: absolute; left:0; top:14px; bottom:14px; width:3px;
-    background: linear-gradient(to bottom, var(--fire), var(--fire-deep));
-    border-radius: 0 3px 3px 0; opacity:.4; transition: opacity .25s;
-}
-.jp-card:hover { transform:translateY(-4px); box-shadow:0 16px 48px rgba(249,115,22,0.1), 0 2px 8px rgba(26,16,7,0.05); border-color:rgba(249,115,22,0.22); }
-.jp-card:hover::before { opacity:1; }
+.jp-card:hover { transform:translateY(-4px); box-shadow:0 16px 48px rgba(30,58,138,0.12), 0 2px 8px rgba(26,16,7,0.05); border-color:rgba(30,58,138,0.25); }
 
-.jp-card.conflict { background:#fffafa; border-color:rgba(239,68,68,0.18); }
-.jp-card.conflict::before { background:linear-gradient(to bottom,#ef4444,#dc2626); opacity:.4; }
-.jp-card.conflict:hover { border-color:rgba(239,68,68,0.4); }
+.jp-card.conflict { border-color:rgba(239,68,68,0.25); }
+.jp-card.conflict:hover { border-color:rgba(239,68,68,0.45); }
 
-.jp-card.is-tbd { opacity:.55; }
+.jp-card.is-tbd { opacity:.6; }
 .jp-card.is-tbd:hover { opacity:1; }
 
-.jp-card-top { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:10px; }
+/* header waktu — pindah dari time-pill terpisah jadi bagian dari card */
+.jp-card-time {
+    background: linear-gradient(135deg, var(--night), var(--night-2));
+    padding: 9px 16px;
+    display: flex; align-items: center; gap: 7px;
+}
+.jp-card.conflict .jp-card-time { background: linear-gradient(135deg, #ef4444, #b91c1c); }
+.jp-card-time-dot { width:6px; height:6px; border-radius:50%; background:var(--fire); box-shadow:0 0 8px var(--fire); flex-shrink:0; animation: jpblink 1.6s ease infinite; }
+.jp-card-time-text {
+    font-family: var(--font-display); font-size: 12px; font-weight: 800;
+    letter-spacing: .04em; color: #fff;
+}
+.jp-card-time-wita {
+    font-size: 9px; font-weight: 600; color: rgba(255,255,255,0.6);
+    text-transform: uppercase; letter-spacing: .06em;
+}
+
+.jp-card-body { padding: 14px 16px 12px; position: relative; }
+.jp-card-body::before {
+    content: '';
+    position: absolute; left:0; top:0; bottom:0; width:3px;
+    background: linear-gradient(to bottom, var(--fire), var(--fire-deep));
+    opacity:.4; transition: opacity .25s;
+}
+.jp-card:hover .jp-card-body::before { opacity:1; }
+
+.jp-card-top { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:10px; flex-wrap: wrap; }
 
 .jp-kat-badge {
     padding:3px 9px; border-radius:99px;
@@ -364,17 +336,17 @@
 .kber { background:rgba(20,184,166,.1);  color:#0d9488; border:1px solid rgba(20,184,166,.18); }
 .kdef { background:var(--ink-06); color:var(--ink-45); border:1px solid var(--ink-12); }
 
-.jp-match-id { font-family:var(--font-display); font-size:9px; font-weight:700; color:var(--ink-25); letter-spacing:.05em; display:flex; align-items:center; gap:4px; }
+.jp-match-id { font-family:var(--font-display); font-size:9px; font-weight:700; color:var(--ink-25); letter-spacing:.05em; display:flex; align-items:center; gap:4px; flex-shrink: 0; }
 .jp-match-id strong { background:var(--night); color:#fff; border-radius:5px; padding:1px 7px; font-size:11px; }
 
-.jp-players { font-size:13.5px; font-weight:600; color:var(--ink); line-height:1.55; margin-bottom:12px; }
+.jp-players { font-size:13.5px; font-weight:600; color:var(--ink); line-height:1.55; margin-bottom:12px; word-break: break-word; }
 .jp-vs { display:block; font-family:var(--font-display); font-size:7.5px; font-weight:800; letter-spacing:.18em; text-transform:uppercase; color:var(--fire); opacity:.7; margin:4px 0; }
 .jp-pb { font-size:11px; color:var(--ink-25); font-weight:400; }
 
-.jp-card-foot { display:flex; align-items:center; justify-content:space-between; padding-top:10px; border-top:1px dashed var(--ink-12); }
-.jp-court { display:flex; align-items:center; gap:5px; font-size:11px; font-weight:700; color:var(--fire-deep); }
-.jp-babak { font-family:var(--font-display); font-size:8px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-25); background:var(--ink-06); padding:3px 8px; border-radius:5px; }
-.jp-conflict-tag { display:flex; align-items:center; gap:4px; font-size:9px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#ef4444; }
+.jp-card-foot { display:flex; align-items:center; justify-content:space-between; padding-top:10px; border-top:1px dashed var(--ink-12); gap: 8px; flex-wrap: wrap; }
+.jp-court { display:flex; align-items:center; gap:5px; font-size:11px; font-weight:700; color:var(--fire-deep); min-width: 0; }
+.jp-babak { font-family:var(--font-display); font-size:8px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-25); background:var(--ink-06); padding:3px 8px; border-radius:5px; flex-shrink: 0; white-space: nowrap; }
+.jp-conflict-tag { display:flex; align-items:center; gap:4px; font-size:9px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#ef4444; flex-shrink: 0; white-space: nowrap; }
 
 /* ════════════════════════════════════════
    EMPTY / SKELETON
@@ -384,25 +356,10 @@
 .jp-empty-title { font-family:var(--font-display); font-size:16px; font-weight:800; color:var(--ink); margin-bottom:6px; }
 .jp-empty-sub { font-size:13px; color:var(--ink-45); }
 
-.jp-skel-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(310px,1fr)); gap:12px; }
+.jp-skel-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(310px,1fr)); gap:14px; }
 .jp-skel-card { background:var(--white); border:1px solid var(--ink-12); border-radius:var(--r-lg); padding:20px; }
 .skel { border-radius:6px; background:linear-gradient(90deg,var(--ink-06) 25%,var(--ink-12) 50%,var(--ink-06) 75%); background-size:200% 100%; animation:shimmer 1.4s infinite; }
 @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
-
-/* ════════════════════════════════════════
-   RESPONSIVE
-════════════════════════════════════════ */
-@media (max-width:640px) {
-    .jp-hero { height:300px; }
-    .jp-hero-content { padding:0 18px 28px; }
-    .jp-stats { display:none; }
-    .jp-hero-title { font-size:24px; }
-    .jp-filter-inner { padding:10px 16px; }
-    .jp-main { padding:20px 16px 60px; }
-    .jp-match-grid { grid-template-columns:1fr; }
-    .jp-date-tab { padding:12px 13px; }
-    .jp-dtab-num { font-size:17px; }
-}
 </style>
 @endpush
 
@@ -439,18 +396,9 @@
         </div>
     </div>
 
-    {{-- ══ DATE TABS ══ --}}
-    <div class="jp-date-strip-wrap">
-        <div class="jp-date-strip" id="dateTabs">
-            <div style="padding:18px 20px;color:rgba(255, 255, 255, 0.25);font-size:12px;font-family:var(--font-display);">
-                Memuat…
-            </div>
-        </div>
-    </div>
-
     {{-- ══ FILTER BAR ══ --}}
     <div class="jp-filter-bar">
-        <div class="jp-filter-inner">
+        <div class="jp-filter-top">
             <div class="jp-search-wrap">
                 <span class="jp-search-icon">
                     <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -461,8 +409,28 @@
                     placeholder="Cari nama pemain atau nomor pertandingan…"
                     oninput="renderSchedule()">
             </div>
-            <div class="jp-kat-pills" id="katPills">
-                <button class="jp-pill active" data-kat="ALL" onclick="setKat('ALL',this)">Semua</button>
+            <div class="jp-select-wrap">
+                <span class="jp-select-icon">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                        <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>
+                    </svg>
+                </span>
+                <select id="dateSelect" class="jp-select" onchange="selectDate(this.value)">
+                    <option>Memuat…</option>
+                </select>
+            </div>
+        </div>
+        <div class="jp-filter-bottom">
+            <div class="jp-select-wrap">
+                <span class="jp-select-icon">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                        <path d="M20.59 13.41L11 3.83V3H3v8h.83L13.41 20.59a2 2 0 0 0 2.83 0l4.35-4.35a2 2 0 0 0 0-2.83z"/>
+                        <circle cx="6.5" cy="6.5" r="1.5"/>
+                    </svg>
+                </span>
+                <select id="katSelect" class="jp-select" onchange="selectKat(this.value)">
+                    <option>Memuat…</option>
+                </select>
             </div>
             <div class="jp-count-badge">
                 <span>Match</span>
@@ -522,6 +490,8 @@ function fmtTabMon(s)   { const d=parseDate(s); return BULAN[d.getMonth()]; }
 function fmtLong(s)     { const d=parseDate(s); return `${HARI[d.getDay()]}, ${d.getDate()} ${BULAN_PANJANG[d.getMonth()]} ${d.getFullYear()}`; }
 
 // ── FETCH ─────────────────────────────────────────────────
+// NOTE: cara hit API ini sudah benar — GET request ke endpoint result.bayanopen.com/get-schedule,
+// response 200 OK berupa array JSON flat (setiap object = 1 match lengkap dengan jam, tanggal, kategori, dst).
 async function init() {
     try {
         const res = await fetch('https://result.bayanopen.com/get-schedule');
@@ -536,11 +506,16 @@ async function init() {
         document.getElementById('statKat').textContent   = kats.length;
         document.getElementById('heroStats').style.display = 'flex';
 
-        buildDateTabs(dates);
-        buildKatPills(kats);
+        buildDateSelect(dates);
+        buildKatSelect(kats);
 
-        activeDate = dates[0];
-        document.querySelector(`.jp-date-tab[data-date="${activeDate}"]`)?.classList.add('active');
+        // ── Default: tanggal hari ini kalau tersedia, kalau tidak → tanggal terdekat berikutnya ──
+        activeDate = getDefaultDate(dates);
+        document.getElementById('dateSelect').value = activeDate;
+
+        // ── Default kategori: langsung ke kategori pertama yang ada, bukan "Semua Kategori" ──
+        activeKat = kats[0] || 'ALL';
+        document.getElementById('katSelect').value = activeKat;
 
         document.getElementById('loadingSkeleton').style.display = 'none';
         document.getElementById('scheduleContent').style.display = '';
@@ -561,78 +536,43 @@ async function init() {
     }
 }
 
-// ── DATE STRIP SCROLL TRANSITION ──────────────────────────
-(function () {
-    const strip = document.querySelector('.jp-date-strip-wrap');
-    if (!strip) return;
+// ── DEFAULT DATE: pilih hari ini kalau ada matchnya, kalau tidak pilih tanggal terdekat berikutnya ──
+function getDefaultDate(dates) {
+    const todayStr = new Date().toLocaleDateString('sv-SE'); // format YYYY-MM-DD sesuai jam device
+    if (dates.includes(todayStr)) return todayStr;
+    const upcoming = dates.filter(d => d >= todayStr).sort();
+    if (upcoming.length) return upcoming[0];
+    return dates[dates.length - 1] || dates[0];
+}
 
-    // Threshold: begitu hero sudah hilang dari viewport
-    function onScroll() {
-        const heroHeight = document.querySelector('.jp-hero')?.offsetHeight ?? 400;
-        if (window.scrollY > heroHeight - 120) {
-            strip.classList.add('scrolled');
-        } else {
-            strip.classList.remove('scrolled');
-        }
-    }
-
-    window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll(); // cek posisi awal
-})();
-
-// ── DATE TABS ─────────────────────────────────────────────
-function buildDateTabs(dates) {
-    const strip = document.getElementById('dateTabs');
-    strip.innerHTML = '';
-    dates.forEach((d, i) => {
-        if (i > 0) {
-            const sep = document.createElement('div');
-            sep.className = 'jp-tab-sep';
-            strip.appendChild(sep);
-        }
-        const btn = document.createElement('button');
-        btn.className = 'jp-date-tab';
-        btn.dataset.date = d;
-        btn.innerHTML = `
-            <span class="jp-dtab-day">${fmtTabDay(d)}</span>
-            <span class="jp-dtab-num">${fmtTabNum(d)}</span>
-            <span class="jp-dtab-mon">${fmtTabMon(d)}</span>
-        `;
-        btn.onclick = () => selectDate(d);
-        strip.appendChild(btn);
-    });
+// ── DATE SELECT (dropdown, ramah HP) ───────────────────────
+function buildDateSelect(dates) {
+    const sel = document.getElementById('dateSelect');
+    sel.innerHTML = dates.map(d =>
+        `<option value="${d}">${fmtTabDay(d)}, ${fmtTabNum(d)} ${fmtTabMon(d)}</option>`
+    ).join('');
 }
 
 function selectDate(d) {
     activeDate = d;
-    document.querySelectorAll('.jp-date-tab').forEach(b => b.classList.remove('active'));
-    const active = document.querySelector(`.jp-date-tab[data-date="${d}"]`);
-    active?.classList.add('active');
-    active?.scrollIntoView({ behavior:'smooth', block:'nearest', inline:'center' });
     renderSchedule();
 }
 
-// ── KAT PILLS ─────────────────────────────────────────────
-function buildKatPills(kats) {
-    const pills = document.getElementById('katPills');
-    kats.forEach(k => {
-        const btn = document.createElement('button');
-        btn.className = 'jp-pill';
-        btn.dataset.kat = k;
-        btn.textContent = k;
-        btn.onclick = function() { setKat(k, this); };
-        pills.appendChild(btn);
-    });
+// ── KAT SELECT ────────────────────────────────────────────
+function buildKatSelect(kats) {
+    const sel = document.getElementById('katSelect');
+    const opts = kats.map(k => `<option value="${k}">${k}</option>`).join('');
+    sel.innerHTML = `<option value="ALL">Semua Kategori</option>` + opts;
 }
 
-function setKat(kat, btn) {
-    activeKat = kat;
-    document.querySelectorAll('.jp-pill').forEach(p => p.classList.remove('active'));
-    if (btn) btn.classList.add('active');
+function selectKat(k) {
+    activeKat = k;
     renderSchedule();
 }
 
 // ── RENDER ────────────────────────────────────────────────
+// Sekarang jam TIDAK dikelompokkan terpisah lagi — tiap card membawa jamnya sendiri
+// di header card (badge navy di atas kartu), diurutkan berdasarkan jam ascending.
 function renderSchedule() {
     const search  = document.getElementById('searchInput').value.toLowerCase().trim();
     const content = document.getElementById('scheduleContent');
@@ -661,18 +601,17 @@ function renderSchedule() {
         return;
     }
 
-    // Group date → jam
+    // Group hanya per tanggal — jam sudah menyatu di dalam tiap card
     const byDate = {};
     filtered.forEach(m => {
-        if (!byDate[m.tanggal]) byDate[m.tanggal] = {};
-        if (!byDate[m.tanggal][m.jam]) byDate[m.tanggal][m.jam] = [];
-        byDate[m.tanggal][m.jam].push(m);
+        if (!byDate[m.tanggal]) byDate[m.tanggal] = [];
+        byDate[m.tanggal].push(m);
     });
 
     let html = '';
     Object.keys(byDate).sort().forEach(date => {
-        const byJam = byDate[date];
-        const total = Object.values(byJam).flat().length;
+        const matches = byDate[date].slice().sort((a, b) => (a.jam || '').localeCompare(b.jam || ''));
+
         html += `<div style="margin-bottom:40px;">
             <div class="jp-date-label">
                 <div class="jp-date-label-text">
@@ -684,28 +623,18 @@ function renderSchedule() {
                     ${fmtLong(date)}
                 </div>
                 <div class="jp-date-label-line"></div>
-                <span class="jp-date-label-count">${total} pertandingan</span>
-            </div>`;
-
-        Object.keys(byJam).sort().forEach(jam => {
-            html += `
-            <div class="jp-time-slot">
-                <div class="jp-time-pill">
-                    <span class="jp-time-dot"></span>
-                    <span class="jp-time-text">${jam.substring(0,5)} WITA</span>
-                </div>
-                <div class="jp-match-grid">
-                    ${byJam[jam].map(m => buildCard(m)).join('')}
-                </div>
-            </div>`;
-        });
-        html += `</div>`;
+                <span class="jp-date-label-count">${matches.length} pertandingan</span>
+            </div>
+            <div class="jp-match-grid">
+                ${matches.map(m => buildCard(m)).join('')}
+            </div>
+        </div>`;
     });
 
     content.innerHTML = html;
 }
 
-// ── CARD ──────────────────────────────────────────────────
+// ── CARD (jam + info pertandingan digabung jadi satu kartu) ──
 function buildCard(m) {
     const isConflict = m.status === 'CONFLICT';
     const isTBD      = (m.partai||'').trim() === 'TBD vs TBD';
@@ -719,6 +648,7 @@ function buildCard(m) {
     }
 
     const venueText = m.venue ? `${m.venue} · Lap ${m.court}` : `Lap ${m.court}`;
+    const jamText   = (m.jam || '').substring(0,5);
 
     const kat = (m.kategori||'').toLowerCase();
     let kc = 'kdef';
@@ -730,27 +660,34 @@ function buildCard(m) {
 
     return `
     <div class="jp-card${isConflict?' conflict':''}${isTBD?' is-tbd':''}">
-        <div class="jp-card-top">
-            <span class="jp-kat-badge ${kc}">${m.kategori||'—'}</span>
-            <span class="jp-match-id">No. <strong>${m.match_id}</strong></span>
+        <div class="jp-card-time">
+            <span class="jp-card-time-dot"></span>
+            <span class="jp-card-time-text">${jamText}</span>
+            <span class="jp-card-time-wita">WITA</span>
         </div>
-        <div class="jp-players">${partaiHtml}</div>
-        <div class="jp-card-foot">
-            <span class="jp-court">
-                <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>
-                </svg>
-                ${venueText}
-            </span>
-            ${isConflict
-                ? `<span class="jp-conflict-tag">
-                    <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/>
+        <div class="jp-card-body">
+            <div class="jp-card-top">
+                <span class="jp-kat-badge ${kc}">${m.kategori||'—'}</span>
+                <span class="jp-match-id">No. <strong>${m.match_id}</strong></span>
+            </div>
+            <div class="jp-players">${partaiHtml}</div>
+            <div class="jp-card-foot">
+                <span class="jp-court">
+                    <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>
                     </svg>
-                    Konflik
-                   </span>`
-                : `<span class="jp-babak">${m.babak}</span>`
-            }
+                    ${venueText}
+                </span>
+                ${isConflict
+                    ? `<span class="jp-conflict-tag">
+                        <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/>
+                        </svg>
+                        Konflik
+                       </span>`
+                    : `<span class="jp-babak">${m.babak}</span>`
+                }
+            </div>
         </div>
     </div>`;
 }

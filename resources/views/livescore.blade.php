@@ -145,6 +145,7 @@
 
 /* ════════════════════════════════════════
    FILTER STRIP (sticky — dark → light on scroll)
+   Compact 2-row bar, mengikuti gaya filter di halaman Jadwal
 ════════════════════════════════════════ */
 .ls-filter-strip-wrap {
     background: var(--night);
@@ -162,29 +163,24 @@
     border-bottom-color: var(--ink-12);
     box-shadow: 0 4px 20px rgba(26,16,7,0.08);
 }
-.ls-filter-strip-wrap.scrolled .ls-sel-wrap label {
-    color: var(--ink-25);
-}
-.ls-filter-strip-wrap.scrolled .ls-sel {
-    background: var(--paper);
+.ls-filter-strip-wrap.scrolled .ls-select {
+    background-color: var(--paper);
     border-color: var(--ink-12);
     color: var(--ink-70);
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='rgba(26,16,7,0.4)' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
-    background-position: right 8px center;
-    background-size: 12px 12px;  /* ← TAMBAHKAN INI */
+    background-position: right 9px center;
+    background-size: 12px 12px;
 }
-.ls-filter-strip-wrap.scrolled .ls-sel:focus,
-.ls-filter-strip-wrap.scrolled .ls-sel:hover {
-    border-color: rgba(249,115,22,0.5);
-    background-color: rgba(249,115,22,0.04);
+.ls-filter-strip-wrap.scrolled .ls-select:focus,
+.ls-filter-strip-wrap.scrolled .ls-select:hover {
+    border-color: var(--fire);
+    background-color: #fff;
 }
+.ls-filter-strip-wrap.scrolled .ls-select-icon { color: var(--fire-deep); }
 .ls-filter-strip-wrap.scrolled .ls-count-badge {
     background: var(--paper);
     border-color: var(--ink-12);
-}
-.ls-filter-strip-wrap.scrolled .ls-count-num {
-    color: var(--fire);
 }
 .ls-filter-strip-wrap.scrolled .ls-count-lbl {
     color: var(--ink-45);
@@ -198,45 +194,48 @@
 
 .ls-filter-strip {
     max-width: 1120px; margin: 0 auto;
-    padding: 13px 24px;
+    padding: 12px 24px;
     display: flex; align-items: center; gap: 10px;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
+}
+.ls-filter-selects {
+    display: flex; align-items: center; gap: 8px;
+    flex: 1 1 auto; min-width: 0;
 }
 
-/* selects */
-.ls-sel-group { display: flex; gap: 8px; flex-wrap: wrap; }
-.ls-sel-wrap { display: flex; flex-direction: column; gap: 3px; }
-.ls-sel-wrap label {
-    font-family: var(--font-display);
-    font-size: 8px; font-weight: 700;
-    letter-spacing: .14em; text-transform: uppercase;
-    color: rgba(255,255,255,0.3);
-    transition: color 0.35s ease;
+/* icon selects */
+.ls-select-wrap { position: relative; flex: 1 1 0; min-width: 0; }
+.ls-select-icon {
+    position: absolute; left: 11px; top: 50%; transform: translateY(-50%);
+    color: var(--fire); pointer-events: none; display: flex; align-items: center;
+    transition: color .35s ease;
 }
-.ls-sel {
-    padding: 7px 28px 7px 10px;
-    background: rgba(255,255,255,0.06);
+.ls-select {
+    width: 100%;
+    appearance: none;
+    padding: 8px 24px 8px 32px;
+    background-color: rgba(255,255,255,0.06);
     border: 1px solid rgba(255,255,255,0.1);
     border-radius: var(--r-xs);
-    color: rgba(255,255,255,0.75);
-    font-family: var(--font-display); font-size: 10px; font-weight: 700;
-    appearance: none; cursor: pointer; outline: none;
+    color: rgba(255,255,255,0.8);
+    font-family: var(--font-display); font-size: 10.5px; font-weight: 700;
+    cursor: pointer; outline: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='rgba(255,255,255,0.4)' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 8px center;
-    background-size: 12px 12px;  /* ← TAMBAHKAN INI juga di rule default */
+    background-size: 11px 11px;
     transition: border-color .2s, background-color .2s, color .35s ease;
-    min-width: 140px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.ls-sel:focus, .ls-sel:hover {
+.ls-select:focus, .ls-select:hover {
     border-color: rgba(249,115,22,0.5);
     background-color: rgba(249,115,22,0.07);
 }
-.ls-sel option { background: #1a0a04; color: #fff; }
+.ls-select option { background: #1a0a04; color: #fff; }
 
 /* refresh info */
 .ls-refresh-info {
-     flex-shrink: 0;
+    flex-shrink: 0;
     display: flex; align-items: center; gap: 6px;
 }
 .ls-refresh-dot {
@@ -251,24 +250,26 @@
     transition: color 0.35s ease;
 }
 .ls-count-badge {
-    display: flex; align-items: center; gap: 5px;
+    flex-shrink: 0;
+    display: flex; align-items: center; gap: 6px;
     background: rgba(255,255,255,0.05);
     border: 1px solid rgba(255,255,255,0.08);
     border-radius: var(--r-xs);
-    padding: 5px 10px;
-    margin-left: auto; /* ← PINDAHKAN ke sini */
+    padding: 6px 11px;
     transition: background 0.35s ease, border-color 0.35s ease;
 }
 .ls-count-num {
-    font-family: var(--font-display); font-size: 13px; font-weight: 800;
-    color: var(--fire);
+    font-family: var(--font-display); font-size: 12px; font-weight: 800;
+    background: var(--fire); color: #fff;
+    padding: 1px 7px; border-radius: 6px;
 }
 .ls-count-lbl {
-    font-family: var(--font-display); font-size: 8px; font-weight: 700;
-    letter-spacing: .1em; text-transform: uppercase;
-    color: rgba(255,255,255,0.25);
+    font-family: var(--font-display); font-size: 9px; font-weight: 700;
+    letter-spacing: .06em; text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
     transition: color 0.35s ease;
 }
+
 
 /* ════════════════════════════════════════
    MAIN CONTENT
@@ -308,8 +309,18 @@
 .ls-card.selesai::before { background: linear-gradient(to bottom, var(--success), #059669); opacity:.6; }
 .ls-card.selesai:hover   { border-color: rgba(16,185,129,0.3); box-shadow: 0 16px 48px rgba(16,185,129,0.08), 0 2px 8px rgba(26,16,7,0.05); }
 
+/* time bar — menyatu langsung di atas card (bukan pill terpisah) */
+.ls-card-time {
+    background: linear-gradient(135deg, var(--night), var(--night-2));
+    padding: 8px 16px;
+    display: flex; align-items: center; gap: 7px;
+}
+.ls-card-time-dot { width:6px; height:6px; border-radius:50%; background:var(--fire); box-shadow:0 0 8px var(--fire); flex-shrink:0; animation: lsblink 1.6s ease infinite; }
+.ls-card-time-text { font-family: var(--font-display); font-size: 12px; font-weight: 800; letter-spacing: .04em; color: #fff; }
+.ls-card-time-wita { font-size: 9px; font-weight: 600; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: .06em; }
+
 .ls-card-head {
-    padding: 14px 16px 10px 20px;
+    padding: 12px 16px 10px 20px;
     display: flex; align-items: center; justify-content: space-between; gap: 8px;
     border-bottom: 1px dashed var(--ink-12);
 }
@@ -341,50 +352,77 @@
     color: var(--ink-25); background: var(--ink-06);
     padding: 3px 8px; border-radius: 5px;
 }
-.ls-jam {
-    font-family: var(--font-display); font-size: 10px; font-weight: 800;
-    color: var(--ink-45); letter-spacing: .04em;
+
+/* players vs score section — compact horizontal row (mobile-first) */
+.ls-card-body { padding: 14px 16px 12px; }
+
+.ls-match-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
-/* players vs score section */
-.ls-card-body { padding: 16px 20px 14px; }
+.ls-team { flex: 1 1 0; min-width: 0; }
+.ls-team-right { text-align: right; }
 
-.ls-player-row {
-    display: flex; align-items: flex-start; justify-content: space-between;
-    gap: 12px; margin-bottom: 8px;
-}
-.ls-player-row:last-of-type { margin-bottom: 0; }
-
-.ls-player-info { flex: 1; min-width: 0; }
 .ls-player-name {
-    font-size: 13.5px; font-weight: 600; color: var(--ink);
-    line-height: 1.4; word-break: break-word;
+    font-size: 12.5px; font-weight: 600; color: var(--ink);
+    line-height: 1.35; word-break: break-word;
 }
 .ls-player-pb {
-    font-size: 10.5px; color: var(--ink-25); font-weight: 400;
+    font-size: 9.5px; color: var(--ink-25); font-weight: 400;
     margin-top: 2px; display: block;
 }
 
-.ls-player-score {
-    font-family: var(--font-mono);
-    font-size: 24px; font-weight: 800;
-    color: var(--ink); line-height: 1;
-    flex-shrink: 0; min-width: 36px; text-align: right;
+.ls-score-badge {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 64px;
+    padding: 10px 12px;
+    border-radius: var(--r-sm);
+    background: transparent;
+    font-family: var(--font-display);
 }
-.ls-player-score.winner { color: var(--fire); }
-
-.ls-vs-divider {
-    display: flex; align-items: center; gap: 10px; margin: 6px 0;
+.ls-score-num {
+    display: block;
+    width: 100%;
+    text-align: center;
+    font-weight: 800;
+    font-size: 16px;
+    letter-spacing: -.01em;
+    color: var(--fire);
+    line-height: 1.1;
+    white-space: nowrap;
 }
-.ls-vs-line { flex: 1; height: 1px; background: var(--ink-12); }
-.ls-vs-text {
-    font-family: var(--font-display); font-size: 7.5px; font-weight: 800;
-    letter-spacing: .18em; text-transform: uppercase; color: var(--fire); opacity: .7;
+.ls-score-vs-label {
+    display: block;
+    width: 100%;
+    text-align: center;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: rgb(0, 0, 0);
+    line-height: 1;
+    margin-top: 4px;
+}
+.ls-score-badge.pending {
+    background: var(--ink-06);
+    border: 1px solid var(--ink-12);
+    color: var(--ink-25);
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    padding: 8px 10px;
 }
 
 /* set scores */
 .ls-sets {
-    margin-top: 12px; padding-top: 10px;
+    margin-top: 10px; padding-top: 9px;
     border-top: 1px dashed var(--ink-12);
     display: flex; gap: 6px; flex-wrap: wrap; align-items: center;
 }
@@ -394,8 +432,8 @@
     color: var(--ink-25); margin-right: 2px;
 }
 .ls-set-chip {
-    padding: 4px 10px; border-radius: 7px;
-    font-family: var(--font-mono); font-size: 12px; font-weight: 800;
+    padding: 3px 9px; border-radius: 7px;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 800;
     background: var(--ink-06); color: var(--ink);
     border: 1px solid var(--ink-12);
 }
@@ -445,18 +483,6 @@
 .ls-date-count { font-size:11px; color:var(--ink-25); font-weight:600; white-space:nowrap; }
 
 /* ════════════════════════════════════════
-   TIME SLOT
-════════════════════════════════════════ */
-.ls-time-slot { margin-bottom: 20px; }
-.ls-time-pill {
-    display: inline-flex; align-items: center; gap: 7px;
-    padding: 5px 14px 5px 10px;
-    background: var(--night); border-radius: 99px; margin-bottom: 12px;
-}
-.ls-time-dot { width:6px; height:6px; border-radius:50%; background:var(--fire); box-shadow:0 0 8px var(--fire); }
-.ls-time-text { font-family:var(--font-display); font-size:10px; font-weight:800; letter-spacing:.14em; color:rgba(255,255,255,.9); }
-
-/* ════════════════════════════════════════
    SKELETON / EMPTY
 ════════════════════════════════════════ */
 .skel { border-radius:6px; background:linear-gradient(90deg,var(--ink-06) 25%,var(--ink-12) 50%,var(--ink-06) 75%); background-size:200% 100%; animation:shimmer 1.4s infinite; }
@@ -478,12 +504,37 @@
     .ls-hero-content { padding:0 18px 24px; }
     .ls-stats { display:none; }
     .ls-hero-title { font-size:22px; }
-    .ls-filter-strip { padding:10px 16px; gap:8px; }
-    .ls-sel-group { gap:6px; }
-    .ls-sel { min-width:110px; font-size:9px; }
+    .ls-filter-strip { padding:10px 16px; gap:6px; }
+    .ls-filter-selects {
+        display: grid; grid-template-columns: repeat(3, 1fr);
+        gap: 6px; width: 100%;
+    }
+    .ls-select { font-size:8.5px; padding:8px 18px 8px 24px; }
+    .ls-select-icon { left:7px; }
+    .ls-select-icon svg { width:11px; height:11px; }
+    .ls-count-badge { display:none; }
     .ls-main { padding:20px 16px 60px; }
-    .ls-card-grid { grid-template-columns:1fr; }
+    .ls-card-grid { grid-template-columns:1fr; gap:10px; }
     .ls-refresh-info { display:none; }
+
+    /* compact card header on phones */
+    .ls-card-head { padding:11px 12px 8px 14px; gap:6px; flex-wrap: wrap; }
+    .ls-head-right { gap:5px; flex-wrap: wrap; row-gap:5px; }
+    .ls-kat-badge { font-size:7.5px; padding:3px 8px; }
+    .ls-court-pill { font-size:8.5px; padding:3px 7px; }
+    .ls-babak-tag { font-size:7.5px; padding:3px 7px; }
+    .ls-card-time { padding:7px 14px; }
+    .ls-card-time-text { font-size:11px; }
+
+    /* tighter score row on phones */
+    .ls-card-body { padding:12px 14px 10px; }
+    .ls-match-row { gap:8px; }
+    .ls-player-name { font-size:12px; }
+    .ls-score-badge { min-width:48px; font-size:15px; padding:7px 5px; }
+    .ls-set-chip { font-size:10px; padding:3px 8px; }
+
+    .ls-card-foot { padding:8px 14px 12px; }
+    .ls-winner-name { font-size:12px; }
 }
 </style>
 @endpush
@@ -528,22 +579,35 @@
     {{-- ══ FILTER STRIP ══ --}}
     <div class="ls-filter-strip-wrap" id="filterStripWrap">
         <div class="ls-filter-strip">
-            <div class="ls-sel-group">
-                <div class="ls-sel-wrap">
-                    <label>Tanggal</label>
-                    <select id="filterTanggal" class="ls-sel" onchange="applyFilter()">
+            <div class="ls-filter-selects">
+                <div class="ls-select-wrap">
+                    <span class="ls-select-icon">
+                        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                            <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>
+                        </svg>
+                    </span>
+                    <select id="filterTanggal" class="ls-select" onchange="applyFilter()">
                         <option value="ALL">Semua Tanggal</option>
                     </select>
                 </div>
-                <div class="ls-sel-wrap">
-                    <label>Kategori</label>
-                    <select id="filterKategori" class="ls-sel" onchange="applyFilter()">
+                <div class="ls-select-wrap">
+                    <span class="ls-select-icon">
+                        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                            <path d="M20.59 13.41L11 3.83V3H3v8h.83L13.41 20.59a2 2 0 0 0 2.83 0l4.35-4.35a2 2 0 0 0 0-2.83z"/>
+                            <circle cx="6.5" cy="6.5" r="1.5"/>
+                        </svg>
+                    </span>
+                    <select id="filterKategori" class="ls-select" onchange="applyFilter()">
                         <option value="ALL">Semua Kategori</option>
                     </select>
                 </div>
-                <div class="ls-sel-wrap">
-                    <label>Lapangan</label>
-                    <select id="filterLapangan" class="ls-sel" onchange="applyFilter()">
+                <div class="ls-select-wrap">
+                    <span class="ls-select-icon">
+                        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>
+                        </svg>
+                    </span>
+                    <select id="filterLapangan" class="ls-select" onchange="applyFilter()">
                         <option value="ALL">Semua Lapangan</option>
                     </select>
                 </div>
@@ -606,6 +670,21 @@ const BULAN_PANJANG = ['Januari','Februari','Maret','April','Mei','Juni',
 
 function parseDate(str) { const [y,m,d]=str.split('-').map(Number); return new Date(y,m-1,d); }
 function fmtLong(s) { const d=parseDate(s); return `${HARI[d.getDay()]}, ${d.getDate()} ${BULAN_PANJANG[d.getMonth()]} ${d.getFullYear()}`; }
+
+/* ── Set-win tally, e.g. "21-15 18-21 21-19" → { a:2, b:1 } ── */
+function tallySets(skor) {
+    if (!skor || skor === '-') return null;
+    let a = 0, b = 0;
+    skor.trim().split(/\s+/).forEach(set => {
+        const [pa, pb] = set.split('-').map(Number);
+        if (!isNaN(pa) && !isNaN(pb)) {
+            if (pa > pb) a++;
+            else if (pb > pa) b++;
+        }
+    });
+    if (a === 0 && b === 0) return null;
+    return { a, b };
+}
 
 /* ── SCROLL TRANSITION ────────────────────── */
 (function () {
@@ -726,19 +805,16 @@ function renderScore() {
         return;
     }
 
-    // Group by tanggal → jam
+    // Group by tanggal saja — jam sekarang menyatu di dalam tiap card
     const byDate = {};
     filtered.forEach(m => {
-        if (!byDate[m.tanggal]) byDate[m.tanggal] = {};
-        const jam = m.jam || '00:00';
-        if (!byDate[m.tanggal][jam]) byDate[m.tanggal][jam] = [];
-        byDate[m.tanggal][jam].push(m);
+        if (!byDate[m.tanggal]) byDate[m.tanggal] = [];
+        byDate[m.tanggal].push(m);
     });
 
     let html = '';
     Object.keys(byDate).sort().forEach(date => {
-        const byJam      = byDate[date];
-        const totalDate  = Object.values(byJam).flat().length;
+        const matches = byDate[date].slice().sort((a, b) => (a.jam || '').localeCompare(b.jam || ''));
         html += `<div class="ls-date-section">
             <div class="ls-date-label">
                 <div class="ls-date-label-text">
@@ -750,23 +826,12 @@ function renderScore() {
                     ${fmtLong(date)}
                 </div>
                 <div class="ls-date-line"></div>
-                <span class="ls-date-count">${totalDate} pertandingan</span>
-            </div>`;
-
-        Object.keys(byJam).sort().forEach(jam => {
-            html += `
-            <div class="ls-time-slot">
-                <div class="ls-time-pill">
-                    <span class="ls-time-dot"></span>
-                    <span class="ls-time-text">${jam.substring(0,5)} WITA</span>
-                </div>
-                <div class="ls-card-grid">
-                    ${byJam[jam].map(m => buildCard(m)).join('')}
-                </div>
-            </div>`;
-        });
-
-        html += `</div>`;
+                <span class="ls-date-count">${matches.length} pertandingan</span>
+            </div>
+            <div class="ls-card-grid">
+                ${matches.map(m => buildCard(m)).join('')}
+            </div>
+        </div>`;
     });
 
     content.innerHTML = html;
@@ -794,25 +859,29 @@ function buildCard(m) {
 
     const skor    = (m.skor || '').toString().trim();
     const winner  = m.winner || '';
+    const hasSkor = skor && skor !== '-';
+    const skorDisplay = hasSkor ? skor.replace(/\s*-\s*/g, ' - ') : '';
 
-    let setsHtml = '';
-    if (skor && skor !== '-') {
-        const sets = skor.split(/\s+/);
-        setsHtml = `
-        <div class="ls-sets">
-            <span class="ls-set-label">Set</span>
-            ${sets.map(s => `<span class="ls-set-chip">${s}</span>`).join('')}
-        </div>`;
-    }
+    const scoreBadgeHtml = hasSkor
+        ? `<div class="ls-score-badge">
+                <div class="ls-score-num">${skorDisplay}</div>
+                <div class="ls-score-vs-label">vs</div>
+        </div>`
+        : `<div class="ls-score-badge pending">VS</div>`;
 
     const courtLabel = m.venue ? `${m.venue} · Lap ${m.court}` : `Lap ${m.court}`;
+    const jamText     = (m.jam || '').substring(0,5);
 
     return `
     <div class="ls-card${isSelesai ? ' selesai' : ''}">
+        <div class="ls-card-time">
+            <span class="ls-card-time-dot"></span>
+            <span class="ls-card-time-text">${jamText}</span>
+            <span class="ls-card-time-wita">WITA</span>
+        </div>
         <div class="ls-card-head">
             <span class="ls-kat-badge ${kc}">${m.kategori || '—'}</span>
             <div class="ls-head-right">
-                <span class="ls-jam">${(m.jam||'').substring(0,5)}</span>
                 <div class="ls-court-pill">
                     <span class="ls-court-dot"></span>
                     ${courtLabel}
@@ -822,21 +891,15 @@ function buildCard(m) {
         </div>
 
         <div class="ls-card-body">
-            <div class="ls-player-row">
-                <div class="ls-player-info">${formatPlayer(p1Raw)}</div>
+            <div class="ls-match-row">
+                <div class="ls-team ls-team-left">
+                    <div class="ls-player-name">${formatPlayer(p1Raw)}</div>
+                </div>
+            ${scoreBadgeHtml}
+                <div class="ls-team ls-team-right">
+                    <div class="ls-player-name">${formatPlayer(p2Raw)}</div>
+                </div>
             </div>
-
-            <div class="ls-vs-divider">
-                <div class="ls-vs-line"></div>
-                <span class="ls-vs-text">VS</span>
-                <div class="ls-vs-line"></div>
-            </div>
-
-            <div class="ls-player-row">
-                <div class="ls-player-info">${formatPlayer(p2Raw)}</div>
-            </div>
-
-            ${setsHtml}
         </div>
 
         <div class="ls-card-foot">
