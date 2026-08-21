@@ -37,6 +37,9 @@ return [
             ? 'https://app.midtrans.com/snap/snap.js'
             : 'https://app.sandbox.midtrans.com/snap/snap.js',
     ],
+    'pantau' => [
+        'secret' => env('PANTAU_SECRET'),
+    ],
 
     'qiscus' => [
         'app_id'     => env('QISCUS_APP_ID'),

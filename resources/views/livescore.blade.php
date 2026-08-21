@@ -583,6 +583,17 @@
 @endsection
 
 @push('scripts')
+
+<script>
+(function(){
+    fetch('/api/track-visit', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ page: 'live-score', label: 'Live Score' })
+    }).catch(()=>{});
+})();
+</script>
+
 <script>
 /* ═══════════════════════════════════════
    LIVE SCORE JS — Bayan Open 2026

@@ -781,6 +781,15 @@
 @endsection
 
 @push('scripts')
+<script>
+(function(){
+    fetch('/api/track-visit', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ page: 'galeri-foto', label: 'Galeri Foto' })
+    }).catch(()=>{});
+})();
+</script>
 <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
 <script>
 /* ══════════════════════════════════════════════
