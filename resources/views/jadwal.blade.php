@@ -494,6 +494,15 @@
 
 @push('scripts')
 <script>
+(function(){
+    fetch('/api/track-visit', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ page: 'jadwal', label: 'Jadwal Pertandingan' })
+    }).catch(()=>{});
+})();
+</script>
+<script>
 /* ═══════════════════════════════════════
    JADWAL JS — Bayan Open 2026
 ═══════════════════════════════════════ */
