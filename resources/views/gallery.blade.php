@@ -871,7 +871,31 @@ async function startCamera() {
             showStatus('Deteksi otomatis gagal dimuat — gunakan tombol "Ambil Manual" di bawah.', 'error');
         }
     } catch (error) {
-        showStatus('Tidak bisa mengakses kamera: ' + error.message, 'error');
+        console.error('Camera error:', error);
+        showStatus(getCameraErrorMessage(error), 'error');
+    }
+}
+
+/* Menerjemahkan error teknis kamera (bahasa Inggris dari browser)
+   menjadi pesan yang mudah dipahami orang awam, full Bahasa Indonesia. */
+function getCameraErrorMessage(error) {
+    const name = error && error.name;
+    switch (name) {
+        case 'NotAllowedError':
+        case 'PermissionDeniedError':
+            return 'Akses kamera ditolak. Mohon izinkan akses kamera pada browser Anda (biasanya lewat ikon gembok di address bar), lalu klik "Nyalakan Kamera" lagi.';
+        case 'NotFoundError':
+        case 'DevicesNotFoundError':
+            return 'Kamera tidak ditemukan di perangkat ini. Pastikan perangkat Anda memiliki kamera yang aktif dan berfungsi.';
+        case 'NotReadableError':
+        case 'TrackStartError':
+            return 'Kamera sedang dipakai aplikasi lain. Tutup aplikasi atau tab lain yang menggunakan kamera, lalu coba lagi.';
+        case 'OverconstrainedError':
+            return 'Kamera pada perangkat Anda tidak mendukung pengaturan yang dibutuhkan. Coba gunakan perangkat lain.';
+        case 'SecurityError':
+            return 'Akses kamera diblokir karena alasan keamanan. Pastikan Anda membuka halaman ini melalui koneksi aman (https).';
+        default:
+            return 'Kamera tidak bisa diakses. Pastikan Anda sudah mengizinkan akses kamera pada browser, lalu coba lagi.';
     }
 }
 
@@ -1013,14 +1037,18 @@ async function captureAndRegister() {
                 loadPhotos();
             }, 900);
         } else {
-            showStatus('Gagal mengenali wajah: ' + (data.error || 'coba lagi dengan pencahayaan lebih baik.'), 'error');
+            // Catatan: data.error dari server bisa berupa teks teknis/bahasa Inggris,
+            // jadi kita simpan hanya untuk console, dan tampilkan ke user pesan yang ramah.
+            console.error('Register face gagal:', data.error);
+            showStatus('Wajah belum berhasil dikenali. Coba lagi dengan pencahayaan yang lebih terang, hadapkan wajah lurus ke kamera, dan pastikan tidak terhalang masker atau kacamata gelap.', 'error');
             setScanState('red', 'Gagal, coba lagi…');
             stableCount = 0;
             autoCaptureLock = false;
             if (modelsLoaded && videoStream) startDetectionLoop();
         }
     } catch (error) {
-        showStatus('Koneksi gagal: ' + error.message, 'error');
+        console.error('Register face error:', error);
+        showStatus('Koneksi ke server bermasalah. Periksa koneksi internet Anda, lalu coba lagi.', 'error');
         stableCount = 0;
         autoCaptureLock = false;
         if (modelsLoaded && videoStream) startDetectionLoop();
@@ -1064,6 +1092,15 @@ function getPhotoDownloadUrl(photo) {
     return photo.url || DOWNLOAD_ENDPOINT(photo.filename);   // tetap full-res, ini sudah benar
 }
 
+/* Set teks empty-state secara aman (hindari duplikasi query selector) */
+function setEmptyState(title, sub) {
+    const emptyEl = document.getElementById('emptyState');
+    const titleEl = emptyEl.querySelector('.fg-empty-title');
+    const subEl = emptyEl.querySelector('.fg-empty-sub');
+    if (titleEl) titleEl.textContent = title;
+    if (subEl) subEl.textContent = sub;
+}
+
 /* ══ LOAD & FILTER PHOTOS ══ */
 async function loadPhotos() {
     document.getElementById('gallerySection').classList.remove('fg-hidden');
@@ -1097,13 +1134,21 @@ async function loadPhotos() {
             renderPhotos(filtered);
         } else {
             allPhotos = [];
+            setEmptyState(
+                'Belum Ada Foto Ditemukan',
+                'Wajah Anda belum terdeteksi di hari ini. Coba lagi di hari lain atau cek kembali nanti setelah panitia mengunggah lebih banyak foto.'
+            );
             document.getElementById('emptyState').classList.remove('fg-hidden');
             document.getElementById('photoCount').innerHTML = 'Ditemukan <strong>0</strong> foto';
         }
     } catch (error) {
-        document.getElementById('loadingPhotos').classList.add('fg-hidden');
-        document.getElementById('emptyState').classList.remove('fg-hidden');
         console.error('Gagal memuat foto:', error);
+        document.getElementById('loadingPhotos').classList.add('fg-hidden');
+        setEmptyState(
+            'Gagal Memuat Foto',
+            'Sepertinya ada gangguan koneksi ke server. Silakan periksa koneksi internet Anda dan coba lagi beberapa saat lagi.'
+        );
+        document.getElementById('emptyState').classList.remove('fg-hidden');
     }
 }
 
@@ -1138,6 +1183,10 @@ function renderPhotos(photos) {
 
     if (photos.length === 0) {
         grid.classList.add('fg-hidden');
+        setEmptyState(
+            'Belum Ada Foto Ditemukan',
+            'Wajah Anda belum terdeteksi pada hari yang dipilih. Coba pilih hari lain atau cek kembali nanti.'
+        );
         empty.classList.remove('fg-hidden');
         return;
     }
@@ -1153,9 +1202,10 @@ function renderPhotos(photos) {
                  onclick="showPhotoDetail(${i})" role="button" tabindex="0"
                  onkeydown="if (event.key === 'Enter' || event.key === ' ') showPhotoDetail(${i})">
                 <div class="fg-photo-img-wrap">
-                    <img class="fg-photo-img" src="${imgUrl}" alt="${photo.filename}" loading="lazy">
+                    <img class="fg-photo-img" src="${imgUrl}" alt="${photo.filename}" loading="lazy"
+                         onerror="this.closest('.fg-photo-card').style.display='none'">
                     <a href="https://ambilfoto.id" target="_blank" rel="noopener" class="fg-photo-copyright" onclick="event.stopPropagation()">© AmbilFoto.id</a>
-                    <button class="fg-photo-download" aria-label="Download foto" title="Download foto"
+                    <button class="fg-photo-download" aria-label="Unduh foto" title="Unduh foto"
                             onclick="event.stopPropagation(); downloadPhoto('${getPhotoDownloadUrl(photo)}', '${photo.filename}', this)">
                         <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path d="M12 3v12m0 0 4-4m-4 4-4-4M5 21h14"/>
@@ -1179,7 +1229,7 @@ function showPhotoDetail(index) {
         <div class="fg-modal-img-wrap" onclick="closeModal()">
             <img class="fg-modal-img" src="${imgUrl}" alt="Foto pertandingan">
              <a href="https://ambilfoto.id" target="_blank" rel="noopener" class="fg-modal-quality-badge" onclick="event.stopPropagation()">© AmbilFoto.id</a>
-            <button class="fg-modal-download" aria-label="Download foto" title="Download foto"
+            <button class="fg-modal-download" aria-label="Unduh foto" title="Unduh foto"
                     onclick="event.stopPropagation(); downloadPhoto('${getPhotoDownloadUrl(photo)}', '${photo.filename}', this)">
                 <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                     <path d="M12 3v12m0 0 4-4m-4 4-4-4M5 21h14"/>
@@ -1252,7 +1302,7 @@ async function downloadPhoto(url, filename, btnEl) {
     } catch (error) {
         console.error('Download error:', error);
         // Fallback kalau fetch cross-origin diblokir (CORS belum diaktifkan di server)
-        showToast('Tidak bisa unduh langsung, membuka file di tab baru.');
+        showToast('Tidak bisa mengunduh langsung, membuka foto di tab baru.');
         window.open(secureUrl, '_blank');
     } finally {
         if (btnEl) btnEl.classList.remove('is-loading');

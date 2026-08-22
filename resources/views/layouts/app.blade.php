@@ -313,6 +313,11 @@
                           {{ request()->routeIs('home') ? 'active' : '' }}">
                     Beranda
                 </a>
+                  <a href="{{ route('gallery') }}"
+                    class="nav-link transition font-semibold text-sm tracking-wide px-3 py-2 rounded-lg
+                            {{ request()->routeIs('gallery') ? 'active' : '' }}">       
+                    Galeri
+                </a>
                     <a href="{{ route('dokumen') }}"
                     class="nav-link transition font-semibold text-sm tracking-wide px-3 py-2 rounded-lg
                             {{ request()->routeIs('dokumen') ? 'active' : '' }}">       
@@ -375,7 +380,10 @@
 
         <a href="{{ route('home') }}"
            class="nav-link-mobile {{ request()->routeIs('home') ? 'active' : '' }}"
-           onclick="closeMobileMenu()">Home</a>
+           onclick="closeMobileMenu()">Beranda</a>
+        <a href="{{ route('gallery') }}"
+           class="nav-link-mobile {{ request()->routeIs('gallery') ? 'active' : '' }}"
+           onclick="closeMobileMenu()">Galeri</a>
         <a href="{{ route('dokumen') }}"
            class="nav-link-mobile {{ request()->routeIs('dokumen') ? 'active' : '' }}"
               onclick="closeMobileMenu()">Dokumen</a>
@@ -463,6 +471,11 @@
                         <li>
                             <a href="{{ route('home') }}" class="footer-nav-link ">
                                 <span class="dot"></span>Beranda
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('gallery') }}" class="footer-nav-link">
+                                <span class="dot"></span>Galeri
                             </a>
                         </li>
                         <li>
