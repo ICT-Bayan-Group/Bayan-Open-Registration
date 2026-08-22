@@ -858,6 +858,36 @@ body {
     opacity: 0.5;
 }
 .gallery-header { text-align: center; padding: 0 24px; margin-bottom: 52px; position: relative; z-index: 4; }
+.gallery-cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 20px;
+    padding: 13px 28px;
+    border-radius: 99px;
+    background: linear-gradient(135deg, var(--fire), var(--fire-deep));
+    color: #fff;
+    font-family: var(--font-display);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    box-shadow: 0 8px 24px rgba(249,115,22,0.3);
+    transition: all 0.3s cubic-bezier(0.22,1,0.36,1);
+    position: relative;
+    z-index: 4;
+}
+.gallery-cta-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 32px rgba(249,115,22,0.4);
+}
+.gallery-cta-btn svg {
+    transition: transform 0.25s ease;
+}
+.gallery-cta-btn:hover svg {
+    transform: translateX(3px);
+}
 .gallery-track-wrap { display: flex; flex-direction: column; gap: 18px; position: relative; z-index: 4; }
 .gallery-track-wrap::before, .gallery-track-wrap::after {
     content: '';
@@ -1768,8 +1798,11 @@ body {
         <p class="sec-sub" style="color:rgba(255,255,255,0.4); margin:14px auto 0; max-width:400px;">
             Rekaman semangat &amp; keseruan dari tahun-tahun sebelumnya.
         </p>
+        <a href="{{ route('gallery') }}" class="gallery-cta-btn">
+            Lihat Semua
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
     </div>
-
     @php
     $photos = [
         ['https://res.cloudinary.com/viecqvpk/image/upload/w_600,q_60,f_webp/v1786581020/Bayan-8672_iuuxhb_lnjy0x.webp',   'Ganda Veteran Putra'],
