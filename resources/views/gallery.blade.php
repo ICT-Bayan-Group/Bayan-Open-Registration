@@ -654,6 +654,13 @@
                     <h2 class="fg-register-title">Temukan Foto Anda</h2>
                     <p class="fg-register-sub">Nyalakan kamera, posisikan wajah di dalam bingkai, lalu ambil foto. Sistem akan mencari semua foto pertandingan yang memuat wajah Anda.</p>
 
+                    <a href="https://ambilfoto.id" target="_blank" rel="noopener" class="fg-managed-by" style="margin-bottom:24px;">
+                        <img class="fg-managed-logo"
+                            src="https://res.cloudinary.com/dzkvjy4ds/image/upload/h_120,c_fit,f_auto,q_auto/v1787187498/ambilfoto-logo-crop.png"
+                            alt="AmbilFoto.id">
+                        <span class="fg-managed-text">Managed by AmbilFoto.id</span>
+                    </a>
+
                     <div class="fg-camera-frame" id="cameraFrame">
                         <div class="fg-camera-placeholder" id="cameraPlaceholder">
                             <svg width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24">
