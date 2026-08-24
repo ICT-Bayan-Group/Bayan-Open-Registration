@@ -128,7 +128,7 @@ body {
 
 .hero-grain {
     position: absolute; inset: 0; z-index: 3;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.012'/%3E%3C/svg%3E");
     pointer-events: none;
 }
 
@@ -245,6 +245,131 @@ body {
     margin-bottom: 32px;
     animation: fade-up 0.7s cubic-bezier(0.22,1,0.36,1) 0.4s both;
 }
+
+.hero-glass-live-card {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    width: fit-content;
+    padding: 12px 20px 12px 12px;
+    border-radius: 20px;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 32px;
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(20px) saturate(1.6);
+    -webkit-backdrop-filter: blur(20px) saturate(1.6);
+    border: 1px solid rgba(255,255,255,0.22);
+    box-shadow:
+        0 8px 32px rgba(0,0,0,0.35),
+        inset 0 1px 0 rgba(255,255,255,0.35),
+        inset 0 -1px 0 rgba(255,255,255,0.05);
+    transition: all 0.4s cubic-bezier(0.22,1,0.36,1);
+    animation: fade-up 0.7s cubic-bezier(0.22,1,0.36,1) 0.32s both;
+}
+.hero-glass-live-card:hover {
+    transform: translateY(-3px);
+    background: rgba(255,255,255,0.13);
+    border-color: rgba(255,255,255,0.35);
+    box-shadow:
+        0 14px 40px rgba(249,115,22,0.25),
+        inset 0 1px 0 rgba(255,255,255,0.45),
+        inset 0 -1px 0 rgba(255,255,255,0.08);
+}
+
+/* Sheen bergerak — efek hologram kaca */
+.hglc-sheen {
+    position: absolute; inset: 0;
+    background: linear-gradient(115deg,
+        transparent 20%,
+        rgba(255,255,255,0.25) 35%,
+        rgba(249,115,22,0.15) 45%,
+        rgba(255,255,255,0.25) 55%,
+        transparent 70%);
+    background-size: 250% 250%;
+    background-position: 0% 0%;
+    animation: hglc-sheen-move 5s ease-in-out infinite;
+    pointer-events: none;
+    mix-blend-mode: overlay;
+}
+@keyframes hglc-sheen-move {
+    0%   { background-position: 0% 0%; }
+    50%  { background-position: 100% 100%; }
+    100% { background-position: 0% 0%; }
+}
+
+.hglc-icon-wrap {
+    position: relative;
+    width: 38px; height: 38px;
+    border-radius: 12px;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, rgba(249,115,22,0.9), rgba(194,65,12,0.9));
+    box-shadow:
+        0 4px 14px rgba(249,115,22,0.4),
+        inset 0 1px 0 rgba(255,255,255,0.4);
+}
+.hglc-live-ring {
+    position: absolute; inset: -5px;
+    border-radius: 14px;
+    border: 1.5px solid rgba(249,115,22,0.6);
+    animation: hglc-ring-pulse 2s ease-out infinite;
+}
+@keyframes hglc-ring-pulse {
+    0%   { transform: scale(0.9); opacity: 0.9; }
+    100% { transform: scale(1.35); opacity: 0; }
+}
+
+.hglc-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    position: relative;
+    z-index: 1;
+}
+.hglc-title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-display);
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    color: #fff;
+    text-shadow: 0 1px 8px rgba(0,0,0,0.3);
+}
+.hglc-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #fb923c;
+    box-shadow: 0 0 8px rgba(251,146,60,0.9);
+    animation: blink-dot 1.6s ease infinite;
+    flex-shrink: 0;
+}
+.hglc-sub {
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: rgba(255,255,255,0.6);
+}
+.hglc-arrow {
+    flex-shrink: 0;
+    opacity: 0.5;
+    transition: all 0.3s ease;
+    position: relative; z-index: 1;
+}
+.hero-glass-live-card:hover .hglc-arrow {
+    opacity: 1;
+    transform: translateX(3px);
+}
+
+@media (max-width: 640px) {
+    .hero-glass-live-card { padding: 10px 16px 10px 10px; gap: 12px; margin-bottom: 22px; border-radius: 18px; }
+    .hglc-icon-wrap { width: 34px; height: 34px; border-radius: 10px; }
+    .hglc-title { font-size: 12px; }
+    .hglc-sub { font-size: 9.5px; }
+}
+
 .he
 .hero-tagline-editorial strong {
     color: rgba(255,255,255,0.92);
@@ -1191,7 +1316,7 @@ body {
 .hero::after {
     content: '';
     position: absolute; inset: 0; z-index: 3;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0'/%3E%3C/svg%3E");
     pointer-events: none;
     will-change: auto;
 }
@@ -1449,7 +1574,7 @@ body {
 ══════════════════════════════════════════ --}}
 <section class="hero">
     <video class="hero-video"
-        src="https://res.cloudinary.com/viecqvpk/video/upload/q_auto:eco,w_1280,c_scale,f_auto/v1786601622/202604131402_imsn8i.mp4"
+        src="https://res.cloudinary.com/dzkvjy4ds/video/upload/v1787541054/202608241055.mp4"
         autoplay muted loop playsinline
         preload="metadata"
         decoding="async"
@@ -1477,6 +1602,24 @@ body {
     <p class="hero-tagline-editorial">
         Turnamen bulutangkis bergengsi &amp; Sirkuit Nasional C, mempertemukan <strong>atlet-atlet terbaik Kalimantan dan Indonesia.</strong>
     </p>
+
+    <a href="https://score.bayanopen.com/live" target="_blank" rel="noopener noreferrer" class="hero-glass-live-card">
+        <div class="hglc-sheen"></div>
+        <div class="hglc-icon-wrap">
+            <span class="hglc-live-ring"></span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 20V10M18 20V4M6 20v-4"/>
+            </svg>
+        </div>
+        <div class="hglc-text">
+            <span class="hglc-title">
+                <span class="hglc-dot"></span>
+                Live Score
+            </span>
+            <span class="hglc-sub">Khusus BSCC Dome</span>
+        </div>
+        <svg class="hglc-arrow" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
 
     <div class="hero-meta-row">
         <div class="hero-meta-item">
@@ -1787,7 +1930,7 @@ body {
 ══════════════════════════════════════════ --}}
 <section class="gallery-section">
     <video class="gallery-bg-video"
-        src="https://res.cloudinary.com/viecqvpk/video/upload/q_auto:eco,w_1280,c_scale,f_auto/v1786581233/bayanopen-hero_lxmlnl.mp4"
+        src="https://res.cloudinary.com/dzkvjy4ds/video/upload/q_auto:eco,w_1280,c_scale,f_auto/v1787541142/202601271004.mp4"
         autoplay muted loop playsinline preload="none"></video>
     <div class="gallery-video-overlay"></div>
     <div class="grain" aria-hidden="true"></div>
@@ -2824,13 +2967,13 @@ if ('IntersectionObserver' in window) {
     };
 
     // ✅ Auto show (once per session)
-    if (!sessionStorage.getItem('bayanopen_fraud_ok')) {
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', bukaFraudModal);
-        } else {
-            bukaFraudModal();
-        }
-    }
+   // if (!sessionStorage.getItem('bayanopen_fraud_ok')) {
+  //      if (document.readyState === 'loading') {
+   //         document.addEventListener('DOMContentLoaded', bukaFraudModal);
+    //    } else {
+    //        bukaFraudModal();
+    //    }
+  // }
 
 })();
 
