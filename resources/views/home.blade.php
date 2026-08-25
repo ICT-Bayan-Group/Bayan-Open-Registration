@@ -245,7 +245,8 @@ body {
     margin-bottom: 32px;
     animation: fade-up 0.7s cubic-bezier(0.22,1,0.36,1) 0.4s both;
 }
-
+.hero-glass-cta-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 32px; }
+.hero-glass-cta-row .hero-glass-live-card { margin-bottom: 0; }
 .hero-glass-live-card {
     display: inline-flex;
     align-items: center;
@@ -1617,6 +1618,24 @@ body {
                 Live Score
             </span>
             <span class="hglc-sub">Khusus BSCC Dome</span>
+        </div>
+        <svg class="hglc-arrow" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+
+    <a href="{{ route('gallery') }}" class="hero-glass-live-card">
+        <div class="hglc-sheen"></div>
+        <div class="hglc-icon-wrap">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
+                <circle cx="12" cy="13" r="4"/>
+            </svg>
+        </div>
+        <div class="hglc-text">
+            <span class="hglc-title">
+                <span class="hglc-dot"></span>
+                Ambil Foto Kamu
+            </span>
+            <span class="hglc-sub">Cari fotomu di galeri</span>
         </div>
         <svg class="hglc-arrow" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
     </a>
