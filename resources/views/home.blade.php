@@ -1635,7 +1635,7 @@ body {
                 <span class="hglc-dot"></span>
                 Ambil Foto Kamu
             </span>
-            <span class="hglc-sub">Cari fotomu di galeri</span>
+            <span class="hglc-sub">Bayan Open & Bayan CraftArt Fest 2026</span>
         </div>
         <svg class="hglc-arrow" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
     </a>
