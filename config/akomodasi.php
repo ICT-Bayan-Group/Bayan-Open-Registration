@@ -31,9 +31,9 @@ return [
         'rate' => 828000,
         'tier' => 'premium',
         'is_official' => true,
-        'image_url' => 'https://res.cloudinary.com/djs5pi7ev/image/upload/f_auto,q_auto,w_600,c_fill/v1785480156/504660739_nmnshi.jpg',
+        'image_url' => 'https://res.cloudinary.com/viecqvpk/image/upload/v1785481100/504660739_uiph0y.jpg',
         'images' => [
-            'https://res.cloudinary.com/djs5pi7ev/image/upload/f_auto,q_auto,w_800,c_fill/v1785480156/504660739_nmnshi.jpg',
+            'https://res.cloudinary.com/viecqvpk/image/upload/f_auto,q_auto,w_800,c_fill/v1785481100/504660739_uiph0y.jpg',
             'https://res.cloudinary.com/ddeigqz5d/image/upload/v1785569107/90dc226b_azzpef.avif',
             'https://res.cloudinary.com/ddeigqz5d/image/upload/v1785569107/platinum-hotel-convention-hall-balikpapan_161297840833_alti3e.jpg',
             'https://res.cloudinary.com/ddeigqz5d/image/upload/v1785569107/our-new-venue-rooftop_igca7f.jpg',
