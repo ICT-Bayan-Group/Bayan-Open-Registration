@@ -488,7 +488,7 @@
     {{-- ══ VIDEO HERO ══ --}}
     <div class="ct-hero">
         <video class="ct-hero-video"
-            src="https://res.cloudinary.com/dzkvjy4ds/video/upload/q_auto:eco,w_1280,c_scale,f_auto/v1787541148/bayanopen-hero.mp4"
+            src="https://ik.imagekit.io/ph84yodhs/202608241055.mp4?tr=q-50,w-1280,f-auto"
             autoplay muted loop playsinline preload="auto"></video>
         <div class="ct-hero-overlay"></div>
         <div class="ct-hero-grain"></div>
