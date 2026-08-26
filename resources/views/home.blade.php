@@ -1575,7 +1575,7 @@ body {
 ══════════════════════════════════════════ --}}
 <section class="hero">
     <video class="hero-video"
-        src="https://res.cloudinary.com/dzkvjy4ds/video/upload/v1787541054/202608241055.mp4"
+        src="https://res.cloudinary.com/dzkvjy4ds/video/upload/q_auto:eco,w_1280,c_scale,f_auto/v1787541054/202608241055.mp4"
         autoplay muted loop playsinline
         preload="metadata"
         decoding="async"
