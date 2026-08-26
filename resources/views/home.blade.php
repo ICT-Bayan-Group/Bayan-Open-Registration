@@ -1574,8 +1574,7 @@ body {
      HERO
 ══════════════════════════════════════════ --}}
 <section class="hero">
-    <video class="hero-video" autoplay muted loop playsinline preload="metadata" decoding="async"
-        poster="https://ik.imagekit.io/ph84yodhs/202608241055.mp4/ik-thumbnail.jpg?tr=q-40,w-800">
+    <video class="hero-video" autoplay muted loop playsinline preload="metadata" decoding="async">
         <source media="(max-width: 640px)"
             src="https://ik.imagekit.io/ph84yodhs/202608241055.mp4?tr=q-40,w-640,f-auto" type="video/mp4">
         <source
