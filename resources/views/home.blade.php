@@ -1574,12 +1574,12 @@ body {
      HERO
 ══════════════════════════════════════════ --}}
 <section class="hero">
-    <video class="hero-video"
-        src="https://res.cloudinary.com/dzkvjy4ds/video/upload/q_auto:eco,w_1280,c_scale,f_auto/v1787541054/202608241055.mp4"
-        autoplay muted loop playsinline
-        preload="metadata"
-        decoding="async"
-        poster="https://res.cloudinary.com/djs5pi7ev/image/upload/q_30,f_webp,w_1280/v1769500972/202601271004_aepgij.jpg">
+    <video class="hero-video" autoplay muted loop playsinline preload="metadata" decoding="async"
+        poster="https://ik.imagekit.io/ph84yodhs/202608241055.mp4/ik-thumbnail.jpg?tr=q-40,w-800">
+        <source media="(max-width: 640px)"
+            src="https://ik.imagekit.io/ph84yodhs/202608241055.mp4?tr=q-40,w-640,f-auto" type="video/mp4">
+        <source
+            src="https://ik.imagekit.io/ph84yodhs/202608241055.mp4?tr=q-50,w-1280,f-auto" type="video/mp4">
     </video>
     <div class="hero-overlay"></div>
     <div class="hero-vignette"></div>
@@ -1949,7 +1949,7 @@ body {
 ══════════════════════════════════════════ --}}
 <section class="gallery-section">
     <video class="gallery-bg-video"
-        src="https://res.cloudinary.com/dzkvjy4ds/video/upload/q_auto:eco,w_1280,c_scale,f_auto/v1787541142/202601271004.mp4"
+        src="https://ik.imagekit.io/ph84yodhs/2026082410523.mp4?tr=q-40,w-1280,f-auto"
         autoplay muted loop playsinline preload="none"></video>
     <div class="gallery-video-overlay"></div>
     <div class="grain" aria-hidden="true"></div>
