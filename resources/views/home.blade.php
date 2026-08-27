@@ -1574,13 +1574,8 @@ body {
      HERO
 ══════════════════════════════════════════ --}}
 <section class="hero">
-    <video class="hero-video" autoplay muted loop playsinline preload="metadata" decoding="async"
-        poster="https://ik.imagekit.io/ph84yodhs/background.png?tr=q-60,w-1280">
-        <source media="(max-width: 640px)"
-            src="https://ik.imagekit.io/ph84yodhs/202608241055.mp4?tr=q-40,w-640,f-auto" type="video/mp4">
-        <source
-            src="https://ik.imagekit.io/ph84yodhs/202608241055.mp4?tr=q-50,w-1280,f-auto" type="video/mp4">
-    </video>
+    <img class="hero-video" src="https://ik.imagekit.io/zaekg3ju7/AR__2797.JPG"
+        alt="Bayan Open 2026" loading="eager" decoding="async" fetchpriority="high">
     <div class="hero-overlay"></div>
     <div class="hero-vignette"></div>
     <div class="hero-grain"></div>
@@ -1948,9 +1943,9 @@ body {
      GALERI
 ══════════════════════════════════════════ --}}
 <section class="gallery-section">
-    <video class="gallery-bg-video"
-        src="https://ik.imagekit.io/ph84yodhs/2026082410523.mp4?tr=q-40,w-1280,f-auto"
-        autoplay muted loop playsinline preload="none"></video>
+    <image class="gallery-bg-video"
+        src="https://ik.imagekit.io/zaekg3ju7/AR__2907.JPG"
+        autoplay muted loop playsinline preload="none"></image>
     <div class="gallery-video-overlay"></div>
     <div class="grain" aria-hidden="true"></div>
 
