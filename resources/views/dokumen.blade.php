@@ -403,9 +403,9 @@
 
     {{-- ══ VIDEO HERO ══ --}}
     <div class="dk-hero">
-        <video class="dk-hero-video"
-            src="https://ik.imagekit.io/ph84yodhs/2026082410523.mp4?tr=q-45,w-1280,f-auto"
-            autoplay muted loop playsinline preload="auto"></video>
+        <image class="dk-hero-video"
+            src="https://ik.imagekit.io/zaekg3ju7/AR__2091.JPG"
+             preload="auto"></image>
         <div class="dk-hero-overlay"></div>
         <div class="dk-hero-grain"></div>
 

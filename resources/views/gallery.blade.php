@@ -632,9 +632,9 @@
     
     {{-- ══ VIDEO HERO ══ --}}
     <div class="fg-hero">
-        <video class="fg-hero-video"
-            src="https://ik.imagekit.io/ph84yodhs/2026082410523.mp4?tr=q-45,w-1280,f-auto"
-            autoplay muted loop playsinline preload="auto"></video>
+        <image class="fg-hero-video"
+            src="https://ik.imagekit.io/zaekg3ju7/AR__2415.JPG"
+           preload="auto"></image>
         <div class="fg-hero-overlay"></div>
         <div class="fg-hero-grain"></div>
 
