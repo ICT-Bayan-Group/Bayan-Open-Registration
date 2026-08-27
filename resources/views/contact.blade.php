@@ -487,9 +487,9 @@
 
     {{-- ══ VIDEO HERO ══ --}}
     <div class="ct-hero">
-        <video class="ct-hero-video"
-            src="https://ik.imagekit.io/ph84yodhs/202608241055.mp4?tr=q-50,w-1280,f-auto"
-            autoplay muted loop playsinline preload="auto"></video>
+        <image class="ct-hero-video"
+            src="https://ik.imagekit.io/zaekg3ju7/AR__2086.JPG"
+             preload="auto"></image>
         <div class="ct-hero-overlay"></div>
         <div class="ct-hero-grain"></div>
 
