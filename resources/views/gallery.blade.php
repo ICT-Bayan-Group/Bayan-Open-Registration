@@ -740,8 +740,8 @@
                         <span class="fg-managed-text">Managed by AmbilFoto.id</span>
                     </a>
                 </div>
-                <button class="fg-btn fg-btn-ghost" style="color:var(--ink-45);background:var(--white);border-color:var(--ink-12);" onclick="resetFaceData()">
-                    Ulangi Pencarian
+                <button class="fg-btn" style="background:var(--night);color:#fff;border:1.5px solid rgba(249,115,22,0.3);" onclick="resetFaceData()">
+                    Scan Ulang
                 </button>
             </div>
 
