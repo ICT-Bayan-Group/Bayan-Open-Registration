@@ -177,153 +177,43 @@
 @keyframes fgblink { 0%,100%{opacity:1} 50%{opacity:.3} }
 
 /* ════════════════════════════════════════
-   FACE REGISTRATION CARD
+   FACE VERIFICATION ENTRY CARD
+   (Kartu statis di halaman — kamera sungguhan cuma jalan di dalam modal
+   fullscreen #bioModal supaya pengalamannya sama seperti versi React)
 ════════════════════════════════════════ */
 .fg-register-card {
-    background: transparent;
+    background: var(--paper-2);
     border-radius: var(--r-xl);
     padding: 36px 32px;
     position: relative;
     overflow: hidden;
-    border: 1px solid rgba(255,255,255,0.05);
-}
-.fg-register-card::before {
-    content: '';
-    position: absolute; top: -40%; right: -10%;
-    width: 420px; height: 420px;
-    background: transparent; border-radius: 50%;
-    pointer-events: none;
+    border: 1px solid var(--ink-12);
 }
 .fg-register-inner {
     position: relative; z-index: 1;
     max-width: 620px; margin: 0 auto; text-align: center;
 }
-.fg-register-eyebrow {
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 5px 14px 5px 8px;
-    border-radius: 99px;
-    border: 1px solid rgba(249,115,22,0.3);
-    background: rgba(249,115,22,0.09);
-    font-family: var(--font-display); font-size: 9px; font-weight: 800;
-    letter-spacing: .16em; text-transform: uppercase;
-    color: var(--fire); margin-bottom: 16px;
-}
 .fg-register-title {
     font-family: var(--font-display); font-weight: 800;
-    font-size: clamp(20px, 3vw, 28px); color: #f56a0d;
+    font-size: clamp(20px, 3vw, 28px); color: var(--ink);
     letter-spacing: -.02em; margin-bottom: 10px;
 }
 .fg-register-sub {
     font-size: 13px; color: var(--ink-45); line-height: 1.7; font-weight: 500;
     margin-bottom: 28px;
 }
-.fg-scan-frame {
-    position: absolute; inset: 14%; z-index: 4;
-    pointer-events: none;
-}
-.fg-scan-corner {
-    position: absolute; width: 26px; height: 26px;
-    border: 3px solid var(--danger);
-    transition: border-color .3s ease;
-    opacity: .9;
-}
-.fg-scan-corner.tl { top: 0; left: 0; border-right: none; border-bottom: none; border-radius: 8px 0 0 0; }
-.fg-scan-corner.tr { top: 0; right: 0; border-left: none; border-bottom: none; border-radius: 0 8px 0 0; }
-.fg-scan-corner.bl { bottom: 0; left: 0; border-right: none; border-top: none; border-radius: 0 0 0 8px; }
-.fg-scan-corner.br { bottom: 0; right: 0; border-left: none; border-top: none; border-radius: 0 0 8px 0; }
-.fg-scan-frame.state-red .fg-scan-corner { border-color: var(--danger); animation: fgcornerpulse 1.4s ease infinite; }
-.fg-scan-frame.state-yellow .fg-scan-corner { border-color: var(--gold); animation: fgcornerpulse .8s ease infinite; }
-.fg-scan-frame.state-green .fg-scan-corner { border-color: #10b981; animation: none; }
-@keyframes fgcornerpulse { 0%,100%{opacity:.5} 50%{opacity:1} }
-
-.fg-traffic-light {
-    position: absolute; top: 12px; right: 12px; z-index: 5;
-    display: flex; flex-direction: column; gap: 6px;
-    background: rgba(13,9,6,0.55);
-    padding: 8px 6px; border-radius: 99px;
-    backdrop-filter: blur(4px);
-}
-.fg-tl-dot {
-    width: 9px; height: 9px; border-radius: 50%;
-    background: rgba(255,255,255,0.15);
-    transition: background .25s, box-shadow .25s;
-}
-.fg-tl-dot.fg-tl-red.on    { background: var(--danger); box-shadow: 0 0 10px 2px rgba(239,68,68,0.7); }
-.fg-tl-dot.fg-tl-yellow.on { background: var(--gold);    box-shadow: 0 0 10px 2px rgba(251,191,36,0.7); }
-.fg-tl-dot.fg-tl-green.on  { background: #10b981;        box-shadow: 0 0 10px 2px rgba(16,185,129,0.7); }
-
-.fg-scan-status {
-    position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%); z-index: 5;
-    display: flex; align-items: center; gap: 8px;
-    padding: 7px 16px;
-    border-radius: 99px;
-    background: rgba(13,9,6,0.7);
-    backdrop-filter: blur(4px);
-    font-family: var(--font-display); font-size: 9.5px; font-weight: 700;
-    letter-spacing: .08em; text-transform: uppercase;
-    color: #fff; white-space: nowrap;
-    transition: background .25s;
-}
-.fg-scan-status-dot {
-    width: 7px; height: 7px; border-radius: 50%;
-    background: var(--danger);
-    animation: fgblink 1.2s ease infinite;
-    transition: background .25s;
-}
-.fg-scan-status.state-red    .fg-scan-status-dot { background: var(--danger); }
-.fg-scan-status.state-yellow .fg-scan-status-dot { background: var(--gold); }
-.fg-scan-status.state-green  .fg-scan-status-dot { background: #10b981; animation: none; }
-
-.fg-camera-frame { position: relative; width: 100%; max-width: 440px; margin: 0 auto 20px;
+.fg-preview-box {
+    position: relative; width: 100%; max-width: 440px; margin: 0 auto 24px;
     border-radius: var(--r-lg); overflow: hidden;
-    border: 1.5px solid rgba(249,115,22,0.25);
+    border: 1.5px solid rgba(249,115,22,0.2);
     background: var(--night-2); aspect-ratio: 4 / 3;
-    transition: box-shadow .35s ease, border-color .35s ease; }
-.fg-camera-frame.state-red    { border-color: rgba(239,68,68,0.7);  box-shadow: 0 0 0 3px rgba(239,68,68,0.18), 0 0 40px 6px rgba(239,68,68,0.35); }
-.fg-camera-frame.state-yellow { border-color: rgba(251,191,36,0.7); box-shadow: 0 0 0 3px rgba(251,191,36,0.18), 0 0 40px 6px rgba(251,191,36,0.4); }
-.fg-camera-frame.state-green  { border-color: rgba(16,185,129,0.8); box-shadow: 0 0 0 3px rgba(16,185,129,0.22), 0 0 50px 10px rgba(16,185,129,0.5); }
-
-/* Full-frame color wash — cahaya menerpa wajah */
-.fg-scan-tint {
-    position: absolute; inset: 0; z-index: 2;
-    pointer-events: none;
-    mix-blend-mode: screen;
-    opacity: 0;
-    transition: opacity .3s ease, background .3s ease;
+    display: flex; align-items: center; justify-content: center;
 }
-.fg-scan-tint.state-red    { opacity: .55; background: radial-gradient(circle at 50% 45%, rgba(239,68,68,0.85) 0%, rgba(239,68,68,0.15) 65%, transparent 100%); animation: fgtintpulse 1.3s ease infinite; }
-.fg-scan-tint.state-yellow { opacity: .5;  background: radial-gradient(circle at 50% 45%, rgba(251,191,36,0.85) 0%, rgba(251,191,36,0.15) 65%, transparent 100%); animation: fgtintpulse .7s ease infinite; }
-.fg-scan-tint.state-green  { opacity: .45; background: radial-gradient(circle at 50% 45%, rgba(16,185,129,0.85) 0%, rgba(16,185,129,0.15) 65%, transparent 100%); animation: none; }
-@keyframes fgtintpulse { 0%,100%{opacity:.3} 50%{opacity:.62} }
-
-/* Garis scan bergerak — efek laser biometrik */
-.fg-scan-line {
-    position: absolute; left: 0; right: 0; height: 2px; z-index: 3;
-    pointer-events: none; opacity: 0;
+.fg-preview-box-inner {
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+    color: var(--ash-2);
 }
-.fg-scan-line.active {
-    opacity: .9;
-    animation: fgscanline 1.6s linear infinite;
-}
-.fg-scan-line.state-red    { background: linear-gradient(90deg, transparent, #ef4444, transparent); box-shadow: 0 0 12px 2px rgba(239,68,68,0.8); }
-.fg-scan-line.state-yellow { background: linear-gradient(90deg, transparent, #fbbf24, transparent); box-shadow: 0 0 12px 2px rgba(251,191,36,0.8); }
-.fg-scan-line.state-green  { opacity: 0; }
-@keyframes fgscanline {
-    0%   { top: 6%; }
-    50%  { top: 92%; }
-    100% { top: 6%; }
-}
-.fg-camera-video {
-    width: 100%; height: 100%; object-fit: cover;
-    transform: scaleX(-1);
-    display: block;
-}
-.fg-camera-placeholder {
-    position: absolute; inset: 0;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 10px; color: var(--ash-2);
-}
-.fg-camera-placeholder-text {
+.fg-preview-box-text {
     font-family: var(--font-display); font-size: 9.5px; font-weight: 700;
     letter-spacing: .1em; text-transform: uppercase;
 }
@@ -345,17 +235,6 @@
     box-shadow: 0 4px 16px rgba(249,115,22,0.35);
 }
 .fg-btn-primary:hover { box-shadow: 0 8px 24px rgba(249,115,22,0.5); }
-.fg-btn-success {
-    background: linear-gradient(135deg, #10b981, #059669);
-    color: #fff;
-    box-shadow: 0 4px 16px rgba(16,185,129,0.35);
-}
-.fg-btn-ghost {
-    background: rgba(255,255,255,0.06);
-    border: 1.5px solid rgba(255,255,255,0.12);
-    color: var(--ash);
-}
-.fg-btn-ghost:hover { border-color: rgba(249,115,22,0.4); color: var(--fire); }
 .fg-btn[disabled] { opacity: .4; pointer-events: none; }
 
 .fg-status {
@@ -365,6 +244,119 @@
 .fg-status.success { background: rgb(16, 185, 129); border: 1px solid rgba(17, 211, 146, 0.3); color: #ffffff; font-weight: 500; }
 .fg-status.error   { background: rgb(239, 68, 68); border: 1px solid rgb(239, 68, 68); color: #ffffff; font-weight: 500; }
 .fg-status.info    { background: rgb(249, 116, 22); border: 1px solid rgb(249, 116, 22); color: #fffffe; font-weight: 500; }
+
+/* ════════════════════════════════════════
+   BIOMETRIC LIVENESS SCAN MODAL (fullscreen)
+   Sama fungsinya dengan komponen React BiometricScanModal:
+   CENTER → LEFT → RIGHT → UP/DOWN, ngobrol ke
+   /api/user/biometric/{start,frame,complete,retry}
+════════════════════════════════════════ */
+.fg-bio-backdrop {
+    position: fixed; inset: 0; z-index: 99999;
+    background: rgba(8,11,20,0.78);
+    backdrop-filter: blur(10px);
+    display: none; align-items: center; justify-content: center;
+}
+.fg-bio-backdrop.active { display: flex; }
+
+.fg-bio-frame {
+    position: relative; background: var(--night);
+    width: min(400px, 92vw); height: min(820px, 88vh);
+    border-radius: 44px; border: 8px solid var(--night-2);
+    box-shadow: 0 30px 80px -20px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.04);
+    overflow: hidden;
+}
+.fg-bio-video {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: cover; transform: scaleX(-1); background: #000;
+}
+.fg-bio-badge {
+    position: absolute; top: 18px; left: 16px; z-index: 10;
+    background: rgba(15,23,42,.55); color: #ffd8b0;
+    font-size: 11px; font-weight: 700; letter-spacing: .02em;
+    padding: 6px 10px; border-radius: 99px; backdrop-filter: blur(6px);
+}
+.fg-bio-close {
+    position: absolute; top: 18px; right: 16px; z-index: 10;
+    width: 34px; height: 34px; border-radius: 50%;
+    background: rgba(15,23,42,.55); border: none; color: #fff;
+    font-size: 18px; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; backdrop-filter: blur(6px);
+}
+.fg-bio-close:hover { background: rgba(15,23,42,.75); }
+.fg-bio-dots {
+    position: absolute; top: 62px; left: 0; right: 0; z-index: 10;
+    display: flex; gap: 6px; justify-content: center;
+}
+.fg-bio-dot {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: rgba(255,255,255,.28);
+    transition: all .2s;
+}
+.fg-bio-dot.done { background: var(--success); }
+.fg-bio-dot.current { background: var(--fire); transform: scale(1.4); }
+
+.fg-bio-guide {
+    position: absolute; inset: 0; z-index: 6;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    pointer-events: none; padding-bottom: 12%;
+}
+.fg-bio-oval {
+    position: relative; width: 64%; aspect-ratio: 3/4; border-radius: 50%;
+    border: 4px solid rgba(255,255,255,.5);
+    box-shadow: 0 0 0 9999px rgba(5,7,13,.45);
+    transition: border-color .25s ease, box-shadow .25s ease;
+}
+.fg-bio-oval.state-progress { border-color: var(--gold); }
+.fg-bio-oval.state-near,
+.fg-bio-oval.state-matched   { border-color: var(--success); box-shadow: 0 0 0 9999px rgba(5,7,13,.45), 0 0 26px 4px rgba(16,185,129,.55); }
+.fg-bio-oval.state-error     { border-color: var(--danger); animation: fgbioshake .35s ease; }
+.fg-bio-oval.flash           { box-shadow: 0 0 0 9999px rgba(16,185,129,.55), 0 0 40px 10px rgba(16,185,129,.8) !important; }
+@keyframes fgbioshake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+
+.fg-bio-arrow {
+    position: absolute; width: 42px; height: 42px;
+    filter: drop-shadow(0 1px 3px rgba(0,0,0,.5));
+    animation: fgbiopulse 1.1s ease-in-out infinite;
+    display: none;
+}
+.fg-bio-arrow.show { display: block; }
+.fg-bio-arrow.up    { top: -56px; left: 50%; transform: translateX(-50%); }
+.fg-bio-arrow.down  { bottom: -56px; left: 50%; transform: translateX(-50%) rotate(180deg); }
+.fg-bio-arrow.left  { left: -56px; top: 50%; transform: translateY(-50%) rotate(-90deg); }
+.fg-bio-arrow.right { right: -56px; top: 50%; transform: translateY(-50%) rotate(90deg); }
+@keyframes fgbiopulse { 0%,100%{opacity:.55} 50%{opacity:1} }
+
+.fg-bio-check {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    opacity: 0; transition: opacity .2s;
+}
+.fg-bio-check.show { opacity: 1; }
+
+.fg-bio-sheet {
+    position: absolute; left: 0; right: 0; bottom: 0; z-index: 10;
+    padding: 36px 24px 28px;
+    text-align: center;
+    background: linear-gradient(to top, rgba(2,4,10,.92) 20%, rgba(2,4,10,0));
+}
+.fg-bio-instruction { color: #fff; font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+.fg-bio-feedback { font-size: 13px; color: #cbd5e1; min-height: 18px; }
+.fg-bio-feedback.err { color: #fca5a5; }
+
+.fg-bio-status {
+    position: absolute; inset: 0; z-index: 20; background: var(--night);
+    display: none; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 0 32px; gap: 10px;
+}
+.fg-bio-status.active { display: flex; }
+.fg-bio-status-icon { font-size: 46px; }
+.fg-bio-status-title { color: #fff; font-size: 17px; font-weight: 700; }
+.fg-bio-status-sub { color: #94a3b8; font-size: 13.5px; max-width: 260px; }
+.fg-bio-retry-btn {
+    margin-top: 14px; padding: 10px 20px; border-radius: 99px; border: none;
+    background: var(--fire); color: #fff; font-weight: 700; font-size: 13.5px; cursor: pointer;
+}
+.fg-bio-retry-btn:hover { background: var(--fire-deep); }
 
 /* ════════════════════════════════════════
    DAY FILTER TABS
@@ -402,26 +394,21 @@
 .fg-result-count { font-size: 12.5px; color: var(--ink-45); }
 .fg-result-count strong { color: var(--ink); font-weight: 700; }
 
-/* "Managed by" badge with small Cloudinary logo — tinggi disamakan dengan .fg-btn */
 .fg-managed-by {
     display: inline-flex; align-items: center; gap: 9px;
     padding: 11px 20px 11px 12px;
     border-radius: var(--r-xs);
     background: var(--white);
     border: 1.5px solid var(--ink-12);
+    text-decoration: none; cursor: pointer; transition: border-color .2s;
 }
+.fg-managed-by:hover { border-color: rgba(249,115,22,0.4); }
 .fg-managed-logo {
-    height: 32px; width: auto;
-    max-width: 70px;
-    object-fit: contain;
-    display: block;
-    flex-shrink: 0;
+    height: 32px; width: auto; max-width: 70px; object-fit: contain; display: block; flex-shrink: 0;
 }
 .fg-managed-text {
-    font-family: var(--font-display);
-    font-size: 10px; font-weight: 700;
-    letter-spacing: .1em;;
-    color: var(--ink-45); white-space: nowrap;
+    font-family: var(--font-display); font-size: 10px; font-weight: 700;
+    letter-spacing: .1em; color: var(--ink-45); white-space: nowrap;
 }
 
 /* ════════════════════════════════════════
@@ -481,18 +468,7 @@
     padding: 5px 10px; border-radius: 99px;
     border: 1px solid rgba(249,115,22,0.3);
 }
-.fg-photo-preview-badge {
-    position: absolute; top: 10px; right: 10px;
-    background: rgba(13,9,6,0.7);
-    color: #fff; font-size: 8.5px; font-weight: 700;
-    letter-spacing: .06em; text-transform: uppercase;
-    padding: 4px 9px; border-radius: 6px;
-}
 .fg-photo-body { display: none; }
-.fg-photo-meta-row {
-    font-size: 11px; color: var(--ink-45); line-height: 1.7;
-    display: flex; align-items: center; gap: 6px;
-}
 
 /* ════════════════════════════════════════
    LOADING / EMPTY STATES
@@ -523,7 +499,7 @@
 .fg-hidden { display: none !important; }
 
 /* ════════════════════════════════════════
-   MODAL FULLSCREEN PREVIEW
+   MODAL FULLSCREEN PREVIEW (foto hasil galeri)
 ════════════════════════════════════════ */
 .fg-modal-backdrop {
     position: fixed; inset: 0; z-index: 9998;
@@ -539,14 +515,7 @@
     position: relative; width: 100%; height: 100%;
     display: flex; align-items: center; justify-content: center;
 }
-@keyframes fgslideup { from{transform:translateY(24px);opacity:0} to{transform:translateY(0);opacity:1} }
-
-.fg-modal-head {
-    position: absolute; inset: 0; z-index: 3; pointer-events: none;
-}
-.fg-modal-title {
-    display: none;
-}
+.fg-modal-head { position: absolute; inset: 0; z-index: 3; pointer-events: none; }
 .fg-modal-close {
     position: absolute; top: 22px; right: 24px; width: 42px; height: 42px; border-radius: 50%;
     background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.24);
@@ -556,7 +525,6 @@
     flex-shrink: 0;
 }
 .fg-modal-close:hover { background: rgba(255,255,255,0.24); border-color: #fff; }
-
 .fg-modal-body { width: 100%; height: 100%; }
 .fg-modal-img-wrap { position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
 .fg-modal-img { width: 100%; height: 100%; object-fit: contain; display: block; cursor: pointer; }
@@ -564,15 +532,10 @@
     position: absolute; left: 28px; bottom: 24px;
     color: rgba(255,255,255,0.58); background: transparent;
     font-family: var(--font-display); font-size: 11px; font-weight: 500;
-    letter-spacing: .04em;
-    padding: 0; border-radius: 0;
-    text-decoration: none;
-    cursor: pointer;
-    transition: color .2s;
+    letter-spacing: .04em; padding: 0; border-radius: 0;
+    text-decoration: none; cursor: pointer; transition: color .2s;
 }
 .fg-modal-quality-badge:hover { color: #fff; }
-.fg-managed-by { text-decoration: none; cursor: pointer; transition: border-color .2s; }
-.fg-managed-by:hover { border-color: rgba(249,115,22,0.4); }
 .fg-modal-download {
     position: absolute; right: 28px; bottom: 18px; z-index: 2;
     width: 38px; height: 38px; padding: 0; border: 0; background: transparent;
@@ -629,7 +592,7 @@
 
 @section('content')
 <div class="fg">
-    
+
     {{-- ══ VIDEO HERO ══ --}}
     <div class="fg-hero">
         <image class="fg-hero-video"
@@ -647,60 +610,31 @@
     {{-- ══ MAIN ══ --}}
     <div class="fg-main">
 
-        {{-- Face registration --}}
+        {{-- Face verification entry point --}}
         <div id="registerSection">
             <div class="fg-register-card">
                 <div class="fg-register-inner">
-                    <h2 class="fg-register-title">Temukan Foto Anda</h2>
-                    <p class="fg-register-sub">Nyalakan kamera, posisikan wajah di dalam bingkai, lalu ambil foto. Sistem akan mencari semua foto pertandingan yang memuat wajah Anda.</p>
-
-                    <div class="fg-camera-frame" id="cameraFrame">
-                        <div class="fg-camera-placeholder" id="cameraPlaceholder">
-                            <svg width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24">
-                                <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
-                                <circle cx="12" cy="13" r="4"/>
-                            </svg>
-                            <span class="fg-camera-placeholder-text">Kamera belum aktif</span>
-                        </div>
-                        <video id="cameraVideo" class="fg-camera-video fg-hidden" autoplay playsinline muted></video>
-                        <div class="fg-scan-tint fg-hidden" id="scanTint"></div>
-                        <div class="fg-scan-line fg-hidden" id="scanLine"></div>
-                        <div class="fg-scan-frame fg-hidden" id="scanFrame">
-                            <span class="fg-scan-corner tl"></span>
-                            <span class="fg-scan-corner tr"></span>
-                            <span class="fg-scan-corner bl"></span>
-                            <span class="fg-scan-corner br"></span>
-                        </div>
-                        <div class="fg-traffic-light fg-hidden" id="trafficLight">
-                            <span class="fg-tl-dot fg-tl-red" id="tlRed"></span>
-                            <span class="fg-tl-dot fg-tl-yellow" id="tlYellow"></span>
-                            <span class="fg-tl-dot fg-tl-green" id="tlGreen"></span>
-                        </div>
-                        <div class="fg-scan-status fg-hidden" id="scanStatus">
-                            <span class="fg-scan-status-dot"></span>
-                            <span id="scanStatusText">Mencari wajah…</span>
-                        </div>
-                    </div>
+                    <h2 class="fg-register-title">Cari Fotomu dengan Wajah</h2>
+                    <p class="fg-register-sub">Ikuti instruksi arah kepala di popup lalu sistem akan mencari semua foto pertandingan yang memuat wajah Anda.</p>
 
                     <div class="fg-actions">
-                        <button id="btnStartCamera" class="fg-btn fg-btn-primary" onclick="startCamera()">
+                        <button id="btnOpenBioScan" class="fg-btn fg-btn-primary" onclick="openBioScan()">
                             <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                                 <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
                                 <circle cx="12" cy="13" r="4"/>
                             </svg>
-                            Nyalakan Kamera
-                        </button>
-                        <button id="btnCapture" class="fg-btn fg-btn-primary fg-hidden" onclick="captureAndRegister()">
-                            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                                <circle cx="12" cy="12" r="9"/>
-                            </svg>
-                            Ambil Manual
-                        </button>
-                        <button id="btnStopCamera" class="fg-btn fg-btn-primary fg-hidden" onclick="stopCamera()">
-                            Matikan Kamera
+                            Nyalakan Kamera & Verifikasi
                         </button>
                     </div>
 
+                    <div style="display:flex; justify-content:center; margin-bottom:18px;">
+                        <a href="https://ambilfoto.id" target="_blank" rel="noopener" class="fg-managed-by">
+                            <img class="fg-managed-logo"
+                                src="https://res.cloudinary.com/dwyi4d3rq/image/upload/v1765171746/ambilfoto-logo_hvn8s2.png"
+                                alt="AmbilFoto.id">
+                            <span class="fg-managed-text">Managed by AmbilFoto.id</span>
+                        </a>
+                    </div>
                     <div id="statusMessage" class="fg-status fg-hidden"></div>
                 </div>
             </div>
@@ -728,22 +662,24 @@
                     <div class="fg-result-count" id="photoCount">Ditemukan <strong>0</strong> foto</div>
                     <a href="https://ambilfoto.id" target="_blank" rel="noopener" class="fg-managed-by">
                         <img class="fg-managed-logo"
-                            src="https://res.cloudinary.com/dzkvjy4ds/image/upload/h_120,c_fit,f_auto,q_auto/v1787187498/ambilfoto-logo-crop.png"
+                            src="https://res.cloudinary.com/dwyi4d3rq/image/upload/v1765171746/ambilfoto-logo_hvn8s2.png"
                             alt="AmbilFoto.id">
                         <span class="fg-managed-text">Managed by AmbilFoto.id</span>
                     </a>
                 </div>
                 <button class="fg-btn" style="background:var(--night);color:#fff;border:1.5px solid rgba(249,115,22,0.3);" onclick="resetFaceData()">
-                    Scan Ulang
+                    Ulangi Pencarian
                 </button>
             </div>
 
-            <div class="fg-loading fg-hidden" id="loadingPhotos">
+            <div class="fg-day-tabs fg-hidden" id="dayTabs"></div>
+
+            <div class="fg-loading fg-hidden" id="loadingPhotos" style="margin-top:20px;">
                 <div class="fg-spinner"></div>
                 <div class="fg-loading-text">Mencari foto Anda…</div>
             </div>
 
-            <div class="fg-photo-grid fg-hidden" id="photosGrid"></div>
+            <div class="fg-photo-grid fg-hidden" id="photosGrid" style="margin-top:20px;"></div>
 
             <div class="fg-empty fg-hidden" id="emptyState">
                 <div class="fg-empty-icon">
@@ -763,11 +699,57 @@
 
 </div>{{-- /.fg --}}
 
+{{-- ══ BIOMETRIC LIVENESS SCAN MODAL ══ --}}
+<div class="fg-bio-backdrop" id="bioBackdrop">
+    <div class="fg-bio-frame">
+        <video id="bioVideo" class="fg-bio-video" autoplay playsinline muted></video>
+
+        <div class="fg-bio-badge">Verifikasi Wajah</div>
+        <button class="fg-bio-close" id="bioCloseBtn" aria-label="Tutup" onclick="cancelBioScan()">×</button>
+
+        <div class="fg-bio-dots fg-hidden" id="bioDots"></div>
+
+        <div class="fg-bio-guide" id="bioGuide">
+            <div class="fg-bio-oval" id="bioOval">
+                <div class="fg-bio-arrow up"    id="bioArrowUp">
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M12 4 L12 20 M12 4 L6 10 M12 4 L18 10" stroke="#facc15" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <div class="fg-bio-arrow down"  id="bioArrowDown">
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M12 4 L12 20 M12 4 L6 10 M12 4 L18 10" stroke="#facc15" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <div class="fg-bio-arrow left"  id="bioArrowLeft">
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M12 4 L12 20 M12 4 L6 10 M12 4 L18 10" stroke="#facc15" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <div class="fg-bio-arrow right" id="bioArrowRight">
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M12 4 L12 20 M12 4 L6 10 M12 4 L18 10" stroke="#facc15" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <div class="fg-bio-check" id="bioCheck">
+                    <svg viewBox="0 0 24 24" fill="none" width="60" height="60">
+                        <circle cx="12" cy="12" r="11" fill="#22c55e"/>
+                        <path d="M7 12.5 L10.5 16 L17 8.5" stroke="white" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <div class="fg-bio-sheet" id="bioSheet">
+            <div class="fg-bio-instruction" id="bioInstruction">Menyiapkan kamera…</div>
+            <div class="fg-bio-feedback" id="bioFeedback"></div>
+        </div>
+
+        <div class="fg-bio-status" id="bioStatus">
+            <div class="fg-bio-status-icon" id="bioStatusIcon">⚠️</div>
+            <div class="fg-bio-status-title" id="bioStatusTitle">Sesi bermasalah</div>
+            <div class="fg-bio-status-sub" id="bioStatusSub"></div>
+            <button class="fg-bio-retry-btn fg-hidden" id="bioRetryBtn" onclick="retryBioScan()">🔄 Coba Lagi</button>
+        </div>
+    </div>
+</div>
+
 {{-- ══ MODAL DETAIL FOTO ══ --}}
 <div class="fg-modal-backdrop" id="photoModal" onclick="closeModalOutside(event)">
     <div class="fg-modal">
         <div class="fg-modal-head">
-            <div class="fg-modal-title">Detail Foto</div>
             <button class="fg-modal-close" onclick="closeModal()" aria-label="Tutup">
                 <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                     <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
@@ -790,287 +772,74 @@
     }).catch(()=>{});
 })();
 </script>
-<script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
 <script>
 /* ══════════════════════════════════════════════
-   KONFIGURASI — sesuaikan dengan API face recognition Anda
+   KONFIGURASI
    ══════════════════════════════════════════════ */
 const API_BASE_URL = 'https://gallery.bayanopen.com';
-const REGISTER_ENDPOINT = `${API_BASE_URL}/api/user/register_face`;
-const PHOTOS_ENDPOINT   = `${API_BASE_URL}/api/user/my_photos`;
+const BIOMETRIC_BASE = `${API_BASE_URL}/api/user/biometric`;
+const PHOTOS_BY_USER_ENDPOINT = `${API_BASE_URL}/api/user/my_photos_by_id`;
 const IMAGE_ENDPOINT = (filename) => `${API_BASE_URL}/api/preview/${filename}`;
 const DOWNLOAD_ENDPOINT = (filename) => `${API_BASE_URL}/api/download/${filename}`;
-const STORAGE_KEY = 'bayan_open_face_embedding';
-const FACE_MODEL_URL = 'https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js@master/weights';
-const STABLE_FRAMES_NEEDED = 6;   // ~1.5 detik pada interval 250ms
-const DETECT_INTERVAL_MS = 250;
+
+const EVENT_SLUG = 'bayan-open-craft';
+const STORAGE_KEY = `ambilfoto_user_id_${EVENT_SLUG}`;
+const MIN_ANGLES = 4;
+const BIO_CAPTURE_INTERVAL_MS = 600;
+const NEAR_MATCH_THRESHOLD = 0.85;
+const CHALLENGE_TRANSITION_MS = 450; // harus sama dengan delay setTimeout saat pindah challenge
 
 /* Tanggal mulai turnamen — dipakai untuk memetakan tanggal foto ke label "Day N" */
 const EVENT_START_DATE = '2026-08-24';
-const EVENT_TOTAL_DAYS = 5;
+const EVENT_TOTAL_DAYS = 8;
 
-let videoStream = null;
-let faceEmbedding = null;
+const DIRECTION_META = {
+    CENTER: { arrow: null,   label: 'Lihat lurus ke kamera' },
+    LEFT:   { arrow: 'left',  label: 'Tolehkan kepala ke KIRI' },
+    RIGHT:  { arrow: 'right', label: 'Tolehkan kepala ke KANAN' },
+    UP:     { arrow: 'up',    label: 'Angkat dagu / lihat ke ATAS' },
+    DOWN:   { arrow: 'down',  label: 'Tundukkan kepala ke BAWAH' },
+};
+
+/* ══════════════════════════════════════════════
+   STATE — sesi scan biometrik
+   ══════════════════════════════════════════════ */
+let bioStream = null;
+let bioSessionId = null;
+let bioChallengeSequence = [];
+let bioCurrentStep = 0;
+let bioCurrentChallenge = null;
+let bioCaptureTimer = null;
+let bioFrameInFlight = false;
+let bioClosed = false;
+let bioFlashTimeout = null;
+
+// Kunci capture loop selama window transisi antar-challenge (450ms). Tanpa ini,
+// sebuah capture tick bisa jalan tepat saat server sudah maju ke challenge
+// berikutnya tapi client belum, sehingga frame terkirim dengan challenge yang
+// salah/basi → server balas 400 "Challenge tidak sesuai urutan".
+let bioTransitioning = false;
+let bioTransitionTimeout = null;
+
+/* State galeri (identik dengan sebelumnya) */
 let allPhotos = [];
 let currentDay = 'all';
-let modelsLoaded = false;
-let detectTimer = null;
-let stableCount = 0;
-let autoCaptureLock = false;
 let visiblePhotos = [];
 let currentPhotoIndex = 0;
 
-/* Restore previous face session */
+/* Restore sesi sebelumnya */
 window.addEventListener('DOMContentLoaded', () => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-        try {
-            faceEmbedding = JSON.parse(stored);
-            document.getElementById('registerSection').classList.add('fg-hidden');
-            loadPhotos();
-        } catch (e) {
-            localStorage.removeItem(STORAGE_KEY);
-        }
+    const storedUserId = localStorage.getItem(STORAGE_KEY);
+    if (storedUserId) {
+        document.getElementById('registerSection').classList.add('fg-hidden');
+        loadPhotos(storedUserId);
     }
 });
 
-/* ══ CAMERA ══ */
-async function startCamera() {
-    try {
-        videoStream = await navigator.mediaDevices.getUserMedia({
-            video: { facingMode: 'user', width: 640, height: 480 },
-            audio: false
-        });
-        const video = document.getElementById('cameraVideo');
-        video.srcObject = videoStream;
-        video.classList.remove('fg-hidden');
-        document.getElementById('cameraPlaceholder').classList.add('fg-hidden');
-        document.getElementById('scanFrame').classList.remove('fg-hidden');
-        document.getElementById('scanTint').classList.remove('fg-hidden');
-        document.getElementById('scanLine').classList.remove('fg-hidden');
-        document.getElementById('trafficLight').classList.remove('fg-hidden');
-        document.getElementById('scanStatus').classList.remove('fg-hidden');
-
-        document.getElementById('btnStartCamera').classList.add('fg-hidden');
-        document.getElementById('btnCapture').classList.remove('fg-hidden');
-        document.getElementById('btnStopCamera').classList.remove('fg-hidden');
-
-        setScanState('red', 'Menyiapkan AI deteksi wajah…');
-        showStatus('Kamera aktif. Posisikan wajah Anda di dalam bingkai.', 'info');
-
-        await ensureModelsLoaded();
-
-        if (modelsLoaded) {
-            setScanState('red', 'Mencari wajah…');
-            stableCount = 0;
-            autoCaptureLock = false;
-            video.addEventListener('loadeddata', startDetectionLoop, { once: true });
-            if (video.readyState >= 2) startDetectionLoop();
-        } else {
-            setScanState('red', 'Deteksi otomatis tidak tersedia');
-            showStatus('Deteksi otomatis gagal dimuat — gunakan tombol "Ambil Manual" di bawah.', 'error');
-        }
-    } catch (error) {
-        console.error('Camera error:', error);
-        showStatus(getCameraErrorMessage(error), 'error');
-    }
-}
-
-/* Menerjemahkan error teknis kamera (bahasa Inggris dari browser)
-   menjadi pesan yang mudah dipahami orang awam, full Bahasa Indonesia. */
-function getCameraErrorMessage(error) {
-    const name = error && error.name;
-    switch (name) {
-        case 'NotAllowedError':
-        case 'PermissionDeniedError':
-            return 'Akses kamera ditolak. Mohon izinkan akses kamera pada browser Anda (biasanya lewat ikon gembok di address bar), lalu klik "Nyalakan Kamera" lagi.';
-        case 'NotFoundError':
-        case 'DevicesNotFoundError':
-            return 'Kamera tidak ditemukan di perangkat ini. Pastikan perangkat Anda memiliki kamera yang aktif dan berfungsi.';
-        case 'NotReadableError':
-        case 'TrackStartError':
-            return 'Kamera sedang dipakai aplikasi lain. Tutup aplikasi atau tab lain yang menggunakan kamera, lalu coba lagi.';
-        case 'OverconstrainedError':
-            return 'Kamera pada perangkat Anda tidak mendukung pengaturan yang dibutuhkan. Coba gunakan perangkat lain.';
-        case 'SecurityError':
-            return 'Akses kamera diblokir karena alasan keamanan. Pastikan Anda membuka halaman ini melalui koneksi aman (https).';
-        default:
-            return 'Kamera tidak bisa diakses. Pastikan Anda sudah mengizinkan akses kamera pada browser, lalu coba lagi.';
-    }
-}
-
-async function ensureModelsLoaded() {
-    if (modelsLoaded) return;
-    if (typeof faceapi === 'undefined') { modelsLoaded = false; return; }
-    try {
-        await faceapi.nets.tinyFaceDetector.loadFromUri(FACE_MODEL_URL);
-        modelsLoaded = true;
-    } catch (e) {
-        console.error('Gagal memuat model AI:', e);
-        modelsLoaded = false;
-    }
-}
-
-function startDetectionLoop() {
-    if (detectTimer) clearInterval(detectTimer);
-    detectTimer = setInterval(runFaceDetection, DETECT_INTERVAL_MS);
-}
-
-async function runFaceDetection() {
-    if (autoCaptureLock) return;
-    const video = document.getElementById('cameraVideo');
-    if (!video || video.readyState < 2) return;
-
-    try {
-        const result = await faceapi.detectSingleFace(video, new faceapi.TinyFaceDetectorOptions({ inputSize: 224, scoreThreshold: 0.5 }));
-
-        if (!result) {
-            stableCount = 0;
-            setScanState('red', 'Mencari wajah…');
-            return;
-        }
-
-        // Cek wajah cukup besar & kira-kira di tengah bingkai
-        const box = result.box;
-        const vw = video.videoWidth, vh = video.videoHeight;
-        const cx = box.x + box.width / 2, cy = box.y + box.height / 2;
-        const centered = Math.abs(cx - vw / 2) < vw * 0.28 && Math.abs(cy - vh / 2) < vh * 0.28;
-        const bigEnough = box.width > vw * 0.18;
-
-        if (!centered || !bigEnough) {
-            stableCount = Math.max(0, stableCount - 1);
-            setScanState('yellow', 'Dekatkan &amp; tengahkan wajah Anda');
-            return;
-        }
-
-        stableCount++;
-        if (stableCount < STABLE_FRAMES_NEEDED) {
-            setScanState('yellow', 'Tahan, jangan bergerak…');
-        } else {
-            setScanState('green', 'Terdeteksi! Mengambil foto…');
-            autoCaptureLock = true;
-            clearInterval(detectTimer);
-            setTimeout(() => captureAndRegister(), 350);
-        }
-    } catch (e) {
-        console.error('Deteksi wajah error:', e);
-    }
-}
-
-function setScanState(state, label) {
-    const cameraFrame = document.getElementById('cameraFrame');
-    const scanFrame = document.getElementById('scanFrame');
-    const tint = document.getElementById('scanTint');
-    const line = document.getElementById('scanLine');
-    const statusEl = document.getElementById('scanStatus');
-    const statusText = document.getElementById('scanStatusText');
-    if (!scanFrame || !statusEl) return;
-
-    const states = ['state-red', 'state-yellow', 'state-green'];
-    [cameraFrame, scanFrame, tint, line, statusEl].forEach(el => el && el.classList.remove(...states));
-    [cameraFrame, scanFrame, tint, line, statusEl].forEach(el => el && el.classList.add('state-' + state));
-
-    if (line) line.classList.toggle('active', state !== 'green');
-    if (statusText) statusText.innerHTML = label;
-
-    ['Red', 'Yellow', 'Green'].forEach(c => {
-        const dot = document.getElementById('tl' + c);
-        if (dot) dot.classList.toggle('on', c.toLowerCase() === state);
-    });
-}
-
-function stopCamera() {
-    if (detectTimer) { clearInterval(detectTimer); detectTimer = null; }
-    stableCount = 0;
-    autoCaptureLock = false;
-
-    if (videoStream) {
-        videoStream.getTracks().forEach(track => track.stop());
-        videoStream = null;
-    }
-    const video = document.getElementById('cameraVideo');
-    video.srcObject = null;
-    video.classList.add('fg-hidden');
-    document.getElementById('cameraPlaceholder').classList.remove('fg-hidden');
-    document.getElementById('scanFrame').classList.add('fg-hidden');
-    document.getElementById('scanTint').classList.add('fg-hidden');
-    document.getElementById('scanLine').classList.add('fg-hidden');
-    document.getElementById('trafficLight').classList.add('fg-hidden');
-    document.getElementById('scanStatus').classList.add('fg-hidden');
-
-    document.getElementById('btnStartCamera').classList.remove('fg-hidden');
-    document.getElementById('btnCapture').classList.add('fg-hidden');
-    document.getElementById('btnStopCamera').classList.add('fg-hidden');
-}
-
-async function captureAndRegister() {
-    if (detectTimer) { clearInterval(detectTimer); detectTimer = null; }
-    autoCaptureLock = true;
-
-    const video = document.getElementById('cameraVideo');
-    const canvas = document.createElement('canvas');
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    const ctx = canvas.getContext('2d');
-    ctx.scale(-1, 1);
-    ctx.drawImage(video, -canvas.width, 0);
-
-    const imageData = canvas.toDataURL('image/jpeg', 0.85);
-    showStatus('Memproses wajah Anda…', 'info');
-    document.getElementById('btnCapture').setAttribute('disabled', 'true');
-
-    try {
-        const response = await fetch(REGISTER_ENDPOINT, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ image: imageData })
-        });
-        const data = await response.json();
-
-        if (data.success) {
-            faceEmbedding = data.embedding;
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(faceEmbedding));
-            showStatus('Wajah berhasil dikenali. Mencari foto Anda…', 'success');
-            stopCamera();
-            setTimeout(() => {
-                document.getElementById('registerSection').classList.add('fg-hidden');
-                loadPhotos();
-            }, 900);
-        } else {
-            // Catatan: data.error dari server bisa berupa teks teknis/bahasa Inggris,
-            // jadi kita simpan hanya untuk console, dan tampilkan ke user pesan yang ramah.
-            console.error('Register face gagal:', data.error);
-            showStatus('Wajah belum berhasil dikenali. Coba lagi dengan pencahayaan yang lebih terang, hadapkan wajah lurus ke kamera, dan pastikan tidak terhalang masker atau kacamata gelap.', 'error');
-            setScanState('red', 'Gagal, coba lagi…');
-            stableCount = 0;
-            autoCaptureLock = false;
-            if (modelsLoaded && videoStream) startDetectionLoop();
-        }
-    } catch (error) {
-        console.error('Register face error:', error);
-        showStatus('Koneksi ke server bermasalah. Periksa koneksi internet Anda, lalu coba lagi.', 'error');
-        stableCount = 0;
-        autoCaptureLock = false;
-        if (modelsLoaded && videoStream) startDetectionLoop();
-    } finally {
-        document.getElementById('btnCapture').removeAttribute('disabled');
-    }
-}
-
-function showStatus(message, type) {
-    const el = document.getElementById('statusMessage');
-    el.classList.remove('fg-hidden');
-    el.className = 'fg-status ' + type;
-    el.textContent = message;
-}
-
-/* ══ HELPERS — cocok dengan struktur respons API aktual ══
-   Respons /api/user/my_photos: { success, photos: [{ distance, filename, photo_id, url,
-   metadata: { date, event_name, location, photographer } }] }
-   Catatan: metadata TIDAK punya field "day" bawaan dari API, jadi kita hitung sendiri
-   dari metadata.date terhadap tanggal mulai turnamen (EVENT_START_DATE).
-   Field "url" sudah berupa URL lengkap ke file foto, jadi dipakai langsung
-   (fallback ke IMAGE_ENDPOINT/DOWNLOAD_ENDPOINT kalau url tidak ada). */
+/* ══════════════════════════════════════════════
+   HELPERS
+   ══════════════════════════════════════════════ */
+function toHttps(url) { return url.replace(/^http:/i, 'https:'); }
 
 function computeDayLabel(dateStr) {
     if (!dateStr) return '';
@@ -1084,94 +853,414 @@ function computeDayLabel(dateStr) {
 }
 
 function getPhotoImageUrl(photo) {
-    const url = photo.preview_url || IMAGE_ENDPOINT(photo.filename);   // pakai preview dulu
-    return url.replace(/^http:/i, 'https:');
+    return toHttps(photo.preview_url || IMAGE_ENDPOINT(photo.filename));
 }
-
 function getPhotoDownloadUrl(photo) {
-    return photo.url || DOWNLOAD_ENDPOINT(photo.filename);   // tetap full-res, ini sudah benar
+    return photo.url || DOWNLOAD_ENDPOINT(photo.filename);
 }
 
-/* Set teks empty-state secara aman (hindari duplikasi query selector) */
-function setEmptyState(title, sub) {
-    const emptyEl = document.getElementById('emptyState');
-    const titleEl = emptyEl.querySelector('.fg-empty-title');
-    const subEl = emptyEl.querySelector('.fg-empty-sub');
-    if (titleEl) titleEl.textContent = title;
-    if (subEl) subEl.textContent = sub;
+function getCameraErrorMessage(error) {
+    const name = error && error.name;
+    switch (name) {
+        case 'NotAllowedError':
+        case 'PermissionDeniedError':
+            return 'Akses kamera ditolak. Izinkan akses kamera pada browser Anda (ikon gembok di address bar), lalu coba lagi.';
+        case 'NotFoundError':
+        case 'DevicesNotFoundError':
+            return 'Kamera tidak ditemukan di perangkat ini. Pastikan perangkat Anda memiliki kamera yang aktif.';
+        case 'NotReadableError':
+        case 'TrackStartError':
+            return 'Kamera sedang dipakai aplikasi lain. Tutup aplikasi/tab lain yang menggunakan kamera, lalu coba lagi.';
+        case 'OverconstrainedError':
+            return 'Kamera pada perangkat Anda tidak mendukung pengaturan yang dibutuhkan. Coba gunakan perangkat lain.';
+        case 'SecurityError':
+            return 'Akses kamera diblokir. Pastikan halaman ini dibuka melalui koneksi aman (https).';
+        default:
+            return 'Kamera tidak bisa diakses. Pastikan Anda sudah mengizinkan akses kamera pada browser, lalu coba lagi.';
+    }
 }
 
-/* ══ LOAD & FILTER PHOTOS ══ */
-async function loadPhotos() {
+/** Deteksi error "challenge tidak sesuai urutan" dari API supaya cukup di-skip
+ *  diam-diam (frame basi/telat), bukan langsung menganggap sesi gagal total. */
+function isSequenceMismatchError(message) {
+    if (!message) return false;
+    const m = message.toLowerCase();
+    return m.includes('tidak sesuai urutan') || m.includes('out of order') || m.includes('sequence');
+}
+
+function showStatus(message, type) {
+    const el = document.getElementById('statusMessage');
+    el.classList.remove('fg-hidden');
+    el.className = 'fg-status ' + type;
+    el.textContent = message;
+}
+
+/* ══════════════════════════════════════════════
+   MODAL OPEN / CLOSE
+   ══════════════════════════════════════════════ */
+function openBioScan() {
+    document.getElementById('statusMessage').classList.add('fg-hidden');
+    resetBioUI();
+    document.getElementById('bioBackdrop').classList.add('active');
+    document.body.style.overflow = 'hidden';
+    bioClosed = false;
+    startBioSession();
+}
+
+function resetBioUI() {
+    document.getElementById('bioStatus').classList.remove('active');
+    document.getElementById('bioRetryBtn').classList.add('fg-hidden');
+    document.getElementById('bioGuide').style.display = '';
+    document.getElementById('bioSheet').style.display = '';
+    document.getElementById('bioInstruction').textContent = 'Menyiapkan kamera…';
+    document.getElementById('bioFeedback').textContent = '';
+    document.getElementById('bioFeedback').classList.remove('err');
+    document.getElementById('bioOval').className = 'fg-bio-oval';
+    document.getElementById('bioCheck').classList.remove('show');
+    hideAllArrows();
+}
+
+function cancelBioScan() {
+    bioClosed = true;
+    cleanupBioCamera();
+    document.getElementById('bioBackdrop').classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+function cleanupBioCamera() {
+    if (bioCaptureTimer) { clearInterval(bioCaptureTimer); bioCaptureTimer = null; }
+    if (bioFlashTimeout) { clearTimeout(bioFlashTimeout); bioFlashTimeout = null; }
+    if (bioTransitionTimeout) { clearTimeout(bioTransitionTimeout); bioTransitionTimeout = null; }
+    bioTransitioning = false;
+    if (bioStream) {
+        bioStream.getTracks().forEach(t => t.stop());
+        bioStream = null;
+    }
+}
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && document.getElementById('bioBackdrop').classList.contains('active')) {
+        cancelBioScan();
+    }
+});
+
+/* ══════════════════════════════════════════════
+   CHALLENGE UI
+   ══════════════════════════════════════════════ */
+function hideAllArrows() {
+    ['Up', 'Down', 'Left', 'Right'].forEach(d => document.getElementById('bioArrow' + d).classList.remove('show'));
+}
+
+function applyChallenge(challenge) {
+    const meta = DIRECTION_META[challenge] || DIRECTION_META.CENTER;
+    bioCurrentChallenge = challenge;
+    document.getElementById('bioInstruction').textContent = meta.label;
+    document.getElementById('bioFeedback').textContent = '';
+    document.getElementById('bioFeedback').classList.remove('err');
+    document.getElementById('bioOval').className = 'fg-bio-oval';
+    document.getElementById('bioCheck').classList.remove('show');
+    hideAllArrows();
+    if (meta.arrow) {
+        const map = { up: 'Up', down: 'Down', left: 'Left', right: 'Right' };
+        document.getElementById('bioArrow' + map[meta.arrow]).classList.add('show');
+    }
+}
+
+function renderDots() {
+    const wrap = document.getElementById('bioDots');
+    wrap.classList.remove('fg-hidden');
+    wrap.innerHTML = bioChallengeSequence.map((_, i) => {
+        const cls = i < bioCurrentStep ? 'done' : (i === bioCurrentStep ? 'current' : '');
+        return `<div class="fg-bio-dot ${cls}"></div>`;
+    }).join('');
+}
+
+/* ══════════════════════════════════════════════
+   SESSION LIFECYCLE
+   ══════════════════════════════════════════════ */
+async function startBioSession() {
+    try {
+        bioStream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: 'user', width: 1280, height: 720 },
+            audio: false
+        });
+        const video = document.getElementById('bioVideo');
+        video.srcObject = bioStream;
+        await video.play().catch(() => {});
+    } catch (err) {
+        showBioStatus('🚫', 'Kamera tidak bisa diakses', getCameraErrorMessage(err), false);
+        return;
+    }
+
+    try {
+        const resp = await fetch(`${BIOMETRIC_BASE}/start`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ event_slug: EVENT_SLUG, min_angles: MIN_ANGLES })
+        });
+        const data = await resp.json();
+        if (!data.success) throw new Error(data.error || 'Gagal memulai sesi');
+
+        bioSessionId = data.session_id;
+        bioChallengeSequence = data.challenge;
+        bioCurrentStep = 0;
+        bioTransitioning = false;
+        renderDots();
+        applyChallenge(data.challenge[0]);
+        startBioCaptureLoop();
+    } catch (err) {
+        showBioStatus('⚠️', 'Gagal memulai verifikasi', err && err.message, false);
+    }
+}
+
+async function retryBioScan() {
+    document.getElementById('bioStatus').classList.remove('active');
+    document.getElementById('bioGuide').style.display = '';
+    document.getElementById('bioSheet').style.display = '';
+    document.getElementById('bioInstruction').textContent = 'Menyiapkan ulang…';
+
+    try {
+        if (bioSessionId) {
+            fetch(`${BIOMETRIC_BASE}/retry`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ session_id: bioSessionId, scope: 'session' })
+            }).catch(() => {});
+        }
+        const resp = await fetch(`${BIOMETRIC_BASE}/start`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ event_slug: EVENT_SLUG, min_angles: MIN_ANGLES })
+        });
+        const data = await resp.json();
+        if (!data.success) {
+            showBioStatus('⚠️', 'Gagal memulai ulang', data.error, true);
+            return;
+        }
+        bioSessionId = data.session_id;
+        bioChallengeSequence = data.challenge;
+        bioCurrentStep = 0;
+        bioTransitioning = false;
+        renderDots();
+        applyChallenge(data.challenge[0]);
+        startBioCaptureLoop();
+    } catch (err) {
+        showBioStatus('⚠️', 'Gagal memulai ulang', err && err.message, true);
+    }
+}
+
+function startBioCaptureLoop() {
+    if (bioCaptureTimer) clearInterval(bioCaptureTimer);
+    bioCaptureTimer = setInterval(captureAndSubmitBioFrame, BIO_CAPTURE_INTERVAL_MS);
+}
+
+/* ══════════════════════════════════════════════
+   FRAME CAPTURE + SUBMIT (fix race condition di sini)
+   ══════════════════════════════════════════════ */
+async function captureAndSubmitBioFrame() {
+    if (
+        bioFrameInFlight ||
+        bioTransitioning ||     // ⬅️ FIX: skip total selama masa transisi challenge
+        bioClosed ||
+        !bioSessionId ||
+        !bioCurrentChallenge
+    ) return;
+
+    const video = document.getElementById('bioVideo');
+    if (!video || !video.videoWidth) return;
+
+    bioFrameInFlight = true;
+    try {
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+        ctx.drawImage(video, 0, 0);
+        const imageData = canvas.toDataURL('image/jpeg', 0.85);
+
+        const sentChallenge = bioCurrentChallenge; // snapshot, defensif
+
+        const resp = await fetch(`${BIOMETRIC_BASE}/frame`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                session_id: bioSessionId,
+                challenge: sentChallenge,
+                frame: imageData
+            })
+        });
+        const data = await resp.json();
+
+        if (!data.success) {
+            if (isSequenceMismatchError(data.error)) {
+                console.warn('[BioScan] frame basi/telat, di-skip:', data.error);
+                return;
+            }
+            if (bioCaptureTimer) { clearInterval(bioCaptureTimer); bioCaptureTimer = null; }
+            showBioStatus('⚠️', 'Sesi bermasalah', data.error, true);
+            return;
+        }
+
+        if (!data.matched) {
+            const isErr = data.pose_progress === undefined;
+            const progress = data.pose_progress || 0;
+            const feedbackEl = document.getElementById('bioFeedback');
+            feedbackEl.textContent = data.message || 'Lanjutkan gerakan…';
+            feedbackEl.classList.toggle('err', isErr);
+
+            const oval = document.getElementById('bioOval');
+            oval.className = 'fg-bio-oval';
+            if (isErr) oval.classList.add('state-error');
+            else if (progress >= NEAR_MATCH_THRESHOLD) oval.classList.add('state-near');
+            else if (progress > 0.05) oval.classList.add('state-progress');
+            return;
+        }
+
+        // ── matched ──
+        document.getElementById('bioFeedback').textContent = 'Bagus! Tertangkap wajahmu';
+        document.getElementById('bioFeedback').classList.remove('err');
+        const oval = document.getElementById('bioOval');
+        oval.className = 'fg-bio-oval state-matched';
+        document.getElementById('bioCheck').classList.add('show');
+        hideAllArrows();
+        if (data.progress) { bioCurrentStep = data.progress.current_step; renderDots(); }
+
+        oval.classList.add('flash');
+        if (bioFlashTimeout) clearTimeout(bioFlashTimeout);
+        bioFlashTimeout = setTimeout(() => oval.classList.remove('flash'), 650);
+
+        if (data.done) {
+            bioTransitioning = true; // kunci — sesi mau selesai, tidak boleh ada frame lagi
+            if (bioCaptureTimer) { clearInterval(bioCaptureTimer); bioCaptureTimer = null; }
+            await completeBioSession();
+        } else if (data.next_challenge) {
+            // ⬅️ FIX: kunci capture loop sampai currentChallenge benar-benar
+            // pindah, supaya tidak ada frame terkirim dengan challenge basi.
+            bioTransitioning = true;
+            if (bioTransitionTimeout) clearTimeout(bioTransitionTimeout);
+            bioTransitionTimeout = setTimeout(() => {
+                applyChallenge(data.next_challenge);
+                bioTransitioning = false;
+                bioTransitionTimeout = null;
+            }, CHALLENGE_TRANSITION_MS);
+        }
+    } catch (err) {
+        console.error('[BioScan] frame submit error:', err);
+    } finally {
+        bioFrameInFlight = false;
+    }
+}
+
+async function completeBioSession() {
+    document.getElementById('bioInstruction').textContent = 'Memverifikasi…';
+    document.getElementById('bioFeedback').textContent = '';
+    try {
+        const resp = await fetch(`${BIOMETRIC_BASE}/complete`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ session_id: bioSessionId })
+        });
+        const data = await resp.json();
+        if (!data.success || !data.user_id) {
+            showBioStatus('⚠️', 'Verifikasi gagal', data.error, true);
+            return;
+        }
+        showBioStatus('✅', 'Wajah terverifikasi!', `Liveness score: ${((data.liveness_score || 0) * 100).toFixed(0)}%`, false);
+        cleanupBioCamera();
+        setTimeout(() => {
+            if (bioClosed) return;
+            bioClosed = true;
+            localStorage.setItem(STORAGE_KEY, data.user_id);
+            document.getElementById('bioBackdrop').classList.remove('active');
+            document.body.style.overflow = '';
+            document.getElementById('registerSection').classList.add('fg-hidden');
+            showStatus(`Wajah berhasil dikenali (liveness ${((data.liveness_score || 0) * 100).toFixed(0)}%). Mencari foto Anda…`, 'success');
+            loadPhotos(data.user_id);
+        }, 900);
+    } catch (err) {
+        showBioStatus('⚠️', 'Gagal menyelesaikan verifikasi', err && err.message, true);
+    }
+}
+
+function showBioStatus(icon, title, sub, withRetry) {
+    document.getElementById('bioGuide').style.display = 'none';
+    document.getElementById('bioSheet').style.display = 'none';
+    document.getElementById('bioStatusIcon').textContent = icon;
+    document.getElementById('bioStatusTitle').textContent = title;
+    document.getElementById('bioStatusSub').textContent = sub || '';
+    document.getElementById('bioRetryBtn').classList.toggle('fg-hidden', !withRetry);
+    document.getElementById('bioStatus').classList.add('active');
+}
+
+/* ══════════════════════════════════════════════
+   LOAD & FILTER PHOTOS
+   ══════════════════════════════════════════════ */
+async function loadPhotos(userId) {
     document.getElementById('gallerySection').classList.remove('fg-hidden');
     document.getElementById('loadingPhotos').classList.remove('fg-hidden');
     document.getElementById('photosGrid').classList.add('fg-hidden');
     document.getElementById('emptyState').classList.add('fg-hidden');
 
     try {
-        const response = await fetch(PHOTOS_ENDPOINT, {
+        const response = await fetch(PHOTOS_BY_USER_ENDPOINT, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ embedding: faceEmbedding })
+            body: JSON.stringify({ user_id: userId, event_slug: EVENT_SLUG })
         });
         const data = await response.json();
 
         document.getElementById('loadingPhotos').classList.add('fg-hidden');
 
         if (data.success && data.photos && data.photos.length > 0) {
-            // Data sudah terurut dari yang paling mirip (distance terkecil) — urutan dipertahankan.
-            // Tambahkan label "day" hasil hitungan karena API tidak mengirimkannya.
             allPhotos = data.photos.map(p => ({
                 ...p,
-                metadata: {
-                    ...(p.metadata || {}),
-                    day: computeDayLabel(p.metadata && p.metadata.date)
-                }
+                metadata: { ...(p.metadata || {}), day: computeDayLabel(p.metadata && p.metadata.date) }
             }));
-            const filtered = currentDay === 'all'
-                ? allPhotos
-                : allPhotos.filter(p => p.metadata && p.metadata.day === currentDay);
+            renderDayTabs();
+            const filtered = currentDay === 'all' ? allPhotos : allPhotos.filter(p => p.metadata && p.metadata.day === currentDay);
             renderPhotos(filtered);
         } else {
             allPhotos = [];
-            setEmptyState(
-                'Belum Ada Foto Ditemukan',
-                'Wajah Anda belum terdeteksi di hari ini. Coba lagi di hari lain atau cek kembali nanti setelah panitia mengunggah lebih banyak foto.'
-            );
+            document.getElementById('dayTabs').classList.add('fg-hidden');
+            setEmptyState('Belum Ada Foto Ditemukan', 'Wajah Anda belum terdeteksi. Coba lagi nanti setelah panitia mengunggah lebih banyak foto.');
             document.getElementById('emptyState').classList.remove('fg-hidden');
             document.getElementById('photoCount').innerHTML = 'Ditemukan <strong>0</strong> foto';
         }
     } catch (error) {
         console.error('Gagal memuat foto:', error);
         document.getElementById('loadingPhotos').classList.add('fg-hidden');
-        setEmptyState(
-            'Gagal Memuat Foto',
-            'Sepertinya ada gangguan koneksi ke server. Silakan periksa koneksi internet Anda dan coba lagi beberapa saat lagi.'
-        );
+        setEmptyState('Gagal Memuat Foto', 'Sepertinya ada gangguan koneksi ke server. Silakan periksa koneksi internet Anda dan coba lagi.');
         document.getElementById('emptyState').classList.remove('fg-hidden');
     }
+}
+
+function renderDayTabs() {
+    const wrap = document.getElementById('dayTabs');
+    if (allPhotos.length === 0) { wrap.classList.add('fg-hidden'); return; }
+    wrap.classList.remove('fg-hidden');
+    const days = ['all', ...Array.from({ length: EVENT_TOTAL_DAYS }, (_, i) => `Day ${i + 1}`)];
+    wrap.innerHTML = days.map(d => `
+        <button class="fg-day-tab ${currentDay === d ? 'active' : ''}" onclick="filterByDay('${d}', this)">
+            ${d === 'all' ? 'Semua Hari' : d}
+        </button>
+    `).join('');
 }
 
 function filterByDay(day, btn) {
     currentDay = day;
     document.querySelectorAll('.fg-day-tab').forEach(t => t.classList.remove('active'));
     btn.classList.add('active');
+    const filtered = day === 'all' ? allPhotos : allPhotos.filter(p => p.metadata && p.metadata.day === day);
+    renderPhotos(filtered);
+}
 
-    const hint = document.getElementById('dayHint');
-    if (hint) {
-        hint.textContent = day === 'all'
-            ? 'Pilih hari (opsional), lalu ambil foto wajah di bawah untuk mencari foto Anda.'
-            : `Filter aktif: ${day}. Ambil foto wajah di bawah untuk mencari foto Anda pada hari ini.`;
-    }
-
-    // Kalau foto sudah dimuat (wajah sudah discan), langsung filter hasilnya
-    if (allPhotos.length > 0) {
-        const filtered = day === 'all'
-            ? allPhotos
-            : allPhotos.filter(p => p.metadata && p.metadata.day === day);
-        renderPhotos(filtered);
-    }
-    // Kalau belum discan, pilihan hari ini akan otomatis dipakai saat loadPhotos() jalan
+function setEmptyState(title, sub) {
+    const emptyEl = document.getElementById('emptyState');
+    const titleEl = emptyEl.querySelector('.fg-empty-title');
+    const subEl = emptyEl.querySelector('.fg-empty-sub');
+    if (titleEl) titleEl.textContent = title;
+    if (subEl) subEl.textContent = sub;
 }
 
 function renderPhotos(photos) {
@@ -1183,10 +1272,7 @@ function renderPhotos(photos) {
 
     if (photos.length === 0) {
         grid.classList.add('fg-hidden');
-        setEmptyState(
-            'Belum Ada Foto Ditemukan',
-            'Wajah Anda belum terdeteksi pada hari yang dipilih. Coba pilih hari lain atau cek kembali nanti.'
-        );
+        setEmptyState('Belum Ada Foto Ditemukan', 'Wajah Anda belum terdeteksi pada hari yang dipilih. Coba pilih hari lain atau cek kembali nanti.');
         empty.classList.remove('fg-hidden');
         return;
     }
@@ -1196,7 +1282,8 @@ function renderPhotos(photos) {
 
     grid.innerHTML = photos.map((photo, i) => {
         const imgUrl = getPhotoImageUrl(photo);
-
+        const dayBadge = photo.metadata && photo.metadata.day
+            ? `<div class="fg-photo-day-badge">${photo.metadata.day}</div>` : '';
         return `
             <div class="fg-photo-card" style="animation-delay:${Math.min(i * 0.05, 0.6)}s"
                  onclick="showPhotoDetail(${i})" role="button" tabindex="0"
@@ -1204,6 +1291,7 @@ function renderPhotos(photos) {
                 <div class="fg-photo-img-wrap">
                     <img class="fg-photo-img" src="${imgUrl}" alt="${photo.filename}" loading="lazy"
                          onerror="this.closest('.fg-photo-card').style.display='none'">
+                    ${dayBadge}
                     <a href="https://ambilfoto.id" target="_blank" rel="noopener" class="fg-photo-copyright" onclick="event.stopPropagation()">© AmbilFoto.id</a>
                     <button class="fg-photo-download" aria-label="Unduh foto" title="Unduh foto"
                             onclick="event.stopPropagation(); downloadPhoto('${getPhotoDownloadUrl(photo)}', '${photo.filename}', this)">
@@ -1270,13 +1358,11 @@ document.addEventListener('keydown', function(e) {
 });
 
 /* ══ DOWNLOAD ══
-   Diunduh LANGSUNG di halaman ini (fetch → blob → object URL), bukan redirect
-   ke tab/halaman lain. Catatan: server di API_BASE_URL wajib mengirim header
-   CORS (Access-Control-Allow-Origin) untuk endpoint download, karena fetch()
-   dilakukan cross-origin dari domain website ini. Kalau CORS belum diaktifkan
-   di server, fetch akan gagal dan otomatis fallback ke buka tab baru. */
+   Diunduh langsung (fetch → blob → object URL). Server di API_BASE_URL wajib
+   mengirim header CORS untuk endpoint download; kalau tidak, otomatis
+   fallback ke buka tab baru. */
 async function downloadPhoto(url, filename, btnEl) {
-    const secureUrl = url.replace(/^http:/i, 'https:');
+    const secureUrl = toHttps(url);
 
     if (btnEl) btnEl.classList.add('is-loading');
     showToast('Mempersiapkan unduhan…');
@@ -1295,13 +1381,10 @@ async function downloadPhoto(url, filename, btnEl) {
         a.click();
         document.body.removeChild(a);
 
-        // Bersihkan object URL setelah unduhan dimulai
         setTimeout(() => URL.revokeObjectURL(blobUrl), 4000);
-
         showToast('Unduhan dimulai — kualitas HD penuh.');
     } catch (error) {
         console.error('Download error:', error);
-        // Fallback kalau fetch cross-origin diblokir (CORS belum diaktifkan di server)
         showToast('Tidak bisa mengunduh langsung, membuka foto di tab baru.');
         window.open(secureUrl, '_blank');
     } finally {
@@ -1331,7 +1414,6 @@ function showToast(message) {
 function resetFaceData() {
     if (!confirm('Ulangi pencarian wajah? Data wajah yang tersimpan akan dihapus dari perangkat ini.')) return;
     localStorage.removeItem(STORAGE_KEY);
-    faceEmbedding = null;
     allPhotos = [];
     currentDay = 'all';
     document.getElementById('gallerySection').classList.add('fg-hidden');
