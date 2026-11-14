@@ -30,11 +30,12 @@ Route::get('/gr', fn() => view('galeri'))->name('galeri');
 Route::get('/galeri', fn() => view('gallery'))->name('gallery');
 Route::get('/skor', fn() => view('livescore'))->name('livescore');
 Route::get('/kontak', fn() => view('contact'))->name('contact');
-Route::get('/akomodasi-tour', [AkomodasiTourController::class, 'index'])->name('akomodasi-tour');
-Route::get('/akomodasi-tour/hotel/{slug}', [AkomodasiTourController::class, 'hotelDetail'])
-    ->name('akomodasi-tour.hotel');
-Route::get('/akomodasi-tour/tour/{slug}', [AkomodasiTourController::class, 'tourDetail'])
-    ->name('akomodasi-tour.tour');
+// Akomodasi & Tour sementara di-hide
+// Route::get('/akomodasi-tour', [AkomodasiTourController::class, 'index'])->name('akomodasi-tour');
+// Route::get('/akomodasi-tour/hotel/{slug}', [AkomodasiTourController::class, 'hotelDetail'])
+//     ->name('akomodasi-tour.hotel');
+// Route::get('/akomodasi-tour/tour/{slug}', [AkomodasiTourController::class, 'tourDetail'])
+//     ->name('akomodasi-tour.tour');
 // ── Wilayah cascade ─────────────────────────────────────────────
 Route::prefix('wilayah')->group(function () {
     Route::get('/provinces',       [WilayahController::class, 'provinces']);

@@ -1562,7 +1562,7 @@ body {
      PRELOADER
 ══════════════════════════════════════════ --}}
 <div id="site-preloader">
-    <img src="https://res.cloudinary.com/viecqvpk/image/upload/q_auto/f_auto/v1786581021/bayanopen-logo_mfcb55_rk41oh.webp"
+    <img src="https://ik.imagekit.io/zaekg3ju7/bayanopen-logo.png?updatedAt=1787801442276"
          alt="Bayan Open 2026" class="preloader-logo" id="preloaderLogo"
          onerror="this.style.display='none'; document.getElementById('preloaderFallbackText').style.display='block';">
     <span id="preloaderFallbackText" style="display:none;font-family:'Montserrat',sans-serif;font-weight:800;font-size:22px;letter-spacing:0.02em;color:#1a1007;">
@@ -1591,7 +1591,7 @@ body {
 
     <div class="hero-headline-wrap">
         <img class="hero-headline-logo"
-             src="https://res.cloudinary.com/viecqvpk/image/upload/q_auto/f_auto/v1787043179/LOGO_BO2026_WHITEALL_fjymjq.png"
+             src="https://ik.imagekit.io/zaekg3ju7/LOGO_BO2026_White_bpz9gb.png?updatedAt=1787801441743"
              alt="Bayan Open 2026">
     </div>
 
@@ -1901,7 +1901,7 @@ body {
 
             <button type="button" class="guest-card reveal" onclick="openGuestModal(0)">
                 <div class="guest-photo-wrap">
-                    <img src="https://res.cloudinary.com/viecqvpk/image/upload/q_auto/f_auto/v1786436721/JOJO_iszmac.jpg"
+                    <img src="https://ik.imagekit.io/zaekg3ju7/JOJO.jpeg?updatedAt=1787801447864"
                          alt="Jonatan Christie" loading="lazy" decoding="async"
                          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                     <div class="guest-photo-fallback">JC</div>
@@ -1919,7 +1919,7 @@ body {
 
             <button type="button" class="guest-card reveal" onclick="openGuestModal(1)">
                 <div class="guest-photo-wrap">
-                    <img src="https://res.cloudinary.com/viecqvpk/image/upload/q_auto/f_auto/v1786437080/d7028702-06de-4b2f-937b-0987ef047d16_dzyno5.png"
+                    <img src="https://ik.imagekit.io/zaekg3ju7/d7028702-06de-4b2f-937b-0987ef047d16.png?updatedAt=1787801447756"
                          alt="Hendra Setiawan" loading="lazy" decoding="async"
                          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                     <div class="guest-photo-fallback">HS</div>
@@ -1944,7 +1944,7 @@ body {
 ══════════════════════════════════════════ --}}
 <section class="gallery-section">
     <image class="gallery-bg-video"
-        src="https://ik.imagekit.io/zaekg3ju7/AR__2907.JPG"
+        src="https://ik.imagekit.io/zaekg3ju7/AR__2907.JPG?updatedAt=1787807725544"
         autoplay muted loop playsinline preload="none"></image>
     <div class="gallery-video-overlay"></div>
     <div class="grain" aria-hidden="true"></div>
@@ -1962,16 +1962,12 @@ body {
     </div>
     @php
     $photos = [
-        ['https://res.cloudinary.com/viecqvpk/image/upload/w_600,q_60,f_webp/v1786581020/Bayan-8672_iuuxhb_lnjy0x.webp',   'Ganda Veteran Putra'],
-        ['https://res.cloudinary.com/viecqvpk/image/upload/w_600,q_60,f_webp/v1786581020/Bayan-1739_e0mi1r_cvbtv3.webp',   'Aksi Lapangan'],
-        ['https://res.cloudinary.com/viecqvpk/image/upload/w_600,q_60,f_webp/v1786581020/Bayan-1715_rppm7m_cmskbx.webp',   'Ganda Remaja Putra'],
-        ['https://res.cloudinary.com/viecqvpk/image/upload/w_600,q_60,f_webp/v1786581020/Bayan-8837_rpl0gl_l3w5ep.webp',   'Ganda Putri'],
-        ['https://res.cloudinary.com/viecqvpk/image/upload/w_600,q_60,f_webp/v1786581020/PenyerahanMedali-575_yhyuds_pgh5nr.webp', 'Penyerahan Medali'],
-        ['https://res.cloudinary.com/viecqvpk/image/upload/w_600,q_60,f_webp/v1786581096/Bayan-2268_ll0s3o.jpg',   'Guest Star'],
-        ['https://res.cloudinary.com/viecqvpk/image/upload/w_600,q_60,f_webp/v1786581081/Bayan-36_lgwrcz.jpg',     'Servis Perdana'],
-        ['https://res.cloudinary.com/viecqvpk/image/upload/w_600,q_60,f_webp/v1786581080/Bayan-2324_d4suu3.jpg',   'Aksi Hendra Setiawan'],
-        ['https://res.cloudinary.com/viecqvpk/image/upload/w_600,q_60,f_webp/v1786581075/Bayan-26_rfucmc.jpg',     'Taruna Putra'],
-        ['https://res.cloudinary.com/viecqvpk/image/upload/w_600,q_60,f_webp/v1786581031/Bayan-1427_uliqvq.jpg',   'Tunggal Putra'],
+        ['https://ik.imagekit.io/zaekg3ju7/AR__2418.JPG?updatedAt=1787808234143',   'Momen Bayan Open'],
+        ['https://ik.imagekit.io/zaekg3ju7/PVL06508.jpg',   'Aksi Pertandingan'],
+        ['https://ik.imagekit.io/zaekg3ju7/PVL06213.jpg',   'Semangat Juara'],
+        ['https://ik.imagekit.io/zaekg3ju7/PVL06485.jpg',   'Momen Turnamen'],
+        ['https://ik.imagekit.io/zaekg3ju7/Bayan-8672_iuuxhb.jpg?updatedAt=1787801440371',   'Ganda Veteran Putra'],
+        ['https://ik.imagekit.io/zaekg3ju7/Bayan-1739_e0mi1r.jpg?updatedAt=1787801440413',   'Aksi Lapangan'],
     ];
     $doubled  = array_merge($photos, $photos);
     $doubled2 = array_merge(array_reverse($photos), array_reverse($photos));
@@ -2001,6 +1997,7 @@ body {
 {{-- ══════════════════════════════════════════
      AKOMODASI & WISATA (preview)
 ══════════════════════════════════════════ --}}
+@if(false) {{-- Akomodasi & Tour sementara di-hide --}}
 @php
     $akmData        = config('akomodasi');
     $akmOfficial    = collect($akmData['hotels'])->firstWhere('is_official', true);
@@ -2139,6 +2136,7 @@ body {
         </div>
     </div>
 </section>
+@endif {{-- /Akomodasi & Tour hide --}}
 
 {{-- ══════════════════════════════════════════
      CARA DAFTAR
@@ -2199,7 +2197,7 @@ body {
 
             {{-- Logo --}}
             <div style="margin-bottom:18px;">
-                <img src="https://res.cloudinary.com/viecqvpk/image/upload/q_auto/f_auto/v1786581021/bayanopen-logo_mfcb55_rk41oh.webp"
+                <img src="https://ik.imagekit.io/zaekg3ju7/bayanopen-logo.png?updatedAt=1787801442276"
                      alt="Bayan Open 2026"
                      style="height:44px;width:auto;object-fit:contain;display:block;">
             </div>
@@ -2271,7 +2269,7 @@ body {
     <div id="modal1Card" class="mo-card" style="width:100%;max-width:560px;">
         <div style="padding:36px 32px 30px;">
             <div style="display:flex;justify-content:center;margin-bottom:22px;">
-                <img src="https://res.cloudinary.com/viecqvpk/image/upload/q_auto/f_auto/v1786581021/bayanopen-logo_mfcb55_rk41oh.webp"
+                <img src="https://ik.imagekit.io/zaekg3ju7/bayanopen-logo.png?updatedAt=1787801442276"
                      alt="Bayan Open 2026"
                      style="height:44px;width:auto;object-fit:contain;display:block;">
             </div>
@@ -2512,7 +2510,7 @@ body {
         <div style="height:4px;background:linear-gradient(90deg,#f97316,#fbbf24,#f97316);"></div>
         <div style="padding:28px 28px 0;">
             <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;">
-                <img src="https://res.cloudinary.com/viecqvpk/image/upload/q_auto/f_auto/v1786581021/bayanopen-logo_mfcb55_rk41oh.webp"
+                <img src="https://ik.imagekit.io/zaekg3ju7/bayanopen-logo.png?updatedAt=1787801442276"
                      alt="Bayan Open 2026"
                      class="h-10 sm:h-12 lg:h-16 w-auto object-contain transition-transform duration-300 group-hover:scale-105">
                 <div>
@@ -2610,7 +2608,7 @@ var guestData = [
     {
         name: 'Jonatan Christie',
         nick: 'Atlit Bulutangkis Nasional',
-        photo: 'https://res.cloudinary.com/viecqvpk/image/upload/v1786436721/JOJO_iszmac.jpg',
+        photo: 'https://ik.imagekit.io/zaekg3ju7/JOJO.jpeg?updatedAt=1787801447864',
         bio: 'Atlet tunggal putra andalan Indonesia yang dikenal dengan gaya permainan agresif dan mental juara di lapangan.',
         role: 'Tim Nasional PBSI',
         achievements: [
