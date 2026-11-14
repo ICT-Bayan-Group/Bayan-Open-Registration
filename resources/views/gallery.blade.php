@@ -596,7 +596,7 @@
     {{-- ══ VIDEO HERO ══ --}}
     <div class="fg-hero">
         <image class="fg-hero-video"
-            src="https://ik.imagekit.io/zaekg3ju7/AR__2415.JPG"
+            src="https://ik.imagekit.io/zaekg3ju7/AR__2415.JPG?updatedAt=1787808234174"
            preload="auto"></image>
         <div class="fg-hero-overlay"></div>
         <div class="fg-hero-grain"></div>
