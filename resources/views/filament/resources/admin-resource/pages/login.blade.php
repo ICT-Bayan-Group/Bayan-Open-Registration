@@ -390,9 +390,9 @@
             <div class="bo-orb bo-orb-3"></div>
 
             <div class="bo-left-content">
-                <img src="https://res.cloudinary.com/viecqvpk/image/upload/q_auto/f_auto/v1786581021/bayanopen-logo_mfcb55_rk41oh.webp"
+                <img src="https://ik.imagekit.io/zaekg3ju7/bayanopen-logo.png?updatedAt=1787801442276"
                      alt="Bayan Open 2026" class="bo-logo bo-logo-light">
-                <img src="https://res.cloudinary.com/djs5pi7ev/image/upload/v1776413938/LOGO_BO2026_White_bpz9gb.png"
+                <img src="https://ik.imagekit.io/zaekg3ju7/LOGO_BO2026_White_bpz9gb.png?updatedAt=1787801441743"
                      alt="Bayan Open 2026" class="bo-logo bo-logo-dark">
 
                 <p class="bo-left-title">Admin Dashboard</p>
@@ -414,9 +414,9 @@
             <div class="bo-form-wrap">
 
                 <div class="bo-mobile-logo">
-                    <img src="https://res.cloudinary.com/viecqvpk/image/upload/q_auto/f_auto/v1786581021/bayanopen-logo_mfcb55_rk41oh.webp"
+                    <img src="https://ik.imagekit.io/zaekg3ju7/bayanopen-logo.png?updatedAt=1787801442276"
                          alt="Bayan Open 2026" class="bo-logo-light">
-                    <img src="https://res.cloudinary.com/djs5pi7ev/image/upload/v1776413938/LOGO_BO2026_White_bpz9gb.png"
+                    <img src="https://ik.imagekit.io/zaekg3ju7/LOGO_BO2026_White_bpz9gb.png?updatedAt=1787801441743"
                          alt="Bayan Open 2026" class="bo-logo-dark">
                 </div>
 

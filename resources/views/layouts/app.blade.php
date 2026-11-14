@@ -300,7 +300,7 @@
             {{-- Logo --}}
             <a href="{{ url('/') }}" class="flex items-center gap-4 group">
                 <img
-                    src="https://res.cloudinary.com/viecqvpk/image/upload/q_auto/f_auto/v1786581021/bayanopen-logo_mfcb55_rk41oh.webp"
+                    src="https://ik.imagekit.io/zaekg3ju7/bayanopen-logo.png?updatedAt=1787801442276"
                     alt="Bayan Open 2026"
                     class="h-10 sm:h-12 lg:h-16 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
                 >
@@ -323,11 +323,13 @@
                             {{ request()->routeIs('dokumen') ? 'active' : '' }}">       
                     Dokumen
                 </a>
+                {{-- Akomodasi & Tour sementara di-hide
                 <a href="{{ route('akomodasi-tour') }}"
                    class="nav-link transition font-semibold text-sm tracking-wide px-3 py-2 rounded-lg
                           {{ request()->routeIs('akomodasi-tour') || request()->routeIs('akomodasi-tour.*') ? 'active' : '' }}">
                     Akomodasi &amp; Tour
                 </a>
+                --}}
            <!--
                 <a href="{{ route('bagan') }}"
                    class="nav-link transition font-semibold text-sm tracking-wide px-3 py-2 rounded-lg
@@ -387,9 +389,11 @@
         <a href="{{ route('dokumen') }}"
            class="nav-link-mobile {{ request()->routeIs('dokumen') ? 'active' : '' }}"
               onclick="closeMobileMenu()">Dokumen</a>
+        {{-- Akomodasi & Tour sementara di-hide
         <a href="{{ route('akomodasi-tour') }}"
            class="nav-link-mobile {{ request()->routeIs('akomodasi-tour') || request()->routeIs('akomodasi-tour.*') ? 'active' : '' }}"
            onclick="closeMobileMenu()">Akomodasi &amp; Tour</a>
+        --}}
  <!--
         <a href="{{ route('bagan') }}"
            class="nav-link-mobile {{ request()->routeIs('bagan') ? 'active' : '' }}"
@@ -442,7 +446,7 @@
                 {{-- Brand --}}
                 <div class="sm:col-span-2 lg:col-span-1">
                     <img
-                        src="https://res.cloudinary.com/viecqvpk/image/upload/q_auto/f_auto/v1786581021/bayanopen-logo_mfcb55_rk41oh.webp"
+                        src="https://ik.imagekit.io/zaekg3ju7/bayanopen-logo.png?updatedAt=1787801442276"
                         alt="Bayan Open 2026"
                         class="h-12 sm:h-14 object-contain mb-4 sm:mb-5"
                     >
@@ -483,11 +487,13 @@
                                 <span class="dot"></span>Dokumen
                             </a>
                         </li>
+                        {{-- Akomodasi & Tour sementara di-hide
                         <li>
                             <a href="{{ route('akomodasi-tour') }}" class="footer-nav-link">
                                 <span class="dot"></span>Akomodasi &amp; Tour
                             </a>
                         </li>
+                        --}}
                          <!--
                         <li>
                             <a href="{{ route('bagan') }}" class="footer-nav-link">

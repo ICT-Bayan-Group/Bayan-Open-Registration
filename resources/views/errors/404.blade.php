@@ -285,7 +285,7 @@
 
         <div class="brand-footer">
             <a href="{{ url('/') }}">
-                <img src="https://res.cloudinary.com/viecqvpk/image/upload/q_auto/f_auto/v1786581021/bayanopen-logo_mfcb55_rk41oh.webp"
+                <img src="https://ik.imagekit.io/zaekg3ju7/bayanopen-logo.png?updatedAt=1787801442276"
                      alt="Bayan Open 2026">
             </a>
         </div>
